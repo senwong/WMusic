@@ -1,0 +1,12 @@
+$white: #ffffff
+$black: #000000
+$primary: #ff6600
+$secondary: #999999
+$min-shaft: #333333
+$tundora: #4a4a4a
+$mask-opacity: 0.6
+
+$theme-colors: ("white": $white, "primary": $primary, "secondary": $secondary,)
+@each $color, $value in $theme-colors
+  .text-#{$color}
+    color: $value

@@ -1,0 +1,152 @@
+<template>
+<div class="main-wrapper">
+  <div class="mvplay-container" :class="{'theater-mode': isTheaterMode}">
+      <div class="video-contaner">
+        <video-player :brs="brs" @toggle-theater-mode="isTheaterMode = !isTheaterMode"></video-player>
+        <p class="name">{{artists.map(ar => ar.name).join(";")}} - {{name}}</p>
+        <p class="space-between">
+          <span>{{playCount}}次播放</span>
+          <span>{{likeCount}}喜欢 {{shareCount}}分享</span>
+        </p>
+      </div>
+      <div class="comments-wrapper">
+        <h3>最热评论（{{this.hotComments.length}}）</h3>
+        <comment-list :comments="hotComments"></comment-list>
+        <h3>最新评论（{{this.commentsTotal}}）</h3>
+        <comment-list :comments="comments"></comment-list>
+      </div>
+      <div class="similar-mv">
+        <h3>相似MV</h3>
+        <router-link
+          :to="'/mvplay/'+simiMV.id"
+          class="similar-mv__item"
+          v-for="simiMV in similarMVs"
+          :key="simiMV.id"
+        >
+          <img class="left__item" :src="simiMV.cover" alt="">
+          <div class="right__item">
+            <div class="txt_main">{{simiMV.name}}</div>
+            <div class="txt_sub">{{simiMV.artistName}}</div>
+          </div>
+        </router-link>
+      </div>
+  </div>
+</div>
+</template>
+<script>
+  import { getMvData, getMVComments, getSimilarMV } from "@/service/Service"
+  import CommentList from "@/components/FindMusic/CommentList"
+  import VideoPlayer from "@/components/MV/VideoPlayer"
+
+  export default {
+    name: "MVPlayer",
+    components: { CommentList, VideoPlayer },
+    data() {
+      return {
+        id: "",
+        videoUrl: "",
+        name: "",
+        artists: [],
+        playCount: 0,
+        likeCount: 0,
+        shareCount: 0,
+        brs: [],
+        comments: [],
+        commentsTotal: 0,
+        similarMVs: [],
+        hotComments: [],
+        isTheaterMode: false,
+      }
+    },
+    created() {
+      this.updateView()
+    },
+    methods: {
+      updateView() {
+        this.id = this.$route.params.id
+        getMvData(this.id).then(res => {
+          res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
+          const brsKeys = Object.keys(res.data.data.brs)
+          this.videoUrl = res.data.data.brs[brsKeys[brsKeys.length - 1]]
+          this.videoUrl = this.videoUrl.replace(/http:\/\//g, "https://")
+          this.name = res.data.data.name
+          this.artists = res.data.data.artists
+          this.playCount = res.data.data.playCount
+          this.likeCount = res.data.data.likeCount
+          this.shareCount = res.data.data.shareCount
+          this.brs = res.data.data.brs
+        })
+        getMVComments(this.id).then(res => {
+          res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
+          res =  JSON.parse(JSON.stringify(res).replace(/\.jpg/g, ".jpg?param=100y100"))
+          this.comments = res.data.comments
+          this.commentsTotal = res.data.total
+          this.hotComments = res.data.hotComments
+        })
+        getSimilarMV(this.id).then(res => {
+          res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
+          res =  JSON.parse(JSON.stringify(res).replace(/\.jpg/g, ".jpg?param=336y188"))
+          this.similarMVs = res.data.mvs
+        })
+      }
+    },
+    watch: {
+      $route(val) {
+        this.updateView()
+      }
+    }
+  }
+</script>
+<style lang="sass" scoped>
+@import "@/components/config.sass"
+
+.mvplay-container
+  display: grid;
+  grid-template-areas: "video   simiMVs" "comments simiMVs";
+  grid-template-columns: 1fr 300px;
+  grid-gap: 20px;
+  &.theater-mode
+    grid-template-areas: "video   video" "comments simiMVs";
+  @media screen and (max-width: 1200px)
+    &.theater-mode
+      grid-template-areas: "video"  "simiMVs"  "comments";
+    grid-template-areas: "video"  "simiMVs"  "comments";
+    grid-template-columns: 1fr;
+
+.comments-wrapper
+  grid-area: comments;
+
+.video-contaner
+  grid-area: video;
+  min-width: 0;
+.name
+  font-weight: bolder;
+.space-between
+  display: flex;
+  justify-content: space-between;
+  color: $gray3
+.similar-mv
+  grid-area: simiMVs;
+.similar-mv__item
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  margin-bottom: 20px;
+  .left__item
+    height: 94px;
+    // width: 168px;
+    flex-basis: 168px;
+    margin-right: 8px;
+  .right__item
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+.txt_main
+  font-size: 14px;
+  font-weight: bolder;
+.txt_sub
+  font-size: 14px;
+  color: $gray3;
+</style>
+
