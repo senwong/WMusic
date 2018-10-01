@@ -1,1 +1,1 @@
-export const PLAYMODES = {loop: "LOOP", oneLoop: "ONELOOP", shuffle: "SHUFFLE"};
+export const PLAYMODES = {loop: "LOOP", oneLoop: "ONELOOP", shuffle: "SHUFFLE"}
