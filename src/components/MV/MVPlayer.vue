@@ -23,7 +23,7 @@
           v-for="simiMV in similarMVs"
           :key="simiMV.id"
         >
-          <img class="left__item" :src="simiMV.cover" alt="">
+          <img class="left__item" :src="simiMV.cover | clipImage(336, 188)" alt="">
           <div class="right__item">
             <div class="txt_main">{{simiMV.name}}</div>
             <div class="txt_sub">{{simiMV.artistName}}</div>
@@ -78,14 +78,12 @@
         })
         getMVComments(this.id).then(res => {
           res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
-          res =  JSON.parse(JSON.stringify(res).replace(/\.jpg/g, ".jpg?param=100y100"))
           this.comments = res.data.comments
           this.commentsTotal = res.data.total
           this.hotComments = res.data.hotComments
         })
         getSimilarMV(this.id).then(res => {
           res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
-          res =  JSON.parse(JSON.stringify(res).replace(/\.jpg/g, ".jpg?param=336y188"))
           this.similarMVs = res.data.mvs
         })
       }

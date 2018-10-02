@@ -1,27 +1,26 @@
 <template>
 <div class="main-wrapper">
-  <div>
     <!-- 歌曲信息 -->
     <div class="song-info">
       <div class="album-img">
-        <img :src="album.picUrl" alt="">
+        <img :src="album.picUrl | clipImage(400, 400)" alt="">
       </div>
       <div class="song-desc">
         <div class="song-name">{{name}}</div>
         <div>艺人：
           <router-link
-            v-for="artist in artists"
-            :key="artist.id"
+            v-for="(artist, i) in artists"
+            :key="(artist.id == '0' ? i : artist.id)"
             :to="'/artist/'+ artist.id">{{artist.name}}</router-link>
         </div>
         <div>专辑：
           <router-link :to="'/album/'+album.id">{{album.name}}</router-link>
         </div>
-        <div>
-          <button>播放</button>
-          <button>收藏</button>
-          <button>歌词</button>
-          <button>more</button>
+        <div class="controls">
+          <ripple-button @click="play">播放</ripple-button>
+          <ripple-button class="button-secondary">收藏</ripple-button>
+          <ripple-button class="button-secondary">歌词</ripple-button>
+          <ripple-button class="button-secondary">more</ripple-button>
         </div>
       </div>
     </div>
@@ -40,19 +39,38 @@
         </div>
       </div>
       <!-- 标签 -->
-      <div class="tags"></div>
+      <div class="tags">
+        <h1>相似歌曲</h1>
+        <ul v-if="simiSongs">
+          <li v-for="song in simiSongs" :key="song.id" class="simi-item">
+            <div class="img-container">
+              <img :src="song.album.picUrl | clipImage(100, 100)" alt="">
+              <div class="mask-container">
+                <div class="mask">
+                </div>
+                <div class="play" @click="play(song.id)"><play-svg></play-svg></div>
+              </div>
+            </div>
+            <div class="info-container">
+              <router-link :to="'/song/' + song.id " class="name">{{ song.name }}</router-link>
+              <router-link class="artists" :to="'/artist/' + song.id " v-for="ar in song.artists" :key="ar.id">{{ ar.name }}</router-link>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
 </div>
 </template>
 <script>
-  import { getSongDetail, getSongComment} from '@/service/Service';
+  import { getSongDetail, getSongComment, getSimiSongs} from '@/service/Service';
   import CommentList from "./CommentList.vue";
   import {convertToHttps} from '@/utilitys';
-
+  import RippleButton from '@/components/globals/RippleButton.vue';
+  import PlaySvg from "@/components/globals/PlaySvg.vue";
   const  OFEESETCOUNT = 20
   export default {
     name: "SongDetail",
+    components : {CommentList, RippleButton, PlaySvg },
     data() {
       return {
         songId: null,
@@ -64,9 +82,10 @@
         commentsOffset: 0,
         commentsCount: 0,
         isLoading: false,
+        simiSongs: [],
+        isMoreComments: false,
       }
     },
-    components : {CommentList, },
     created() {
       this.songId = this.$route.params.id
       console.log("songid", this.songId);
@@ -83,14 +102,20 @@
       })
       // 获取歌曲评论
       getSongComment(this.songId, this.commentsOffset).then(res => {
-        res = convertToHttps(res)
         if (res.data.code !== 200) {
           console.warn("get song comment failed", res)
           return
         }
+        console.log("comments ", res.data)
         this.hotComments = res.data.hotComments
         this.comments = res.data.comments
         this.commentsCount = res.data.total
+        this.isMoreComments = res.data.more
+      })
+      // 获取相似歌曲
+      getSimiSongs(this.songId).then(res => {
+        res = convertToHttps(res)
+        this.simiSongs = res.data.songs
       })
     },
     computed: {
@@ -125,12 +150,22 @@
           this.comments = this.comments.concat(res.data.comments)
           this.isLoading = false
         })
+      },
+      play(songId) {
+        if (songId) {
+          this.$store.dispatch("newSingleSong", songId)
+        } else {
+          if (this.$store.state.playList && this.$store.state.playList.currentSongId == this.songId && this.$store.state.playList.getCurrentSong().isPlaying) return
+          console.log("play: ", this.songId)
+          this.$store.dispatch("newSingleSong", this.songId)
+        }
       }
     }
   }
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass";
+@import "@/style/colors.sass";
 
 .song-info
   display: flex;
@@ -139,10 +174,13 @@
   flex: 0 0 200px;
   font-size: 0;
   margin-right: 20px;
+  background: $secondary;
+  border-radius: 15px;
+  overflow: hidden;
   img
     width: 100%;
     height: 100%;
-    border-radius: 15px;
+    
 .song-desc
   flex: 1 1 auto;
   display: flex;
@@ -152,45 +190,18 @@
   font-size: 2em;
   margin: 1em 0;
 
+.button-secondary
+  color: $secondary;
+  border-color: $secondary;
+
 .comment__tag
   display: flex;
-
 .comments
   flex: 1 1 auto;
   margin-right: 20px;
 .tags
-  flex: 1 1 300px;
-  // 歌曲评论样式
-.comment
-  display: flex;
-  margin-top: 20px;
-.user__avatar
-  flex: 0 0 50px;
-  width: 50px;
-  height: 50px;
-  margin-right: 20px;
-  border-radius: 8px;
-.user__name
-  font-weight: bolder
-.comment__content
-  flex: 1 1 auto;
-.time__liked-count
-  display: flex;
-  justify-content: space-between;
-  color: $gray;
-.comment__liked-count
-  white-space: nowrap;
-.liked__icon
-  height: 24px;
-  width: 24px;
-  fill: currentColor;
-
-.count
-  display: inline-block;
-  width: 3em;
-  text-align: right;
-.replied
-  background-color: $whitegray3
+  flex: 0 0 234px;
+  min-width: 0;
 // 加载提示样式
 .loading-tips
   text-align: center;
@@ -204,4 +215,72 @@
   font-size: 14px;
   font-weight: bolder;
   margin: 1em auto;
+
+.controls > *:not(:last-child)
+  margin-right: 2em;
+// 相似歌曲
+.simi-item
+  box-sizing: border-box;
+  padding: 0.5em;
+  display: flex;
+  border-radius: 2px;
+  min-width: 0;
+  &:hover
+    background-color: $Alabaster;
+    & .mask-container
+      display: block;
+  .img-container
+    font-size: 0;
+    flex: 0 0 40px;
+    height: 40px;
+    background-color: $secondary;
+    position: relative;
+    margin-right: 8px;
+    border-radius: 2px;
+    overflow: hidden;
+    img
+      width: 100%;
+      height: 100%;
+      
+  .mask-container
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  .mask
+    width: 100%;
+    height: 100%;
+    background-color: $black;
+    opacity: $mask-opacity;
+  .play
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 55%;
+    height: 55%;
+    padding: 7px;
+    box-sizing: border-box;
+    background-color: $primary;
+    border-radius: 50%;
+    opacity: 1;
+    margin: 22.5% 0 0 22.5%;
+
+  .info-container
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    &, & .name, & .artists
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    .name
+      font-size: 100%;
+      font-weight: bolder;
+    .artists
+      font-size: 80%;
+      color: $secondary;
+
 </style>

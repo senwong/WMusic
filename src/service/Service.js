@@ -154,7 +154,13 @@ function search(keywords, type=1, offset=0, limit=30) {
 function searchSuggest(keywords) {
   return Api().get("/search/suggest?keywords=" + keywords)
 }
-
+/**
+ * 获取相似歌曲
+ * @param {Number} songId 
+ */
+function getSimiSongs(songId) {
+  return Api().get("/simi/song?id=" + songId)
+}
 export {
   getBanner,
   getSongURL,
@@ -177,5 +183,6 @@ export {
   getMVrank,
   getLyrics,
   search,
-  searchSuggest
+  searchSuggest,
+  getSimiSongs
 }

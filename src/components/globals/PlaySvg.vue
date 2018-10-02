@@ -1,0 +1,14 @@
+<template>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32" fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+  <path d="M9.07 28 L29.86 16 9.07 4 Z" />
+</svg>
+</template>
+<script>
+export default {
+  name: "PlaySvg"
+}
+</script>
+<style lang="sass" scoped>
+
+</style>
+

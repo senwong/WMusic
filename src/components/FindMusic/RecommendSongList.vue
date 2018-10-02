@@ -19,7 +19,6 @@ export default {
   created() {
     getRecommendSongList().then(res => {
       res = convertToHttps(res)
-      res = JSON.parse(JSON.stringify(res).replace(/\.jpg/g, ".jpg?param=400y400"))
       this.songList = res.data.result;
     })
   }

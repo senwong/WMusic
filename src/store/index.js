@@ -4,7 +4,13 @@ import Artist from "./modules/Artist"
 import Song from "./modules/Song"
 import PlayList from "./modules/PlayList"
 import { getSongDetail, getSongURL, getPlaylistDetail, } from "@/service/Service"
-const defaultplayList = new PlayList([new Song(326703, "艳火", "http://p1.music.126.net/klOSGBRQhevtM6c9RXrM1A==/18808245906527670.jpg", [new Artist(10557, "张悬")], 221866)])
+const defaultplayList = new PlayList([new Song({
+  id: 326703,
+  name: "艳火",
+  imgUrl: "http://p1.music.126.net/klOSGBRQhevtM6c9RXrM1A==/18808245906527670.jpg",
+  artists: [new Artist(10557, "张悬")],
+  duration: 221866,
+})])
 
 Vue.use(Vuex)
 export default new Vuex.Store({
@@ -53,9 +59,17 @@ export default new Vuex.Store({
     newSingleSong(context, songId) {
       Promise.all([getSongDetail(songId) , getSongURL(songId)]).then(([resDetail, resSongUrl]) => {
         const songDetail = resDetail.data.songs[0]
-        const songUrl = resSongUrl.data.data[0].url
+        const songUrl = resSongUrl.data.data[0].url.replace(/http:\/\//g, "https://")
         const artists = songDetail.ar.map(ar => new Artist(ar.id, ar.name))
-        const song = new Song(songDetail.id, songDetail.name, songDetail.al.picUrl, songUrl, artists, songDetail.dt)
+        const song = new Song({
+          id: songDetail.id,
+          name: songDetail.name,
+          imgUrl: songDetail.al.picUrl,
+          songUrl: songUrl,
+          artists: artists,
+          duration: songDetail.dt
+        })
+        // songDetail.id, songDetail.name, songDetail.al.picUrl, songUrl, artists, songDetail.dt
         const playList = new PlayList([song])
         playList.play()
         context.commit("newPlayList", playList)

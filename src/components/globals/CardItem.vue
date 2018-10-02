@@ -21,7 +21,7 @@
         </svg>
       </div>
       <router-link :to= "'/'+cardType +'/'+ card.id" class="item__link">
-        <img :src="card.picUrl" alt="">
+        <img :src="card.picUrl | clipImage(400, 400)" alt="">
       </router-link>
     </div>
     <router-link :to= "'/'+cardType +'/' + card.id" class="list__name">

@@ -28,7 +28,7 @@
         </div>
       </div>
       <router-link :to= "'/mvplay/'+ rankItem.id" class="img-wrapper">
-        <img :src="rankItem.cover" alt="">
+        <img :src="rankItem.cover | clipImage(640, 360)" alt="">
       </router-link>
     </div>
     <div class="media__info">
@@ -60,21 +60,6 @@
 .text-gray
   color: #000;
   opacity: 0.3;
-// .card-container
-//   display: grid;
-//   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-//   gap: 2em;
-//   flex-wrap: wrap
-//   justify-content: space-between;
-
-
-// .rank-container
-//   display: grid;
-//   grid-template-columns: repeat(2, 1fr);
-//   grid-auto-rows: 150px;
-//   gap: 2em;
-//   flex-wrap: wrap
-//   justify-content: space-between;
 .rank-item
   display: flex;
   overflow: hidden;

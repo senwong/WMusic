@@ -118,7 +118,6 @@
         console.log("getPlayList")
         getPlayList(this.selected, this.order, this.offset*20 ).then(res => {
           res = convertToHttps(res)
-          res = JSON.parse(JSON.stringify(res).replace(/\.jpg/g, ".jpg?param=400y400"))
           if(res.data.code == 200) {
             this.total = res.data.total
             this.playlists = res.data.playlists.map(list => {

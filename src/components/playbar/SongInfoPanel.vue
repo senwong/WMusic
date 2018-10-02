@@ -1,7 +1,7 @@
 <template>
 <div class="song-info-panel">
   <div class="album-img">
-    <img :src="albumImg + '?param=200y200'" alt="">
+    <img :src="albumImg | clipImage(200, 200)" alt="">
     <div class="img-mask">
       <button class="button button_icon button_center-center" @click="$emit('toggle-song-player')" :class="{'invert': !isShowSongPlayer}">
         <svg viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="rgba(0, 0, 0, 0.7)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">

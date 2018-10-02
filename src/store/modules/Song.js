@@ -9,14 +9,24 @@ class Song {
    * @param {Artist[]} artists artists fo song
    * @param {Number} duration duration of song
    */
-  constructor(id, name, imgUrl, artists, duration) {
-    this.id = id
-    this.name = name
-    this.imgUrl = imgUrl
+  /*
+  const options = {
+    id: songDetail.id,
+    name: songDetail.name,
+    imgUrl: songDetail.al.picUrl,
+    songUrl: songUrl,
+    artists: artists,
+    duration: songDetail.dt
+  }
+  */
+  constructor(options) {
+    this.id = options.id
+    this.name = options.name
+    this.imgUrl = options.imgUrl
     this.canPlay = true
-    this.artists = artists
-    this.duration = duration
-    this.songUrl = undefined
+    this.artists = options.artists
+    this.duration = options.duration
+    this.songUrl = options.songUrl
     this.init()
   }
   init() {
@@ -32,7 +42,7 @@ class Song {
       this.currentTime = this.audio.currentTime
     })
     this._endCallback = null
-
+    this.songUrl && (this.audio.src = this.songUrl)
     // try {
     //   this.canPlay && (this.audio.src = this.songUrl)
     // } catch(e) {
@@ -59,6 +69,7 @@ class Song {
 
     if (this.isPlaying) return
     this._playPromise = this.audio.play()
+    console.log("play song", this.audio.paused)
     this.isPlaying = true
   }
   pause() {

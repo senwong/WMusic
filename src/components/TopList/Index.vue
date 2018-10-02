@@ -189,7 +189,6 @@ export default {
               coverImgUrl: destination[value].coverImgUrl,
             } = res.data.playlist)
             destination[value].coverImgUrl = destination[value].coverImgUrl.replace(/http:\/\//g, "https://")
-            destination[value].coverImgUrl = destination[value].coverImgUrl.replace(/\.jpg/g, ".jpg?param=300y300")
             destination[value].tracks = res.data.playlist.tracks.slice(0, 5).map(track => {
               return {
                 id: track.id,

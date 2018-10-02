@@ -54,4 +54,19 @@ function optimizedResize() {
   /* init - you can init any event */
   throttle("resize", "optimizedResize")
 }
-export { formatTime,formatDate, warn, formatDay, convertToHttps, optimizedResize }
+/**
+ * 
+ * @param {} target 
+ * @param {*} type 
+ * @param {*} listener 
+ * @param {*} addOptions 
+ * @param {*} removeOptions 
+ */
+function addEventListenerOnce(target, type, listener, addOptions, removeOptions) {
+  target.addEventListener(type, function fn() {
+      target.removeEventListener(type, fn, removeOptions)
+      listener.apply(this, arguments, addOptions)
+  })
+}
+
+export { formatTime,formatDate, warn, formatDay, convertToHttps, optimizedResize, addEventListenerOnce }

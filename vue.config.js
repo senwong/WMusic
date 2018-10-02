@@ -2,11 +2,10 @@ const fs = require("fs")
 const path = require("path")
 const host = "localhost"
 const port = 8085
-
-module.exports =  {
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin")
+module.exports = {
   lintOnSave: false,
   baseUrl: "/",
-
   devServer: {
     port,
     host,
@@ -23,5 +22,22 @@ module.exports =  {
       key: fs.readFileSync(path.resolve("./build/cert/server.key")),
       cert: fs.readFileSync(path.resolve("./build/cert/server.crt")),
     }
+  },
+  configureWebpack: {
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "src"),
+      }
+    },
+    plugins: [
+      new UglifyJsPlugin({
+        uglifyOptions: {      
+          compress: {
+            drop_console: true
+          }
+        }
+      })
+    ]
   }
+
 }

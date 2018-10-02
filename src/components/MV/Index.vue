@@ -49,7 +49,6 @@
           this.newMVList = res.data.data
           this.newMVList.forEach(mv => {
             mv.cover = mv.cover.replace(/http:\/\//g, "https://")
-            mv.cover = mv.cover.replace(/\.jpg/g, ".jpg?param=640y360")
           })
         } else {
           console.warn("获取最新MV数据错误" + res.data)
@@ -62,7 +61,6 @@
           this.MVrankList = res.data.data
           this.MVrankList.forEach(mv => {
             mv.cover = mv.cover.replace(/http:\/\//g, "https://")
-            mv.cover = mv.cover.replace(/\.jpg/g, ".jpg?param=640y360")
           })
         } else {
           console.warn("获取MV排行榜数据错误" + res.data)

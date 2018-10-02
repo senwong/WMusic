@@ -3,7 +3,7 @@
     <div class="img-wrapper left">
       <img :src="leftImg.src" alt="">
     </div>
-    <div class="img-wrapper middle" @click="playSong">
+    <div class="img-wrapper middle" @click="handleBannerClick">
       <img :src="middleImg.src" alt="">
     </div>
     <div class="img-wrapper right">
@@ -30,8 +30,14 @@
   </div>
 </template>
 <script>
-import { getBanner } from '../../service/Service.js'
-import {convertToHttps} from '@/utilitys'
+  import { getBanner } from '../../service/Service.js'
+  import {convertToHttps} from '@/utilitys'
+  const targetType = {
+    "3000": "url",
+    "1000": "playlist",
+    "10": "album",
+    "1": "song"
+  };
   export default {
      data() {
        return {
@@ -46,7 +52,13 @@ import {convertToHttps} from '@/utilitys'
         res = convertToHttps(res)
         let uid = 1;
         res.data.banners.forEach(banner => {
-          this.imgs.push({id: uid, src: banner.picUrl, url: banner.url});
+          this.imgs.push({
+            id: uid,
+            src: banner.picUrl,
+            url: banner.url,
+            targetId: banner.targetId,
+            targetType: banner.targetType
+          });
           uid++;
           // 下载图片
           var img = document.createElement('img');
@@ -76,13 +88,22 @@ import {convertToHttps} from '@/utilitys'
         this.middleImg = this.leftImg;
         this.leftImg = this.getPrevious(this.leftImg.id);
       },
-      playSong() {
-        const songIdReg = /song\?id=[0-9]+/;
-        if(songIdReg.test(this.middleImg.url)) {
-          const songId = this.middleImg.url.match(/[0-9]+/)[0];
-          this.$store.dispatch('newSingleSong', songId)
-        } else {
-          window.open(this.middleImg.url);
+      handleBannerClick() {
+        switch (this.middleImg.targetType) {
+          case "3000":
+            window.open(this.middleImg.url);
+            break;
+          case "1000":
+            this.middleImg.targetId && this.$router.push({ path: `/playlist/${this.middleImg.targetId}` });
+            break;
+          case "10":
+            this.middleImg.targetId && this.$router.push({ path: `/album/${this.middleImg.targetId}` });
+            break;
+          case "1":
+            this.middleImg.targetId && this.$router.push({ path: `/song/${this.middleImg.targetId}` });
+            break;
+          default:
+            console.log("error banner type", this.middleImg)
         }
       }
     }

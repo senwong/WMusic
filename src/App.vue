@@ -46,7 +46,7 @@ export default {
 
     scrollToTop() {
       if(!this.$el) return
-      const el = this.$el.querySelector(".container__main")
+      const el = document.scrollingElement
       if(!el) return
       const duration = 0.6, distance = el.scrollTop, step = Math.floor(distance / (60 * duration));
       function s() {
@@ -61,11 +61,19 @@ export default {
   mounted() {
     this.rightMenu = this.$el.querySelector(".right-menu");
     this.$el.querySelector(".container__main").addEventListener("scroll", e => {
+      console.log("scroll")
       const isScrollBottom = e.target.scrollTop + e.target.offsetHeight === e.target.scrollHeight
       if (isScrollBottom !== this.$store.state.isScrollBottom) {
         this.$store.commit('changeScroll', isScrollBottom)
       }
       this.isScrolled = e.target.scrollTop > 0
+    })
+    document.addEventListener("scroll", e => {
+      const isScrollBottom =  document.scrollingElement.scrollTop + document.scrollingElement.clientHeight === document.scrollingElement.scrollHeight
+      if (isScrollBottom !== this.$store.state.isScrollBottom) {
+        this.$store.commit('changeScroll', isScrollBottom)
+      }
+      this.isScrolled = document.scrollingElement.scrollTop > 0
     })
   },
 }
@@ -74,6 +82,7 @@ export default {
 <style lang="sass">
 @import "@/style/reset.sass";
 @import "@/style/global.sass";
+@import "@/style/colors.sass";
 </style>
 
 <style lang="sass" scoped>
@@ -90,27 +99,29 @@ export default {
   margin: auto;
   width: 100%;
   height: 100%;
-  display: flex;
   position: relative;
   overflow: hidden;
 // 侧边栏样式
 .container__aside
   background-color: $whitegray2;
-  flex: 0 0 250px;
-  z-index: 1;
+  position: fixed;
+  width: 250px;
   height: calc(100% - #{$footerHeight});
+  z-index: 1;
   box-sizing: border-box;
   overflow-y: scroll;
   overscroll-behavior-y: auto;
+  box-sizing: border-box;
 
 .container__main
-  flex: 1 1 auto;
   overflow: hidden;
   height: calc(100% - #{$footerHeight});
   box-sizing: border-box;
   z-index: 2;
+  margin-left: 250px;
+  padding-bottom: $footerHeight;
 .container__footer
-  position: absolute;
+  position: fixed;
   height: $footerHeight;
   bottom: 0;
   left: 0;
@@ -120,13 +131,13 @@ export default {
   font-size: 16px;
 // 右边弹出菜单
 .right-menu
-  position: absolute;
+  position: fixed;
   top: 0;
   height: calc(100% - #{$footerHeight});
   overflow: hidden;
   width: 300px;
   right: -300px;
-  transition: right 0.3s linear;
+  transition: right 0.2s linear;
   z-index: 3;
 
 .right-menu_show

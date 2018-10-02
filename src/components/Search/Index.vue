@@ -21,7 +21,7 @@
           <ul>
             <li v-for="artist in searchArtists" :key="artist.key" class="artist-item-search">
               <router-link :to="'/artist/' + artist.id" class="artist-pic-search">
-                <img :src="artist.picUrl + '?param=200y200'" :alt="artist.name">
+                <img :src="artist.picUrl | clipImage(200, 200)" :alt="artist.name">
               </router-link>
               <router-link :to="'/artist/' + artist.id" class="artis-name-search">
                 <span>{{artist.name}}</span><span v-if="artist.trans">({{artist.trans}})</span>
@@ -34,7 +34,7 @@
           <ul>
             <li v-for="album in searchAlbums" :key="album.key" class="album-item-search">
               <router-link :to="'/album/' + album.id" class="album-pic-search">
-                <img :src="album.picUrl + '?param=200y200'" :alt="album.name">
+                <img :src="album.picUrl | clipImage(200, 200)" :alt="album.name">
               </router-link>
               <div class="album-name-search">
                 <router-link :to="'/album/' + album.id">
@@ -55,7 +55,7 @@
             v-for="mv in searchMvs"
             :key="mv.id"
             :link = "'/mvplay/' + mv.id"
-            :picUrl = "mv.cover + '?param=640y360'"
+            :picUrl = "mv.cover | clipImage(640, 360)"
             :title = mv.name
             :subTitles = getMvSubTitles(mv)
             :subLinks = getMvSubLinks(mv)
@@ -67,7 +67,7 @@
           <ul>
             <li v-for="playlist in searchPlaylists" :key="playlist.key" class="playlist-item-search">
               <router-link :to="'/playlist/' + playlist.id" class="playlist-pic-search">
-                <img :src="playlist.coverImgUrl + '?param=200y200'" :alt="playlist.name">
+                <img :src="playlist.coverImgUrl | clipImage(200, 200)" :alt="playlist.name">
               </router-link>
               <div class="playlist-name-search">
                 <router-link :to="'/playlist/' + playlist.id">
@@ -109,7 +109,7 @@
             v-for="djRadio in searchDjRadios"
             :key="djRadio.id"
             :link = "'/djradio/' + djRadio.id"
-            :picUrl = "djRadio.picUrl + '?param=320y320'"
+            :picUrl = "djRadio.picUrl | clipImage(320, 320)"
             :title = djRadio.name
             :subTitles = getDjSubTitles(djRadio)
             :subLinks = getDjSubLinks(djRadio)
@@ -121,7 +121,7 @@
           <ul>
             <li v-for="user in searchUsers" :key="user.id" class="user-item-search">
               <router-link :to="'/user/' + user.id" class="user-pic-search">
-                <img :src="user.avatarUrl + '?param=200y200'" :alt="user.name">
+                <img :src="user.avatarUrl | clipImage(200, 200)" :alt="user.name">
               </router-link>
               <router-link :to="'/user/' + user.id" class="user-name-search">
                 <span>{{user.nickname}}</span>
@@ -169,7 +169,7 @@
               v-for="artist in artists"
               :key="artist.id"
               :link = "'/artist/' + artist.id"
-              :picUrl = "artist.img1v1Url + '?param=400y400'"
+              :picUrl = "artist.img1v1Url | clipImage(400, 400)"
               :title = artist.name
               shape = "round"
               ></card-item>
@@ -181,7 +181,7 @@
               v-for="playlist in playlists"
               :key="playlist.id"
               :link = "'/playlist/' + playlist.id"
-              :picUrl = "playlist.coverImgUrl + '?param=400y400'"
+              :picUrl = "playlist.coverImgUrl | clipImage(400, 400)"
               :title = playlist.name
               shape = "square"
               ></card-item>
@@ -193,7 +193,7 @@
               v-for="mv in mvs"
               :key="mv.id"
               :link = "'/mvplay/' + mv.id"
-              :picUrl = "mv.cover + '?param=640y360'"
+              :picUrl = "mv.cover | clipImage(640, 360)"
               :title = mv.name
               :subTitles = getMvSubTitles(mv)
               :subLinks = getMvSubLinks(mv)
