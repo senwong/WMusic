@@ -110,7 +110,7 @@ export default {
   z-index: 1;
   box-sizing: border-box;
   overflow-y: scroll;
-  overscroll-behavior-y: auto;
+  overscroll-behavior: contain;
   box-sizing: border-box;
 
 .container__main
