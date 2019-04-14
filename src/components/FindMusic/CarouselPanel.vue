@@ -20,14 +20,10 @@
       </template>
     </Motion>
     <div class="button button_left" @click="leftClick">
-      <svg class="i-chevron-left" viewBox="0 0 32 32" width="64" height="64" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-        <path d="M20 30 L8 16 20 2"></path>
-      </svg>
+      <ScaleableButton position="left" />
     </div>
     <div class="button button_right" @click="rightClick">
-      <svg class="i-chevron-right" viewBox="0 0 32 32" width="64" height="64" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-        <path d="M12 30 L24 16 12 2"></path>
-      </svg>
+      <ScaleableButton position="right" />
     </div>
     <div class="spot-wrapper">
       <div 
@@ -43,6 +39,7 @@
   import { getBanner } from '../../service/Service.js'
   import {convertToHttps} from '@/utilitys'
   import { Motion } from "vue-motion";
+  import ScaleableButton from './ScaleableButton.vue';
 
   const targetType = {
     "3000": "url",
@@ -77,7 +74,8 @@ export default {
     };
   },
   components: {
-    Motion
+    Motion,
+    ScaleableButton,
   },
   created() {
     getBanner().then(res => {
@@ -246,16 +244,9 @@ export default {
 
 .button
   position: absolute;
-  display: flex;
-  align-items: center;
   top: 0;
   height: 100%;
-  padding: 0 10px;
-  color: white;
-  background-color: transparent;
   z-index: 1;
-  svg:hover
-    transform: scale(1.2);
 .button_left
   left: 0;
 .button_right
