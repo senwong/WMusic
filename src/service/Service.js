@@ -10,7 +10,7 @@ function getBanner() {
  * @param {Number} songId 歌曲ID
  */
 function getSongURL(songId) {
-  return Api().get("music/url?id=" + songId)
+  return Api().get("song/url?id=" + songId)
 }
 /**
  * 获取歌曲信息

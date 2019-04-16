@@ -1,15 +1,12 @@
 <template>
 <div class="page-container">
-  <navbar-component class="container__aside"></navbar-component>
+  <navbar-component class="container__aside" />
   <main class="container__main">
-    <router-view :key="$route.path"></router-view>
+    <router-view :key="$route.path" />
   </main>
-  <playbar-component
-    class="container__footer"
-    @toggle-right-menu="toggleRightMenu"
-  ></playbar-component>
+  <playbar-component class="container__footer" />
   <!-- 右边弹出菜单 -->
-  <play-list-component :songs="songs" class="right-menu"></play-list-component>
+  <play-list-component v-if="rightPlaylistVisible" class="right-menu" />
 
   <!-- 滚动页面返回顶部按钮 -->
   <transition name="fade">
@@ -35,13 +32,18 @@ export default {
   },
   data() {
     return {
-      songs: [],
       isScrolled: false,
     }
   },
+  computed: {
+    rightPlaylistVisible() {
+      return this.$store.state.rightPlaylistVisible;
+    },
+  },
   methods: {
     toggleRightMenu() {
-      this.rightMenu && this.rightMenu.classList.toggle("right-menu_show")
+      // this.rightMenu && this.rightMenu.classList.toggle("right-menu_show")
+      // this.rightPlayListVisible = !this.rightPlayListVisible;
     },
 
     scrollToTop() {
@@ -112,6 +114,10 @@ export default {
   overflow-y: scroll;
   overscroll-behavior: contain;
   box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar
+    display: none;
 
 .container__main
   overflow: hidden;
@@ -136,7 +142,7 @@ export default {
   height: calc(100% - #{$footerHeight});
   overflow: hidden;
   width: 300px;
-  right: -300px;
+  right: 0;
   transition: right 0.2s linear;
   z-index: 3;
 

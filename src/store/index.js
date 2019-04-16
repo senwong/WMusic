@@ -17,7 +17,8 @@ export default new Vuex.Store({
   state: {
     isLogin: false,
     playList: defaultplayList,
-    isScrollBottom: false
+    isScrollBottom: false,
+    rightPlaylistVisible: false,
   },
   mutations: {
     newPlayList(state, playList) {
@@ -28,25 +29,35 @@ export default new Vuex.Store({
     },
     changeScroll(state, isScrollBottom) {
       state.isScrollBottom = isScrollBottom
-    }
+    },
+    toggleRightPlaylist(state) {
+      console.log('mutations toggleRightPlaylist');
+      state.rightPlaylistVisible = !state.rightPlaylistVisible;
+    },
   },
   actions: {
     // 播放一个列表的歌曲，可以是歌单或者专辑
     newPlayList(context, {type, id, songId, isPlay}) {
       if(type == "PLAYLIST") {
-        const isSameSong = context.state.playList.currentSongId == songId
-        const isSamePlaylist = context.state.playList.id == id
-        if (isSameSong && isSamePlaylist) return
+        const isSameSong = context.state.playList.currentSongId == songId;
+        const isSamePlaylist = context.state.playList.id == id;
+        if (isSameSong && isSamePlaylist) return;
         if (isSamePlaylist) {
           console.log("song id ", songId)
           context.state.playList.play(songId)
-          return
+          return;
         }
         getPlaylistDetail(id).then(res => {
           const tracks = res.data.playlist.tracks
           const songs = tracks.map(track => {
-            const artists = track.ar.map(ar => new Artist(ar.id, ar.name))
-            return new Song(track.id, track.name, track.al.picUrl, artists, track.dt)
+            const artists = track.ar.map(ar => new Artist(ar.id, ar.name));
+            return new Song({
+              id: track.id,
+              name: track.name,
+              imgUrl: track.al.picUrl,
+              artists,
+              duration: track.dt,
+            });
           })
           context.commit("newPlayList", new PlayList(songs, id, songId))
           if (isPlay) context.state.playList.play()
@@ -91,7 +102,13 @@ export default new Vuex.Store({
         if(res.status == 200) {
           const songDetail = res.data.songs[0]
           const artists = songDetail.ar.map(ar => new Artist(ar.id, ar.name))
-          const newSong = new Song(songId, songDetail.name, songDetail.al.picUrl, artists, songDetail.dt)
+          const newSong = new Song({
+            id: songId,
+            name: songDetail.name,
+            imgUrl: songDetail.al.picUrl,
+            artists,
+            duration: songDetail.dt,
+          });
           context.commit("newPlayList", context.state.playList.addToCurrentNext(newSong))
           return
         }
@@ -109,7 +126,13 @@ export default new Vuex.Store({
           const tracks = res.data.playlist.tracks
           const songs = tracks.map(track => {
             const artists = track.ar.map(ar => new Artist(ar.id, ar.name))
-            return new Song(track.id, track.name, track.al.picUrl, artists, track.dt)
+            return new Song({
+              id: track.id,
+              name: track.name,
+              imgUrl: track.al.picUrl,
+              artists,
+              duration: track.dt,
+            });
           })
           context.commit("newPlayList", new PlayList(songs, id))
           context.state.playList.play()
@@ -134,7 +157,13 @@ export default new Vuex.Store({
           res.data.playlist.tracks.forEach(track => {
             if (!context.state.playList.contains(track.id)) {
               const artists = track.ar.map(ar => new Artist(ar.id, ar.name))
-              context.state.playList.push(new Song(track.id, track.name, track.al.picUrl, artists, track.dt))
+              context.state.playList.push(new Song({
+                id: track.id,
+                name: track.name,
+                imgUrl: track.al.picUrl,
+                artists,
+                duration: track.dt,
+              }));
             }
           })
         })

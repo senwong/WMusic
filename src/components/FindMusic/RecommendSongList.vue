@@ -1,7 +1,7 @@
 <template>
 <div>
   <h1>推荐歌单</h1>
-  <song-cards :cardLists="songList" :cardType="'playlist'"></song-cards>
+  <song-cards :cardLists="songList" :cardType="'PLAYLIST'"></song-cards>
 </div>
 </template>
 <script>

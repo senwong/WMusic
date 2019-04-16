@@ -30,7 +30,7 @@ class Song {
     this.init()
   }
   init() {
-    this.imgUrl = this.imgUrl.replace("http", "https")
+    this.imgUrl = this.imgUrl && this.imgUrl.replace("http", "https");
 
     this.audio = new Audio()
     this.audio.addEventListener("error", e => {

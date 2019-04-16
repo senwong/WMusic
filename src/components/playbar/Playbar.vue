@@ -41,13 +41,11 @@
     <!-- 右边区域 开始-->
     <sound-panel
       class="playbar__item_right "
-      @toggle-right-menu="$emit('toggle-right-menu')"
       @volume-change="changeVolume"
     ></sound-panel>
     <!-- 右边区域 结束-->
     <div class="progress-bar">
-      <div class="progress__past" :style="{ width: progressPercent}"></div>
-      <div class="progress__state" :style="{ left: progressPercent}">{{formatTime(currentSong.currentTime * 1000) + '/' +formatTime(currentSong.duration)}}</div>
+      <ProgressBar :song="currentSong" />
     </div>
   </div>
   <transition name="slide-up">
@@ -61,11 +59,12 @@ import SoundPanel from './SoundPanel.vue';
 import { getSongDetail, getSongURL, getPlaylistDetail, } from '@/service/Service';
 import { formatTime } from '@/utilitys';
 import SongPlayer from './SongPlayer.vue';
+import ProgressBar from './ProgressBar';
 
 export default {
   name: "Playbar",
   components: {
-    SongInfoPanel, SoundPanel, SongPlayer
+    SongInfoPanel, SoundPanel, SongPlayer, ProgressBar
   },
   data() {
     return {
@@ -80,7 +79,6 @@ export default {
       } else {
         this.playList.play();
       }
-
     },
     changeVolume(volume) {
       this.playList.changeVolume(volume);
@@ -105,7 +103,12 @@ export default {
     },
     toggleSongPlayer() {
       this.isShowSongPlayer= !this.isShowSongPlayer
-    }
+    },
+    animateProgressBar() {
+      window.requestAnimationFrame(() => {
+
+      });
+    },
   },
   computed: {
     playList() {
@@ -116,9 +119,9 @@ export default {
     },
     progressPercent() {
       if(!this.currentSong.currentTime || !this.currentSong.duration) {
-        return '0%';
+        return 0;
       }
-      return (100 * this.currentSong.currentTime * 1000 / this.currentSong.duration).toFixed(2) + '%'
+      return (this.currentSong.currentTime * 1000 / this.currentSong.duration).toFixed(2);
     },
   },
   mounted() {
@@ -201,6 +204,7 @@ export default {
   border-radius: 1em;
   display: inline-block;
   padding: 0.2em 0.5em;
+  min-width: 5.5em;
 
 .button
   background-color: transparent;
