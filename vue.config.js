@@ -5,7 +5,7 @@ const port = 8085
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 module.exports = {
   lintOnSave: false,
-  baseUrl: "/",
+  publicPath: "/",
   devServer: {
     port,
     host,
