@@ -83,7 +83,7 @@
     },
     watch: {
       target: function() {
-        this.isShow =false;
+        this.isShow = false;
         this.registerClick();
         this.calcPosition();
       }

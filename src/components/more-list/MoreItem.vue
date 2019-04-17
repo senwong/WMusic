@@ -51,6 +51,7 @@
   // padding: 6px;
   overflow: visible;
   border-radius: inherit;
+  cursor: pointer;
   &:hover
     .item-wrapper
       background-color: $orange;
@@ -70,6 +71,8 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    .icon
+      margin-right: 6px;
   .item__right
     width: 16px;
     height: 16px;
@@ -81,6 +84,8 @@
     *
       width: 100%;
       height: 100%;
+  .txt
+    white-space: nowrap;
 .spread-list
   display: none;
   position: absolute;

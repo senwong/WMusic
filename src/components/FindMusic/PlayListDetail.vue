@@ -10,7 +10,7 @@
             <li class="tag">#{{tags.join("  #")}}</li>
           </ul>
           <div>
-            <button @click="playAllList({type: 'PLAYLIST', id: playlistId})">全部播放</button>
+            <button @click="handlePlayAll">全部播放</button>
             <button>收藏</button>
             <button>全部下载</button>
             <button>more</button>
@@ -25,7 +25,7 @@
   import { getPlaylistDetail } from '../../service/Service';
   import { formatTime, convertToHttps } from '@/utilitys';
   import SongList from './SongList';
-  import { mapActions } from 'vuex'
+  import { mapMutations } from 'vuex'
   export default {
     data() {
       return {
@@ -48,25 +48,32 @@
     },
     created() {
       this.playlistId = this.$route.params.id;
-      getPlaylistDetail(this.playlistId).then(res => {
-        res = convertToHttps(res)
-        if (res.data.code !== 200) {
-          console.warn("获取歌单信息错误：" +res.data)
-          return
-        }
-        ({ name:this.name,
-          coverImgUrl: this.coverImgUrl,
-          creator: this.creator,
-          updateTime: this.updateTime,
-          tags: this.tags,
-          } = res.data.playlist);
-        this.tracks = res.data.playlist.tracks.filter(t => t.ar.map(ar => ar.id).findIndex( e => e==0) == -1);
-      })
+      getPlaylistDetail(this.playlistId).then(
+        res => {
+          ({ name:this.name,
+            coverImgUrl: this.coverImgUrl,
+            creator: this.creator,
+            updateTime: this.updateTime,
+            tags: this.tags,
+            } = res.data.playlist);
+          this.tracks = res.data.playlist.tracks.filter(t => t.ar.every(ar => ar.id != 0));
+        },
+        error => alert('getPlaylistDetail error: ' + error)
+      );
     },
     components: {SongList,},
     methods: {
-      ...mapActions([
-        'playAllList',
+      handlePlayAll() {
+        if (this.tracks) {
+          this.setTracks(this.tracks);
+          if (this.tracks && this.tracks[0] && this.tracks[0].id) {
+            this.setCurrentSongId(this.tracks[0].id);
+          }
+        }
+      },
+      ...mapMutations('playlist', [
+        'setTracks',
+        'setCurrentSongId',
       ])
     }
   }

@@ -2,7 +2,7 @@
 <div class="sound-panel">
   <!-- 打开/关闭音量 -->
   <button
-    class="button button_icon mute-volume"
+    class="button_icon large mute-volume"
     @click="toggleVolume"
     >
     <svg v-if="isVolume" class="i-volume" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
@@ -16,21 +16,21 @@
   <input class="volume__setter" v-model="volume" type="range" :min="MINVOLUME" :max="MAXVOLUME">
   <!-- 播放循环模式 -->
   <button
-    class="button button_icon play-mode"
-    @click="togglePlayMode"
+    class="button_icon large play-mode"
+    @click=" $emit('changeMode')"
     >
-    <svg v-if="playList.playMode===PLAYMODES.loop" class="i-loop" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <svg v-if="currentMode === PLAYMODES.LOOP" class="i-loop" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
       <path d="M8 4 H 20 C 28 4, 28 4, 28 12 V 24 L 24 20 M28 24 L32 20 M24 28 H12 C4 28, 4 28, 4 20 V8 L0 12 M4 8 L8 12"></path>
     </svg>
-    <svg v-if="playList.playMode===PLAYMODES.oneLoop" class="i-one-cycle" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <svg v-if="currentMode === PLAYMODES.ONE_LOOP" class="i-one-cycle" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
       <path d="M8 4 H 20 C 28 4, 28 4, 28 12 V 24 L 24 20 M28 24 L32 20 M24 28 H12 C4 28, 4 28, 4 20 V8 L0 12 M4 8 L8 12 M16 12 V20"></path>
     </svg>
-    <svg v-if="playList.playMode===PLAYMODES.shuffle" class="i-shuffle" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+    <svg v-if="currentMode === PLAYMODES.SHUFFLE" class="i-shuffle" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
       <path d="M4 4 L12 12 M20 20 L28 28 V22 M28 28 H22 M4 28 L28 4 H22 M28 4 V10"></path>
     </svg>
   </button>
   <!-- 音效调节 -->
-  <button class="button button_icon sound-effect" :class="{'sound-effect-active': isEffect}">
+  <button class="button_icon large sound-effect" :class="{'sound-effect-active': isEffect}">
     <svg class="i-options" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
         <path d="M28 6 L4 6 M28 16 L4 16 M28 26 L4 26 M24 3 L24 9 M8 13 L8 19 M20 23 L20 29"></path>
     </svg>
@@ -53,7 +53,7 @@
   </popup-menu>
   <!-- 播放列表 -->
   <button
-    class="button button_icon play-list"
+    class="button_icon large play-list"
     @click="toggleRightPlaylist"
     >
     <svg class="i-menu" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
@@ -66,7 +66,8 @@
 import PopupMenu from '../PopupMenu.vue';
 import SelectList from '../more-list/SelectList.vue';
 import AwesomeButton from '../AwesomeButton.vue';
-import { PLAYMODES } from "@/config";
+import PLAYMODES from './PLAYMODES'
+
 
 export default {
   name: "SoundPanel",
@@ -93,9 +94,10 @@ export default {
       ],
       currentEffect: 1,
       isEffect: false,
-      PLAYMODES: PLAYMODES,
+      PLAYMODES,
     }
   },
+  props: [ 'currentMode' ],
   methods: {
     toggleVolume() {
       if (this.volume > this.MINVOLUME) {
@@ -104,16 +106,6 @@ export default {
       } else {
         this.volume = this.oldVolume;
       }
-    },
-    togglePlayMode() {
-      const playModeValues = Object.values(PLAYMODES);
-      let currentIndex = playModeValues.findIndex(mode => mode === this.playList.playMode);
-      if(currentIndex === playModeValues.length - 1) {
-        currentIndex = 0;
-      } else {
-        currentIndex++;
-      }
-      this.$store.commit("changePlayMode", playModeValues[currentIndex])
     },
     toggleEffect() {
       this.isEffect = !this.isEffect;
@@ -130,7 +122,7 @@ export default {
   watch: {
     volume: function(newVal, oldVal) {
       this.isVolume = newVal > this.MINVOLUME ? true : false;
-      this.$emit('volume-change', newVal);
+      this.$emit('changeVolume', newVal / 100);
     },
   },
   mounted() {
@@ -169,17 +161,6 @@ export default {
   margin-right: 1.4em;
 .sound-effect-active
   color: $orange;
-
-.button
-  background-color: transparent;
-  &:focus, &:hover
-    outline: none;
-.button_icon
-  border: none;
-  font-size: inherit;
-  width: 2em;
-  height: 2em;
-  padding: 0;
 
 .volume__setter
   -webkit-appearance: none;

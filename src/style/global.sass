@@ -2,3 +2,23 @@
   height: 100%;
   padding: 1em 2em;
   box-sizing: border-box;
+
+.scrollbar-invisible
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar
+    display: none;
+
+.button_icon
+  border: none;
+  font-size: inherit;
+  padding: 0;
+  cursor: pointer;
+  background-color: transparent;
+  display: flex;
+  color: inherit;
+  &:focus, &:hover
+    outline: none;
+  &.large
+    width: 2em;
+    height: 2em;

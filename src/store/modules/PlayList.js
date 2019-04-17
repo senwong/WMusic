@@ -1,116 +1,92 @@
-import { PLAYMODES } from "@/config"
-import Song from "./Song"
+import { getPlaylistDetail, getAlbumDetail } from "@/service/Service";
 
-class PlayList {
-  constructor(songs, id, currentSongId) {
-    this.songs = songs
-    this.id = id
-    this.playMode = PLAYMODES.loop
-    if (currentSongId !== undefined) {
-      this.currentSongId = currentSongId
-    } else {
-      this.currentSongId = songs.length > 0 ? songs[0].id : undefined  
+const state = {
+  currentSongId: null,
+  tracks: [],
+};
+const getters = {
+  trackCount: state => state.tracks.length,
+  trackIds: state => state.tracks.map(o => o.id),
+};
+const mutations = {
+  setTracks(state, tracks) {
+    state.tracks = tracks;
+  },
+  setCurrentSongId(state, id) {
+    state.currentSongId = id;
+  },
+  // 下一首播放
+  /*
+    if track exists in state.tracks
+      if track.id equal to currentSongId
+        return
+      else
+        currentSongIdx = state.tracks.findIndex(t => t.id == state.currentSongId);
+        const trackIdx = state.tracks.findIndex(t => t.id == track.id);
+        if currentSongIdx is last
+          const newTracks = state.tracks.slice().splice(trackIdx, 1).push(track);
+        else
+          const newTracks = state.tracks.slice();
+          const t = newTracks[trackIdx];
+          newTracks[trackIdx] = newTracks[currentSongIdx+1];
+          newTracks[currentSongIdx+1] = t;
+    else
+        currentSongIdx = state.tracks.findIndex(t => t.id == state.currentSongId);
+        const front = state.tracks.slice(0, currentSongIdx + 1);
+        const rear = state.tracks.slice(currentSongIdx + 1);
+        front.push(track);
+        state.tracks = front.concat(rear);
+  */
+  addToNext(state, track) {
+    if (state.tracks.length == 0) {
+      state.tracks = [track];
+      state.currentSongId = track.id;
+      return;
     }
-    // this.play()
-  }
-  play(songId) {
-    if (songId !== undefined) this.setCurrentSong(songId)
-    let currentSong = this.getCurrentSong()
-    if (!currentSong) return
-    currentSong.play()
-    currentSong.onended(this.next.bind(this))
-  }
-  pause() {
-    this.getCurrentSong().pause()
-  }
-  next() {
-    let index = this.songs.findIndex(s => s.id === this.currentSongId)
-    this.songs[index].end()
-    if (this.playMode === PLAYMODES.loop) {
-      index = index < this.songs.length - 1 ? index + 1 : 0
-    }
-    if (this.playMode === PLAYMODES.shuffle) {
-      index = Math.floor(Math.random() * this.songs.length)
-    }
-    console.log("index: ", index)
-    this.currentSongId = this.songs[index].id
-    this.play()
-  }
-  prev() {
-    let index = this.songs.findIndex(s => s.id === this.currentSongId)
-    this.songs[index].end()
-    if (this.playMode === PLAYMODES.loop) {
-      index = index > 0 ? index - 1 : this.songs.length - 1
-    }
-    if (this.playMode === PLAYMODES.shuffle) {
-      index = Math.floor(Math.random() * this.songs.length)
-    }
-    this.currentSongId = this.songs[index].id
-    this.play()
-  }
-  empty() {
-    this.songs = []
-    this.currentSongId = undefined
-  }
-  addSong(song) {
-    this.songs.push(song)
-  }
-  changeVolume(volume) {
-    this.songs.find(s => s.id === this.currentSongId).changeVolume(volume)
-  }
-  changePlayMode(newMode) {
-    if(!Object.values(PLAYMODES).contains(newMode)) console.warn("new mode" + newMode + "isn't one of formal modes "+Object.values(PLAYMODES))
-  }
-  getCurrentSong() {
-    if(this.songs.length < 1) return false
-    if (this.currentSongId == undefined) this.currentSongId = this.songs[0].id
-    return this.songs.find(s => s.id === this.currentSongId)
-  }
-  setCurrentSong(songId) {
-    if (songId == this.currentSongId || !this.songs.map(s => s.id).includes(songId)) return
-    let currentSong = this.getCurrentSong()
-    if (currentSong && currentSong.isPlaying) {
-      currentSong.end()
-    }
-    this.currentSongId = songId
-  }
-  remove(songId) {
-    const index = this.songs.findIndex(s => s.id === songId)
-    if (songId == this.currentSongId) {
-      if (this.songs.length == 1) {
-        this.currentSongId = undefined
-      } else if (index == this.songs.length - 1) {
-        this.currentSongId = 0
-      } else {
-        this.currentSongId = this.songs[index + 1].id
+    const trackIdx = state.tracks.findIndex(t => t.id == track.id);
+    const currentSongIdx = state.tracks.findIndex(t => t.id === state.currentSongId);
+    if (trackIdx > -1) {
+      if (state.currentSongId != track.id) {
+        if (currentSongIdx == state.tracks.length - 1) {
+          const newTracks = state.tracks.slice().splice(trackIdx, 1).push(track);
+          state.tracks = newTracks;
+          return;
+        } else {
+          const newTracks = state.tracks.slice();
+          const t = newTracks[trackIdx];
+          newTracks[trackIdx] = newTracks[currentSongIdx+1];
+          newTracks[currentSongIdx+1] = t;
+          state.tracks = newTracks;
+          return;
+        }
       }
+    } else {
+      const front = state.tracks.slice(0, currentSongIdx + 1);
+      const rear = state.tracks.slice(currentSongIdx + 1);
+      front.push(track);
+      state.tracks = front.concat(rear);
     }
-    this.songs.splice(index, 1)
-  }
-  getSong(songId) {
-    return this.songs.find(s => s.id === songId)
-  }
-  removeSong(songId) {
-    const index = this.songs.findIndex(e => e.id == songId)
-    return this.songs.splice(index, 1)
-  }
-  addToCurrentNext(song) {
-    const index = this.songs.findIndex(e => e.id == this.currentSongId)
-    this.songs.splice(index + 1, 0, song)
-    return this
-  }
-  contains(songId) {
-    return this.songs.findIndex(e => e.id == songId) > -1
-  }
-  getFirstSongId() {
-    return this.songs[0].id
-  }
-  push(song) {
-    if (song instanceof Song) {
-      this.songs.push(song)
-      return
-    }
-    console.warn("添加的歌曲必须是Song实例： ", song)
-  }
+  },
 }
-export default PlayList
+
+// const actions = {
+//   set({ state, commit }, playlistId, selectedSongId) {
+//     if (selectedSongId) 
+//     getPlaylistDetail(playlistId).then(
+//       res => {
+//         commit('set', res.data.playlist.tracks);
+//         commit('setCurrentSongId', typeof selectedSongId === 'undefined'
+//           ? res.data.playlist.trackIds[0].id
+//           : selectedSongId);
+//       },
+//       error => alert('getPlaylistDetail error ' + error)
+//     );
+//   },
+// }
+
+export default {
+  namespaced: true,
+  state,
+  getters,
+  mutations,
+};

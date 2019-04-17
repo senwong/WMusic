@@ -8,7 +8,7 @@
       <div class="media__right">
         <div class="media__heading">{{album.name}}</div>
         <div>
-          <button>播放</button>
+          <button @click="playAll">播放</button>
           <button>收藏</button>
           <button>歌词</button>
           <button>more</button>
@@ -22,6 +22,7 @@
 <script>
   import {getAlbumDetail} from '../../service/Service';
   import SongList from './SongList';
+  import { mapMutations } from 'vuex';
 
   export default {
     name: "AlbumDetail",
@@ -31,13 +32,26 @@
         songs: [],
       }
     },
+    methods: {
+      playAll() {
+        if (!this.songs) return;
+        this.setTracks(this.songs);
+        this.setCurrentSongId(this.songs[0].id);
+      },
+      ...mapMutations('playlist', [
+        'setTracks',
+        'setCurrentSongId',
+      ]),
+    },
     created() {
       const albumId = this.$route.params.id;
-      getAlbumDetail(albumId).then(res => {
-        console.log("album: ", res.data);
-        this.album = res.data.album;
-        this.songs = res.data.songs;
-      })
+      getAlbumDetail(albumId).then(
+        res => {
+          this.album = res.data.album;
+          this.songs = res.data.songs;
+        },
+        error => alert('getAlbumDetail' + error)
+      );
     },
     components: { SongList }
   }

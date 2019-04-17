@@ -1,6 +1,6 @@
 <template>
 <div class="page-container">
-  <navbar-component class="container__aside" />
+  <navbar-component class="container__aside scrollbar-invisible" />
   <main class="container__main">
     <router-view :key="$route.path" />
   </main>
@@ -114,10 +114,6 @@ export default {
   overflow-y: scroll;
   overscroll-behavior: contain;
   box-sizing: border-box;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar
-    display: none;
 
 .container__main
   overflow: hidden;

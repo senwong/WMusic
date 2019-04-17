@@ -8,7 +8,7 @@
           <path d="M4 16 C1 12 2 6 7 4 12 2 15 6 16 8 17 6 21 2 26 4 31 6 31 12 28 16 25 20 16 28 16 28 16 28 7 20 4 16 Z"></path>
         </svg>
         <!-- 播放 -->
-        <div @click="playList" class="control__play control__item">
+        <div @click="setPlaylist" class="control__play control__item">
           <svg class="i-caret-right" viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
             <path d="M10 30 L26 16 10 2 Z"></path>
           </svg>
@@ -20,11 +20,11 @@
           <circle cx="25" cy="16" r="2"></circle>
         </svg>
       </div>
-      <router-link :to= "'/'+cardType +'/'+ card.id" class="item__link">
+      <router-link :to= "'/'+cardType.toLowerCase() +'/'+ card.id" class="item__link">
         <img :src="card.picUrl | clipImage(400, 400)" alt="">
       </router-link>
     </div>
-    <router-link :to= "'/'+cardType +'/' + card.id" class="list__name">
+    <router-link :to= "'/'+ cardType.toLowerCase() +'/' + card.id" class="list__name">
       {{card.name}}
     </router-link>
     <div class="creator-name">
@@ -83,21 +83,23 @@
   import MoreItem from '../more-list/MoreItem.vue';
   import MoreList from '../more-list/MoreList.vue';
   import {formatDate} from '@/utilitys';
+  import { mapMutations } from 'vuex';
+  import { getPlaylistDetail, getAlbumDetail } from "@/service/Service"
 
   export default {
     name: "CardItem",
     props: ['card', 'cardType'],
-    components: {PopupMenu, MoreItem, MoreList},
+    components: { PopupMenu, MoreItem, MoreList },
     data() {
       return {
         morePopupButton: null,
-        formatDate: formatDate,
       }
     },
     mounted() {
       this.morePopupButton = this.$el.querySelector(".control__more");
     },
     methods: {
+      formatDate,
       addFav(type, id) {
         if(!this.$store.state.isLogin) {
           console.log("not login , cannot add fav "+ type + id);
@@ -109,10 +111,20 @@
         if (playCount < 10000) return playCount
         return (playCount / 10000).toFixed(1) + "万"
       },
-      playList() {
-        console.log('play list', this.$store);
-        this.$store.dispatch('newPlayList', {type: this.cardType, id: this.card.id, isPlay: true});
+      setPlaylist() {
+        if (!this.card.id) return;
+        getPlaylistDetail(this.card.id).then(
+          res => {
+            this.setTracks(res.data.playlist.tracks);
+            this.setCurrentSongId(res.data.playlist.trackIds[0].id);
+          },
+          error => alert('getPlaylistDetail error ' + error)
+        );
       },
+      ...mapMutations('playlist', [
+        'setCurrentSongId',
+        'setTracks',
+      ])
     },
   }
 </script>

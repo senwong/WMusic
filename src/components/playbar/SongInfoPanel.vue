@@ -1,18 +1,18 @@
 <template>
 <div class="song-info-panel">
   <div class="album-img">
-    <img :src="albumImg | clipImage(200, 200)" alt="">
+    <img v-if="albumImg" :src="albumImg | clipImage(192, 192)" :alt="name">
+    <div v-else class="img-placeholder"></div>
     <div class="img-mask">
-      <button class="button button_icon button_center-center" @click="$emit('toggle-song-player')" :class="{'invert': !isShowSongPlayer}">
-        <svg viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="rgba(0, 0, 0, 0.7)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-          <path d="M2 5 H30 Z M2 25 L16 10 L30 25"/>
-        </svg>
+      <button class="button_icon large button_center-center" @click="$emit('toggle-song-player')" :class="{'invert': !isShowSongPlayer}">
+        <SlideUpIcon />
       </button>
     </div>
   </div>
   <div class="name-songer">
-    <div class="name">{{name}}</div>
-    <div class="songer">{{artists && artists.map(ar => ar.name).join("/")}}</div>
+    <div v-if="name" class="name">{{name}}</div>
+    <div v-else>听见不同</div>
+    <div v-if="artists" class="songer">{{artists && artists.map(ar => ar.name).join("/")}}</div>
   </div>
   <!-- 选择音质 -->
   <button class="quality button">
@@ -27,57 +27,42 @@
   </popup-menu>
   <!-- 收藏 -->
   <button
-    class="button button_icon faver"
+    class="button_icon large faver"
     @click="toggleFaver"
-    >
-    <svg :class="{'is-faver': isFaver}" class="i-heart" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-      <path d="M4 16 C1 12 2 6 7 4 12 2 15 6 16 8 17 6 21 2 26 4 31 6 31 12 28 16 25 20 16 28 16 28 16 28 7 20 4 16 Z"></path>
-    </svg>
+    :class="{'is-faver': isFaver}"
+  >
+    <FavIcon />
   </button>
   <!-- 三点 更多选项 -->
-  <button class="button button_icon button_icon more">
-    <svg class="i-ellipsis-horizontal" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-        <circle cx="7" cy="16" r="2"></circle>
-        <circle cx="16" cy="16" r="2"></circle>
-        <circle cx="25" cy="16" r="2"></circle>
-    </svg>
+  <button class="button_icon large more">
+    <MoreIcon />
   </button>
   <!-- 点击更多，弹出菜单 -->
   <popup-menu :target="morePopupButton">
     <more-list>
       <more-item>
-        <svg slot="icon" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-          <path d="M28 22 L28 30 4 30 4 22 M16 4 L16 24 M8 16 L16 24 24 16"></path>
-        </svg>
+        <DownloadIcon slot="icon" />
         <span slot="txt" class="txt">漫游相似歌曲</span>
       </more-item>
       <more-item>
-        <svg slot="icon" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-          <path d="M28 22 L28 30 4 30 4 22 M16 4 L16 24 M8 16 L16 24 24 16"></path>
-        </svg>
+        <DownloadIcon slot="icon" />
         <span slot="txt" class="txt">下载</span>
       </more-item>
       <!-- 添加到歌单 hover时右侧扩展 -->
       <more-item spread="'right'">
-        <svg slot="icon" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-          <path d="M28 22 L28 30 4 30 4 22 M16 4 L16 24 M8 16 L16 24 24 16"></path>
-        </svg>
+        <DownloadIcon slot="icon" />
         <span slot="txt" class="txt">添加到歌单</span>
         <!-- hover时右侧扩展内容 -->
         <more-list slot="spread-list">
           <more-item>
-            <svg slot="icon" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-              <path d="M28 22 L28 30 4 30 4 22 M16 4 L16 24 M8 16 L16 24 24 16"></path>
-            </svg>
+            <DownloadIcon slot="icon" />
             <span slot="txt" class="txt">喜欢的音乐</span>
           </more-item>
         </more-list>
       </more-item>
       <!-- 评论分享 -->
       <more-item>
-        <svg slot="icon" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-          <path d="M28 22 L28 30 4 30 4 22 M16 4 L16 24 M8 16 L16 24 24 16"></path>
-        </svg>
+        <DownloadIcon slot="icon" />
         <span slot="txt" class="txt">评论分享</span>
       </more-item>
     </more-list>
@@ -89,11 +74,22 @@ import PopupMenu from '../PopupMenu.vue';
 import MoreItem from '../more-list/MoreItem.vue';
 import MoreList from '../more-list/MoreList.vue';
 import SelectList from '../more-list/SelectList.vue';
+import MoreIcon from '../SVGIcons/MoreIcon';
+import FavIcon from '../SVGIcons/FavIcon';
+import SlideUpIcon from '../SVGIcons/SlideUpIcon';
+import DownloadIcon from '../SVGIcons/DownloadIcon';
 
 export default {
   name: "SongInfoPanel",
   components: {
-    PopupMenu, MoreItem, MoreList, SelectList,
+    PopupMenu,
+    MoreItem,
+    MoreList,
+    SelectList,
+    MoreIcon,
+    FavIcon,
+    SlideUpIcon,
+    DownloadIcon,
   },
   props: ['name', 'artists', 'albumImg', 'isShowSongPlayer'],
   data() {
@@ -131,12 +127,16 @@ export default {
   align-items: center;
   justify-content: flex-start;
 .album-img
-  width: min-content;
+  width: 6em;
   height: 100%;
   position: relative;
   img
-    width: auto;
+    width: 100%;
     height: 100%;
+  .img-placeholder
+    height: 100%;
+    width: 100%;
+    background-color: $gray;
   .img-mask
     display: none;
     position: absolute;
@@ -147,6 +147,7 @@ export default {
     background-color: $whitegray-2;
   &:hover .img-mask
     display: block;
+
 .name-songer
   display: flex;
   flex-direction: column;
@@ -176,21 +177,11 @@ export default {
     cursor: pointer;
 .faver, .more
   margin-left: 1em;
-  font-size: 0;
-.faver .is-faver
+.faver.is-faver
   color: $orange;
-  fill: $orange;
+  & svg
+    fill: $orange;
 
-.button
-  background-color: transparent;
-  &:focus, &:hover
-    outline: none;
-.button_icon
-  border: none;
-  font-size: inherit;
-  width: 2em;
-  height: 2em;
-  padding: 0;
 .button_center-center
   position: absolute;
   top: 50%;
