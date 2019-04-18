@@ -12,7 +12,7 @@
         </div>
       </router-link>
 
-      <router-link to="/playlidtIndex" class="nav__link">
+      <router-link to="/playlist" class="nav__link">
         <div class="icon icon_m">
           <MusicIcon />
         </div>
