@@ -3,41 +3,40 @@
     <div class="container">
       <div class="category__selected">
         <span class="category__title">{{selected}}</span>
-        <span @click="showMenu=!showMenu">
+        <span class="category__toggle__btn" @click="showMenu=!showMenu">
           <ChevronTopIcon class="category__title__icon" v-show="!showMenu"  />
           <ChevronBottomIcon class="category__title__icon" v-show="showMenu"  />
         </span>
       </div>
-      <div class="category__list-wrapper">
-      <transition name="move" v-on:after-enter="afterEnter" v-on:before-leave="beforeLeave">
-        <div class="category__list-container" v-show="showMenu">
-          <div class="category__list">
-            <span
-              @click="selectCat('全部')"
-              class="category__item"
-              :class="{'active': selected=='全部'}"
-            >全部</span>
-          </div>
-          <hr>
-          <div
-            v-for="categoryKey in Object.keys(categories)"
-            :key="categoryKey"
-          >
-            <h3>{{categories[categoryKey]}}</h3>
+      <transition name="move" @after-enter="afterEnter" @before-leave="beforeLeave">
+        <div class="category__list-wrapper" v-show="showMenu">
+          <div class="category__list-container">
             <div class="category__list">
               <span
-                class="category__item"  
-                :class="{'active': selected==c.name}"
-                v-for="(c, i) in sub" :key="i"
-                v-if="c.category == categoryKey"
-                @click="selectCat(c.name)"
-              >{{c.name}}</span>
+                @click="selectCat('全部')"
+                class="category__item"
+                :class="{'active': selected=='全部'}"
+              >全部</span>
             </div>
             <hr>
+            <div
+              v-for="categoryKey in Object.keys(categories)"
+              :key="categoryKey"
+            >
+              <h3>{{categories[categoryKey]}}</h3>
+              <div class="category__list">
+                <span
+                  class="category__item"  
+                  :class="{'active': selected==c.name}"
+                  v-for="(c, i) in sub.filter(c => c.category == categoryKey)" :key="i"
+                  @click="selectCat(c.name)"
+                >{{c.name}}</span>
+              </div>
+              <hr>
+            </div>
           </div>
         </div>
       </transition>
-      </div>
       <div v-show="showCards">
         <ul class="category__order">
           <li class="order__item active" data-order="hot">最热</li>
@@ -47,19 +46,12 @@
         <ul class="pagination">
           <li
             class="pagination__item"
-            v-for="(_, i) in Array(pageCount)" :key="i"
-            v-if="i==0 || (i == pageCount - 1) || (i < offset+2 && i > Math.max(0, offset - 3))"
-            @click="offset=i"
-            :class="{'active': offset==i}"
+            v-for="(pageNum, i) in pagination" :key="i"
+            @click="offset = pageNum - 1"
+            :class="{'active': offset == pageNum - 1}"
           >
-            {{i + 1}}
+            {{pageNum}}
           </li>
-          <li
-            class="pagination__item"
-            :class="{'active': offset==i}"
-            v-else-if="i == offset+2 || i ==  Math.max(0, offset - 3)"
-            @click="offset=i"
-          >...</li>
         </ul>
       </div>
     </div>
@@ -94,7 +86,7 @@ export default {
         this.categories = res.data.categories
         this.sub = res.data.sub
       } else {
-        console.warn("获取歌单分类失败： " + res.data)
+        alert("获取歌单分类失败： " + res.data)
       }
     })
     this.getPlayList()
@@ -113,7 +105,6 @@ export default {
       }
     },
     getPlayList() {
-      console.log("getPlayList")
       getPlayList(this.selected, this.order, this.offset*20 ).then(res => {
         res = convertToHttps(res)
         if(res.data.code == 200) {
@@ -129,18 +120,37 @@ export default {
             }
           })
         } else {
-          console.warn("获取歌单失败： " + res.data)
+          alert("获取歌单失败： " + res.data)
         }
       })
     },
     selectCat(newCat) {
       this.selected = newCat
       this.showMenu = false
+    },
+    isPageNum(pageIdx) {
+      return pageIdx == 0
+        || pageIdx == this.pageCount - 1
+        || (pageIdx < this.offset + 2 && pageIdx > Math.max(0, this.offset - 3));
+    },
+    isPageSpread(pageIdx) {
+      return pageIdx == this.offset + 2 || pageIdx ==  Math.max(0, this.offset - 3);
     }
   },
   computed: {
     pageCount() {
       return Math.floor(this.total / 20)
+    },
+    pagination() {
+      const result = [];
+      new Array(this.pageCount).fill(true).map((_, idx) => {
+        if (this.isPageNum(idx)) {
+          result.push(idx + 1);
+        } else if (this.isPageSpread(idx)) {
+          result.push('...');
+        }
+      });
+      return result;
     }
   },
   watch: {
@@ -180,6 +190,8 @@ export default {
   background-color: white;
 .category__title
   margin-right: 0.5em;
+.category__toggle__btn
+  cursor: pointer;
 .category__title, .category__title__icon
   vertical-align: middle;
 .category__title__icon
@@ -188,7 +200,6 @@ export default {
 .category__list-wrapper
   position: relative;
 .category__list-container
-  position: absolute;
   background-color: white;
   z-index: 1;
 .category__sub
@@ -202,6 +213,7 @@ export default {
   padding: 0.5em 1em;
   border-radius: 1.5em;
   background-color: $whitegray2;
+  cursor: pointer;
   &.active
     color: white;
     background-color: $orange;
@@ -241,6 +253,7 @@ export default {
   display: inline-block;
   margin: 1em;
   padding: 0.5em;
+  cursor: pointer;
   &.active
     color: $orange;
 </style>

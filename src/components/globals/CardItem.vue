@@ -9,7 +9,7 @@
         </button>
         <!-- 播放 -->
         <button class="button_icon large control__play control__item" @click="setPlaylist">
-          <PlayingIcon />
+          <PausedIcon />
         </button>
         <!-- 更多 -->
         <button class="button_icon large" ref="more">
@@ -72,7 +72,7 @@ import {formatDate} from '@/utilitys';
 import { mapMutations } from 'vuex';
 import { getPlaylistDetail, getAlbumDetail } from "@/service/Service"
 import FavIcon from '../SVGIcons/FavIcon';
-import PlayingIcon from '../SVGIcons/PlayingIcon';
+import PausedIcon from '../SVGIcons/PausedIcon';
 import MoreIcon from '../SVGIcons/MoreIcon';
 import DownloadIcon from '../SVGIcons/DownloadIcon';
 import PlayWithoutCircleIcon from '../SVGIcons/PlayWithoutCircleIcon';
@@ -80,7 +80,7 @@ import PlayWithoutCircleIcon from '../SVGIcons/PlayWithoutCircleIcon';
 export default {
   name: "CardItem",
   props: ['card', 'cardType'],
-  components: { PopupMenu, MoreItem, MoreList, FavIcon, PlayingIcon, MoreIcon, DownloadIcon, PlayWithoutCircleIcon, },
+  components: { PopupMenu, MoreItem, MoreList, FavIcon, PausedIcon, MoreIcon, DownloadIcon, PlayWithoutCircleIcon, },
   data() {
     return {
       morePopupButton: null,
@@ -129,6 +129,7 @@ export default {
   width: 100%;
   margin-bottom: 1em;
   position: relative;
+  display: flex;
   &:hover .list__control
     visibility: visible;
  
@@ -140,7 +141,9 @@ export default {
   font-size: 0;
   &::after
     content: "";
-    display: none;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 250ms;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -154,6 +157,8 @@ export default {
     width: 100%;
     height: auto;
     border-radius: 15px;
+.list__cover:hover > .item__link::after
+  opacity: 1;
 
 .list__control
   position: absolute;
@@ -170,8 +175,6 @@ export default {
   z-index: 9;
   &:hover
     visibility: visible;
-.list__control:hover ~ .item__link::after
-  display: block;
 .control__item
   margin: 5px;
 .control__play
