@@ -4,47 +4,31 @@
       <carousel-panel></carousel-panel>
       <div class="recommend">
         <div class="recommend__item">
-          <svg class="i-music" viewBox="0 0 32 32" width="64" height="64" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-            <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-            <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-          </svg>
+          <MusicIcon />
           <div>
             每日30首
           </div>
         </div>
         <div class="recommend__item">
-          <svg class="i-music" viewBox="0 0 32 32" width="64" height="64" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-            <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-            <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-          </svg>
+          <MusicIcon />
           <div>
             猜你喜欢
           </div>
         </div>
         <div class="recommend__item">
-          <svg class="i-music" viewBox="0 0 32 32" width="64" height="64" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-            <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-            <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-          </svg>
+          <MusicIcon />
           <div>
             听见不同
           </div>
         </div>
         <div class="recommend__item">
-          <svg class="i-music" viewBox="0 0 32 32" width="64" height="64" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-            <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-            <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-          </svg>
+          <MusicIcon />
           <div>
             私人电台
           </div>
         </div>
       </div>
-
+      
       <!-- 推荐歌单 -->
       <recommend-song-list></recommend-song-list>
     </div>
@@ -53,10 +37,12 @@
 <script>
   import CarouselPanel from './CarouselPanel.vue'
   import RecommendSongList from './RecommendSongList.vue'
+  import MusicIcon from '../SVGIcons/MusicIcon';
+
   export default {
     name: "FindMusic",
     components: {
-      CarouselPanel,RecommendSongList
+      CarouselPanel, RecommendSongList, MusicIcon,
     },
     beforeRouteUpdate (to, from, next) {
       console.log("route to " + to + " from " + from)
@@ -90,6 +76,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  max-width: 6em;
   svg
     color: $orange;
     margin-bottom: 1em;

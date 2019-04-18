@@ -3,6 +3,8 @@ const path = require("path")
 const host = "localhost"
 const port = 8085
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const isDev = () => process.env.NODE_ENV == 'development';
+
 module.exports = {
   lintOnSave: false,
   publicPath: "/",
@@ -29,7 +31,9 @@ module.exports = {
         "@": path.resolve(__dirname, "src"),
       }
     },
-    plugins: [
+    plugins: isDev
+      ? []
+      : [
       new UglifyJsPlugin({
         uglifyOptions: {      
           compress: {

@@ -5,12 +5,8 @@
     class="button_icon large mute-volume"
     @click="toggleVolume"
     >
-    <svg v-if="isVolume" class="i-volume" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-      <path d="M20 16 C20 8 15 2 15 2 L8 10 2 10 2 22 8 22 15 30 C15 30 20 24 20 16 Z M21 2 C21 2 25 6 25 16 25 26 21 30 21 30 M27 4 C27 4 30 8 30 16 30 24 27 28 27 28"></path>
-    </svg>
-    <svg v-if="!isVolume" class="i-mute" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-      <path d="M20 16 C20 8 15 2 15 2 L8 10 2 10 2 22 8 22 15 30 C15 30 20 24 20 16 Z"></path>
-    </svg>
+    <VolumeIcon v-if="isVolume" />
+    <VolumeMuteIcon v-if="!isVolume" />
   </button>
   <!-- 调节音量大小 -->
   <input class="volume__setter" v-model="volume" type="range" :min="MINVOLUME" :max="MAXVOLUME">
@@ -19,21 +15,13 @@
     class="button_icon large play-mode"
     @click=" $emit('changeMode')"
     >
-    <svg v-if="currentMode === PLAYMODES.LOOP" class="i-loop" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-      <path d="M8 4 H 20 C 28 4, 28 4, 28 12 V 24 L 24 20 M28 24 L32 20 M24 28 H12 C4 28, 4 28, 4 20 V8 L0 12 M4 8 L8 12"></path>
-    </svg>
-    <svg v-if="currentMode === PLAYMODES.ONE_LOOP" class="i-one-cycle" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-      <path d="M8 4 H 20 C 28 4, 28 4, 28 12 V 24 L 24 20 M28 24 L32 20 M24 28 H12 C4 28, 4 28, 4 20 V8 L0 12 M4 8 L8 12 M16 12 V20"></path>
-    </svg>
-    <svg v-if="currentMode === PLAYMODES.SHUFFLE" class="i-shuffle" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-      <path d="M4 4 L12 12 M20 20 L28 28 V22 M28 28 H22 M4 28 L28 4 H22 M28 4 V10"></path>
-    </svg>
+    <LoopIcon v-if="currentMode === PLAYMODES.LOOP" />
+    <OneLoopIcon v-if="currentMode === PLAYMODES.ONE_LOOP" />
+    <ShuffleIcon v-if="currentMode === PLAYMODES.SHUFFLE" />
   </button>
   <!-- 音效调节 -->
   <button class="button_icon large sound-effect" :class="{'sound-effect-active': isEffect}">
-    <svg class="i-options" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-        <path d="M28 6 L4 6 M28 16 L4 16 M28 26 L4 26 M24 3 L24 9 M8 13 L8 19 M20 23 L20 29"></path>
-    </svg>
+    <OptionsIcon />
   </button>
   <popup-menu :target="soundEffectButton">
     <select-list
@@ -55,10 +43,8 @@
   <button
     class="button_icon large play-list"
     @click="toggleRightPlaylist"
-    >
-    <svg class="i-menu" viewBox="0 0 32 32" width="100%" height="100%" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-        <path d="M4 8 L28 8 M4 16 L28 16 M4 24 L28 24"></path>
-    </svg>
+  >
+    <MenuIcon />
   </button>
 </div>
 </template>
@@ -67,12 +53,18 @@ import PopupMenu from '../PopupMenu.vue';
 import SelectList from '../more-list/SelectList.vue';
 import AwesomeButton from '../AwesomeButton.vue';
 import PLAYMODES from './PLAYMODES'
-
+import LoopIcon from '@/components/SVGIcons/LoopIcon';
+import OneLoopIcon from '@/components/SVGIcons/OneLoopIcon';
+import ShuffleIcon from '@/components/SVGIcons/ShuffleIcon';
+import OptionsIcon from '@/components/SVGIcons/OptionsIcon';
+import VolumeIcon from '@/components/SVGIcons/VolumeIcon';
+import VolumeMuteIcon from '@/components/SVGIcons/VolumeMuteIcon';
+import MenuIcon from '@/components/SVGIcons/MenuIcon';
 
 export default {
   name: "SoundPanel",
   components: {
-    PopupMenu, SelectList, AwesomeButton,
+    PopupMenu, SelectList, AwesomeButton, LoopIcon, OneLoopIcon, ShuffleIcon, OptionsIcon, VolumeIcon, VolumeMuteIcon, MenuIcon,
   },
   data() {
     return {

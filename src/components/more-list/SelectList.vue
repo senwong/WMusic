@@ -1,41 +1,42 @@
 <template>
-  <div class="select-list">
-    <slot name="title"></slot>
-    <div
-      class="option-item"
-      v-for="option in data"
-      :key="option.id"
-      :data-id="option.id"
-      :class="{selected: option.isSelected}"
-    >
-      <span class="title">{{option.title}}</span>
-      <div class="icon">
-        <svg v-show="option.isSelected" class="i-checkmark" viewBox="0 0 32 32" width="12" height="12" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-          <path d="M2 20 L12 28 30 4"></path>
-        </svg>
-      </div>
+<div class="select-list">
+  <slot name="title"></slot>
+  <div
+    class="option-item"
+    v-for="option in data"
+    :key="option.id"
+    :data-id="option.id"
+    :class="{selected: option.isSelected}"
+  >
+    <span class="title">{{option.title}}</span>
+    <div class="icon" v-show="option.isSelected">
+      <CheckmarkIcon />
+    </div>
   </div>
-  </div>
+</div>
 </template>
 <script>
-  export default {
-    name: "SelectList",
-    props: ['data'],
-    methods: {
-      handleClick(optionEle) {
-        const id = parseInt(optionEle.dataset.id);
-        this.data.forEach( option => option.isSelected = option.id === id ? true : false);
-        this.$emit('selected-change', id);
-      },
+import CheckmarkIcon from '@/components/SVGIcons/CheckmarkIcon';
+
+export default {
+  name: "SelectList",
+  props: ['data'],
+  components: { CheckmarkIcon },
+  methods: {
+    handleClick(optionEle) {
+      const id = parseInt(optionEle.dataset.id);
+      this.data.forEach( option => option.isSelected = option.id === id ? true : false);
+      this.$emit('selected-change', id);
     },
-    mounted() {
-      this.$el.querySelectorAll(".option-item").forEach(option =>{
-        option.addEventListener('click', () => {
-          this.handleClick(option)
-        })
+  },
+  mounted() {
+    this.$el.querySelectorAll(".option-item").forEach(option =>{
+      option.addEventListener('click', () => {
+        this.handleClick(option)
       })
-    }
+    })
   }
+}
 </script>
 <style lang="sass" scoped>
 @import "../config.sass";

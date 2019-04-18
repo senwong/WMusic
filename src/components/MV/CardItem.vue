@@ -4,11 +4,9 @@
       <!-- hover时显示播放 -->
       <div class="list__control">
         <!-- 播放 -->
-        <div @click="$store.dispatch('newPlayList', {type: cardType, id: card.id, isPlay: true})" class="control__play control__item">
-          <svg class="i-caret-right" viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M10 30 L26 16 10 2 Z"></path>
-          </svg>
-        </div>
+        <button class="button_icon large control__play" @click="$store.dispatch('newPlayList', {type: cardType, id: card.id, isPlay: true})">
+          <PausedIcon />
+        </button>
       </div>
       <router-link :to= "'/'+cardType +'/'+ card.id" class="item__link">
         <img :src="card.cover | clipImage(640, 360)" alt="">
@@ -20,16 +18,19 @@
   </div>
 </template>
 <script>
-  export default {
-    name: "CardItem",
-    props: ['card', 'cardType'],
-    methods: {
-      formatPlayCount(playCount) {
-        if (playCount < 10000) return playCount
-        return (playCount / 10000).toFixed(1) + "万"
-      }
-    },
-  }
+import PausedIcon from '@/components/SVGIcons/PausedIcon';
+
+export default {
+  name: "CardItem",
+  props: ['card', 'cardType'],
+  components: { PausedIcon },
+  methods: {
+    formatPlayCount(playCount) {
+      if (playCount < 10000) return playCount
+      return (playCount / 10000).toFixed(1) + "万"
+    }
+  },
+}
 </script>
 <style lang="sass" scoped>
 @import '../config.sass';
@@ -41,7 +42,7 @@
   width: 100%;
   margin-bottom: 1em;
   position: relative;
-  font-size: 0;
+  display: flex;
   &:hover .list__control
     visibility: visible;
  
@@ -50,6 +51,7 @@
   height: 100%;
   width: 100%;
   user-select: none;
+  font-size: 0;
   &::after
     content: "";
     display: none;

@@ -11,9 +11,7 @@
         </div>
         <!-- 靠右显示 -->
         <div class="item__right">
-          <svg v-show="!!spread" class="icon" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M12 30 L24 16 12 2"></path>
-          </svg>
+          <RightArrowIcon v-show="!!spread"/>
         </div>
       </div>
     </div>
@@ -23,22 +21,25 @@
   </div>
 </template>
 <script>
-  export default {
-    name: "MoreItem",
-    props: ['spread'],
-    data() {
-      return {
-        styleObj: { }
-      }
-    },
-    mounted() {
-      this.$nextTick(() => {
-        const property = this.spread && this.spread.slice(1, -1);
-        property === "right" && (this.styleObj = {left: '100%'});
-        property === "left" && (this.styleObj = {right: '100%'});
-      })
+import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon';
+
+export default {
+  name: "MoreItem",
+  props: ['spread'],
+  data() {
+    return {
+      styleObj: { }
     }
+  },
+  components: { RightArrowIcon, },
+  mounted() {
+    this.$nextTick(() => {
+      const property = this.spread && this.spread.slice(1, -1);
+      property === "right" && (this.styleObj = {left: '100%'});
+      property === "left" && (this.styleObj = {right: '100%'});
+    })
   }
+}
 </script>
 <style lang="sass" scoped>
 @import "../config.sass";

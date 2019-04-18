@@ -10,10 +10,9 @@
 
   <!-- 滚动页面返回顶部按钮 -->
   <transition name="fade">
-    <svg v-if="isScrolled" class="back-top" @click="scrollToTop" viewBox="0 0 100 100" width="50" height="50" fill="none" stroke="currentColor" stroke-width="5">
-      <circle cx="50" cy="50" r="45"></circle>
-      <path d="M25 25 H75 M50 35 L25 60 M50 35 L75 60 M50 35 V 75 Z "></path>
-    </svg>
+    <button v-if="isScrolled" class="button_icon large back-top" >
+      <ScrollToTopIcon />
+    </button>
   </transition>
 </div>
 </template>
@@ -22,13 +21,12 @@
 import NavbarComponent from './components/Navbar.vue'
 import PlaybarComponent from './components/playbar/Playbar.vue'
 import PlayListComponent from './components/PlayList.vue';
-
-
+import ScrollToTopIcon from './components/SVGIcons/ScrollToTopIcon';
 
 export default {
   name: 'app',
   components: {
-    NavbarComponent, PlaybarComponent, PlayListComponent
+    NavbarComponent, PlaybarComponent, PlayListComponent, ScrollToTopIcon,
   },
   data() {
     return {

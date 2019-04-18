@@ -4,21 +4,17 @@
       <!-- hover时显示播放 收藏 更多 -->
       <div class="list__control">
         <!-- 收藏 -->
-        <svg @click="addFav(cardType, card.id)" class="i-heart control__item" viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-          <path d="M4 16 C1 12 2 6 7 4 12 2 15 6 16 8 17 6 21 2 26 4 31 6 31 12 28 16 25 20 16 28 16 28 16 28 7 20 4 16 Z"></path>
-        </svg>
+        <button class="button_icon large control__item" @click="addFav(cardType, card.id)">
+          <FavIcon />
+        </button>
         <!-- 播放 -->
-        <div @click="setPlaylist" class="control__play control__item">
-          <svg class="i-caret-right" viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M10 30 L26 16 10 2 Z"></path>
-          </svg>
-        </div>
+        <button class="button_icon large control__play control__item" @click="setPlaylist">
+          <PlayingIcon />
+        </button>
         <!-- 更多 -->
-        <svg class="control__more control__item" viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-          <circle cx="7" cy="16" r="2"></circle>
-          <circle cx="16" cy="16" r="2"></circle>
-          <circle cx="25" cy="16" r="2"></circle>
-        </svg>
+        <button class="button_icon large" ref="more">
+          <MoreIcon />
+        </button>
       </div>
       <router-link :to= "'/'+cardType.toLowerCase() +'/'+ card.id" class="item__link">
         <img :src="card.picUrl | clipImage(400, 400)" alt="">
@@ -31,45 +27,35 @@
       {{card.creatorName}}
     </div>
     <div class="play-count">
-      <svg id="i-play" viewBox="0 0 32 32" width="10" height="10" fill="currentcolor" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-        <path d="M10 2 L10 30 24 16 Z" />
-      </svg>
+      <span class="play-count__icon">
+        <PlayWithoutCircleIcon />
+      </span>
       <span>{{ formatPlayCount(card.playCount) }}</span>
     </div>
     <!-- 点击更多，弹出菜单 -->
     <popup-menu :target="morePopupButton">
       <more-list>
         <more-item @click.native="$store.dispatch('addListToList', {type: 'PLAYLIST', id: card.id})">
-          <svg slot="icon" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M28 22 L28 30 4 30 4 22 M16 4 L16 24 M8 16 L16 24 24 16"></path>
-          </svg>
+          <DownloadIcon slot="icon"/>
           <span slot="txt" class="txt">添加到播放列表</span>
         </more-item>
         <more-item>
-          <svg slot="icon" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M28 22 L28 30 4 30 4 22 M16 4 L16 24 M8 16 L16 24 24 16"></path>
-          </svg>
+          <DownloadIcon slot="icon"/>
           <span slot="txt" class="txt">收藏</span>
         </more-item>
         <!-- 下载-->
         <more-item>
-          <svg slot="icon" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M28 22 L28 30 4 30 4 22 M16 4 L16 24 M8 16 L16 24 24 16"></path>
-          </svg>
+          <DownloadIcon slot="icon"/>
           <span slot="txt" class="txt">下载</span>
         </more-item>
         <!-- 加入歌单 -->
         <more-item spread="'right'">
-          <svg slot="icon" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M28 22 L28 30 4 30 4 22 M16 4 L16 24 M8 16 L16 24 24 16"></path>
-          </svg>
+          <DownloadIcon slot="icon"/>
           <span slot="txt" class="txt">加入歌单</span>
           <!-- hover时右侧扩展内容 -->
           <more-list slot="spread-list">
             <more-item>
-              <svg slot="icon" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                <path d="M28 22 L28 30 4 30 4 22 M16 4 L16 24 M8 16 L16 24 24 16"></path>
-              </svg>
+              <DownloadIcon slot="icon"/>
               <span slot="txt" class="txt">喜欢的音乐</span>
             </more-item>
           </more-list>
@@ -79,54 +65,59 @@
   </div>
 </template>
 <script>
-  import PopupMenu from '../PopupMenu.vue';
-  import MoreItem from '../more-list/MoreItem.vue';
-  import MoreList from '../more-list/MoreList.vue';
-  import {formatDate} from '@/utilitys';
-  import { mapMutations } from 'vuex';
-  import { getPlaylistDetail, getAlbumDetail } from "@/service/Service"
+import PopupMenu from '../PopupMenu.vue';
+import MoreItem from '../more-list/MoreItem.vue';
+import MoreList from '../more-list/MoreList.vue';
+import {formatDate} from '@/utilitys';
+import { mapMutations } from 'vuex';
+import { getPlaylistDetail, getAlbumDetail } from "@/service/Service"
+import FavIcon from '../SVGIcons/FavIcon';
+import PlayingIcon from '../SVGIcons/PlayingIcon';
+import MoreIcon from '../SVGIcons/MoreIcon';
+import DownloadIcon from '../SVGIcons/DownloadIcon';
+import PlayWithoutCircleIcon from '../SVGIcons/PlayWithoutCircleIcon';
 
-  export default {
-    name: "CardItem",
-    props: ['card', 'cardType'],
-    components: { PopupMenu, MoreItem, MoreList },
-    data() {
-      return {
-        morePopupButton: null,
+export default {
+  name: "CardItem",
+  props: ['card', 'cardType'],
+  components: { PopupMenu, MoreItem, MoreList, FavIcon, PlayingIcon, MoreIcon, DownloadIcon, PlayWithoutCircleIcon, },
+  data() {
+    return {
+      morePopupButton: null,
+    }
+  },
+  mounted() {
+    this.morePopupButton = this.$refs.more;
+  },
+  methods: {
+    formatDate,
+    addFav(type, id) {
+      if(!this.$store.state.isLogin) {
+        console.log("not login , cannot add fav "+ type + id);
+      } else {
+        console.log("add fav "+ type + id);
       }
     },
-    mounted() {
-      this.morePopupButton = this.$el.querySelector(".control__more");
+    formatPlayCount(playCount) {
+      if (playCount < 10000) return playCount
+      return (playCount / 10000).toFixed(1) + "万"
     },
-    methods: {
-      formatDate,
-      addFav(type, id) {
-        if(!this.$store.state.isLogin) {
-          console.log("not login , cannot add fav "+ type + id);
-        } else {
-          console.log("add fav "+ type + id);
-        }
-      },
-      formatPlayCount(playCount) {
-        if (playCount < 10000) return playCount
-        return (playCount / 10000).toFixed(1) + "万"
-      },
-      setPlaylist() {
-        if (!this.card.id) return;
-        getPlaylistDetail(this.card.id).then(
-          res => {
-            this.setTracks(res.data.playlist.tracks);
-            this.setCurrentSongId(res.data.playlist.trackIds[0].id);
-          },
-          error => alert('getPlaylistDetail error ' + error)
-        );
-      },
-      ...mapMutations('playlist', [
-        'setCurrentSongId',
-        'setTracks',
-      ])
+    setPlaylist() {
+      if (!this.card.id) return;
+      getPlaylistDetail(this.card.id).then(
+        res => {
+          this.setTracks(res.data.playlist.tracks);
+          this.setCurrentSongId(res.data.playlist.trackIds[0].id);
+        },
+        error => alert('getPlaylistDetail error ' + error)
+      );
     },
-  }
+    ...mapMutations('playlist', [
+      'setCurrentSongId',
+      'setTracks',
+    ])
+  },
+}
 </script>
 <style lang="sass" scoped>
 @import '../config.sass';
@@ -138,7 +129,6 @@
   width: 100%;
   margin-bottom: 1em;
   position: relative;
-  font-size: 0;
   &:hover .list__control
     visibility: visible;
  
@@ -147,6 +137,7 @@
   height: 100%;
   width: 100%;
   user-select: none;
+  font-size: 0;
   &::after
     content: "";
     display: none;
@@ -207,6 +198,10 @@
   display: inline-block;
   border-radius: 0.2em;
   font-size: 12px;
+.play-count__icon
+  width: 1em;
+  height: 1em;
+  display: inline-block;
 .creator-name
   color: $gray;
   font-size: 12px;

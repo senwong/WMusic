@@ -2,30 +2,18 @@
   <div class="rank-item">
     <div class="rank-title">
       <span class="rank-index text-gray">{{formatIndex(index + 1)}}</span>
-      <svg class="text-gray" v-if="index + 1 == rankItem.lastRank" viewBox="0 0  32 10" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-        <path d="M 8 5 H24 Z"/>
-      </svg>
-      <span v-else-if="index + 1 < rankItem.lastRank">
-        <svg id="i-arrow-top" viewBox="0 0 32 32" width="12" height="12" fill="none" stroke="#f00" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-          <path d="M6 10 L16 2 26 10 M16 2 L16 30" />
-        </svg>
-      </span>
-      <span v-else-if="index + 1 > rankItem.lastRank && rankItem.lastRank <= 10">
-        <svg id="i-arrow-bottom" viewBox="0 0 32 32" width="12" height="12" fill="none" stroke="#00f" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-          <path d="M6 22 L16 30 26 22 M16 30 L16 2" />
-        </svg>
-      </span>
+      <UnderscoreIcon class="text-gray rank_icon" v-if="index + 1 == rankItem.lastRank"/>
+      <ArrowTopIcon class="rank_icon" v-else-if="index + 1 < rankItem.lastRank" />
+      <ArrowBottomIcon class="rank_icon" v-else-if="index + 1 > rankItem.lastRank && rankItem.lastRank <= 10" />
       <span v-else class="rank-index_new">new</span>
     </div>
     <div class="media-container">
       <!-- hover时显示播放 -->
       <div class="media__control">
         <!-- 播放 -->
-        <div class="control__play control__item">
-          <svg class="i-caret-right" viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M10 30 L26 16 10 2 Z"></path>
-          </svg>
-        </div>
+        <button class="button_icon large control__play">
+          <PausedIcon />
+        </button>
       </div>
       <router-link :to= "'/mvplay/'+ rankItem.id" class="img-wrapper">
         <img :src="rankItem.cover | clipImage(640, 360)" alt="">
@@ -39,21 +27,27 @@
   </div>
 </template>
 <script>
-  import { formatDate } from "@/utilitys"
-  export default {
-    name: "RankItem",
-    props: ['rankItem', 'index'],
-    data() {
-      return {
-        formatDate: formatDate,
-      }
-    },
-    methods: {
-      formatIndex(i) {
-        return i < 10 ? '0'+i : i
-      }
+import { formatDate } from "@/utilitys"
+import UnderscoreIcon from '@/components/SVGIcons/UnderscoreIcon';
+import ArrowTopIcon from '@/components/SVGIcons/ArrowTopIcon';
+import ArrowBottomIcon from '@/components/SVGIcons/ArrowBottomIcon';
+import PausedIcon from '@/components/SVGIcons/PausedIcon';
+
+export default {
+  name: "RankItem",
+  props: ['rankItem', 'index'],
+  components: { UnderscoreIcon, ArrowTopIcon, ArrowBottomIcon, PausedIcon, },
+  data() {
+    return {
+      formatDate: formatDate,
+    }
+  },
+  methods: {
+    formatIndex(i) {
+      return i < 10 ? '0'+i : i
     }
   }
+}
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass"
@@ -63,6 +57,9 @@
 .rank-item
   display: flex;
   overflow: hidden;
+  .rank_icon
+    width: 1em;
+    height: 1em;
   .rank-title
     font-size: 24px;
     padding: 0 5px;
@@ -117,7 +114,6 @@
     padding: 5px;
     border-radius: 50%;
     background: $orange;
-    font-size: 0;
 
 .img-wrapper
   display: inline-block;

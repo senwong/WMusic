@@ -5,11 +5,7 @@
       <p class="nav__card__title">音乐库</p>
       <router-link to="/" class="nav__link">
         <div class="icon icon_m">
-          <svg class="i-music" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-            <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-            <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-          </svg>
+          <MusicIcon />
         </div>
         <div class="nav__link_txt">
           发现音乐
@@ -18,11 +14,7 @@
 
       <router-link to="/playlidtIndex" class="nav__link">
         <div class="icon icon_m">
-          <svg class="i-music" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-            <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-            <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-          </svg>
+          <MusicIcon />
         </div>
         <div class="nav__link_txt">
           歌单
@@ -31,11 +23,7 @@
 
       <router-link to="/toplist" class="nav__link">
         <div class="icon icon_m">
-          <svg class="i-music" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-            <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-            <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-          </svg>
+          <MusicIcon />
         </div>
         <div class="nav__link_txt">
           排行榜
@@ -44,11 +32,7 @@
 
       <router-link to="/mv" class="nav__link">
         <div class="icon icon_m">
-          <svg class="i-music" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-            <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-            <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-          </svg>
+          <MusicIcon />
         </div>
         <div class="nav__link_txt">
           MV
@@ -57,11 +41,7 @@
 
       <router-link to="/search" class="nav__link">
         <div class="icon icon_m">
-          <svg class="i-music" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-            <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-            <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-          </svg>
+          <MusicIcon />
         </div>
         <div class="nav__link_txt">
           搜索
@@ -74,11 +54,7 @@
       <p class="nav__card__title">我的音乐</p>
       <a href="#" class="nav__link">
         <div class="icon icon_m">
-          <svg class="i-music" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-            <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-            <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-          </svg>
+          <MusicIcon />
         </div>
         <div class="nav__link_txt">
           最近播放
@@ -86,11 +62,7 @@
       </a>
       <a href="#" class="nav__link">
         <div class="icon icon_m">
-          <svg class="i-music" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-            <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-            <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-          </svg>
+          <MusicIcon />
         </div>
         <div class="nav__link_txt">
           我的收藏
@@ -98,11 +70,7 @@
       </a>
       <a href="#" class="nav__link">
         <div class="icon icon_m">
-          <svg class="i-music" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-            <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-            <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-          </svg>
+          <MusicIcon />
         </div>
         <div class="nav__link_txt">
           已购音乐
@@ -119,20 +87,14 @@
           :class="{arrow_up: isShowMyList}"
           @click="toggleMyList"
           >
-          <svg class="i-chevron-right" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M12 30 L24 16 12 2"></path>
-          </svg>
+          <RightArrowIcon />
         </span>
       </p>
       <!-- 内容list -->
       <div v-if="isShowMyList">
         <a href="#" class="nav__link">
           <div class="icon icon_m">
-            <svg class="i-music" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-              <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-              <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-              <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-            </svg>
+            <MusicIcon />
           </div>
           <div class="nav__link_txt">
             喜欢的音乐
@@ -150,20 +112,14 @@
           :class="{arrow_up: isShowMyFavr}"
           @click="toggleMyFavr"
           >
-          <svg class="i-chevron-right" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M12 30 L24 16 12 2"></path>
-          </svg>
+          <RightArrowIcon />
         </span>
       </p>
       <!-- 内容list -->
       <div v-if="isShowMyFavr">
         <a href="#" class="nav__link">
           <div class="icon icon_m">
-            <svg class="i-music" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-              <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-              <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-              <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-            </svg>
+            <MusicIcon />
           </div>
           <div class="nav__link_txt">
             最近播放
@@ -171,11 +127,7 @@
         </a>
         <a href="#" class="nav__link">
           <div class="icon icon_m">
-            <svg class="i-music" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-              <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-              <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-              <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-            </svg>
+            <MusicIcon />
           </div>
           <div class="nav__link_txt">
             我的收藏
@@ -183,11 +135,7 @@
         </a>
         <a href="#" class="nav__link">
           <div class="icon icon_m">
-            <svg class="i-music" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-              <path d="M11 25 L11 6 24 3 24 23 M11 13 L24 10"></path>
-              <ellipse cx="7" cy="25" rx="4" ry="5"></ellipse>
-              <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
-            </svg>
+            <MusicIcon />
           </div>
           <div class="nav__link_txt">
             已购音乐
@@ -198,26 +146,30 @@
   </div>
 </template>
 <script>
-  export default {
-    name: "Navbar",
-    data() {
-      return {
-        isShowMyList: true,
-        isShowMyFavr: true,
-      }
-    },
-    methods: {
-      toggleMyList() {
-        this.isShowMyList = !this.isShowMyList;
-      },
-      toggleMyFavr() {
-        this.isShowMyFavr = !this.isShowMyFavr;
-      },
-    },
-    mounted() {
-      const navLinks = Array.from(this.$el.querySelectorAll(".nav__link"))
+import MusicIcon from '@/components/SVGIcons/MusicIcon';
+import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon';
+
+export default {
+  name: "Navbar",
+  data() {
+    return {
+      isShowMyList: true,
+      isShowMyFavr: true,
     }
+  },
+  components: { MusicIcon, RightArrowIcon, },
+  methods: {
+    toggleMyList() {
+      this.isShowMyList = !this.isShowMyList;
+    },
+    toggleMyFavr() {
+      this.isShowMyFavr = !this.isShowMyFavr;
+    },
+  },
+  mounted() {
+    const navLinks = Array.from(this.$el.querySelectorAll(".nav__link"))
   }
+}
 </script>
 <style lang="sass">
 @import "config.sass";

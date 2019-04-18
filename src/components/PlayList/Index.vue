@@ -4,12 +4,8 @@
       <div class="category__selected">
         <span class="category__title">{{selected}}</span>
         <span @click="showMenu=!showMenu">
-          <svg class="category__title__icon" v-show="!showMenu" id="i-chevron-top" viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M30 20 L16 8 2 20" />
-          </svg>
-          <svg class="category__title__icon" v-show="showMenu" id="i-chevron-bottom" viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-            <path d="M30 12 L16 24 2 12" />
-          </svg>
+          <ChevronTopIcon class="category__title__icon" v-show="!showMenu"  />
+          <ChevronBottomIcon class="category__title__icon" v-show="showMenu"  />
         </span>
       </div>
       <div class="category__list-wrapper">
@@ -70,105 +66,107 @@
   </div>
 </template>
 <script>
-  import { getPlayListCatlist, getPlayList } from '@/service/Service';
-  import {convertToHttps} from '@/utilitys';
-  import SongCards from '@/components/globals/SongCards';
+import { getPlayListCatlist, getPlayList } from '@/service/Service';
+import {convertToHttps} from '@/utilitys';
+import SongCards from '@/components/globals/SongCards';
+import ChevronTopIcon from '@/components/SVGIcons/ChevronTopIcon';
+import ChevronBottomIcon from '@/components/SVGIcons/ChevronBottomIcon';
 
-  export default {
-    name: "PlayListIndex",
-    components: { SongCards },
-    data() {
-      return {
-        categories: {},
-        sub: [],
-        selected: "全部",
-        showMenu: false,
-        order: "hot",
-        playlists: [],
-        total: 0,
-        offset: 0,
-        showCards: true,
+export default {
+  name: "PlayListIndex",
+  components: { SongCards, ChevronTopIcon, ChevronBottomIcon, },
+  data() {
+    return {
+      categories: {},
+      sub: [],
+      selected: "全部",
+      showMenu: false,
+      order: "hot",
+      playlists: [],
+      total: 0,
+      offset: 0,
+      showCards: true,
+    }
+  },
+  created() {
+    getPlayListCatlist().then(res => {
+      if(res.data.code == 200) {
+        this.categories = res.data.categories
+        this.sub = res.data.sub
+      } else {
+        console.warn("获取歌单分类失败： " + res.data)
+      }
+    })
+    this.getPlayList()
+  },
+  methods: {
+    afterEnter() {
+      console.log("afterEnter")
+      if (this.showMenu == true) {
+        this.showCards = false
       }
     },
-    created() {
-      getPlayListCatlist().then(res => {
+    beforeLeave() {
+      console.log("beforeLeave")
+      if (this.showCards == false) {
+        this.showCards = true
+      }
+    },
+    getPlayList() {
+      console.log("getPlayList")
+      getPlayList(this.selected, this.order, this.offset*20 ).then(res => {
+        res = convertToHttps(res)
         if(res.data.code == 200) {
-          this.categories = res.data.categories
-          this.sub = res.data.sub
+          this.total = res.data.total
+          this.playlists = res.data.playlists.map(list => {
+            return {
+              id: list.id,
+              picUrl: list.coverImgUrl,
+              name: list.name,
+              publishTime: list.updateTime,
+              playCount: list.playCount,
+              creatorName: list.creator.nickname,
+            }
+          })
         } else {
-          console.warn("获取歌单分类失败： " + res.data)
+          console.warn("获取歌单失败： " + res.data)
         }
       })
+    },
+    selectCat(newCat) {
+      this.selected = newCat
+      this.showMenu = false
+    }
+  },
+  computed: {
+    pageCount() {
+      return Math.floor(this.total / 20)
+    }
+  },
+  watch: {
+    offset(val) {
       this.getPlayList()
     },
-    methods: {
-      afterEnter() {
-        console.log("afterEnter")
-        if (this.showMenu == true) {
-          this.showCards = false
-        }
-      },
-      beforeLeave() {
-        console.log("beforeLeave")
-        if (this.showCards == false) {
-          this.showCards = true
-        }
-      },
-      getPlayList() {
-        console.log("getPlayList")
-        getPlayList(this.selected, this.order, this.offset*20 ).then(res => {
-          res = convertToHttps(res)
-          if(res.data.code == 200) {
-            this.total = res.data.total
-            this.playlists = res.data.playlists.map(list => {
-              return {
-                id: list.id,
-                picUrl: list.coverImgUrl,
-                name: list.name,
-                publishTime: list.updateTime,
-                playCount: list.playCount,
-                creatorName: list.creator.nickname,
-              }
-            })
-          } else {
-            console.warn("获取歌单失败： " + res.data)
-          }
-        })
-      },
-      selectCat(newCat) {
-        this.selected = newCat
-        this.showMenu = false
-      }
+    selected(val) {
+      this.offset = 0
+      this.getPlayList()
     },
-    computed: {
-      pageCount() {
-        return Math.floor(this.total / 20)
-      }
-    },
-    watch: {
-      offset(val) {
-        this.getPlayList()
-      },
-      selected(val) {
-        this.offset = 0
-        this.getPlayList()
-      },
-      order(val) {
-        this.offset = 0
-        this.getPlayList()
-      }
-    },
-    mounted() {
-      this.$el.querySelectorAll(".order__item").forEach(item => {
-        item.addEventListener("click", e => {
-          const oldActive = this.$el.querySelector(".order__item.active")
-          if(oldActive !== item) oldActive.classList.remove("active")
-          item.classList.add("active")
-          this.order = item.dataset.order
-        })
-      })
+    order(val) {
+      this.offset = 0
+      this.getPlayList()
     }
+  },
+  mounted() {
+    this.$el.querySelectorAll(".order__item").forEach(item => {
+      item.addEventListener("click", e => {
+        const oldActive = this.$el.querySelector(".order__item.active")
+        if(oldActive !== item) oldActive.classList.remove("active")
+        item.classList.add("active")
+        this.order = item.dataset.order
+      })
+    })
   }
+}
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass";

@@ -35,26 +35,20 @@
         </div>
         <div class="right">
           <!-- 设置按钮 -->
-          <button class="as-btn" ref="setting">
-            <svg class="setting" viewBox="0 0 36 36" width="36" height="36" fill="currentcolor" stroke-width="1">
-              <path d="m 23.94,18.78 c .03,-0.25 .05,-0.51 .05,-0.78 0,-0.27 -0.02,-0.52 -0.05,-0.78 l 1.68,-1.32 c .15,-0.12 .19,-0.33 .09,-0.51 l -1.6,-2.76 c -0.09,-0.17 -0.31,-0.24 -0.48,-0.17 l -1.99,.8 c -0.41,-0.32 -0.86,-0.58 -1.35,-0.78 l -0.30,-2.12 c -0.02,-0.19 -0.19,-0.33 -0.39,-0.33 l -3.2,0 c -0.2,0 -0.36,.14 -0.39,.33 l -0.30,2.12 c -0.48,.2 -0.93,.47 -1.35,.78 l -1.99,-0.8 c -0.18,-0.07 -0.39,0 -0.48,.17 l -1.6,2.76 c -0.10,.17 -0.05,.39 .09,.51 l 1.68,1.32 c -0.03,.25 -0.05,.52 -0.05,.78 0,.26 .02,.52 .05,.78 l -1.68,1.32 c -0.15,.12 -0.19,.33 -0.09,.51 l 1.6,2.76 c .09,.17 .31,.24 .48,.17 l 1.99,-0.8 c .41,.32 .86,.58 1.35,.78 l .30,2.12 c .02,.19 .19,.33 .39,.33 l 3.2,0 c .2,0 .36,-0.14 .39,-0.33 l .30,-2.12 c .48,-0.2 .93,-0.47 1.35,-0.78 l 1.99,.8 c .18,.07 .39,0 .48,-0.17 l 1.6,-2.76 c .09,-0.17 .05,-0.39 -0.09,-0.51 l -1.68,-1.32 0,0 z m -5.94,2.01 c -1.54,0 -2.8,-1.25 -2.8,-2.8 0,-1.54 1.25,-2.8 2.8,-2.8 1.54,0 2.8,1.25 2.8,2.8 0,1.54 -1.25,2.8 -2.8,2.8 l 0,0 z"/>
-            </svg>
+          <button class="button_icon large controll__icon" ref="setting">
+            <SettingIcon />
           </button>
           <!-- 设置弹出菜单 -->
           <popup-menu :target="$refs.setting" direction="top" enableClick= true >
             <setting-container :qualitys="qualitys" @set-quality="setQuality"></setting-container>
           </popup-menu>
           <!-- 开启/关闭网页全屏 -->
-          <button class="as-btn" @click="toggleTheaterMode">
-            <svg class="theater-mode" viewBox="0 0 32 32" width="28" height="28" fill="none" stroke="currentcolor" stroke-width="4">
-              <path d="M2 8 V24 H30 V8 H2" />
-            </svg>
+          <button class="button_icon large controll__icon" @click="toggleTheaterMode">
+            <WideScreenIcon />
           </button>
           <!-- 开启/关闭全屏 -->
-          <button class="as-btn" @click="toggleFullScreen">
-            <svg class="full-screen"  viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentcolor" stroke-width="3">
-              <path d="M4 4 H12 M20 4 H28 V12 M28 20 V28 H20 M12 28 H4 V20 M4 12 V3"/>
-            </svg>
+          <button class="button_icon large controll__icon" @click="toggleFullScreen">
+            <FullScreenIcon />
           </button>
         </div>
       </div>
@@ -68,11 +62,15 @@ import PopupMenu from "@/components/PopupMenu";
 import SettingContainer from "@/components/MV/SettingContainer";
 import axios from "axios";
 import { formatTime, optimizedResize } from "@/utilitys"
+import SettingIcon from '@/components/SVGIcons/SettingIcon';
+import WideScreenIcon from '@/components/SVGIcons/WideScreenIcon';
+import FullScreenIcon from '@/components/SVGIcons/FullScreenIcon';
+
 optimizedResize();
 export default {
   name: "VideoPlayer",
   props: ["brs"],
-  components: { PlayPauseButton, PopupMenu, SettingContainer, VolumeButton },
+  components: { PlayPauseButton, PopupMenu, SettingContainer, VolumeButton, SettingIcon, WideScreenIcon, FullScreenIcon, },
   data() {
     return {
       isPlay: false,
@@ -306,7 +304,6 @@ export default {
 
 .video-player
   position: relative;
-  font-size: 0;
   overflow: hidden;
   video
     width: 100%;
@@ -436,16 +433,19 @@ export default {
   .volume
     display: flex;
     align-items: center;
-.as-btn
-  border: none;
-  background: transparent;
-  padding: 0;
-  width: 46px;
-  height: 100%;
-  &:focus
-    outline: none;
-.svg-fill
-  fill: white;
+.controll__icon
+  color: white;
+  margin-right: 5px;
+// .as-btn
+//   border: none;
+//   background: transparent;
+//   padding: 0;
+//   width: 46px;
+//   height: 100%;
+//   &:focus
+//     outline: none;
+// .svg-fill
+//   fill: white;
 
 .video-player:-webkit-full-screen
   video
