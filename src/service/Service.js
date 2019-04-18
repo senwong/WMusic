@@ -107,7 +107,7 @@ function getPersonalizedMV() {
  * @param {Number} id MV ID
  */
 function getMvData(id) {
-  return Api().get("/mv?mvid=" + id)
+  return Api().get("/mv/detail/?mvid=" + id)
 }
 /**
  * 获取MV评论

@@ -4,9 +4,11 @@
       :src="src"
       @loadedmetadata="e => this.duration = e.target.duration"
       @progress="handleVideoProgress"
-      @timeupdate="e => this.currentTime = e.target.currentTime"
-      ></video>
-    <div class="control-wrapper" :class="{'show': !isPlay}">
+      @play="handlePlay"
+      @pause="handlePause"
+      @timeupdate="handleTimeUpdate"
+    />
+    <div class="control-wrapper" :class="{'show': paused}">
       <div class="progress-list" ref="progressBar">
         <div class="play-progress" :style= "playProgressStyle"></div>
         <div class="buffer-progress" :style= "bufferProgressStyle"></div>
@@ -30,7 +32,7 @@
             <input v-model="volume" :style="{'background': `linear-gradient(to right, white ${volume}%, rgba(247, 247, 247, 0.2) 0%)`}" class="volume-range" type="range" min="0" max="100"/>
           </div>
           <div class="duration">
-            {{currentTime}}/{{duration}}
+            {{ formatTime(currentTime * 1000) }}/{{ formatTime(duration * 1000) }}
           </div>
         </div>
         <div class="right">
@@ -53,6 +55,12 @@
         </div>
       </div>
     </div>
+    <!-- 结束视频时 -->
+    <div class="video-ended-mask" v-if="ended">
+      <button class="button_icon large" @click="handleReplay">
+        <ReplayIcon />
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -65,15 +73,25 @@ import { formatTime, optimizedResize } from "@/utilitys"
 import SettingIcon from '@/components/SVGIcons/SettingIcon';
 import WideScreenIcon from '@/components/SVGIcons/WideScreenIcon';
 import FullScreenIcon from '@/components/SVGIcons/FullScreenIcon';
+import ReplayIcon from '@/components/SVGIcons/ReplayIcon';
 
 optimizedResize();
 export default {
   name: "VideoPlayer",
   props: ["brs"],
-  components: { PlayPauseButton, PopupMenu, SettingContainer, VolumeButton, SettingIcon, WideScreenIcon, FullScreenIcon, },
+  components: {
+    PlayPauseButton,
+    PopupMenu,
+    SettingContainer,
+    VolumeButton,
+    SettingIcon,
+    WideScreenIcon,
+    FullScreenIcon,
+    ReplayIcon,
+  },
   data() {
     return {
-      isPlay: false,
+      paused: true,
       currentTime: 0,
       bufferedEnd: 0,
       duration: 0,
@@ -84,11 +102,12 @@ export default {
       thumbnailPercent: 0,
       isShowThumbnailPorgress: false,
       isShowThumbnail: false,
+      ended: false,
     };
   },
   computed: {
     qualitys() {
-      return Object.keys(this.brs).map(vr => vr + "p");
+      return Object.keys(this.brs);
     },
     tempSrc() {
       return this.brs[Object.keys(this.brs)[Object.keys(this.brs).length - 1]];
@@ -124,8 +143,27 @@ export default {
     // window.addEventListener("optimizedResize", this.setVideoDemension.bind(this));
   },
   methods: {
+    formatTime,
+    handlePlay() {
+      this.paused = false;
+    },
+    handlePause() {
+      this.paused = true;
+    },
+    handleTimeUpdate({ target }) {
+      this.currentTime = target.currentTime;
+    },
+    handleReplay() {
+      this.$refs.video.currentTime = 0;
+      this.$refs.video.play();
+    },
     togglePlay() {
-      this.isPlay = !this.isPlay
+      if (!this.$refs.video) return;
+      if (this.paused) {
+        this.$refs.video.play();
+      } else {
+        this.$refs.video.pause();
+      }
     },
     toggleMute() {
       if (this.volume > 0) {
@@ -136,12 +174,12 @@ export default {
       }
     },
     setQuality(newQuality) {
-      if (!newQuality) return;
-      const newSrc = this.brs[newQuality.replace("p", "")];
-      const paused = this.video.paused
+      if (typeof newQuality == 'undefined' || typeof this.$refs.video == 'undefined') return;
+      const newSrc = this.brs[newQuality];
+      const paused = this.$refs.video.paused;
       this.src = newSrc;
-      this.video.currentTime = this.currentTime
-      if (!paused) this.video.play();
+      this.$refs.video.currentTime = this.currentTime;
+      if (!paused) this.$refs.video.play();
     },
     jumpToPercentTime(percent) {
       this.video.currentTime = this.video.duration * percent
@@ -275,17 +313,8 @@ export default {
     }
   },
   watch: {
-    isPlay(val) {
-      if(!this.$refs.video) return
-      if (val == true) {
-        this.$refs.video.play();
-      } else {
-        this.$refs.video.pause();
-      }
-      
-    },
     volume(val) {
-      this.video && (this.video.volume = val / 100);
+      this.$refs.video && (this.$refs.video.volume = val / 100);
     },
     brs(val) {
       this.src = this.brs[Object.keys(this.brs)[Object.keys(this.brs).length - 1]]
@@ -295,6 +324,9 @@ export default {
     },
     thumbnailPercent(val) {
       this.setThumbnailLeft(val)
+    },
+    currentTime(val) {
+      this.ended = val > 0 && val == this.duration ? true : false;
     }
   }
 };
@@ -484,5 +516,18 @@ export default {
     transform: scale(1)
   to
     transform: scale(1.2)
+
+.video-ended-mask
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.2);
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
 </style>
 

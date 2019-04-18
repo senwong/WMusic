@@ -10,10 +10,14 @@
         </p>
       </div>
       <div class="comments-wrapper">
-        <h3>最热评论（{{this.hotComments.length}}）</h3>
-        <comment-list :comments="hotComments"></comment-list>
-        <h3>最新评论（{{this.commentsTotal}}）</h3>
-        <comment-list :comments="comments"></comment-list>
+        <div v-if="hotComments.length">
+          <h3>最热评论（{{hotComments.length}}）</h3>
+          <comment-list :comments="hotComments"></comment-list>
+        </div>
+        <div v-if="commentsTotal">
+          <h3>最新评论（{{commentsTotal}}）</h3>
+          <comment-list :comments="comments"></comment-list>
+        </div>
       </div>
       <div class="similar-mv">
         <h3>相似MV</h3>
@@ -34,37 +38,38 @@
 </div>
 </template>
 <script>
-  import { getMvData, getMVComments, getSimilarMV } from "@/service/Service"
-  import CommentList from "@/components/FindMusic/CommentList"
-  import VideoPlayer from "@/components/MV/VideoPlayer"
+import { getMvData, getMVComments, getSimilarMV } from "@/service/Service"
+import CommentList from "@/components/FindMusic/CommentList"
+import VideoPlayer from "@/components/MV/VideoPlayer"
 
-  export default {
-    name: "MVPlayer",
-    components: { CommentList, VideoPlayer },
-    data() {
-      return {
-        id: "",
-        videoUrl: "",
-        name: "",
-        artists: [],
-        playCount: 0,
-        likeCount: 0,
-        shareCount: 0,
-        brs: [],
-        comments: [],
-        commentsTotal: 0,
-        similarMVs: [],
-        hotComments: [],
-        isTheaterMode: false,
-      }
-    },
-    created() {
-      this.updateView()
-    },
-    methods: {
-      updateView() {
-        this.id = this.$route.params.id
-        getMvData(this.id).then(res => {
+export default {
+  name: "MVPlayer",
+  components: { CommentList, VideoPlayer },
+  data() {
+    return {
+      id: "",
+      videoUrl: "",
+      name: "",
+      artists: [],
+      playCount: 0,
+      likeCount: 0,
+      shareCount: 0,
+      brs: [],
+      comments: [],
+      commentsTotal: 0,
+      similarMVs: [],
+      hotComments: [],
+      isTheaterMode: false,
+    }
+  },
+  created() {
+    this.updateView()
+  },
+  methods: {
+    updateView() {
+      this.id = this.$route.params.id
+      getMvData(this.id).then(
+        res => {
           res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
           const brsKeys = Object.keys(res.data.data.brs)
           this.videoUrl = res.data.data.brs[brsKeys[brsKeys.length - 1]]
@@ -75,25 +80,27 @@
           this.likeCount = res.data.data.likeCount
           this.shareCount = res.data.data.shareCount
           this.brs = res.data.data.brs
-        })
-        getMVComments(this.id).then(res => {
-          res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
-          this.comments = res.data.comments
-          this.commentsTotal = res.data.total
-          this.hotComments = res.data.hotComments
-        })
-        getSimilarMV(this.id).then(res => {
-          res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
-          this.similarMVs = res.data.mvs
-        })
-      }
-    },
-    watch: {
-      $route(val) {
-        this.updateView()
-      }
+        },
+        error => alert('getMvData error ' + error)
+      )
+      getMVComments(this.id).then(res => {
+        res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
+        this.comments = res.data.comments
+        this.commentsTotal = res.data.total
+        this.hotComments = res.data.hotComments
+      })
+      getSimilarMV(this.id).then(res => {
+        res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
+        this.similarMVs = res.data.mvs
+      })
+    }
+  },
+  watch: {
+    $route(val) {
+      this.updateView()
     }
   }
+}
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass"

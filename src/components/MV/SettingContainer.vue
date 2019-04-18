@@ -25,7 +25,7 @@
         :aria-checked="quality == curQuality"
         @click="setQuality(quality)">
         <span class="list-item-label">
-          {{quality}}
+          {{quality + 'p'}}
         </span>
       </li>
     </ul>

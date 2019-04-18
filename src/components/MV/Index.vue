@@ -51,19 +51,18 @@
             mv.cover = mv.cover.replace(/http:\/\//g, "https://")
           })
         } else {
-          console.warn("获取最新MV数据错误" + res.data)
+          alert("获取最新MV数据错误" + res.data)
         }
       })
       getMVrank().then(res => {
         if(res.data.code == 200) {
-          console.log(res.data)
           this.updateTime = res.data.updateTime
           this.MVrankList = res.data.data
           this.MVrankList.forEach(mv => {
             mv.cover = mv.cover.replace(/http:\/\//g, "https://")
           })
         } else {
-          console.warn("获取MV排行榜数据错误" + res.data)
+          alert("获取MV排行榜数据错误" + res.data)
         }
       })
     },
