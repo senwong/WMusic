@@ -1,5 +1,5 @@
 <template>
-<div>
+<div v-if="tracks && tracks.length > 0">
   <ul class="tracks" @scroll="handleScroll">
     <li class="head">
       <span>歌曲名</span>
@@ -100,7 +100,7 @@ export default {
     return {
       moreButton: null,
       selectedTrackId: null,
-    }
+    };
   },
   methods: {
     formatTime,
