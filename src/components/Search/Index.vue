@@ -1,28 +1,25 @@
 <template>
-<div class="container" ref="wrapper">
-  <input
-    class="search-input"
-    type="text"
-    @focus="handleInputFocus"
-    @blur="handleInputBlur"
-    @input="searchSuggest"
+<div class="container main-wrapper" ref="wrapper">
+  <SearchBarWithRecommendations
     v-model="keyWords"
-    v-on:keyup.enter="handleInputEnter"
+    @enter="handleInputEnter"
     placeholder="搜索。。。"
-  >
+  />
   <!-- search type tabs -->
-  <ul class="tab-menu" ref="tabMenu">
-    <li
-      class="tab-item"
-      v-for='type in Object.keys(searchTypes)'
-      :key="searchTypes[type]"
-      :class="{active: currentSearchType == searchTypes[type]}"
-      @click="handleTabClick(searchTypes[type])"
-    >{{type}}</li>
-  </ul>
+  <div class="tab-menu-wrapper">
+    <ul class="tab-menu" ref="tabMenu">
+      <li
+        class="tab-item"
+        v-for='type in Object.keys(searchTypes)'
+        :key="searchTypes[type]"
+        :class="{active: currentSearchType == searchTypes[type]}"
+        @click="handleTabClick(searchTypes[type])"
+      >{{type}}</li>
+    </ul>
+  </div>
 
   <!-- search result -->
-  <div v-if="!showRecommendations">
+  <div>
     <!-- 搜索单曲 -->
     <div v-if="currentSearchType == 1">
       <h3 class="fallback" v-if="searchSongs.length == 0">没有与此相关的单曲</h3>
@@ -152,85 +149,19 @@
     </div>
   </div>
   <h2 v-show="currentSearchType !== null && isLoadMore" class="loading">Loading...</h2>
-  <!-- search recommendations -->
-  <section class="search__recommendations" v-if="showRecommendations">
-    <h2 v-if="songs && songs.length > 0">单曲</h2>
-    <ul>
-      <li v-for="song in songs" :key="song.id" class="list-item">
-        <div class="list-item-icon play"></div>
-        <div class="list-item-left">
-          <div class="song-name">
-            {{song.name}}
-          </div>
-          <div>
-            <router-link
-              v-for="artist in song.artists.filter(ar => ar.id != 0)"
-              :to="'/artist/' + artist.id"
-              :key="artist.id"
-              class="artist-name">{{artist.name}}</router-link>
-            <span>•</span>
-            <router-link
-              :to="'/album/' + song.album.id"
-              class="album-name">{{song.album.name}}</router-link>
-          </div>
-        </div>
-        <div class="list-item-icon more"></div>
-        <div class="duration">
-        {{ formatTime(song.duration)}}
-        </div>
-      </li>
-    </ul>
-
-    <section v-if="artists && artists.length > 0">
-      <h2>歌手</h2>
-      <card-item
-        v-for="artist in artists"
-        :key="artist.id"
-        :link = "'/artist/' + artist.id"
-        :picUrl = "artist.img1v1Url | clipImage(400, 400)"
-        :title = artist.name
-        shape = "round"
-      />
-    </section>
-
-    <section v-if="playlists && playlists.length > 0">
-      <h2>歌单</h2>
-      <card-item
-        v-for="playlist in playlists"
-        :key="playlist.id"
-        :link = "'/playlist/' + playlist.id"
-        :picUrl = "playlist.coverImgUrl | clipImage(400, 400)"
-        :title = playlist.name
-        shape = "square"
-      />
-    </section>
-
-    <section v-if="mvs && mvs.length > 0">
-      <h2>MV</h2>
-      <card-item
-        v-for="mv in mvs"
-        :key="mv.id"
-        :link = "'/mvplay/' + mv.id"
-        :picUrl = "mv.cover | clipImage(640, 360)"
-        :title = mv.name
-        :subTitles = getMvSubTitles(mv)
-        :subLinks = getMvSubLinks(mv)
-        shape = "rectangle"
-      />
-    </section>
-  </section>
 </div>
 </template>
 <script>
-import { search, searchSuggest } from '@/service/Service'
-import { formatTime } from '@/utilitys'
-import CardItem from './CardItem'
-import SongList from '@/components/FindMusic/SongList'
+import { search } from '@/service/Service';
+import { formatTime } from '@/utilitys';
+import CardItem from './CardItem';
+import SongList from '@/components/FindMusic/SongList';
+import SearchBarWithRecommendations from './SearchBarWithRecommendations';
 const SEARCH_OFFSET = 30
 
 export default {
   name: "SearchIndex",
-  components: { CardItem, SongList },
+  components: { CardItem, SongList, SearchBarWithRecommendations, },
   data() {
     return {
       keyWords: "",
@@ -244,15 +175,6 @@ export default {
         "主播电台": 1009,
         "用户": 1002,
       },
-      showRecommendations: false,
-
-      // search recommendations result
-      songs: [],
-      artists: [],
-      albums: [],
-      mvs: [],
-      playlists: [],
-
       tabKey: null,
 
       // number referring to type, default 1
@@ -275,28 +197,6 @@ export default {
   },
   methods: {
     formatTime,
-    searchSuggest({ target: { value } }) {
-      if (!this.showRecommendations) return;
-      if (value.length < 1) {
-        this.songs = [];
-        this.artists = [];
-        this.albums = [];
-        this.mvs = [];
-        this.playlists = [];
-        return;
-      }
-      searchSuggest(value).then(
-        res => {
-          const { songs,artists, albums, mvs, playlists } = res.data.result;
-          this.songs = songs;
-          this.artists = artists;
-          this.albums = albums;
-          this.mvs = mvs;
-          this.playlists = playlists;
-        },
-        error => alert('get search suggest error ' + error)
-      );
-    },
     getMvSubTitles(mv) {
       return mv.artists.map( ar => {
         return {
@@ -318,7 +218,7 @@ export default {
       search(this.keyWords, searchType, this.currentLength).then(
         res => {
           const result = JSON.parse(JSON.stringify(res.data.result).replace(/http:\/\//g, "https://"));
-          if(searchType == 1) {
+          if(searchType == 1 && result.songs) {
             const songs = result.songs.map(song => ({
               id: song.id,
               name: song.name,
@@ -366,17 +266,7 @@ export default {
       obj[djRadio.dj.userId] = "/dj/" +  djRadio.dj.userId
       return obj
     },
-    handleInputFocus() {
-      // show recommendations; update recommendation data
-      this.showRecommendations = true;
-    },
-    handleInputBlur() {
-      // hide recommendations;
-      this.showRecommendations = false;
-      this.searchWithTypes();
-    },
     handleInputEnter() {
-      this.showRecommendations = false;
       this.searchWithTypes();
     },
   },
@@ -407,32 +297,49 @@ a
 .container
   position: relative;
   padding-bottom: 2em;
-.search-input
-  font-size: 150%;
-  border: none;
-  background: $whitegray5;
-  padding: 1em;
-  width: 100%;
-  &:focus
-    outline: none;
+  min-height: 100%;
+
+.tab-menu-wrapper
+  border-top: 1px solid rgb(224, 224, 224);
+  border-bottom: 1px solid rgb(224, 224, 224);
+  margin-top: 1em;
 .tab-menu
   display: flex;
-  border-bottom: 2px solid $orange;
+  flex-direction: row;
+  justify-content: space-between;
+
 .tab-item
-  flex: 1 1 0;
+  position: relative;
+  flex: 0 0 auto;
   display: inline-block;
-  padding: 1em 0.5em;
+  padding: 0.7em 0.7em;
   min-width: 0;
   overflow: hidden;
   text-align: center;
-  border: 1px solid $black-6;
   border-bottom: none;
+  color: rgb(110, 110, 110);
+  transition: color 200ms cubic-bezier(0.165, 0.84, 0.44, 1) 0s;
+  cursor: pointer;
+  overflow: visible;
   &.active
-    color: #fff;
-    background: $orange;
-    border-color: $orange;
-  &:not(:last-child)
-    margin-right: 0.2em;
+    color: rgb(0, 0, 0);
+    &::after
+      transform: scaleX(1);
+  &:hover
+    color: rgb(0, 0, 0);
+    &::after
+      transform: scaleX(1);
+  &::after
+    content: "";
+    height: 2px;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    background: rgb(0, 0, 0);
+    transition: transform 400ms cubic-bezier(0.165, 0.84, 0.44, 1) 0s;
+    transform-origin: left center;
+    transform: scaleX(0);
 
 .search-type,
 .search-result-item
@@ -582,5 +489,7 @@ a
 
 .fallback
   text-align: center;
+  padding-top: 2em;
+  color: rgb(110, 110, 110);
 </style>
 

@@ -114,12 +114,11 @@ export default {
   box-sizing: border-box;
 
 .container__main
-  overflow: hidden;
+  overflow: scroll;
   height: calc(100% - #{$footerHeight});
   box-sizing: border-box;
   z-index: 2;
   margin-left: 250px;
-  padding-bottom: $footerHeight;
 .container__footer
   position: fixed;
   height: $footerHeight;

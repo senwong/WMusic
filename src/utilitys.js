@@ -68,5 +68,17 @@ function addEventListenerOnce(target, type, listener, addOptions, removeOptions)
       listener.apply(this, arguments, addOptions)
   })
 }
+function clipImage(imgUrl, width, height) {
+  return imgUrl + `?param=${width}y${height}`
+}
 
-export { formatTime,formatDate, warn, formatDay, convertToHttps, optimizedResize, addEventListenerOnce }
+export {
+  formatTime,
+  formatDate,
+  warn,
+  formatDay,
+  convertToHttps,
+  optimizedResize,
+  addEventListenerOnce,
+  clipImage,
+};
