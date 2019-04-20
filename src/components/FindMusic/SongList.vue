@@ -11,8 +11,13 @@
         <PausedIcon class="play-icon" />
       </div>
       <div class="track-names">
-        <div class="track-name">
-          {{track.name}}  
+        <div class="track-name-mvlink">
+          <span class="track-name">
+            {{track.name}}
+          </span>
+          <a v-if="track.mv" :href="'/mvplay/' + track.mv" class="track-mvlink">
+            <MvIcon />
+          </a>
         </div>
         <div class="track-ar-al">
           <a
@@ -35,20 +40,6 @@
       <div class="track-duration">
         {{formatTime(track.dt)}}
       </div>
-      <!-- <router-link :to="'/song/'+track.id" class="track__name">
-        {{track.name}}
-      </router-link>
-      <span class="track__creators">
-        <router-link
-          v-for="ar in track.ar"
-          :key="ar.id"
-          :to="'/artist/' + ar.id"
-          >{{ar.name}} &nbsp;</router-link>
-      </span>
-      <router-link :to="'/album/'+track.al.id"  class="track__al__name">
-        {{track.al.name}}
-      </router-link>
-      <span class="track_dt">{{formatTime(track.dt)}}</span> -->
     </li>
   </ul>
   <popup-menu :target="moreButton">
@@ -99,12 +90,21 @@ import FavIcon from '../SVGIcons/FavIcon';
 import MoreIcon from '../SVGIcons/MoreIcon';
 import DownloadIcon from '../SVGIcons/DownloadIcon';
 import MusicIcon from '@/components/SVGIcons/MusicIcon';
+import MvIcon from '@/components/SVGIcons/MvIcon';
 
 export default {
   name: "SongList",
   props: ["tracks"],
   components: {
-    PopupMenu, MoreItem, MoreList, PausedIcon, FavIcon, MoreIcon, DownloadIcon, MusicIcon,
+    PopupMenu,
+    MoreItem,
+    MoreList,
+    PausedIcon,
+    FavIcon,
+    MoreIcon,
+    DownloadIcon,
+    MusicIcon,
+    MvIcon,
   },
   data() {
     return {
@@ -155,6 +155,7 @@ export default {
 </script>
 <style lang="sass" scoped>
 @import '../config.sass';
+@import '../../style/colors.sass';
 .tracks
   padding: 20px 0 0;
 .head
@@ -188,8 +189,21 @@ export default {
     display: none;
 .track-names
   flex: 1 1 auto;
+.track-name-mvlink
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 .track-name
   line-height: 22px;
+.track-mvlink
+  margin-left: 0.5em;
+  width: 1.2em;
+  height: 1.2em;
+  color: #666;
+  transition-property: color;
+  transition-duration: 250ms;
+  &:hover
+    color: $primary;
 
 .track-artist
   opacity: 0.6;

@@ -8,10 +8,10 @@
       <div class="media__right">
         <div class="media__heading">{{name}}</div>
         <div>
-          <button>播放</button>
-          <button>收藏</button>
-          <button>歌词</button>
-          <button>more</button>
+          <button class="button-rounded button-primary button-controll" @click="handlePlayAll">播放</button>
+          <button class="button-rounded button-controll">收藏</button>
+          <button class="button-rounded button-controll">歌词</button>
+          <button class="button-rounded button-controll">more</button>
         </div>
       </div>
     </div>
@@ -27,61 +27,70 @@
 </div>
 </template>
 <script>
-  import { getArtistInfo, getArtistAlbums, } from '../../service';
-  import {formatDate} from '@/utilitys';
-  import SongList from './SongList';
-  import SongCards from '@/components/globals/SongCards';
+import { getArtistInfo, getArtistAlbums, } from '@/service';
+import {formatDate} from '@/utilitys';
+import SongList from './SongList';
+import SongCards from '@/components/globals/SongCards';
+import { mapMutations } from 'vuex';
 
-  export default {
-    name: "SongDetail",
-    data() {
-      return {
-        name: "",
-        img: "",
-        briefDesc: "",
-        tracks: [],
-        hotAlbums: [{id: "", publishTime: "", name: "", picUrl: "",}],
-        formatDate: formatDate,
-      }
+export default {
+  name: "SongDetail",
+  data() {
+    return {
+      name: "",
+      img: "",
+      briefDesc: "",
+      tracks: [],
+      hotAlbums: [{id: "", publishTime: "", name: "", picUrl: "",}],
+      formatDate: formatDate,
+    }
+  },
+  methods: {
+    initData(artistId) {
+      getArtistInfo(artistId).then(res => {
+        console.log(res.data);
+        if (res.data.code == 200) {
+          ({
+            name: this.name,
+            img1v1Url: this.img,
+            briefDesc: this.briefDesc,
+          } = res.data.artist);
+          this.tracks = res.data.hotSongs;
+        }
+      })
+      getArtistAlbums(artistId).then(res => {
+        this.hotAlbums = res.data.hotAlbums;
+      })
     },
-    methods: {
-      initData(artistId) {
-        getArtistInfo(artistId).then(res => {
-          console.log(res.data);
-          if (res.data.code == 200) {
-            ({
-              name: this.name,
-              img1v1Url: this.img,
-              briefDesc: this.briefDesc,
-            } = res.data.artist);
-            this.tracks = res.data.hotSongs;
-          }
-        })
-        getArtistAlbums(artistId).then(res => {
-          this.hotAlbums = res.data.hotAlbums;
-        })
-      },
-      handleTabClick(e) {
-        if (e.target.classList.contains("active")) return;
-        this.$el.querySelector(".tab__title.active").classList.remove("active");
-        e.target.classList.add("active");
-      }
+    handleTabClick(e) {
+      if (e.target.classList.contains("active")) return;
+      this.$el.querySelector(".tab__title.active").classList.remove("active");
+      e.target.classList.add("active");
     },
-    components: { SongList, SongCards, },
-    created() {
-      const songId = this.$route.params.id;
-      this.initData(songId);
+    handlePlayAll() {
+      this.setTracks(this.tracks);
+      this.setCurrentSongId(this.tracks[0].id);
     },
-    watch: {
-      '$route' (to, from) {
-        this.initData(to.params.id);
-      }
-    },
-    mounted() {
-      const tabs = this.$el.querySelectorAll(".tab__title");
-      tabs.forEach(t => t.addEventListener("click", this.handleTabClick));
-    },
-  }
+    ...mapMutations('playlist', [
+      'setCurrentSongId',
+      'setTracks',
+    ]),
+  },
+  components: { SongList, SongCards, },
+  created() {
+    const songId = this.$route.params.id;
+    this.initData(songId);
+  },
+  watch: {
+    '$route' (to, from) {
+      this.initData(to.params.id);
+    }
+  },
+  mounted() {
+    const tabs = this.$el.querySelectorAll(".tab__title");
+    tabs.forEach(t => t.addEventListener("click", this.handleTabClick));
+  },
+}
 </script>
 <style lang="sass" scoped>
 @import '../config.sass';
@@ -131,4 +140,7 @@
     width: 100%;
     heihgt: auto;
     border-radius: 15px;
+
+.button-controll
+  margin-right: 1em;
 </style>
