@@ -152,7 +152,7 @@
 </div>
 </template>
 <script>
-import { search } from '@/service/Service';
+import { search } from '@/service';
 import { formatTime } from '@/utilitys';
 import CardItem from './CardItem';
 import SongList from '@/components/FindMusic/SongList';

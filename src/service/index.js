@@ -161,6 +161,20 @@ function searchSuggest(keywords) {
 function getSimiSongs(songId) {
   return Api().get("/simi/song?id=" + songId)
 }
+/**
+ * 获取用户详情
+ * @param {Number} uid 用户id
+ */
+function getUserDetail(uid) {
+  return Api().get("/user/detail?uid=" + uid);
+}
+/**
+  * 获取用户的歌单
+  * @param {Number} uid 用户id
+ */
+function getUserPlaylist(uid, offset=0) {
+  return Api().get("/user/playlist?uid=" + uid + '&offset=' + offset);
+}
 export {
   getBanner,
   getSongURL,
@@ -184,5 +198,7 @@ export {
   getLyrics,
   search,
   searchSuggest,
-  getSimiSongs
+  getSimiSongs,
+  getUserDetail,
+  getUserPlaylist,
 }

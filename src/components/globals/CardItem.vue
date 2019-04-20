@@ -16,11 +16,11 @@
           <MoreIcon />
         </button>
       </div>
-      <router-link :to= "'/'+cardType.toLowerCase() +'/'+ card.id" class="item__link">
+      <router-link :to= "'/'+cardType +'/'+ card.id" class="item__link">
         <img :src="card.picUrl | clipImage(400, 400)" alt="">
       </router-link>
     </div>
-    <router-link :to= "'/'+ cardType.toLowerCase() +'/' + card.id" class="list__name">
+    <router-link :to= "'/'+ cardType +'/' + card.id" class="list__name">
       {{card.name}}
     </router-link>
     <div class="creator-name">
@@ -70,7 +70,7 @@ import MoreItem from '../more-list/MoreItem.vue';
 import MoreList from '../more-list/MoreList.vue';
 import {formatDate} from '@/utilitys';
 import { mapMutations } from 'vuex';
-import { getPlaylistDetail, getAlbumDetail } from "@/service/Service"
+import { getPlaylistDetail, getAlbumDetail } from "@/service"
 import FavIcon from '../SVGIcons/FavIcon';
 import PausedIcon from '../SVGIcons/PausedIcon';
 import MoreIcon from '../SVGIcons/MoreIcon';

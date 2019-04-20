@@ -53,7 +53,7 @@
 <script>
 import SongInfoPanel from './SongInfoPanel.vue';
 import SoundPanel from './SoundPanel.vue';
-import { getSongDetail, getSongURL, getPlaylistDetail, } from '@/service/Service';
+import { getSongDetail, getSongURL, getPlaylistDetail, } from '@/service';
 import { formatTime } from '@/utilitys';
 import SongPlayer from './SongPlayer.vue';
 // import ProgressBar from './ProgressBar';

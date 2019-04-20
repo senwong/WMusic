@@ -82,7 +82,7 @@ import MoreItem from './more-list/MoreItem.vue';
 import MoreList from './more-list/MoreList.vue';
 import Loading from '@/components/Loading.vue';
 import { mapState, mapMutations } from 'vuex';
-import { getSongURL } from '@/service/Service';
+import { getSongURL } from '@/service';
 import PlaylistItem from './PlaylistItem';
 import MoreIcon from './SVGIcons/MoreIcon';
 import DownloadIcon from './SVGIcons/DownloadIcon';

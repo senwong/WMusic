@@ -62,7 +62,7 @@
 </div>
 </template>
 <script>
-  import { getSongDetail, getSongComment, getSimiSongs} from '@/service/Service';
+  import { getSongDetail, getSongComment, getSimiSongs} from '@/service';
   import CommentList from "./CommentList.vue";
   import {convertToHttps} from '@/utilitys';
   import RippleButton from '@/components/globals/RippleButton.vue';

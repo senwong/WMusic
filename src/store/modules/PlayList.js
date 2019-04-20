@@ -1,4 +1,4 @@
-import { getPlaylistDetail, getAlbumDetail } from "@/service/Service";
+import { getPlaylistDetail, getAlbumDetail } from "@/service";
 
 const state = {
   currentSongId: null,

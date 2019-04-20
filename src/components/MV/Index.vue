@@ -28,7 +28,7 @@
   </div>
 </template>
 <script>
-  import { getNewMV, getPersonalizedMV, getMVrank } from "@/service/Service"
+  import { getNewMV, getPersonalizedMV, getMVrank } from "@/service"
   import CardItem from "./CardItem"
   import RankItem from "./RankItem"
   import { formatDate } from "@/utilitys"

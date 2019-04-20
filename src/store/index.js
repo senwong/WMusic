@@ -1,6 +1,6 @@
 import Vue from "vue"
 import Vuex from "vuex"
-import { getSongDetail, getSongURL, getPlaylistDetail, } from "@/service/Service"
+import { getSongDetail, getSongURL, getPlaylistDetail, } from "@/service"
 // const defaultplayList = new PlayList([new Song({
 //   id: 326703,
 //   name: "艳火",

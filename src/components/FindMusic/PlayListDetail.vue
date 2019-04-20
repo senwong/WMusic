@@ -30,7 +30,7 @@
   </div> 
 </template>
 <script>
-import { getPlaylistDetail } from '../../service/Service';
+import { getPlaylistDetail } from '../../service';
 import { formatTime, convertToHttps } from '@/utilitys';
 import SongList from './SongList';
 import { mapMutations } from 'vuex'

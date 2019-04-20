@@ -28,7 +28,7 @@
   </div>
 </template>
 <script>
-  import { getLyrics } from "@/service/Service.js"
+  import { getLyrics } from "@/service"
   export default {
     name: "SongPlayer",
     data() {

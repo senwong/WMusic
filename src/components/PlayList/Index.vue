@@ -42,31 +42,23 @@
           <li class="order__item active" data-order="hot">最热</li>
           <li class="order__item" data-order="new">最新</li>
         </ul>
-        <song-cards :cardLists="playlists" :cardType="'PLAYLIST'"></song-cards>
-        <ul class="pagination">
-          <li
-            class="pagination__item"
-            v-for="(pageNum, i) in pagination" :key="i"
-            @click="offset = pageNum - 1"
-            :class="{'active': offset == pageNum - 1}"
-          >
-            {{pageNum}}
-          </li>
-        </ul>
+        <song-cards :cardLists="playlists" :cardType="'PLAYLIST'" />
+        <Pagination :total="pageTotal" @change="handlePageChange" />
       </div>
     </div>
   </div>
 </template>
 <script>
-import { getPlayListCatlist, getPlayList } from '@/service/Service';
+import { getPlayListCatlist, getPlayList } from '@/service';
 import {convertToHttps} from '@/utilitys';
 import SongCards from '@/components/globals/SongCards';
 import ChevronTopIcon from '@/components/SVGIcons/ChevronTopIcon';
 import ChevronBottomIcon from '@/components/SVGIcons/ChevronBottomIcon';
+import Pagination from '@/components/globals/Pagination';
 
 export default {
   name: "PlayListIndex",
-  components: { SongCards, ChevronTopIcon, ChevronBottomIcon, },
+  components: { SongCards, ChevronTopIcon, ChevronBottomIcon, Pagination, },
   data() {
     return {
       categories: {},
@@ -78,6 +70,7 @@ export default {
       total: 0,
       offset: 0,
       showCards: true,
+      limit: 20,
     }
   },
   created() {
@@ -89,7 +82,7 @@ export default {
         alert("获取歌单分类失败： " + res.data)
       }
     })
-    this.getPlayList()
+    this.updatePlayList()
   },
   methods: {
     afterEnter() {
@@ -104,8 +97,8 @@ export default {
         this.showCards = true
       }
     },
-    getPlayList() {
-      getPlayList(this.selected, this.order, this.offset*20 ).then(res => {
+    updatePlayList() {
+      getPlayList(this.selected, this.order, this.offset ).then(res => {
         res = convertToHttps(res)
         if(res.data.code == 200) {
           this.total = res.data.total
@@ -128,35 +121,17 @@ export default {
       this.selected = newCat
       this.showMenu = false
     },
-    isPageNum(pageIdx) {
-      return pageIdx == 0
-        || pageIdx == this.pageCount - 1
-        || (pageIdx < this.offset + 2 && pageIdx > Math.max(0, this.offset - 3));
+    handlePageChange(currentPageidx) {
+      this.offset = this.limit * currentPageidx;
+      this.updatePlayList();
     },
-    isPageSpread(pageIdx) {
-      return pageIdx == this.offset + 2 || pageIdx ==  Math.max(0, this.offset - 3);
-    }
   },
   computed: {
-    pageCount() {
-      return Math.floor(this.total / 20)
+    pageTotal() {
+      return Math.ceil(this.total / this.limit);
     },
-    pagination() {
-      const result = [];
-      new Array(this.pageCount).fill(true).map((_, idx) => {
-        if (this.isPageNum(idx)) {
-          result.push(idx + 1);
-        } else if (this.isPageSpread(idx)) {
-          result.push('...');
-        }
-      });
-      return result;
-    }
   },
   watch: {
-    offset(val) {
-      this.getPlayList()
-    },
     selected(val) {
       this.offset = 0
       this.getPlayList()
@@ -244,16 +219,5 @@ export default {
   padding: 0 0 0.7em;
   &.active
     border-bottom: 1px solid $orange;
-    color: $orange;
-
-.pagination
-  padding: 0;
-  text-align: center;
-.pagination__item
-  display: inline-block;
-  margin: 1em;
-  padding: 0.5em;
-  cursor: pointer;
-  &.active
     color: $orange;
 </style>

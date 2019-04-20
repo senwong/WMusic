@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-  import { getMVrank } from "@/service/Service"
+  import { getMVrank } from "@/service"
   import { formatDate } from "@/utilitys"
   import RankItem from "./RankItem"
   export default {

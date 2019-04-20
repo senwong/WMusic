@@ -65,7 +65,7 @@
   </div>
 </template>
 <script>
-import { getTopList } from "@/service/Service"
+import { getTopList } from "@/service"
 import CardItem from "@/components/TopList/CardItem"
 import MediaItem from "@/components/TopList/MediaItem"
 const topListMap = {

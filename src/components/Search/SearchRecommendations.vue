@@ -7,7 +7,7 @@
 </section>
 </template>
 <script>
-import { searchSuggest } from '@/service/Service';
+import { searchSuggest } from '@/service';
 import { formatTime } from '@/utilitys';
 import CardItem from './CardItem';
 import SongList from '@/components/FindMusic/SongList';

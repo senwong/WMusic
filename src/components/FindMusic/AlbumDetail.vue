@@ -20,7 +20,7 @@
 </div>
 </template>
 <script>
-  import {getAlbumDetail} from '../../service/Service';
+  import {getAlbumDetail} from '../../service';
   import SongList from './SongList';
   import { mapMutations } from 'vuex';
 

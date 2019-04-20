@@ -27,7 +27,7 @@
 </div>
 </template>
 <script>
-  import { getArtistInfo, getArtistAlbums, } from '../../service/Service';
+  import { getArtistInfo, getArtistAlbums, } from '../../service';
   import {formatDate} from '@/utilitys';
   import SongList from './SongList';
   import SongCards from '@/components/globals/SongCards';

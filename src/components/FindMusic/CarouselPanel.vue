@@ -36,7 +36,7 @@
   </div>
 </template>
 <script>
-  import { getBanner } from '../../service/Service.js'
+  import { getBanner } from '../../service'
   import {convertToHttps} from '@/utilitys'
   import { Motion } from "vue-motion";
   import ScaleableButton from './ScaleableButton.vue';

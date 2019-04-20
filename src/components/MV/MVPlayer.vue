@@ -38,7 +38,7 @@
 </div>
 </template>
 <script>
-import { getMvData, getMVComments, getSimilarMV } from "@/service/Service"
+import { getMvData, getMVComments, getSimilarMV } from "@/service"
 import CommentList from "@/components/FindMusic/CommentList"
 import VideoPlayer from "@/components/MV/VideoPlayer"
 
