@@ -8,10 +8,10 @@
       <div class="media__right">
         <div class="media__heading">{{album.name}}</div>
         <div>
-          <button @click="playAll">播放</button>
-          <button>收藏</button>
-          <button>歌词</button>
-          <button>more</button>
+          <button @click="playAll" class="button-rounded button-primary button-controll">播放</button>
+          <button class="button-rounded button-controll">收藏</button>
+          <button class="button-rounded button-controll">歌词</button>
+          <button class="button-rounded button-controll">more</button>
         </div>
       </div>
     </div>
@@ -77,5 +77,7 @@
   justify-content: space-between;
 .media__heading
   font-size: 2em;
+.button-controll
+  margin-right: 0.5em;
 </style>
 

@@ -1,35 +1,43 @@
 <template>
 <div v-if="tracks && tracks.length > 0">
   <ul class="tracks" @scroll="handleScroll">
-    <li class="head">
-      <span>歌曲名</span>
-      <span></span>
-      <span>歌手</span>
-      <span>专辑</span>
-      <span>时长</span>
-    </li>
     <li class="track"
       v-for="track in tracks"
       :key="track.id"
       :class="{'active': track.id == currentSongId}"
     >
-      <router-link :to="'/song/'+track.id" class="track__name">
+      <div class="track-icon" @click="handlePlay(track.id)">
+        <MusicIcon class="music-icon" />
+        <PausedIcon class="play-icon" />
+      </div>
+      <div class="track-names">
+        <div class="track-name">
+          {{track.name}}  
+        </div>
+        <div class="track-ar-al">
+          <a
+            class="track-artist"
+            v-for="ar in track.ar"
+            :key="ar.id"
+            :href="'/artist/' + ar.id"
+          >
+            {{ar.name}}
+          </a>
+          <span class="track-dot">•</span>
+          <a :href="'/album/'+track.al.id" class="track-album">
+            {{track.al.name}}
+          </a>
+        </div>
+      </div>
+      <div class="track-more" @mousedown="handleMoreMousedown(track.id, $event)">
+        <MoreIcon />
+      </div>
+      <div class="track-duration">
+        {{formatTime(track.dt)}}
+      </div>
+      <!-- <router-link :to="'/song/'+track.id" class="track__name">
         {{track.name}}
       </router-link>
-      <span class="track__controll">
-        <!-- 播放 -->
-        <button class="button_icon large controll__item" @click="handlePlay(track.id)">
-          <PlayIcon />
-        </button>
-        <!-- 收藏 -->
-        <button class="button_icon large controll__item">
-          <FavIcon />
-        </button>
-        <!-- 更多 -->
-        <button class="button_icon large controll__item" @mousedown="handleMoreMousedown(track.id, $event)" :data-song-id="track.id">
-          <MoreIcon />
-        </button>
-      </span>
       <span class="track__creators">
         <router-link
           v-for="ar in track.ar"
@@ -40,7 +48,7 @@
       <router-link :to="'/album/'+track.al.id"  class="track__al__name">
         {{track.al.name}}
       </router-link>
-      <span class="track_dt">{{formatTime(track.dt)}}</span>
+      <span class="track_dt">{{formatTime(track.dt)}}</span> -->
     </li>
   </ul>
   <popup-menu :target="moreButton">
@@ -86,15 +94,17 @@ import MoreList from '@/components/more-list/MoreList.vue';
 import { formatTime } from '@/utilitys';
 import { mapState, mapGetters, mapMutations, } from 'vuex';
 import PlayIcon from '../SVGIcons/PlayIcon';
+import PausedIcon from '@/components/SVGIcons/PausedIcon'; 
 import FavIcon from '../SVGIcons/FavIcon';
 import MoreIcon from '../SVGIcons/MoreIcon';
 import DownloadIcon from '../SVGIcons/DownloadIcon';
+import MusicIcon from '@/components/SVGIcons/MusicIcon';
 
 export default {
   name: "SongList",
   props: ["tracks"],
   components: {
-    PopupMenu, MoreItem, MoreList, PlayIcon, FavIcon, MoreIcon, DownloadIcon,
+    PopupMenu, MoreItem, MoreList, PausedIcon, FavIcon, MoreIcon, DownloadIcon, MusicIcon,
   },
   data() {
     return {
@@ -146,7 +156,7 @@ export default {
 <style lang="sass" scoped>
 @import '../config.sass';
 .tracks
-  padding: 0;
+  padding: 20px 0 0;
 .head
   color: $gray;
   display: grid;
@@ -154,23 +164,69 @@ export default {
   grid-column-gap: 10px;
   font-size: 14px;
 .track
-  display: grid;
-  padding: 8px;
-  grid-template-columns: 1fr minmax(120px, 0.5fr) 1fr 1fr minmax(auto, 0.5fr);
-  grid-column-gap: 10px;
-  &:nth-of-type(2n)
-    background-color: $whitegray2;
+  display: flex;
+  flex-direction: row;
+  height: 4.5em;
+  padding-top: 0.7em;
+  transition-property: background;
+  transition-duration: 250ms;
   &:hover
-    background-color: $whitegray3;
-  &:hover .track__controll
-    visibility: visible;
-  &.active
-    color: $orange;
+    background-color: rgba(0,0,0,.2);
+    .track-more
+      opacity: 1;
+    .music-icon
+      display: none;
+    .play-icon
+      display: block;
+
+.track-icon
+  width: 3em;
+  height: 1em;
+  flex: 0 0 auto;
+  cursor: pointer;
+  .play-icon
+    display: none;
+.track-names
+  flex: 1 1 auto;
+.track-name
+  line-height: 22px;
+
+.track-artist
+  opacity: 0.6;
+  transition-property: opacity border;
+  transition-duration: 250ms;
+  line-height: 20px;
+  border-bottom: 1px solid rgba(0,0,0,0);
+  &:hover
+    opacity: 1;
+    border-color: rgba(0,0,0,0.8);
+.track-dot
+  opacity: 0.6;
+.track-album
+  opacity: 0.6;
+  transition-property: opacity border;
+  transition-duration: 250ms;
+  line-height: 20px;
+  border-bottom: 1px solid rgba(0,0,0,0);
+  &:hover
+    opacity: 1;
+    border-color: rgba(0,0,0,0.8);
+
+.track-more
+  flex: 0 0 0;
+  min-width: 50px;
+  height: 1em;
+  opacity: 0;
+  cursor: pointer;
+.track-duration
+  flex: 0 0 0;
+  width: 4em;
+  padding-right: 1em;
+
 a
   text-decoration: none;
   color: inherit;
-  &:hover
-    text-decoration: underline;
+
 .track__name, .track__controll, .track__creators, .track__al__name, .track_dt
   white-space: nowrap;
   overflow: hidden;
