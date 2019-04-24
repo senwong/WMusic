@@ -1,124 +1,158 @@
 <template>
-  <div class="container" ref="container">
-    <template>
-      <div class="progress__past" ref="past" :style="{ transform: `scaleX(${timeTranslateX / pastWidth})`, width: `${pastWidth}px` }"></div>
-      <div class="progress__state" ref="time" :style="{ transform: `translateX(${timeTranslateX}px)`}">{{formatTime((currentTime || 0 ) * 1000) + '/' +formatTime(duration)}}</div>
-    </template>
+  <div class="progress-bar-container" ref="container" @click="handleClick">
+    <div class="bar">
+      <div
+        class="bg"
+        :style="{transform: `translateX(${bgAccTranslateX}px)`, left: `${-bgTotalWidth}px`}"
+      />
+    </div>
+    <div
+      class="circle"
+      ref="circle"
+      :style="{transform: `translate(${circleAccTranslateX}px, -50%)`}"
+    />
   </div>
 </template>
+
 <script>
-/*
-transition-duration: this.duration - this.currentTime * 1000
-translateX = this.$ref.container.clientWidth - this.$refs.time.clientWidth;
-transform: translateX(${translateX}px)
-*/
-import { formatTime } from '@/utilitys';
+const msPerFrame = 1000 / 60;
 export default {
   data() {
     return {
-      pastWidth: 0,
+      animationId: null,
+      prevTime: 0,
+      circleAccTranslateX: 0,
+      circleTotalWidth: 0,
+      bgAccTranslateX: 0,
+      bgTotalWidth: 0
     };
   },
-  props: [ 'song' ],
-  methods: {
-    handleResize() {
-      this.updatePastWidth();
-    },
-    formatTime,
-    updatePastWidth() {
-      if (!this.$refs.container || !this.$refs.time) {
-        this.pastWidth = 0;
-      }
-      console.log('this.$refs.container.clientWidth ', this.$refs.container.clientWidth);
-      console.log('this.$refs.time.clientWidth ', this.$refs.time.clientWidth);
-      this.pastWidth = this.$refs.container.clientWidth - this.$refs.time.clientWidth;
-    },
-    // updateTimeTranslateX() {
-    //   if (!this.duration) {
-    //     this.timeTranslateX = 0;
-    //   }
-    //   this.timeTranslateX = this.pastWidth * (this.currentTime / this.duration);
-    //   if (this.isPlaying) {
-    //     window.requestAnimationFrame(this.updateTimeTranslateX);
-    //   }
-    // },
-    // reset() {
-    //   this.timeTranslateX = 0;
-    // }
-  },
-  watch: {
-    isPlaying: function(val) {
-      console.log('watch song.isPlaying');
-      // val && this.updateTimeTranslateX();
-    },
-    song: function(val, oldVal) {
-      // if (val != oldVal) {
-      //   this.reset();
-      // }
-    }
+  props: {
+    totalTime: Number,
+    isPlaying: Boolean
   },
   computed: {
-    currentTime: function() {
-      return this.song.currentTime;
+    circleTranslateXPerMs() {
+      return this.circleTotalWidth / (this.totalTime * 1000);
     },
-    duration: function() {
-      return this.song.duration;
-    },
-    isPlaying: function() {
-      return this.song.isPlaying;
-    },
-    speed: function() {
-      return (this.pastWidth / this.duration) * (1000 / 60);
-    },
-    timeTranslateX: function() {
-      if (!this.duration) {
-        return 0;
-      }
-      return this.pastWidth * (this.currentTime * 1000 / this.duration);
+    bgTranslateXPerMs() {
+      return this.bgTotalWidth / (this.totalTime * 1000);
     }
   },
-  mounted: function() {
-    window.addEventListener('resize', this.handleResize);
-    this.watch
-    this.updatePastWidth();
+  watch: {
+    isPlaying(newVal, oldVal) {
+      if (newVal && !oldVal) {
+        // start animation
+        this.animatable = true;
+        this.prevTime = performance.now();
+        this.startAnimation();
+      }
+      if (!newVal && oldVal) {
+        // stop animation
+        this.stopAnimation();
+      }
+    },
+    totalTime() {
+      this.circleAccTranslateX = 0;
+      this.bgAccTranslateX = 0;
+    }
   },
-  beforeDestroy: function() {
-    window.removeEventListener('resize', this.handleResize);
+  methods: {
+    updateTotalWidth() {
+      const containerWidth = this.$refs.container.clientWidth;
+      const circleWidth = this.$refs.circle.clientWidth;
+      this.circleTotalWidth = containerWidth - circleWidth;
+      this.bgTotalWidth = containerWidth;
+    },
+    startAnimation(timestamp) {
+      if (!this.animatable) return;
+      if (this.circleAccTranslateX >= this.circleTotalWidth || this.bgAccTranslateX >= this.bgTotalWidth) {
+        this.circleAccTranslateX = 0;
+        this.bgAccTranslateX = 0;
+        return;
+      }
+      // timeDelta
+      const currentTime = timestamp || performance.now();
+      const timeDelta = currentTime - this.prevTime;
+      this.prevTime = currentTime;
+
+      this.circleAccTranslateX += timeDelta * this.circleTranslateXPerMs;
+      this.bgAccTranslateX += timeDelta * this.bgTranslateXPerMs;
+
+      this.animationId = requestAnimationFrame(this.startAnimation);
+    },
+    stopAnimation() {
+      this.animatable = false;
+    },
+    handleAudioEnded() {
+      this.stopAnimation();
+      this.circleAccTranslateX = 0;
+      this.bgAccTranslateX = 0;
+    },
+    handleClick({ clientX }) {
+      const container = this.$refs.container;
+      const { left } = container.getBoundingClientRect();
+
+      this.bgAccTranslateX = clientX - left;
+      this.circleAccTranslateX = clientX - left;
+      const percent = (clientX - left) / container.clientWidth;
+      this.$emit("jumpTo", percent);
+    }
   },
-}
+  mounted() {
+    this.updateTotalWidth();
+    window.addEventListener("resize", this.updateTotalWidth);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.updateTotalWidth);
+  }
+};
 </script>
-<style lang="sass" scoped>
-@import "../config.sass";
 
-.container
-  display: block;
+<style scoped>
+.progress-bar-container {
+  height: 12px;
   width: 100%;
-  height: 4px;
-  background-color: $whitegray3;
-
-.progress__past
+  position: relative;
+}
+.bar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 5px;
+  width: 100%;
+  border-radius: 9999px;
+  background: rgb(213, 216, 220);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.circle {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 12px;
   height: 100%;
+  border-radius: 9999px;
+  background-color: lightpink;
+  transform-origin: left center;
+  opacity: 0;
+}
+.bg {
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 100%;
-  background-color: $orange;
-  transform-origin: left;
-  transition-duration: 16.6ms;
-  transition-timing-function: linear;
-  transition-property: transform;
-.progress__state
-  position: absolute;
-  visibility: visible;
-  height: 1em;
-  line-height: 1em;
-  font-size: 1em;
-  position: absolute;
-  top: -0.5em;
-  background: $mask;
-  border-radius: 1em;
-  display: inline-block;
-  padding: 0.2em 0.5em;
-  min-width: 5.5em;
-  transition-duration: 16.6ms;
-  transition-timing-function: linear;
-  transition-property: transform;
+  height: 100%;
+  border-radius: 9999px;
+  background: rgb(171, 178, 185);
+  transform-origin: left center;
+  /* transition-property: background-color;
+  transition-duration: 0.25s; */
+}
+.progress-bar-container:hover .bg {
+  background: tomato;
+}
+.progress-bar-container:hover .circle {
+  opacity: 1;
+}
 </style>
-

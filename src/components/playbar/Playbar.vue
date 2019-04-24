@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="playbar">
-    <audio :src="songUrl" autoplay ref="audio" @play="handlePlay" @pause="handlePause"/>
+    <audio :src="songUrl" autoplay ref="audio" @play="handlePlay" @pause="handlePause" @loadedmetadata="handleLoadedMetaData" @ended="nextSong"/>
     <!-- 左边区域 开始-->
     <song-info-panel
       class="playbar__item_left"
@@ -42,7 +42,7 @@
     <!-- 右边区域 结束-->
     <div class="progress-bar">
       <!-- TODO -->
-      <!-- <ProgressBar /> -->
+      <ProgressBar :totalTime="duration" :isPlaying="!paused" @jumpTo="handleJumpTo" />
     </div>
   </div>
   <transition name="slide-up">
@@ -56,7 +56,7 @@ import SoundPanel from './SoundPanel.vue';
 import { getSongDetail, getSongURL, getPlaylistDetail, } from '@/service';
 import { formatTime } from '@/utilitys';
 import SongPlayer from './SongPlayer.vue';
-// import ProgressBar from './ProgressBar';
+import ProgressBar from './ProgressBar';
 import { mapState } from 'vuex';
 import PLAYMODES from './PLAYMODES.js';
 import PrevSongIcon from '../SVGIcons/PrevSongIcon';
@@ -71,7 +71,7 @@ export default {
     SongInfoPanel,
     SoundPanel,
     SongPlayer,
-    // ProgressBar,
+    ProgressBar,
     PrevSongIcon,
     NextSongIcon,
     PausedIcon,
@@ -88,6 +88,7 @@ export default {
       artists: [],
       currentMode: PLAYMODES.LOOP,
       volume: 0.5,
+      duration: 0,
     }
   },
   computed: {
@@ -216,6 +217,12 @@ export default {
           return;
       }
     },
+    handleLoadedMetaData({ target: { duration } }) {
+      this.duration = duration;
+    },
+    handleJumpTo(percent) {
+      this.$refs.audio.currentTime = percent * this.$refs.audio.duration;
+    },
     ...mapMutations('playlist', [
       'setCurrentSongId',
     ])
@@ -298,18 +305,13 @@ export default {
 .prev-song, .pause-song, .next-song
   margin: 0 0.5em;
 
-// 进度条样式
+// 进度条位置
 .progress-bar
   position: absolute;
-  top: 0;
-  height: 4px;
+  top: -6px;
   left: 0;
-  right: 0;
-  background-color: $whitegray3;
-  &:hover
-    // height: 8px;
-    .progress__state
-      visibility: visible;
+  width: 100%;
+
 
 .progress__past
   height: 100%;
