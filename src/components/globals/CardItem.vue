@@ -17,15 +17,17 @@
         </button>
       </div>
       <router-link :to= "'/'+cardType +'/'+ card.id" class="item__link">
-        <img :src="card.picUrl | clipImage(400, 400)" alt="">
+        <transition name="fade">
+          <img v-if="showImg" :src="imgSrc" :alt="card.name">
+        </transition>
       </router-link>
     </div>
     <router-link :to= "'/'+ cardType +'/' + card.id" class="list__name">
       {{card.name}}
     </router-link>
-    <div class="creator-name">
-      {{card.creatorName}}
-    </div>
+    <a class="creator-name" :href="`/user/${card.creator.userId}`">
+      {{card.creator.nickname}}
+    </a>
     <div class="play-count">
       <span class="play-count__icon">
         <PlayWithoutCircleIcon />
@@ -65,6 +67,7 @@
   </div>
 </template>
 <script>
+import Vue from 'vue';
 import PopupMenu from '../PopupMenu.vue';
 import MoreItem from '../more-list/MoreItem.vue';
 import MoreList from '../more-list/MoreList.vue';
@@ -79,12 +82,26 @@ import PlayWithoutCircleIcon from '../SVGIcons/PlayWithoutCircleIcon';
 
 export default {
   name: "CardItem",
-  props: ['card', 'cardType'],
-  components: { PopupMenu, MoreItem, MoreList, FavIcon, PausedIcon, MoreIcon, DownloadIcon, PlayWithoutCircleIcon, },
   data() {
     return {
+      showImg: false,
+      imgSrc: null,
       morePopupButton: null,
-    }
+    };
+  },
+  props: ['card', 'cardType'],
+  components: {
+    PopupMenu,
+    MoreItem,
+    MoreList,
+    FavIcon,
+    PausedIcon,
+    MoreIcon,
+    DownloadIcon,
+    PlayWithoutCircleIcon,
+  },
+  created() {
+    this.downloadImage();
   },
   mounted() {
     this.morePopupButton = this.$refs.more;
@@ -111,6 +128,14 @@ export default {
         },
         error => alert('getPlaylistDetail error ' + error)
       );
+    },
+    downloadImage() {
+      const img = new Image();
+      img.onload = () => {
+        this.showImg = true;
+      };
+      const clipImage = Vue.filter('clipImage');
+      img.src = this.imgSrc = clipImage(this.card.picUrl, 400, 400);
     },
     ...mapMutations('playlist', [
       'setCurrentSongId',
@@ -139,6 +164,11 @@ export default {
   width: 100%;
   user-select: none;
   font-size: 0;
+  border-radius: 15px;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding-bottom: calc(100% - 2px);
+  background: rgba(0, 0, 0, 0.1);
   &::after
     content: "";
     opacity: 0;
@@ -154,9 +184,14 @@ export default {
   &:hover::after
     display: block;
   img
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: auto;
     border-radius: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
 .list__cover:hover > .item__link::after
   opacity: 1;
 
@@ -198,15 +233,24 @@ export default {
   padding: 0 0.2em;
   color: white;
   background-color: rgba(0, 0, 0, 0.5);
-  display: inline-block;
   border-radius: 0.2em;
   font-size: 12px;
 .play-count__icon
   width: 1em;
   height: 1em;
-  display: inline-block;
 .creator-name
   color: $gray;
   font-size: 12px;
+  transition-property: color;
+  transition-duration: 250ms;
+  &:hover
+    color: black;
+
+.fade-enter-active, .fade-leave-active
+  transition: opacity .5s;
+
+.fade-enter, .fade-leave-to
+  opacity: 0;
+
 </style>
 

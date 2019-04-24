@@ -38,11 +38,14 @@
         </div>
       </transition>
       <div v-show="showCards">
-        <ul class="category__order">
-          <li class="order__item active" data-order="hot">最热</li>
-          <li class="order__item" data-order="new">最新</li>
-        </ul>
-        <song-cards :cardLists="playlists" :cardType="'PLAYLIST'" />
+        <TabMenu
+          align-left
+          :list="[
+            {key: 1, title: '最热', onClick: () => orderType='hot', isActive: orderType == 'hot' },
+            {key: 2, title: '最新', onClick: () => orderType='new', isActive: orderType == 'new' },
+          ]"
+        />
+        <song-cards :cardLists="playlists" :cardType="'playlist'" class="song-cards"/>
         <Pagination :total="pageTotal" @change="handlePageChange" />
       </div>
     </div>
@@ -55,17 +58,24 @@ import SongCards from '@/components/globals/SongCards';
 import ChevronTopIcon from '@/components/SVGIcons/ChevronTopIcon';
 import ChevronBottomIcon from '@/components/SVGIcons/ChevronBottomIcon';
 import Pagination from '@/components/globals/Pagination';
+import TabMenu from '@/components/globals/TabMenu';
 
 export default {
   name: "PlayListIndex",
-  components: { SongCards, ChevronTopIcon, ChevronBottomIcon, Pagination, },
+  components: {
+    SongCards,
+    ChevronTopIcon,
+    ChevronBottomIcon,
+    Pagination,
+    TabMenu,
+  },
   data() {
     return {
       categories: {},
       sub: [],
       selected: "全部",
       showMenu: false,
-      order: "hot",
+      orderType: "hot",
       playlists: [],
       total: 0,
       offset: 0,
@@ -98,7 +108,7 @@ export default {
       }
     },
     updatePlayList() {
-      getPlayList(this.selected, this.order, this.offset ).then(res => {
+      getPlayList(this.selected, this.orderType, this.offset ).then(res => {
         res = convertToHttps(res)
         if(res.data.code == 200) {
           this.total = res.data.total
@@ -109,7 +119,7 @@ export default {
               name: list.name,
               publishTime: list.updateTime,
               playCount: list.playCount,
-              creatorName: list.creator.nickname,
+              creator: list.creator,
             }
           })
         } else {
@@ -134,11 +144,11 @@ export default {
   watch: {
     selected(val) {
       this.offset = 0
-      this.getPlayList()
+      this.updatePlayList();
     },
-    order(val) {
-      this.offset = 0
-      this.getPlayList()
+    orderType(val) {
+      this.offset = 0;
+      this.updatePlayList();
     }
   },
   mounted() {
@@ -207,17 +217,7 @@ export default {
 .move-leave-active
   animation: move-up 0.5s ease forwards;
 
-.category__order
-  padding: 0;
-  margin: 0 0 1em;
-  border-bottom: 1px solid $whitegray2;
-.order__item
-  display: inline-block;
-  border-bottom: 1px solid transparent;
-  font-weight: bolder;
-  margin: 1em 2em 0 0;
-  padding: 0 0 0.7em;
-  &.active
-    border-bottom: 1px solid $orange;
-    color: $orange;
+
+.song-cards
+  margin-top: 2em;
 </style>
