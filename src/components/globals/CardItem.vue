@@ -16,16 +16,17 @@
           <MoreIcon />
         </button>
       </div>
-      <router-link :to= "'/'+cardType +'/'+ card.id" class="item__link">
+      <a :href="`/${cardType}/${card.id}`" class="item__link">
         <transition name="fade">
-          <img v-if="showImg" :src="imgSrc" :alt="card.name">
+          <img v-if="showImg" :src="imgSrc | convert2Https" :alt="card.name">
         </transition>
-      </router-link>
+      </a>
     </div>
-    <router-link :to= "'/'+ cardType +'/' + card.id" class="list__name">
+    <a :href="`/${cardType}/${card.id}`" class="list__name">
       {{card.name}}
-    </router-link>
-    <a class="creator-name" :href="`/user/${card.creator.userId}`">
+    </a>
+    <!-- creator -->
+    <a v-if="card.creator" class="creator-name" :href="`/user/${card.creator.userId}`">
       {{card.creator.nickname}}
     </a>
     <div class="play-count">
