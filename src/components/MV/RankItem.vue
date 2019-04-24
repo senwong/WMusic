@@ -15,9 +15,13 @@
           <PausedIcon />
         </button>
       </div>
-      <router-link :to= "'/mvplay/'+ rankItem.id" class="img-wrapper">
-        <img :src="rankItem.cover | convert2Https | clipImage(640, 360)" :alt="rankItem.name">
-      </router-link>
+      <a :to= "'/mvplay/'+ rankItem.id" class="img-wrapper">
+        <ImageWithPlaceholder
+          :src="rankItem.cover | convert2Https | clipImage(640, 360)"
+          :alt="rankItem.name"
+          ratio="16:9"
+        />
+      </a>
     </div>
     <div class="media__info">
       <div class="media__info__name">{{rankItem.name}}</div>
@@ -27,25 +31,29 @@
   </div>
 </template>
 <script>
+import Vue from 'vue';
 import { formatDate } from "@/utilitys"
 import UnderscoreIcon from '@/components/SVGIcons/UnderscoreIcon';
 import ArrowTopIcon from '@/components/SVGIcons/ArrowTopIcon';
 import ArrowBottomIcon from '@/components/SVGIcons/ArrowBottomIcon';
 import PausedIcon from '@/components/SVGIcons/PausedIcon';
+import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
 
 export default {
   name: "RankItem",
   props: ['rankItem', 'index'],
-  components: { UnderscoreIcon, ArrowTopIcon, ArrowBottomIcon, PausedIcon, },
-  data() {
-    return {
-      formatDate: formatDate,
-    }
+  components: {
+    UnderscoreIcon,
+    ArrowTopIcon,
+    ArrowBottomIcon,
+    PausedIcon,
+    ImageWithPlaceholder,
   },
   methods: {
+    formatDate,
     formatIndex(i) {
       return i < 10 ? '0'+i : i
-    }
+    },
   }
 }
 </script>
@@ -118,9 +126,10 @@ export default {
 .img-wrapper
   display: inline-block;
   position: relative;
-  height: 100%;
   width: 267px;
   user-select: none;
+  border-radius: 15px;
+  overflow: hidden;
   &::after
     content: "";
     display: none;
@@ -130,13 +139,15 @@ export default {
     left: 0;
     right: 0;
     background-color: $mask;
-    border-radius: 15px;
   &:hover::after
     display: block;
   img
-    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: auto;
     width: 100%;
-    border-radius: 15px;
+    
 // .button-bg-right
 //   background-image: url("../../assets/chevron-right-black.svg");
 //   background-position: right 3px center;

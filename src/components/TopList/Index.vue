@@ -19,11 +19,14 @@
               :key="officalList[title] && officalList[title].id || i"
               v-show="selected==i"
             >
-            <span>
-              <img :src="officalList[title].coverImgUrl | convert2Https" :alt="title">
-            </span>
-              <div class="card__middle"></div>
               <div class="card__left">
+                <ImageWithPlaceholder
+                  :src="officalList[title].coverImgUrl | convert2Https | clipImage(400, 400)"
+                  :alt="title"
+                  ratio="1:1"
+              />
+              </div>
+              <div class="card__right">
                 <div class="table-head">
                   <span class="text-center"></span>
                   <span @click="playAll(officalList[title].id)">全部播放</span>
@@ -65,9 +68,10 @@
   </div>
 </template>
 <script>
-import { getTopList } from "@/service"
-import CardItem from "@/components/TopList/CardItem"
-import MediaItem from "@/components/TopList/MediaItem"
+import { getTopList } from "@/service";
+import CardItem from "@/components/TopList/CardItem";
+import MediaItem from "@/components/TopList/MediaItem";
+import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
 const topListMap = {
   "0": "云音乐新歌榜", // 云音乐
   "1": "云音乐热歌榜", // 云音乐
@@ -96,7 +100,7 @@ const topListMap = {
 }
 export default {
   name: "TopList",
-  components: {CardItem, MediaItem, },
+  components: {CardItem, MediaItem,ImageWithPlaceholder },
   data() {
     return {
       tabs: ["热歌", "新歌", "原创"],
@@ -242,7 +246,10 @@ export default {
     width: 200px;
     height: 200px;
     // transform: rotate3d(0, 1, 0, 45deg);
-.card__left, .card__middle
+.card__left
+  flex: 0 0 10em;
+  margin-right: 2em;
+.card__right
   flex: 1 1 auto;
 .table-row, .table-head
   display: grid;

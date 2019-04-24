@@ -8,27 +8,29 @@
           <PausedIcon />
         </button>
       </div>
-      <router-link :to= "'/'+cardType +'/'+ card.id" class="item__link">
-        <img :src="card.cover | convert2Https | clipImage(640, 360)" alt="">
-      </router-link>
+      <a :href="`/${cardType}/${card.id}`" class="item__link">
+        <ImageWithPlaceholder :src="this.card.cover | convert2Https | clipImage(640, 360)" :alt="card.name" ratio="16:9"/>
+      </a>
     </div>
-    <router-link :to= "'/'+cardType +'/' + card.id" class="list__name">
+    <a :href="`/${cardType}/${card.id}`" class="list__name">
       <span>{{card.name}}</span><span> - {{card.artistName}}</span>
-    </router-link>
+    </a>
   </div>
 </template>
 <script>
+import Vue from 'vue';
 import PausedIcon from '@/components/SVGIcons/PausedIcon';
+import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
 
 export default {
   name: "CardItem",
   props: ['card', 'cardType'],
-  components: { PausedIcon },
+  components: { PausedIcon, ImageWithPlaceholder },
   methods: {
     formatPlayCount(playCount) {
       if (playCount < 10000) return playCount
       return (playCount / 10000).toFixed(1) + "万"
-    }
+    },
   },
 }
 </script>
@@ -48,10 +50,12 @@ export default {
  
 .item__link
   display: inline-block;
+  position: relative;
   height: 100%;
   width: 100%;
   user-select: none;
-  font-size: 0;
+  border-radius: 15px;
+  overflow: hidden;
   &::after
     content: "";
     display: none;
@@ -61,13 +65,15 @@ export default {
     left: 0;
     right: 0;
     background-color: $mask;
-    border-radius: 15px;
   &:hover::after
     display: block;
   img
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
     height: auto;
-    border-radius: 15px;
+
 
 .list__control
   position: absolute;

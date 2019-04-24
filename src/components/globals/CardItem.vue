@@ -17,9 +17,11 @@
         </button>
       </div>
       <a :href="`/${cardType}/${card.id}`" class="item__link">
-        <transition name="fade">
-          <img v-if="showImg" :src="imgSrc | convert2Https" :alt="card.name">
-        </transition>
+        <ImageWithPlaceholder
+          :src="card.picUrl | convert2Https | clipImage(400, 400)"
+          :alt="card.name"
+          ratio="1:1"
+        />
       </a>
     </div>
     <a :href="`/${cardType}/${card.id}`" class="list__name">
@@ -80,13 +82,12 @@ import PausedIcon from '../SVGIcons/PausedIcon';
 import MoreIcon from '../SVGIcons/MoreIcon';
 import DownloadIcon from '../SVGIcons/DownloadIcon';
 import PlayWithoutCircleIcon from '../SVGIcons/PlayWithoutCircleIcon';
+import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
 
 export default {
   name: "CardItem",
   data() {
     return {
-      showImg: false,
-      imgSrc: null,
       morePopupButton: null,
     };
   },
@@ -100,9 +101,7 @@ export default {
     MoreIcon,
     DownloadIcon,
     PlayWithoutCircleIcon,
-  },
-  created() {
-    this.downloadImage();
+    ImageWithPlaceholder,
   },
   mounted() {
     this.morePopupButton = this.$refs.more;
@@ -129,14 +128,6 @@ export default {
         },
         error => alert('getPlaylistDetail error ' + error)
       );
-    },
-    downloadImage() {
-      const img = new Image();
-      img.onload = () => {
-        this.showImg = true;
-      };
-      const clipImage = Vue.filter('clipImage');
-      img.src = this.imgSrc = clipImage(this.card.picUrl, 400, 400);
     },
     ...mapMutations('playlist', [
       'setCurrentSongId',
@@ -168,8 +159,6 @@ export default {
   border-radius: 15px;
   box-sizing: border-box;
   overflow: hidden;
-  padding-bottom: calc(100% - 2px);
-  background: rgba(0, 0, 0, 0.1);
   &::after
     content: "";
     opacity: 0;
@@ -246,12 +235,6 @@ export default {
   transition-duration: 250ms;
   &:hover
     color: black;
-
-.fade-enter-active, .fade-leave-active
-  transition: opacity .5s;
-
-.fade-enter, .fade-leave-to
-  opacity: 0;
 
 </style>
 

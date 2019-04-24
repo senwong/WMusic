@@ -4,7 +4,13 @@
     <ul class="list-container">
       <li v-for="list in playlist" :key="list.id">
         <a :href="'/playlist/' + list.id" class="list-item">
-          <img :src="list.coverImgUrl | convert2Https | clipImage(300, 300)" :alt="list.name">
+          <div class="playlist-cover">
+            <ImageWithPlaceholder
+              :src="list.coverImgUrl | convert2Https | clipImage(300, 300)"
+              :alt="list.name"
+              ratio="1:1"
+            />
+          </div>
           <div class="name">{{list.name}}</div>
         </a>
       </li>
@@ -17,6 +23,7 @@
 import { getUserPlaylist } from '@/service';
 import SongCards from '@/components/globals/SongCards';
 import Pagination from '@/components/globals/Pagination';
+import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
 
 export default {
   data() {
@@ -30,7 +37,7 @@ export default {
     userId: Number,
     count: Number,
   },
-  components: { SongCards, Pagination, },
+  components: { SongCards, Pagination, ImageWithPlaceholder },
   watch: {
     userId() {
       this.updatePlaylist();
@@ -79,8 +86,8 @@ export default {
   justify-content: space-between;
   padding: 2em;
 .list-item
-  img
-    width: 100%;
+  display: block;
+  .playlist-cover
     border: 1px solid rgba(0, 0, 0, 0.1);
   .name
     font-size: 14px;

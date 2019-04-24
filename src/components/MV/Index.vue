@@ -6,7 +6,7 @@
         <card-item
           v-for="mv in newMVList"
           :key="mv.id"
-          :card=mv
+          :card="mv"
           cardType="mvplay"
         >
         </card-item>

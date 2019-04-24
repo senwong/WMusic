@@ -7,7 +7,7 @@ import AlbumDetail from "../components/FindMusic/AlbumDetail"
 import UserDetail from "@/components/FindMusic/UserDetail"
 import Playlist from "@/components/Playlist/Index"
 import TopListIndex from "@/components/TopList/Index"
-import MVIndex from "@/components/MV/Index"
+import MV from "@/components/MV/Index"
 import MVPlayer from "@/components/MV/MVPlayer"
 import MVRankList from "@/components/MV/RankList"
 import SearchIndex from "@/components/Search/Index"
@@ -23,7 +23,7 @@ export default new VueRouter({
     { path: "/album/:id", component: AlbumDetail },
     { path: "/user/:id", component: UserDetail },
     { path: "/toplist", component: TopListIndex },
-    { path: "/mv", component: MVIndex },
+    { path: "/mv", component: MV },
     { path: "/mvplay/:id", component: MVPlayer },
     { path: "/mv/rank", component: MVRankList },
     { path: "/search", component: SearchIndex },

@@ -13,7 +13,11 @@
   -->
   <div class="profile-panel">
     <div class="avatar">
-      <img :src="profile.avatarUrl | convert2Https" :alt="profile.nickname" />
+      <ImageWithPlaceholder
+        :src="profile.avatarUrl | convert2Https | clipImage(300, 300)"
+        :alt="profile.nickname"
+        ratio="1:1"
+      />
     </div>
     <div class="profile-detail">
       <div class="detail-row nickname-action">
@@ -69,6 +73,7 @@
 import { getUserDetail } from '@/service';
 import districtCodeNameMap from './districtCode.json';
 import UserPlaylist from '@/components/FindMusic/UserPlaylist';
+import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
 
 export default {
   name: "UserDetail",
@@ -78,7 +83,7 @@ export default {
       profile: null,
     }
   },
-  components: { UserPlaylist },
+  components: { UserPlaylist, ImageWithPlaceholder },
   methods: {
     getDistrictName(districtCode) {
       const name = districtCodeNameMap[districtCode];
@@ -121,13 +126,9 @@ export default {
   justify-content: flex-start;
   padding: 2em;
 .avatar
-  flex: 0 0 auto;
-  width: 10em;
-  height: 10em;
+  flex: 0 0 10em;
   margin-right: 2em;
-  img
-    width: 100%;
-    height: 100%;
+
 // user infomation row
 .detail-row
   display: flex;

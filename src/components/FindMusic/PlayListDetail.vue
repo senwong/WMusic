@@ -2,7 +2,14 @@
   <div class="main-wrapper">
     <div>
       <div class="info">
-        <img :src="coverImgUrl | convert2Https " class="cover-img" :alt="name">
+        <div class="cover-img">
+          <ImageWithPlaceholder
+            v-if="coverImgUrl"
+            :src="coverImgUrl | convert2Https | clipImage(400, 400)"
+            :alt="name"
+            ratio="1:1"
+          />
+        </div>
         <div class="desc">
           <div class="creator">
             <a class="creator-avatar" :href="'/user/' + creator.userId">
@@ -34,6 +41,8 @@ import { getPlaylistDetail } from '../../service';
 import { formatTime } from '@/utilitys';
 import SongList from './SongList';
 import { mapMutations } from 'vuex'
+import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
+
 export default {
   data() {
     return {
@@ -47,6 +56,7 @@ export default {
       playlistId: null,
     }
   },
+  components: { SongList, ImageWithPlaceholder },
   computed: {
     updateTimeFormated() {
       if (!this.updateTime) return "";
@@ -69,7 +79,6 @@ export default {
       error => alert('getPlaylistDetail error: ' + error)
     );
   },
-  components: {SongList,},
   methods: {
     handlePlayAll() {
       if (this.tracks) {
@@ -93,8 +102,7 @@ export default {
   display: flex;
   height: 200px;
 .cover-img
-  height: 100%;
-  width: 200px;
+  flex: 0 0 200px;
   border-radius: 15px;
   margin-right: 20px;
 .desc
