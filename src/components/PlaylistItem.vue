@@ -14,7 +14,7 @@
   >
     <!-- 靠左显示 -->
     <div class="album-img">
-      <img :src="track.al.picUrl | clipImage(80, 80)" :alt="track.name">
+      <img :src="track.al.picUrl | convert2Https | clipImage(80, 80)" :alt="track.name">
     </div>
     <div class="name-songer">
       <div class="name">{{track.name}}</div>

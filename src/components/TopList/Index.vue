@@ -20,7 +20,7 @@
               v-show="selected==i"
             >
             <span>
-              <img :src="officalList[title].coverImgUrl" alt="">
+              <img :src="officalList[title].coverImgUrl | convert2Https" :alt="title">
             </span>
               <div class="card__middle"></div>
               <div class="card__left">

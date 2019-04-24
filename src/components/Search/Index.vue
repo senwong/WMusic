@@ -31,7 +31,7 @@
       <ul>
         <li v-for="artist in searchArtists" :key="artist.key" class="artist-item-search">
           <router-link :to="'/artist/' + artist.id" class="artist-pic-search">
-            <img :src="(artist.picUrl || artist.img1v1Url) | clipImage(100, 100)" :alt="artist.name">
+            <img :src="(artist.picUrl || artist.img1v1Url) | convert2Https | clipImage(100, 100)" :alt="artist.name">
           </router-link>
           <router-link :to="'/artist/' + artist.id" class="artis-name-search">
             <span>{{artist.name}}</span><span v-if="artist.trans">({{artist.trans}})</span>
@@ -45,7 +45,7 @@
       <ul>
         <li v-for="album in searchAlbums" :key="album.key" class="album-item-search">
           <router-link :to="'/album/' + album.id" class="album-pic-search">
-            <img :src="album.picUrl | clipImage(100, 100)" :alt="album.name">
+            <img :src="album.picUrl | convert2Https | clipImage(100, 100)" :alt="album.name">
           </router-link>
           <div class="album-name-search">
             <router-link :to="'/album/' + album.id">
@@ -80,7 +80,7 @@
       <ul>
         <li v-for="playlist in searchPlaylists" :key="playlist.key" class="playlist-item-search">
           <router-link :to="'/playlist/' + playlist.id" class="playlist-pic-search">
-            <img :src="playlist.coverImgUrl | clipImage(200, 200)" :alt="playlist.name">
+            <img :src="playlist.coverImgUrl | convert2Https | clipImage(200, 200)" :alt="playlist.name">
           </router-link>
           <div class="playlist-name-search">
             <router-link :to="'/playlist/' + playlist.id">
@@ -137,7 +137,7 @@
       <ul>
         <li v-for="user in searchUsers" :key="user.id" class="user-item-search">
           <router-link :to="'/user/' + user.id" class="user-pic-search">
-            <img :src="user.avatarUrl | clipImage(200, 200)" :alt="user.name">
+            <img :src="user.avatarUrl | convert2Https | clipImage(200, 200)" :alt="user.name">
           </router-link>
           <router-link :to="'/user/' + user.id" class="user-name-search">
             <span>{{user.nickname}}</span>

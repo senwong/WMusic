@@ -27,7 +27,7 @@
           v-for="simiMV in similarMVs"
           :key="simiMV.id"
         >
-          <img class="left__item" :src="simiMV.cover | clipImage(336, 188)" alt="">
+          <img class="left__item" :src="simiMV.cover | convert2Https | clipImage(336, 188)" :alt="simiMV.name">
           <div class="right__item">
             <div class="txt_main">{{simiMV.name}}</div>
             <div class="txt_sub">{{simiMV.artistName}}</div>

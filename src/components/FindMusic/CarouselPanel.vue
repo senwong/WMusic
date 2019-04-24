@@ -13,9 +13,9 @@
             zIndex: zIndexs[idx],
             opacity: opacitys[idx],
           }"
-          :href="images[idx].url"
+          :href="images[idx].url | convert2Https"
         >
-          <img :src="images[idx].src" @load="loadedImgCount++">
+          <img :src="images[idx].src | convert2Https" @load="loadedImgCount++">
         </a>
       </template>
     </Motion>
@@ -36,34 +36,33 @@
   </div>
 </template>
 <script>
-  import { getBanner } from '../../service'
-  import {convertToHttps} from '@/utilitys'
-  import { Motion } from "vue-motion";
-  import ScaleableButton from './ScaleableButton.vue';
+import { getBanner } from '../../service'
+import { Motion } from "vue-motion";
+import ScaleableButton from './ScaleableButton.vue';
 
-  const targetType = {
-    "3000": "url",
-    "1000": "playlist",
-    "10": "album",
-    "1": "song"
-  };
-  function getWidth(ele) {
-    return ele ? ele.clientWidth : 0;
+const targetType = {
+  "3000": "url",
+  "1000": "playlist",
+  "10": "album",
+  "1": "song"
+};
+function getWidth(ele) {
+  return ele ? ele.clientWidth : 0;
+}
+const getTransformValues = containerEle => ({
+  left: {
+    getTranslateX: () => 0,
+    scale: 0.85,
+  },
+  middle: {
+    getTranslateX: ele => (getWidth(containerEle) - getWidth(ele)) / 2,
+    scale: 1,
+  },
+  right: {
+    getTranslateX: ele => getWidth(containerEle) - getWidth(ele),
+    scale: 0.85,
   }
-  const getTransformValues = containerEle => ({
-    left: {
-      getTranslateX: () => 0,
-      scale: 0.85,
-    },
-    middle: {
-      getTranslateX: ele => (getWidth(containerEle) - getWidth(ele)) / 2,
-      scale: 1,
-    },
-    right: {
-      getTranslateX: ele => getWidth(containerEle) - getWidth(ele),
-      scale: 0.85,
-    }
-  });
+});
 export default {
   data() {
     return {
@@ -79,7 +78,6 @@ export default {
   },
   created() {
     getBanner().then(res => {
-      res = convertToHttps(res)
       let uid = 1;
       res.data.banners.forEach(banner => {
         this.images.push({

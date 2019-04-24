@@ -1,7 +1,7 @@
 <template>
   <div class="contaienr">
     <div class="img-wrapper">
-      <img :src="currentSong.imgUrl" alt="">
+      <img :src="currentSong.imgUrl | convert2Https" :alt="currentSong.name">
     </div>
     <div class="info">
       <div class="name">{{currentSong.name}}</div>

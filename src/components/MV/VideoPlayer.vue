@@ -1,7 +1,7 @@
 <template>
   <div class="video-player">
     <video preload="true" ref="video"
-      :src="src"
+      :src="src | convert2Https"
       @loadedmetadata="e => this.duration = e.target.duration"
       @progress="handleVideoProgress"
       @play="handlePlay"

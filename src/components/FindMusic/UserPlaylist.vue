@@ -4,7 +4,7 @@
     <ul class="list-container">
       <li v-for="list in playlist" :key="list.id">
         <a :href="'/playlist/' + list.id" class="list-item">
-          <img :src="list.coverImgUrl | clipImage(300, 300)" :alt="list.name">
+          <img :src="list.coverImgUrl | convert2Https | clipImage(300, 300)" :alt="list.name">
           <div class="name">{{list.name}}</div>
         </a>
       </li>

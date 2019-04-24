@@ -3,18 +3,18 @@
     <!-- 歌曲信息 -->
     <div class="song-info">
       <div class="album-img">
-        <img :src="album.picUrl | clipImage(400, 400)" alt="">
+        <img :src="album.picUrl | convert2Https | clipImage(400, 400)" :alt="name">
       </div>
       <div class="song-desc">
         <div class="song-name">{{name}}</div>
         <div>艺人：
-          <router-link
-            v-for="(artist, i) in artists"
-            :key="(artist.id == '0' ? i : artist.id)"
-            :to="'/artist/'+ artist.id">{{artist.name}}</router-link>
+          <a
+            v-for="artist in artists.filter(ar => ar.id !== 0)"
+            :key="artist.id"
+            :href="'/artist/'+ artist.id">{{artist.name}}</a>
         </div>
         <div>专辑：
-          <router-link :to="'/album/'+album.id">{{album.name}}</router-link>
+          <a :href="'/album/'+album.id">{{album.name}}</a>
         </div>
         <div class="controls">
           <ripple-button @click="play">播放</ripple-button>
@@ -44,7 +44,7 @@
         <ul v-if="simiSongs">
           <li v-for="song in simiSongs" :key="song.id" class="simi-item">
             <div class="img-container">
-              <img :src="song.album.picUrl | clipImage(100, 100)" alt="">
+              <img :src="song.album.picUrl | convert2Https | clipImage(100, 100)" :alt="song.album.name">
               <div class="mask-container">
                 <div class="mask">
                 </div>
@@ -64,7 +64,6 @@
 <script>
   import { getSongDetail, getSongComment, getSimiSongs} from '@/service';
   import CommentList from "./CommentList.vue";
-  import {convertToHttps} from '@/utilitys';
   import RippleButton from '@/components/globals/RippleButton.vue';
   import PlaySvg from "@/components/globals/PlaySvg.vue";
   const  OFEESETCOUNT = 20
@@ -91,7 +90,6 @@
       console.log("songid", this.songId);
       // 获取歌曲信息
       getSongDetail(this.songId).then(res => {
-        res = convertToHttps(res)
         if (res.data.code == 200) {
           ({
             name: this.name,
@@ -114,7 +112,6 @@
       })
       // 获取相似歌曲
       getSimiSongs(this.songId).then(res => {
-        res = convertToHttps(res)
         this.simiSongs = res.data.songs
       })
     },

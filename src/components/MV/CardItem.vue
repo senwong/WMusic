@@ -9,7 +9,7 @@
         </button>
       </div>
       <router-link :to= "'/'+cardType +'/'+ card.id" class="item__link">
-        <img :src="card.cover | clipImage(640, 360)" alt="">
+        <img :src="card.cover | convert2Https | clipImage(640, 360)" alt="">
       </router-link>
     </div>
     <router-link :to= "'/'+cardType +'/' + card.id" class="list__name">

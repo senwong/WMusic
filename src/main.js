@@ -10,9 +10,11 @@ Vue.config.productionTip = false
 
 Vue.use(VueRouter)
 Vue.filter("clipImage", function (imgUrl, width, height) {
+  if (!imgUrl || imgUrl.length < 1) return;
   return imgUrl + `?param=${width}y${height}`
 })
 Vue.filter("convert2Https", function (imgUrl) {
+  if (!imgUrl || imgUrl.length < 1) return;
   return imgUrl.replace(/http:\/\//g, "https://")
 })
 

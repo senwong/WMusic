@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="playbar">
-    <audio :src="songUrl" autoplay ref="audio" @play="handlePlay" @pause="handlePause" @loadedmetadata="handleLoadedMetaData" @ended="nextSong"/>
+    <audio :src="songUrl | convert2Https" autoplay ref="audio" @play="handlePlay" @pause="handlePause" @loadedmetadata="handleLoadedMetaData" @ended="nextSong"/>
     <!-- 左边区域 开始-->
     <song-info-panel
       class="playbar__item_left"

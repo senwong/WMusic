@@ -2,7 +2,7 @@
 <div>
   <div class="comment" v-for="comment in comments" :key="comment.commentId">
     <router-link :to="'/user/'+comment.user.userId" class="user__avatar">
-      <img :src="comment.user.avatarUrl | convert2Https | clipImage(100, 100)" alt="">
+      <img :src="comment.user.avatarUrl | convert2Https | clipImage(100, 100)" :alt="comment.user.nickname">
     </router-link>
     <div class="comment__content">
       <router-link :to="'/user/'+comment.user.userId" class="user__name">
@@ -12,7 +12,7 @@
       <div class="replied">
         <div class="comment" v-for="(repley, i) in comment.beReplied" :key="i">
           <router-link :to="'/user/'+comment.user.userId" class="user__avatar">
-            <img :src="comment.user.avatarUrl | convert2Https | clipImage(100, 100)" alt="comment">
+            <img :src="comment.user.avatarUrl | convert2Https | clipImage(100, 100)" :alt="comment.user.nickname">
           </router-link>
           <div class="comment__content">
             <router-link :to="'/user/'+comment.user.userId" class="user__name">

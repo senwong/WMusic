@@ -2,11 +2,11 @@
   <div class="main-wrapper">
     <div>
       <div class="info">
-        <img :src="coverImgUrl" class="cover-img" :alt="name">
+        <img :src="coverImgUrl | convert2Https " class="cover-img" :alt="name">
         <div class="desc">
           <div class="creator">
             <a class="creator-avatar" :href="'/user/' + creator.userId">
-              <img :src="creator.avatarUrl" alt="creator.nickname" />
+              <img :src="creator.avatarUrl | convert2Https" :alt="creator.nickname" />
             </a>
             <a class="creator-name" :href="'/user/' + creator.userId">
               {{creator.nickname}}
@@ -31,7 +31,7 @@
 </template>
 <script>
 import { getPlaylistDetail } from '../../service';
-import { formatTime, convertToHttps } from '@/utilitys';
+import { formatTime } from '@/utilitys';
 import SongList from './SongList';
 import { mapMutations } from 'vuex'
 export default {

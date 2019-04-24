@@ -28,9 +28,6 @@ function formatDay(milliseconds) {
 function warn(msg) {
   console.warn(msg)
 }
-function convertToHttps(responseObject) {
-  return JSON.parse(JSON.stringify(responseObject).replace(/http:\/\//g, "https://"))
-}
 /**
  * 优化过的resize事件
  */
@@ -77,7 +74,6 @@ export {
   formatDate,
   warn,
   formatDay,
-  convertToHttps,
   optimizedResize,
   addEventListenerOnce,
   clipImage,

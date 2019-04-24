@@ -16,7 +16,7 @@
         </button>
       </div>
       <router-link :to= "'/mvplay/'+ rankItem.id" class="img-wrapper">
-        <img :src="rankItem.cover | clipImage(640, 360)" alt="">
+        <img :src="rankItem.cover | convert2Https | clipImage(640, 360)" :alt="rankItem.name">
       </router-link>
     </div>
     <div class="media__info">

@@ -11,7 +11,7 @@
         </div>
       </div>
       <router-link :to= "'/'+cardType +'/'+ card.id" class="item__link">
-        <img :src="card.coverImgUrl" alt="">
+        <img :src="card.coverImgUrl | convert2Https" :alt="card.name">
       </router-link>
     </div>
     <router-link :to= "'/'+cardType +'/' + card.id" class="list__name">

@@ -3,7 +3,7 @@
   <div>
     <div class="media">
       <div class="media__left">
-        <img :src="img" alt="">
+        <img :src="img | convert2Https" :alt="name">
       </div>
       <div class="media__right">
         <div class="media__heading">{{name}}</div>

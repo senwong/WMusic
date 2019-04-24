@@ -13,7 +13,7 @@
   -->
   <div class="profile-panel">
     <div class="avatar">
-      <img :src="profile.avatarUrl" :alt="profile.nickname" />
+      <img :src="profile.avatarUrl | convert2Https" :alt="profile.nickname" />
     </div>
     <div class="profile-detail">
       <div class="detail-row nickname-action">

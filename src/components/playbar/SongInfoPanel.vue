@@ -1,7 +1,7 @@
 <template>
 <div class="song-info-panel">
   <div class="album-img">
-    <img v-if="albumImg" :src="albumImg | clipImage(192, 192)" :alt="name">
+    <img v-if="albumImg" :src="albumImg | convert2Https | clipImage(192, 192)" :alt="name">
     <div v-else class="img-placeholder"></div>
     <div class="img-mask">
       <button class="button_icon large button_center-center" @click="$emit('toggle-song-player')" :class="{'invert': !isShowSongPlayer}">

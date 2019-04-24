@@ -53,7 +53,6 @@
 </template>
 <script>
 import { getPlayListCatlist, getPlayList } from '@/service';
-import {convertToHttps} from '@/utilitys';
 import SongCards from '@/components/globals/SongCards';
 import ChevronTopIcon from '@/components/SVGIcons/ChevronTopIcon';
 import ChevronBottomIcon from '@/components/SVGIcons/ChevronBottomIcon';
@@ -109,7 +108,6 @@ export default {
     },
     updatePlayList() {
       getPlayList(this.selected, this.orderType, this.offset ).then(res => {
-        res = convertToHttps(res)
         if(res.data.code == 200) {
           this.total = res.data.total
           this.playlists = res.data.playlists.map(list => {
