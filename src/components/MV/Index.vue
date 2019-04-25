@@ -14,7 +14,7 @@
       <div class="title">
         <span class="text-h1">MV排行榜</span>
         <span class="text-gray">{{formatDate(updateTime)}}更新</span>
-        <router-link to="/mv/rank" class="button-bg-right">更多</router-link>
+        <a href="/mv/rank" class="button-bg-right">更多</a>
       </div>
       <div class="rank-container">
         <rank-item

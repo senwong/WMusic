@@ -31,12 +31,12 @@
                   <span class="text-center"></span>
                   <span @click="playAll(officalList[title].id)">全部播放</span>
                   <span></span>
-                  <router-link :to="'/playlist/'+officalList[title].id">全部</router-link>
+                  <a :href="'/playlist/'+officalList[title].id">全部</a>
                 </div>
                 <ul class="table-body">
                   <li class="table-row" v-for="(track, i) in officalList[title].tracks" :key="track.id">
                     <span class="text-center">0{{i+1}}</span>
-                    <router-link :to="'/song/'+track.id">{{track.name}}</router-link>
+                    <a :href="'/song/'+track.id">{{track.name}}</a>
                     <span>{{track.ar.map(ar => ar.name).join("; ")}}</span>
                   </li>
                 </ul>

@@ -21,8 +21,8 @@
       </div>
       <div class="similar-mv">
         <h3>相似MV</h3>
-        <router-link
-          :to="'/mvplay/'+simiMV.id"
+        <a
+          :href="'/mvplay/'+simiMV.id"
           class="similar-mv__item"
           v-for="simiMV in similarMVs"
           :key="simiMV.id"
@@ -32,7 +32,7 @@
             <div class="txt_main">{{simiMV.name}}</div>
             <div class="txt_sub">{{simiMV.artistName}}</div>
           </div>
-        </router-link>
+        </a>
       </div>
   </div>
 </div>

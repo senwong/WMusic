@@ -52,8 +52,13 @@
               </div>
             </div>
             <div class="info-container">
-              <router-link :to="'/song/' + song.id " class="name">{{ song.name }}</router-link>
-              <router-link class="artists" :to="'/artist/' + song.id " v-for="ar in song.artists" :key="ar.id">{{ ar.name }}</router-link>
+              <a class="name" :href="'/song/' + song.id ">{{ song.name }}</a>
+              <a
+                class="artists"
+                :href="'/artist/' + song.id "
+                v-for="ar in song.artists"
+                :key="ar.id"
+              >{{ ar.name }}</a>
             </div>
           </li>
         </ul>

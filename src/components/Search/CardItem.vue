@@ -1,21 +1,21 @@
 <template>
   <div class="artist-item" :class=shapeClass>
-    <router-link
-      :to="link"
+    <a
+      :href="link"
       class="artist-pic"
       :style="{'background-image': 'url(' + picUrl + ')'}">
       <div class="artist-pic-mask">
         <div class="artist-pic-play"></div>
       </div>
-    </router-link>
+    </a>
     <div class="artist-info">
-      <router-link class="title" :to="link">{{title}}</router-link><br>
-      <router-link
+      <a class="title" :href="link">{{title}}</a><br>
+      <a
         class="sub-title"
         v-for="subTitle in subTitles"
         :key="subTitle.id"
-        :to="subLinks[subTitle.id]"
-      >{{subTitle.txt}}</router-link>
+        :href="subLinks[subTitle.id]"
+      >{{subTitle.txt}}</a>
     </div>
   </div>
 </template>

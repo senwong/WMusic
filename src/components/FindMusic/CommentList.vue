@@ -1,23 +1,23 @@
 <template>
 <div>
   <div class="comment" v-for="comment in comments" :key="comment.commentId">
-    <router-link :to="'/user/'+comment.user.userId" class="user__avatar">
+    <a :href="'/user/'+comment.user.userId" class="user__avatar">
       <img :src="comment.user.avatarUrl | convert2Https | clipImage(100, 100)" :alt="comment.user.nickname">
-    </router-link>
+    </a>
     <div class="comment__content">
-      <router-link :to="'/user/'+comment.user.userId" class="user__name">
+      <a :href="'/user/'+comment.user.userId" class="user__name">
         {{comment.user.nickname}}
-      </router-link>
+      </a>
       <p class="content">{{comment.content}}</p>
       <div class="replied">
         <div class="comment" v-for="(repley, i) in comment.beReplied" :key="i">
-          <router-link :to="'/user/'+comment.user.userId" class="user__avatar">
+          <a :href="'/user/'+comment.user.userId" class="user__avatar">
             <img :src="comment.user.avatarUrl | convert2Https | clipImage(100, 100)" :alt="comment.user.nickname">
-          </router-link>
+          </a>
           <div class="comment__content">
-            <router-link :to="'/user/'+comment.user.userId" class="user__name">
+            <a :href="'/user/'+comment.user.userId" class="user__name">
               {{comment.user.nickname}}
-            </router-link>
+            </a>
             <p class="content" v-if="repley.content">{{repley.content}}</p>
             <p class="content" v-if="!repley.content">评论已删除</p>
           </div>

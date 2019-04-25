@@ -30,12 +30,12 @@
       <h3 class="fallback" v-if="searchArtists.length == 0">没有与此相关的歌手</h3>
       <ul>
         <li v-for="artist in searchArtists" :key="artist.key" class="artist-item-search">
-          <router-link :to="'/artist/' + artist.id" class="artist-pic-search">
+          <a :href="'/artist/' + artist.id" class="artist-pic-search">
             <img :src="(artist.picUrl || artist.img1v1Url) | convert2Https | clipImage(100, 100)" :alt="artist.name">
-          </router-link>
-          <router-link :to="'/artist/' + artist.id" class="artis-name-search">
+          </a>
+          <a :href="'/artist/' + artist.id" class="artis-name-search">
             <span>{{artist.name}}</span><span v-if="artist.trans">({{artist.trans}})</span>
-          </router-link>
+          </a>
         </li>
       </ul>
     </div>
@@ -44,18 +44,18 @@
       <h3 class="fallback" v-if="searchAlbums.length == 0">没有与此相关的专辑</h3>
       <ul>
         <li v-for="album in searchAlbums" :key="album.key" class="album-item-search">
-          <router-link :to="'/album/' + album.id" class="album-pic-search">
+          <a :href="'/album/' + album.id" class="album-pic-search">
             <img :src="album.picUrl | convert2Https | clipImage(100, 100)" :alt="album.name">
-          </router-link>
+          </a>
           <div class="album-name-search">
-            <router-link :to="'/album/' + album.id">
+            <a :href="'/album/' + album.id">
               {{album.name}}
-            </router-link>
+            </a>
           </div>
           <div class="album-artist-search">
-            <router-link :to="'/artist/' + album.artist.id">
+            <a :href="'/artist/' + album.artist.id">
               {{album.artist.name}}
-            </router-link>              
+            </a>              
           </div>
         </li>
       </ul>
@@ -79,20 +79,20 @@
       <h3 class="fallback" v-if="searchPlaylists.length == 0">没有与此相关的歌单</h3>
       <ul>
         <li v-for="playlist in searchPlaylists" :key="playlist.key" class="playlist-item-search">
-          <router-link :to="'/playlist/' + playlist.id" class="playlist-pic-search">
+          <a :href="'/playlist/' + playlist.id" class="playlist-pic-search">
             <img :src="playlist.coverImgUrl | convert2Https | clipImage(200, 200)" :alt="playlist.name">
-          </router-link>
+          </a>
           <div class="playlist-name-search">
-            <router-link :to="'/playlist/' + playlist.id">
+            <a :href="'/playlist/' + playlist.id">
               {{playlist.name}}
-            </router-link>
+            </a>
           </div>
           <span class="playlist-count-search">{{playlist.bookCount}}</span>
           <div class="playlist-user-search">
             <span>创建者：</span>
-            <router-link :to="'/user/' + playlist.creator.userId">
+            <a :href="'/user/' + playlist.creator.userId">
               {{playlist.creator.nickname}}
-            </router-link>
+            </a>
           </div>
         </li>
       </ul>
@@ -102,17 +102,17 @@
       <h3 class="fallback" v-if="searchLyrics.length == 0">没有与此相关的歌词</h3>
       <ul>
         <li v-for="lyric in searchLyrics" :key="lyric.id" class="lyric-item-search">
-          <router-link :to="'/song/' + lyric.id" class="lyric-name-search">
+          <a :href="'/song/' + lyric.id" class="lyric-name-search">
             {{lyric.name}}
-          </router-link>
+          </a>
           <div class="lyric-artists-search">
-            <router-link v-for="ar in lyric.artists" :key="ar.id" :to="'/artist/' + ar.id" class="lyric-artist-search">
+            <a v-for="ar in lyric.artists" :key="ar.id" :href="'/artist/' + ar.id" class="lyric-artist-search">
               {{ar.name}}
-            </router-link>
+            </a>
           </div>
-          <router-link :to="'/album/' + lyric.album.id" class="lyric-album-search">
+          <a :href="'/album/' + lyric.album.id" class="lyric-album-search">
             {{lyric.album.name}}
-          </router-link>
+          </a>
           <div class="lyric-duration-search">{{formatTime(lyric.duration)}}</div>
         </li>
       </ul>
@@ -136,14 +136,14 @@
       <h3 class="fallback" v-if="searchUsers.length == 0">没有与此相关的用户</h3>
       <ul>
         <li v-for="user in searchUsers" :key="user.id" class="user-item-search">
-          <router-link :to="'/user/' + user.id" class="user-pic-search">
+          <a :href="'/user/' + user.id" class="user-pic-search">
             <img :src="user.avatarUrl | convert2Https | clipImage(200, 200)" :alt="user.name">
-          </router-link>
-          <router-link :to="'/user/' + user.id" class="user-name-search">
+          </a>
+          <a :href="'/user/' + user.id" class="user-name-search">
             <span>{{user.nickname}}</span>
             <span v-if="user.gender == 1">男生</span>
             <span v-if="user.gender == 2">女生</span>
-          </router-link>
+          </a>
         </li>
       </ul>
     </div>
