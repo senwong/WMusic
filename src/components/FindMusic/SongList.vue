@@ -12,9 +12,9 @@
       </div>
       <div class="track-names">
         <div class="track-name-mvlink">
-          <span class="track-name">
+          <a :href="`/song/${track.id}`" class="track-name">
             {{track.name}}
-          </span>
+          </a>
           <a v-if="track.mv" :href="'/mvplay/' + track.mv" class="track-mvlink">
             <MvIcon />
           </a>
