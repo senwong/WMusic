@@ -1,27 +1,25 @@
 <template>
 <div class="card-item-container">
   <WithHoverMask class="item-cover" :class="{radius: radius}">
-    <template slot="controlls">
+    <a :href="href" slot="controlls" class="item-controlls">
       <!-- 收藏 -->
-      <button v-if="fav" class="button_icon large control__item " @click="fav.onClick">
+      <button v-if="fav" class="button_icon large control__item " @click.stop.prevent="fav.onClick">
         <FavIcon />
       </button>
       <!-- 播放 -->
-      <button v-if="play" class="button_icon large control__play control__item" @click="play.onClick">
+      <button v-if="play" class="button_icon large control__play control__item" @click.stop.prevent="play.onClick">
         <PausedIcon />
       </button>
       <!-- 更多 -->
-      <button v-if="more" class="button_icon large control__item" @click="more.onClick" >
+      <button v-if="more" class="button_icon large control__item" @click.stop.prevent="more.onClick" >
         <MoreIcon />
       </button>
-    </template>
-    <a :href="href" class="item__link">
-      <ImageWithPlaceholder
-        :src="src"
-        :alt="alt"
-        :ratio="ratio"
-      />
     </a>
+    <ImageWithPlaceholder
+      :src="src"
+      :alt="alt"
+      :ratio="ratio"
+    />
   </WithHoverMask>
   <div class="left-top" v-if="$slots.leftTop">
     <slot name="leftTop"></slot>
@@ -73,14 +71,20 @@ export default {
     overflow: hidden;
     border-radius: 15px;
 
-.item__link
+.item-controlls
+  display: block;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+.img-wrapper
   display: block;
   // height: 100%;
   width: 100%;
   box-sizing: border-box;
-
-.list__control
-  color: white;
 
 .control__item
   color: white;
