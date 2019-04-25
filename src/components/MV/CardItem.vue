@@ -1,103 +1,43 @@
 <template>
   <div class="list-item">
-    <div class="list__cover">
-      <!-- hover时显示播放 -->
-      <div class="list__control">
-        <!-- 播放 -->
-        <button class="button_icon large control__play" @click="$store.dispatch('newPlayList', {type: cardType, id: card.id, isPlay: true})">
-          <PausedIcon />
-        </button>
-      </div>
-      <a :href="`/${cardType}/${card.id}`" class="item__link">
-        <ImageWithPlaceholder :src="this.card.cover | convert2Https | clipImage(640, 360)" :alt="card.name" ratio="16:9"/>
-      </a>
-    </div>
+    <CardImage
+      :play="{onClick: () => play()}"
+      :href="`/${cardType}/${card.id}`"
+      :src="this.card.cover | convert2Https | clipImage(640, 360)"
+      :alt="card.name"
+      ratio="16:9"
+      radius
+    />
     <a :href="`/${cardType}/${card.id}`" class="list__name">
       <span>{{card.name}}</span><span> - {{card.artistName}}</span>
     </a>
   </div>
 </template>
 <script>
-import Vue from 'vue';
-import PausedIcon from '@/components/SVGIcons/PausedIcon';
-import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
+import CardImage from '@/components/globals/CardImage';
 
 export default {
   name: "CardItem",
   props: ['card', 'cardType'],
-  components: { PausedIcon, ImageWithPlaceholder },
+  components: { CardImage },
   methods: {
     formatPlayCount(playCount) {
       if (playCount < 10000) return playCount
       return (playCount / 10000).toFixed(1) + "万"
     },
+    play() {
+      // TODO
+    }
   },
 }
 </script>
 <style lang="sass" scoped>
-@import '../config.sass';
 .list-item
   display: flex;
   flex-direction: column;
   position: relative;
-.list__cover
-  width: 100%;
-  margin-bottom: 1em;
-  position: relative;
-  display: flex;
-  &:hover .list__control
-    visibility: visible;
- 
-.item__link
-  display: inline-block;
-  position: relative;
-  height: 100%;
-  width: 100%;
   user-select: none;
-  border-radius: 15px;
-  overflow: hidden;
-  &::after
-    content: "";
-    display: none;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: $mask;
-  &:hover::after
-    display: block;
-  img
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: auto;
 
-
-.list__control
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  height: auto;
-  left: 50%;
-  visibility: hidden;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  z-index: 9;
-  &:hover
-    visibility: visible;
-.list__control:hover ~ .item__link::after
-  display: block;
-.control__item
-  margin: 5px;
-.control__play
-  padding: 5px;
-  border-radius: 50%;
-  background: $orange;
 .list__name
   margin: 8px 0;
   text-decoration: none;
@@ -118,8 +58,4 @@ export default {
   display: inline-block;
   border-radius: 0.2em;
   font-size: 12px;
-.creator-name
-  color: $gray;
-  font-size: 12px;
 </style>
-

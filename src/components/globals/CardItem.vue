@@ -1,29 +1,22 @@
 <template>
   <div class="list-item">
-    <div class="list__cover">
-      <!-- hover时显示播放 收藏 更多 -->
-      <div class="list__control">
-        <!-- 收藏 -->
-        <button class="button_icon large control__item" @click="addFav(cardType, card.id)">
-          <FavIcon />
-        </button>
-        <!-- 播放 -->
-        <button class="button_icon large control__play control__item" @click="setPlaylist">
-          <PausedIcon />
-        </button>
-        <!-- 更多 -->
-        <button class="button_icon large" ref="more">
-          <MoreIcon />
-        </button>
-      </div>
-      <a :href="`/${cardType}/${card.id}`" class="item__link">
-        <ImageWithPlaceholder
-          :src="card.picUrl | convert2Https | clipImage(400, 400)"
-          :alt="card.name"
-          ratio="1:1"
-        />
-      </a>
-    </div>
+    <CardImage
+      :fav="{onClick: () => addFav(cardType, card.id)}"
+      :play="{onClick: () => setPlaylist()}"
+      :more="{onClick: () => {}}"
+      :href="`/${cardType}/${card.id}`"
+      :src="card.picUrl | convert2Https | clipImage(400, 400)"
+      :alt="card.name"
+      ratio="1:1"
+      radius
+    >
+      <div class="play-count" slot="rightTop">
+        <span class="play-count__icon">
+          <PlayWithoutCircleIcon />
+        </span>
+        <span>{{ formatPlayCount(card.playCount) }}</span>
+      </div>     
+    </CardImage>
     <a :href="`/${cardType}/${card.id}`" class="list__name">
       {{card.name}}
     </a>
@@ -31,12 +24,6 @@
     <a v-if="card.creator" class="creator-name" :href="`/user/${card.creator.userId}`">
       {{card.creator.nickname}}
     </a>
-    <div class="play-count">
-      <span class="play-count__icon">
-        <PlayWithoutCircleIcon />
-      </span>
-      <span>{{ formatPlayCount(card.playCount) }}</span>
-    </div>
     <!-- 点击更多，弹出菜单 -->
     <popup-menu :target="morePopupButton">
       <more-list>
@@ -70,19 +57,14 @@
   </div>
 </template>
 <script>
-import Vue from 'vue';
 import PopupMenu from '../PopupMenu.vue';
 import MoreItem from '../more-list/MoreItem.vue';
 import MoreList from '../more-list/MoreList.vue';
-import {formatDate} from '@/utilitys';
 import { mapMutations } from 'vuex';
 import { getPlaylistDetail, getAlbumDetail } from "@/service"
-import FavIcon from '../SVGIcons/FavIcon';
-import PausedIcon from '../SVGIcons/PausedIcon';
-import MoreIcon from '../SVGIcons/MoreIcon';
 import DownloadIcon from '../SVGIcons/DownloadIcon';
 import PlayWithoutCircleIcon from '../SVGIcons/PlayWithoutCircleIcon';
-import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
+import CardImage from './CardImage';
 
 export default {
   name: "CardItem",
@@ -96,18 +78,14 @@ export default {
     PopupMenu,
     MoreItem,
     MoreList,
-    FavIcon,
-    PausedIcon,
-    MoreIcon,
     DownloadIcon,
     PlayWithoutCircleIcon,
-    ImageWithPlaceholder,
+    CardImage,
   },
   mounted() {
     this.morePopupButton = this.$refs.more;
   },
   methods: {
-    formatDate,
     addFav(type, id) {
       if(!this.$store.state.isLogin) {
         console.log("not login , cannot add fav "+ type + id);
@@ -142,70 +120,8 @@ export default {
   display: flex;
   flex-direction: column;
   position: relative;
-.list__cover
-  width: 100%;
-  margin-bottom: 1em;
-  position: relative;
-  display: flex;
-  &:hover .list__control
-    visibility: visible;
- 
-.item__link
-  display: inline-block;
-  height: 100%;
-  width: 100%;
   user-select: none;
-  font-size: 0;
-  border-radius: 15px;
-  box-sizing: border-box;
-  overflow: hidden;
-  &::after
-    content: "";
-    opacity: 0;
-    transition-property: opacity;
-    transition-duration: 250ms;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: $mask;
-    border-radius: 15px;
-  &:hover::after
-    display: block;
-  img
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
-    border-radius: 15px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-.list__cover:hover > .item__link::after
-  opacity: 1;
 
-.list__control
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  height: auto;
-  left: 50%;
-  visibility: hidden;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  z-index: 9;
-  &:hover
-    visibility: visible;
-.control__item
-  margin: 5px;
-.control__play
-  padding: 5px;
-  border-radius: 50%;
-  background: $orange;
 .list__name
   margin: 8px 0;
   text-decoration: none;
@@ -217,9 +133,7 @@ export default {
 .play-count
   display: flex;
   align-items: center;
-  position: absolute;
-  right: 0.7em;
-  top: 0.5em;
+  margin: 0.5em;
   padding: 0 0.2em;
   color: white;
   background-color: rgba(0, 0, 0, 0.5);
@@ -228,6 +142,7 @@ export default {
 .play-count__icon
   width: 1em;
   height: 1em;
+
 .creator-name
   color: $gray;
   font-size: 12px;
