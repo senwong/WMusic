@@ -20,15 +20,8 @@
           </a>
         </div>
         <div class="track-ar-al">
-          <a
-            class="track-artist"
-            v-for="ar in track.ar"
-            :key="ar.id"
-            :href="'/artist/' + ar.id"
-          >
-            {{ar.name}}
-          </a>
-          <span class="track-dot">•</span>
+          <ArtistsWithComma :artists="track.ar" aTagClass="track-artist" commaClass="track-dot" />
+          <span class="track-dot"> • </span>
           <a :href="'/album/'+track.al.id" class="track-album">
             {{track.al.name}}
           </a>
@@ -91,6 +84,7 @@ import MoreIcon from '../SVGIcons/MoreIcon';
 import DownloadIcon from '../SVGIcons/DownloadIcon';
 import MusicIcon from '@/components/SVGIcons/MusicIcon';
 import MvIcon from '@/components/SVGIcons/MvIcon';
+import ArtistsWithComma from '@/components/globals/ArtistsWithComma';
 
 export default {
   name: "SongList",
@@ -105,6 +99,7 @@ export default {
     DownloadIcon,
     MusicIcon,
     MvIcon,
+    ArtistsWithComma,
   },
   data() {
     return {
@@ -214,6 +209,7 @@ export default {
   &:hover
     opacity: 1;
     border-color: rgba(0,0,0,0.8);
+
 .track-dot
   opacity: 0.6;
 .track-album

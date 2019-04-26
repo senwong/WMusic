@@ -113,8 +113,8 @@ function getMvData(id) {
  * 获取MV评论
  * @param {Number} id MV ID
  */
-function getMVComments(id) {
-  return Api().get("/comment/mv?id=" + id)
+function getMVComments(id, offset) {
+  return Api().get("/comment/mv?id=" + id + "&limit=20&offset=" + offset)
 }
 /**
  * 获取相似MV

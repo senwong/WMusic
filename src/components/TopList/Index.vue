@@ -37,7 +37,9 @@
                   <li class="table-row" v-for="(track, i) in officalList[title].tracks" :key="track.id">
                     <span class="text-center">0{{i+1}}</span>
                     <a :href="'/song/'+track.id">{{track.name}}</a>
-                    <span>{{track.ar.map(ar => ar.name).join("; ")}}</span>
+                    <span>
+                      <ArtistsWithComma :artists="track.ar" />
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -72,6 +74,8 @@ import { getTopList } from "@/service";
 import CardItem from "@/components/TopList/CardItem";
 import MediaItem from "@/components/TopList/MediaItem";
 import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
+import ArtistsWithComma from '@/components/globals/ArtistsWithComma';
+
 const topListMap = {
   "0": "云音乐新歌榜", // 云音乐
   "1": "云音乐热歌榜", // 云音乐
@@ -100,7 +104,12 @@ const topListMap = {
 }
 export default {
   name: "TopList",
-  components: {CardItem, MediaItem,ImageWithPlaceholder },
+  components: {
+    CardItem,
+    MediaItem,
+    ImageWithPlaceholder,
+    ArtistsWithComma,
+  },
   data() {
     return {
       tabs: ["热歌", "新歌", "原创"],
@@ -179,6 +188,7 @@ export default {
   },
   methods: {
     playAll(topListId) {
+      // TODO
       this.$store.dispatch("playAllList", {type: "PLAYLIST", id: topListId})
     },
     // const listMap = {"0": "新歌", "1": "热歌", "2": "原创"}

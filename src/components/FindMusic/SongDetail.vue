@@ -27,17 +27,7 @@
     <!-- 歌曲评论和标签-->
     <div class="comment__tag">
       <!-- 歌曲评论 -->
-      <div class="comments">
-        <h1>热门评论</h1>
-        <comment-list :comments="hotComments"></comment-list>
-        <h1>最新评论（{{commentsCount}}条）</h1>
-        <comment-list :comments="comments"></comment-list>
-        <!-- 加载提示 -->
-        <div class="loading-tips">
-          <p v-if="isAllCommentsLoaded" class="loading-tip">所有评论加载完毕</p><br>
-          <p v-if="isLoading" class="loading-tip">正在加载。。。</p>
-        </div>
-      </div>
+      <CommentList class="comments" type="1" :id="songId" />
       <!-- 标签 -->
       <div class="tags">
         <h1>相似歌曲</h1>
@@ -67,7 +57,7 @@
 </div>
 </template>
 <script>
-  import { getSongDetail, getSongComment, getSimiSongs} from '@/service';
+  import { getSongDetail, getSimiSongs} from '@/service';
   import CommentList from "./CommentList.vue";
   import RippleButton from '@/components/globals/RippleButton.vue';
   import PlaySvg from "@/components/globals/PlaySvg.vue";
@@ -81,13 +71,7 @@
         name: "",
         artists: [],
         album: {},
-        hotComments: [],
-        comments: [],
-        commentsOffset: 0,
-        commentsCount: 0,
-        isLoading: false,
         simiSongs: [],
-        isMoreComments: false,
       }
     },
     created() {
@@ -103,56 +87,12 @@
           } = res.data.songs[0]);
         }
       })
-      // 获取歌曲评论
-      getSongComment(this.songId, this.commentsOffset).then(res => {
-        if (res.data.code !== 200) {
-          console.warn("get song comment failed", res)
-          return
-        }
-        console.log("comments ", res.data)
-        this.hotComments = res.data.hotComments
-        this.comments = res.data.comments
-        this.commentsCount = res.data.total
-        this.isMoreComments = res.data.more
-      })
       // 获取相似歌曲
       getSimiSongs(this.songId).then(res => {
         this.simiSongs = res.data.songs
       })
     },
-    computed: {
-      isScrollBottom() {
-        return this.$store.state.isScrollBottom
-      },
-      isAllCommentsLoaded() {
-        return this.commentsOffset >= this.commentsCount
-      }
-    },
-    watch: {
-      isScrollBottom(val) {
-        if(val === true) {
-          console.log("loading more comments !")
-          this.loadingMoreComments()
-        }
-      }
-    },
     methods: {
-      loadingMoreComments() {
-        if (this.isAllCommentsLoaded) {
-          console.log("already load all comments")
-          return
-        }
-        if (this.isLoading) {
-          console.log("is loading comments, please wait seconds")
-          return
-        }
-        this.commentsOffset += OFEESETCOUNT
-        this.isLoading = true
-        getSongComment(this.songId, this.commentsOffset).then(res => {
-          this.comments = this.comments.concat(res.data.comments)
-          this.isLoading = false
-        })
-      },
       play(songId) {
         if (songId) {
           this.$store.dispatch("newSingleSong", songId)
@@ -200,7 +140,7 @@
   display: flex;
 .comments
   flex: 1 1 auto;
-  margin-right: 20px;
+  margin: 20px 20px 0 0;
 .tags
   flex: 0 0 234px;
   min-width: 0;

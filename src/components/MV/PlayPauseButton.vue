@@ -20,6 +20,9 @@ export default {
       animationDuration: 200
     };
   },
+  props: {
+    paused: Boolean,
+  },
   mounted() {
     this.element = this.$el;
     (this.states = {
@@ -34,21 +37,20 @@ export default {
     }),
     this.init();
   },
+  watch: {
+    paused(val) {
+      this.goToNextState();
+    }
+  },
   methods: {
     init: function() {
       this.setInitialState();
       this.replaceUseEl();
-      this.element.addEventListener("click", this.goToNextState);
+      // this.element.addEventListener("click", this.goToNextState);
     },
 
     setInitialState: function() {
-      var initialIconRef = this.element
-        .querySelector("use")
-        .getAttribute("xlink:href");
-      var stateName = this.element
-        .querySelector(initialIconRef)
-        .getAttribute("data-state");
-      this.setState(stateName);
+      this.setState(this.paused ? 'paused' : 'playing');
     },
 
     replaceUseEl: function() {
@@ -86,4 +88,5 @@ export default {
   border: 0;
   background-color: transparent;
   outline: none;
+  cursor: pointer;
 </style>

@@ -1,13 +1,28 @@
 <template>
   <div class="video-player">
-    <video preload="true" ref="video"
-      :src="src | convert2Https"
+    <video
+      preload="true"
+      ref="video"
+      class="video"
+      :src="currentSrc | convert2Https"
       @loadedmetadata="e => this.duration = e.target.duration"
       @progress="handleVideoProgress"
       @play="handlePlay"
       @pause="handlePause"
       @timeupdate="handleTimeUpdate"
+      @ended="handleEnded"
+      @canplay="handleCanPlay"
+      @click="togglePlay"
     />
+    <!-- click toggle play -->
+    <div class="play-container" @click="handleScreenClick">
+      <div class="fadeout-wrapper" ref="fadeoutWrapper">
+        <div class="icon-wrapper">
+          <PausedIcon v-if="paused" />
+          <PlayingIcon v-else/>
+        </div>
+      </div>
+    </div>
     <div class="control-wrapper" :class="{'show': paused}">
       <div class="progress-list" ref="progressBar">
         <div class="play-progress" :style= "playProgressStyle"></div>
@@ -26,7 +41,7 @@
       </div>
       <div class="controls">
         <div class="left">
-          <play-pause-button @click.native="togglePlay"></play-pause-button>
+          <play-pause-button @click.native="togglePlay" :paused="paused" />
           <div class="volume">
             <volume-button @click.native="toggleMute" :volume="volume"></volume-button>
             <input v-model="volume" :style="{'background': `linear-gradient(to right, white ${volume}%, rgba(247, 247, 247, 0.2) 0%)`}" class="volume-range" type="range" min="0" max="100"/>
@@ -37,19 +52,22 @@
         </div>
         <div class="right">
           <!-- 设置按钮 -->
-          <button class="button_icon large controll__icon" ref="setting">
-            <SettingIcon />
+          <button class="button_icon large controll__icon" ref="setting" @click="isShowSettingsPannel = !isShowSettingsPannel">
+            <SettingsIcon class="settings-icon" :class="{rotate: isShowSettingsPannel}"/>
+            <div class="hd-sign" v-if="currentQuality && currentQuality >= 20">
+              <HDIcon />
+            </div>
           </button>
           <!-- 设置弹出菜单 -->
           <popup-menu :target="$refs.setting" direction="top" enableClick= true >
             <setting-container :qualitys="qualitys" @set-quality="setQuality"></setting-container>
           </popup-menu>
-          <!-- 开启/关闭网页全屏 -->
+          <!-- 开启/关闭宽屏 -->
           <button class="button_icon large controll__icon" @click="toggleTheaterMode">
             <WideScreenIcon />
           </button>
           <!-- 开启/关闭全屏 -->
-          <button class="button_icon large controll__icon" @click="toggleFullScreen">
+          <button class="button_icon large controll__icon fullscreen-icon" @click="toggleFullScreen">
             <FullScreenIcon />
           </button>
         </div>
@@ -61,6 +79,12 @@
         <ReplayIcon />
       </button>
     </div>
+    <!-- loading animation -->
+    <div class="loading-container" v-if="isLoading">
+      <div class="loading__icon" >
+        <Loading />
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -70,32 +94,24 @@ import PopupMenu from "@/components/PopupMenu";
 import SettingContainer from "@/components/MV/SettingContainer";
 import axios from "axios";
 import { formatTime, optimizedResize } from "@/utilitys"
-import SettingIcon from '@/components/SVGIcons/SettingIcon';
 import WideScreenIcon from '@/components/SVGIcons/WideScreenIcon';
 import FullScreenIcon from '@/components/SVGIcons/FullScreenIcon';
 import ReplayIcon from '@/components/SVGIcons/ReplayIcon';
+import Loading from '@/components/globals/Loading';
+import PausedIcon from '@/components/SVGIcons/PausedIcon';
+import PlayingIcon from '@/components/SVGIcons/PlayingIcon';
+import SettingsIcon from '@/components/SVGIcons/SettingsIcon';
+import HDIcon from '@/components/SVGIcons/HDIcon';
 
 optimizedResize();
 export default {
   name: "VideoPlayer",
-  props: ["brs"],
-  components: {
-    PlayPauseButton,
-    PopupMenu,
-    SettingContainer,
-    VolumeButton,
-    SettingIcon,
-    WideScreenIcon,
-    FullScreenIcon,
-    ReplayIcon,
-  },
   data() {
     return {
       paused: true,
       currentTime: 0,
       bufferedEnd: 0,
       duration: 0,
-      src: "",
       volume: 50,
       video: null,
       isThumbnailMoving: false,
@@ -103,11 +119,35 @@ export default {
       isShowThumbnailPorgress: false,
       isShowThumbnail: false,
       ended: false,
+      currentQuality: null,
+      isLoading: true,
+      isShowSettingsPannel: false,
     };
+  },
+  props: ["brs"],
+  components: {
+    PlayPauseButton,
+    PopupMenu,
+    SettingContainer,
+    VolumeButton,
+    SettingsIcon,
+    WideScreenIcon,
+    FullScreenIcon,
+    ReplayIcon,
+    Loading,
+    PausedIcon,
+    PlayingIcon,
+    HDIcon,
   },
   computed: {
     qualitys() {
-      return Object.keys(this.brs);
+      if (!this.brs) return [];
+      return Object.keys(this.brs).map(Number);
+    },
+    currentSrc() {
+      if (!this.brs || Object.keys(this.brs).length == 0) return '';
+      if (!Object.hasOwnProperty.call(this.brs, this.currentQuality)) return '';
+      return this.brs[this.currentQuality];
     },
     tempSrc() {
       return this.brs[Object.keys(this.brs)[Object.keys(this.brs).length - 1]];
@@ -134,13 +174,6 @@ export default {
     thumbnailTime() {
       return formatTime(this.duration * this.thumbnailPercent * 1000)
     },
-  },
-  mounted() {
-    /**
-     * 给video元素注册resize事件，设置固定宽度和长度，改变视频分辨率时不会闪动
-     */
-    // this.setVideoDemension();
-    // window.addEventListener("optimizedResize", this.setVideoDemension.bind(this));
   },
   methods: {
     formatTime,
@@ -175,9 +208,8 @@ export default {
     },
     setQuality(newQuality) {
       if (typeof newQuality == 'undefined' || typeof this.$refs.video == 'undefined') return;
-      const newSrc = this.brs[newQuality];
+      this.currentQuality = newQuality;
       const paused = this.$refs.video.paused;
-      this.src = newSrc;
       this.$refs.video.currentTime = this.currentTime;
       if (!paused) this.$refs.video.play();
     },
@@ -293,8 +325,14 @@ export default {
     /**
      * 更新buffered
      */
-    handleVideoProgress(e) {
-      this.bufferedEnd = e.target.buffered.end(Math.max(0, e.target.buffered.length - 1));
+    handleVideoProgress({ target: { buffered } }) {
+      if (buffered.length > 0) {
+        console.log('buffered: ', buffered);
+        console.log('start: ', buffered.start(0));
+        console.log('end: ', buffered.end(0));
+        this.bufferedEnd = buffered.end(0);
+      }
+      // this.bufferedEnd = e.target.buffered.end(Math.max(0, e.target.buffered.length - 1));
     },
     /**
      * 开启关闭网页全屏
@@ -310,6 +348,44 @@ export default {
       const computedStyle = getComputedStyle(this.$refs.video.parentElement)
       this.$refs.video.style.width = computedStyle.width
       this.$refs.video.style.height = parseInt(computedStyle.width.replace("px", "")) * 9 / 16 + "px"
+    },
+    handleEnded() {
+      this.ended = true;
+    },
+    handleCanPlay() {
+      this.isLoading = false;
+    },
+    toggleFadeout() {
+      this.showFadeout();
+      setTimeout(() => {
+        this.hideFadeout();
+      }, 800);
+    },
+    hideFadeout() {
+      this.$refs.fadeoutWrapper.style.visibility = "hidden";
+      this.$refs.fadeoutWrapper.style.opacity = 1;
+      this.$refs.fadeoutWrapper.style.transition = `none`;
+      this.$refs.fadeoutWrapper.style.transform = `scale(1)`;
+    },
+    showFadeout() {
+      this.$refs.fadeoutWrapper.style.visibility = "visible";
+      this.$refs.fadeoutWrapper.style.transition = `all 800ms`;
+      this.$refs.fadeoutWrapper.style.opacity = 0;
+      this.$refs.fadeoutWrapper.style.transform = `scale(3)`;
+    },
+    handleScreenClick() {
+      if (!this.lastScreenClick) {
+        this.lastScreenClick = performance.now();
+      } else {
+        const current = performance.now();
+        if (current - this.lastScreenClick <= 800) {
+          // request full screen, and return;
+          this.toggleFullScreen();
+          return;
+        }
+        this.lastScreenClick = current;
+      }
+      this.togglePlay();
     }
   },
   watch: {
@@ -317,16 +393,16 @@ export default {
       this.$refs.video && (this.$refs.video.volume = val / 100);
     },
     brs(val) {
-      this.src = this.brs[Object.keys(this.brs)[Object.keys(this.brs).length - 1]]
+      this.currentQuality = this.qualitys.length == 0 ? null : Math.max(...this.qualitys);
     },
-    src(val) {
-      this.thumbnailDrawer = this.createDrawer(val, this.$refs.canvas)
+    currentQuality(quality) {
+      this.thumbnailDrawer = this.createDrawer(this.brs[quality], this.$refs.canvas)
     },
     thumbnailPercent(val) {
       this.setThumbnailLeft(val)
     },
-    currentTime(val) {
-      this.ended = val > 0 && val == this.duration ? true : false;
+    paused() {
+      this.toggleFadeout();
     }
   }
 };
@@ -335,9 +411,14 @@ export default {
 @import "@/components/config.sass"
 
 .video-player
+  width: 100%;
   position: relative;
   overflow: hidden;
-  video
+  padding-bottom: 56.25%;
+  .video
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     background: black;
@@ -348,20 +429,19 @@ export default {
   min-width: 389px;
   background: #000;
   @media screen and (max-width: calc(270px + 2em + 853.33px))
-    height: 480px
-    display: table-cell;
-    vertical-align: middle;
+    padding-bottom: 480px
     & video
-      width: 100%;
-      height: auto;
+      left: 50%;
+      transform: translateX(-50%);
   @media screen and (min-width: calc(270px + 2em + 853.33px)) and (max-width: calc(270px + 2em + 960px))
     & video
       width: 100%;
       height: 100%;
   @media screen and (min-width: calc(270px + 2em + 960px))
-    height: 540px;
-    text-align: center;
+    padding-bottom: 540px;
     & video
+      left: 50%;
+      transform: translateX(-50%);
       width: auto;
       height: 100%;
 
@@ -468,6 +548,14 @@ export default {
 .controll__icon
   color: white;
   margin-right: 5px;
+  transition: all 500ms;
+  transform-origin: center;
+  position: relative;
+  display: flex;
+  &:hover
+    transform: scale(1.1);
+.fullscreen-icon
+  padding: 5px;
 // .as-btn
 //   border: none;
 //   background: transparent;
@@ -529,5 +617,46 @@ export default {
   justify-content: center;
   align-items: center;
 
+.loading-container, .play-container
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+.loading__icon
+  color: white;
+  width: 6em;
+  height: 6em;
+.icon-wrapper
+  width: 2em;
+  height: 2em;
+.fadeout-wrapper
+  width: 4em;
+  height: 4em;
+  transition-property: all;
+  transform-origin: center;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 9999px;
+  visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+.settings-icon
+  transform-origin: center;
+  transition: all 250ms;
+  &.rotate
+    transform: rotate(60deg);
+.hd-sign
+  width: 16px;
+  height: auto;
+  position: absolute;
+  font-size: 0;
+  top: 0;
+  right: 0;
 </style>
 

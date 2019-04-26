@@ -14,6 +14,7 @@
         :key="track.id"
         class="track-list"
       >
+      <!-- TODO -->
         <span class="track-order">{{i+1}}</span>
         <span class="track-name">{{track.name}}</span>
         <span class="track-artists">- {{track.ar.map(ar => ar.name).join(";")}}</span>

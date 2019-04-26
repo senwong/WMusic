@@ -68,7 +68,76 @@ function addEventListenerOnce(target, type, listener, addOptions, removeOptions)
 function clipImage(imgUrl, width, height) {
   return imgUrl + `?param=${width}y${height}`
 }
-
+/**
+ * format count to 万， 百万， 千万， 亿， 十亿
+ * @param {Number} number The number to format
+ */
+function formatCount(number) {
+  const n = Number(number)
+  if (isNaN(n)) return number;
+  if (n < Math.pow(10, 4)) {
+    return n;
+  } else if (n < Math.pow(10, 6)) {
+    return (n / Math.pow(10, 4)).toFixed(2) + '万';
+  } else if (n < Math.pow(10, 7)) {
+    return (n / Math.pow(10, 6)).toFixed(2) + '百万';
+  } else if (n < Math.pow(10, 8)) {
+    return (n / Math.pow(10, 7)).toFixed(2) + '千万';
+    
+  } else if (n < Math.pow(10, 9)) {
+    return (n / Math.pow(10, 8)).toFixed(2) + '亿';
+  } else if (n < Math.pow(10, 10)) {
+    return (n / Math.pow(10, 9)).toFixed(2) + '十亿';
+  } else if (n < Math.pow(10, 11)) {
+    return (n / Math.pow(10, 10)).toFixed(2) + '百亿';
+  } else if (n < Math.pow(10, 12)) {
+    return (n / Math.pow(10, 11)).toFixed(2) + '千亿';
+  }
+  return n;
+}
+/**
+ * less than 1 minute, x秒钟以前
+ * less than 1 hour, x分钟以前
+ * less than 1 day, x小时以前
+ * less than 1 month, x天以前
+ * less than 1 year, x个月以前
+ * else, x年以前
+ * @param {Number} milliseconds milliseconds presents date time since January 1, 1970 00:00:00 UTC
+ */
+function formatDateToBefore(milliseconds) {
+  const now = Date.now();
+  const delta = now - milliseconds;
+  if (delta < 0) {
+    return formatDay(milliseconds);
+  }
+  const oneSecond = 1000;
+  const oneMin = oneSecond * 60;
+  const oneHour = oneMin * 60;
+  const oneDay = oneHour * 12;
+  const oneMonth = oneDay * 30;
+  const oneYear = oneMonth * 12;
+  
+  const map = [ oneYear, oneMonth, oneDay, oneHour, oneMin, oneSecond ];
+  const a = [ '年以前', '个月以前', '天以前', '小时以前', '分钟以前', '秒钟以前', '刚刚' ];
+  for (let i = 0; i < map.length; i++) {
+    if (delta >= map[i]) {
+      return  i == 0 ? a[i] : Math.round(delta / map[i]) + a[i];
+    }
+  }
+  return a[a.length - 1];
+}
+/**
+ *  arrayJoin([a, b, c, d, e], x), return [a, x, b, x, c, x, d, x, e]
+ */
+function arrayJoin(array, obj) {
+  if (array.length == 0) return array;
+  const ret = [array[0]];
+  for (let i = 1; i < array.length; i++) {
+    ret.push(obj);
+    ret.push(array[i]);
+  }
+  return ret;
+}
 export {
   formatTime,
   formatDate,
@@ -77,4 +146,7 @@ export {
   optimizedResize,
   addEventListenerOnce,
   clipImage,
+  formatCount,
+  formatDateToBefore,
+  arrayJoin,
 };

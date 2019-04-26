@@ -18,7 +18,9 @@
     </div>
     <div class="name-songer">
       <div class="name">{{track.name}}</div>
-      <div class="songer">{{track.ar.map(ar => ar.name).join("/")}}</div>
+      <div class="songer">
+        <ArtistsWithComma :artists="track.ar" aTagClass="" commaClass="" />
+      </div>
     </div>
     <!-- 靠右显示 -->
     <div class="duration">
@@ -43,6 +45,7 @@ import { Motion } from 'vue-motion';
 import { formatTime } from '@/utilitys';
 import FavIcon from './SVGIcons/FavIcon';
 import MoreIcon from './SVGIcons/MoreIcon';
+import ArtistsWithComma from '@/components/globals/ArtistsWithComma'
 
 export default {
   data() {
@@ -51,7 +54,12 @@ export default {
     };
   },
   props: [ 'track', 'currentSongId' ],
-  components: { Motion, FavIcon, MoreIcon },
+  components: {
+    Motion,
+    FavIcon,
+    MoreIcon,
+    ArtistsWithComma,
+  },
   computed: {
     styles() {
       return {

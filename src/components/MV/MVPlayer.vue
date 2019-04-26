@@ -3,22 +3,22 @@
   <div class="mvplay-container" :class="{'theater-mode': isTheaterMode}">
       <div class="video-contaner">
         <video-player :brs="brs" @toggle-theater-mode="isTheaterMode = !isTheaterMode"></video-player>
-        <p class="name">{{artists.map(ar => ar.name).join(";")}} - {{name}}</p>
+        <p class="name">
+          <span>
+            <ArtistsWithComma :artists="artists" />
+          </span>
+          <span>
+            - {{name}}
+          </span>
+        </p>
         <p class="space-between">
-          <span>{{playCount}}次播放</span>
-          <span>{{likeCount}}喜欢 {{shareCount}}分享</span>
+          <span>{{ formatCount(playCount) }}次播放</span>
+          <span>{{ formatCount(likeCount) }}喜欢 {{ formatCount(shareCount) }}分享</span>
         </p>
       </div>
-      <div class="comments-wrapper">
-        <div v-if="hotComments.length">
-          <h3>最热评论（{{hotComments.length}}）</h3>
-          <comment-list :comments="hotComments"></comment-list>
-        </div>
-        <div v-if="commentsTotal">
-          <h3>最新评论（{{commentsTotal}}）</h3>
-          <comment-list :comments="comments"></comment-list>
-        </div>
-      </div>
+      <!-- comments -->
+      <comment-list class="comments-wrapper" type="0" :id="this.id" />
+      <!-- similar mvs -->
       <div class="similar-mv">
         <h3>相似MV</h3>
         <a
@@ -38,13 +38,15 @@
 </div>
 </template>
 <script>
-import { getMvData, getMVComments, getSimilarMV } from "@/service"
-import CommentList from "@/components/FindMusic/CommentList"
-import VideoPlayer from "@/components/MV/VideoPlayer"
+import { getMvData, getSimilarMV } from '@/service';
+import CommentList from '@/components/FindMusic/CommentList';
+import VideoPlayer from '@/components/MV/VideoPlayer';
+import { formatCount, arrayJoin } from '@/utilitys';
+import ArtistsWithComma from '@/components/globals/ArtistsWithComma';
 
 export default {
   name: "MVPlayer",
-  components: { CommentList, VideoPlayer },
+  components: { CommentList, VideoPlayer, ArtistsWithComma },
   data() {
     return {
       id: "",
@@ -54,11 +56,8 @@ export default {
       playCount: 0,
       likeCount: 0,
       shareCount: 0,
-      brs: [],
-      comments: [],
-      commentsTotal: 0,
+      brs: null,
       similarMVs: [],
-      hotComments: [],
       isTheaterMode: false,
     }
   },
@@ -66,6 +65,8 @@ export default {
     this.updateView()
   },
   methods: {
+    formatCount,
+    arrayJoin,
     updateView() {
       this.id = this.$route.params.id
       getMvData(this.id).then(
@@ -82,18 +83,12 @@ export default {
           this.brs = res.data.data.brs
         },
         error => alert('getMvData error ' + error)
-      )
-      getMVComments(this.id).then(res => {
-        res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
-        this.comments = res.data.comments
-        this.commentsTotal = res.data.total
-        this.hotComments = res.data.hotComments
-      })
+      );
       getSimilarMV(this.id).then(res => {
         res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
         this.similarMVs = res.data.mvs
-      })
-    }
+      });
+    },
   },
   watch: {
     $route(val) {
@@ -113,10 +108,7 @@ export default {
   &.theater-mode
     grid-template-areas: "video   video" "comments simiMVs";
   @media screen and (max-width: 1200px)
-    &.theater-mode
-      grid-template-areas: "video"  "simiMVs"  "comments";
-    grid-template-areas: "video"  "simiMVs"  "comments";
-    grid-template-columns: 1fr;
+    grid-template-areas: "video video"  "comments simiMVs";
 
 .comments-wrapper
   grid-area: comments;

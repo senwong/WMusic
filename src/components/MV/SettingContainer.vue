@@ -21,7 +21,8 @@
       <li class="list-item"
         role="list-item-radio"
         v-for="(quality, i) in qualitys"
-        :key="i" :data-br="quality"
+        :key="i"
+        :data-br="quality"
         :aria-checked="quality == curQuality"
         @click="setQuality(quality)">
         <span class="list-item-label">
@@ -83,6 +84,7 @@ export default {
   padding: 0;
   color: inherit;
   font-size: 100%;
+  cursor: pointer;
   &:focus
     outline: none;
 .panel
@@ -99,6 +101,7 @@ export default {
 .list-item
   display: table-row;
   height: 33px;
+  cursor: pointer;
   &:hover
     background-color: $mask;
 .list-panel-header
