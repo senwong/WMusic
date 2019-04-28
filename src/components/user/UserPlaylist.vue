@@ -80,10 +80,10 @@ export default {
   opacity: 0.6;
 .list-container
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
   gap: 2em;
   flex-wrap: wrap
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 2em;
 .list-item
   display: block;

@@ -214,6 +214,24 @@ function getRecord(uid, type) {
 function getLikelist(uid) {
   return Api().get(`/likelist?uid=${uid}`, {withCredentials: true});
 }
+/**
+ * 登陆后调用此接口 , 传入用户 id, 可以获取用户关注列表
+ * @param {Number} uid 用户 id
+ * @param {Number} limit 返回数量 , 默认为 30
+ * @param {Number} offset 偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
+ */
+function getUserFollows(uid, offset, limit) {
+  return Api().get(`/user/follows?uid=${uid}&offset=${offset}&limit=${limit}`);
+}
+/**
+ * 登陆后调用此接口 , 传入用户 id, 可以获取用户粉丝列表
+ * @param {Number} uid 用户 id
+ * @param {Number} limit 返回数量 , 默认为 30
+ * @param {Number} offset 偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
+ */
+function getUserFolloweds(uid, offset, limit) {
+  return Api().get(`/user/followeds?uid=${uid}&offset=${offset}&limit=${limit}`);
+}
 export {
   getBanner,
   getSongURL,
@@ -245,4 +263,6 @@ export {
   logout,
   getRecord,
   getLikelist,
+  getUserFollows,
+  getUserFolloweds,
 }

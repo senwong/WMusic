@@ -4,7 +4,7 @@ import PlayListDetail from "../components/FindMusic/PlayListDetail"
 import SongDetail from "../components/FindMusic/SongDetail"
 import ArtistDetail from "../components/FindMusic/ArtistDetail"
 import AlbumDetail from "../components/FindMusic/AlbumDetail"
-import UserDetail from "@/components/FindMusic/UserDetail"
+import UserDetail from "@/components/user/UserDetail"
 import Playlist from "@/components/Playlist/Index"
 import TopListIndex from "@/components/TopList/Index"
 import MV from "@/components/MV/Index"
@@ -14,6 +14,8 @@ import SearchIndex from "@/components/Search/Index";
 import LogIn from '@/components/login/index';
 import UserRecord from '@/components/userRecord';
 import LikedSongs from '@/components/likedSongs';
+import UserFollows from '@/components/user/UserFollows';
+import UserFolloweds from '@/components/user/UserFolloweds';
 
 export default new VueRouter({
   mode: "history",
@@ -34,5 +36,7 @@ export default new VueRouter({
     { path: "/login", component: LogIn },
     { path: "/userrecord", component: UserRecord },
     { path: "/likedsongs", component: LikedSongs },
+    { path: "/follows/:id", component: UserFollows },
+    { path: "/followeds/:id", component: UserFolloweds },
   ],
 })

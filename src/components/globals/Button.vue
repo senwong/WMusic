@@ -10,6 +10,7 @@
       'button-block': block,
       'button-large': large,
     }"
+    :disabled="disabled"
   >
     <slot></slot>
   </button>  
@@ -25,6 +26,7 @@ export default {
     large: Boolean,
     as: String,
     href: String,
+    disabled: Boolean,
   },
   computed: {
     tag() {

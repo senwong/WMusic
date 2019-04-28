@@ -121,7 +121,7 @@ function formatDateToBefore(milliseconds) {
   const a = [ '年以前', '个月以前', '天以前', '小时以前', '分钟以前', '秒钟以前', '刚刚' ];
   for (let i = 0; i < map.length; i++) {
     if (delta >= map[i]) {
-      return  i == 0 ? a[i] : Math.round(delta / map[i]) + a[i];
+      return  Math.round(delta / map[i]) + a[i];
     }
   }
   return a[a.length - 1];
