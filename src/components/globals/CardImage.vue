@@ -1,7 +1,7 @@
 <template>
 <div class="card-item-container">
   <WithHoverMask class="item-cover" :class="{radius: radius}">
-    <a :href="href" slot="controlls" class="item-controlls">
+    <router-link :to="href" slot="controlls" class="item-controlls">
       <!-- 收藏 -->
       <button v-if="fav" class="button_icon large control__item " @click.stop.prevent="fav.onClick">
         <FavIcon />
@@ -14,7 +14,7 @@
       <button v-if="more" class="button_icon large control__item" @click.stop.prevent="more.onClick" >
         <MoreIcon />
       </button>
-    </a>
+    </router-link>
     <ImageWithPlaceholder
       :src="src"
       :alt="alt"

@@ -8,13 +8,13 @@
       <div class="song-desc">
         <div class="song-name">{{name}}</div>
         <div>艺人：
-          <a
+          <router-link
             v-for="artist in artists.filter(ar => ar.id !== 0)"
             :key="artist.id"
-            :href="'/artist/'+ artist.id">{{artist.name}}</a>
+            :to="'/artist/'+ artist.id">{{artist.name}}</router-link>
         </div>
         <div>专辑：
-          <a :href="'/album/'+album.id">{{album.name}}</a>
+          <router-link :to="'/album/'+album.id">{{album.name}}</router-link>
         </div>
         <div class="controls">
           <ripple-button @click="play">播放</ripple-button>
@@ -42,13 +42,13 @@
               </div>
             </div>
             <div class="info-container">
-              <a class="name" :href="'/song/' + song.id ">{{ song.name }}</a>
-              <a
+              <router-link class="name" :to="'/song/' + song.id ">{{ song.name }}</router-link>
+              <router-link
                 class="artists"
-                :href="'/artist/' + song.id "
+                :to="'/artist/' + song.id "
                 v-for="ar in song.artists"
                 :key="ar.id"
-              >{{ ar.name }}</a>
+              >{{ ar.name }}</router-link>
             </div>
           </li>
         </ul>

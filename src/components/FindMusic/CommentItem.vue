@@ -17,16 +17,16 @@
 -->
 <div class="comment__container">
   <!-- left avatar -->
-  <a class="comment__avatar avatar" :href="'/user/'+comment.user.userId">
+  <router-link class="comment__avatar avatar" :to="'/user/'+comment.user.userId">
     <img :src="comment.user.avatarUrl | convert2Https | clipImage(100, 100)" :alt="comment.user.nickname">
-  </a>
+  </router-link>
   <!-- right info -->
   <div class="comment__info">
     <!-- usename and datetime -->
     <div>
-      <a class="comment__username username" :href="'/user/'+comment.user.userId">
+      <router-link class="comment__username username" :to="'/user/'+comment.user.userId">
         {{comment.user.nickname}}
-      </a>
+      </router-link>
       <span class="comment__datetime datetime" v-if="comment.time">
         {{formatDateToBefore(comment.time)}}
       </span>

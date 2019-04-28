@@ -12,19 +12,19 @@
       </div>
       <div class="track-names">
         <div class="track-name-mvlink">
-          <a :href="`/song/${track.id}`" class="track-name">
+          <router-link :to="`/song/${track.id}`" class="track-name">
             {{track.name}}
-          </a>
-          <a v-if="track.mv" :href="'/mvplay/' + track.mv" class="track-mvlink">
+          </router-link>
+          <router-link v-if="track.mv" :to="'/mvplay/' + track.mv" class="track-mvlink">
             <MvIcon />
-          </a>
+          </router-link>
         </div>
         <div class="track-ar-al">
           <ArtistsWithComma :artists="track.ar" aTagClass="track-artist" commaClass="track-dot" />
           <span class="track-dot"> • </span>
-          <a :href="'/album/'+track.al.id" class="track-album">
+          <router-link :to="'/album/'+track.al.id" class="track-album">
             {{track.al.name}}
-          </a>
+          </router-link>
         </div>
       </div>
       <div class="track-more" @mousedown="handleMoreMousedown(track.id, $event)">

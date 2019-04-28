@@ -8,15 +8,16 @@ import { getSongDetail, getSongURL, getPlaylistDetail, } from "@/service"
 //   artists: [new Artist(10557, "张悬")],
 //   duration: 221866,
 // })]);
-import Playlist from './modules/Playlist';
+import playlist from './modules/playlist';
+import currentUser from './modules/currentUser';
 
 Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
-    playlist: Playlist,
+    playlist,
+    currentUser,
   },
   state: {
-    isLogin: false,
     isScrollBottom: false,
     rightPlaylistVisible: false,
   },

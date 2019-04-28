@@ -3,7 +3,7 @@
     <div class="title">歌单（{{count}}）</div>
     <ul class="list-container">
       <li v-for="list in playlist" :key="list.id">
-        <a :href="'/playlist/' + list.id" class="list-item">
+        <router-link :to="'/playlist/' + list.id" class="list-item">
           <div class="playlist-cover">
             <ImageWithPlaceholder
               :src="list.coverImgUrl | convert2Https | clipImage(300, 300)"
@@ -12,7 +12,7 @@
             />
           </div>
           <div class="name">{{list.name}}</div>
-        </a>
+        </router-link>
       </li>
     </ul>
     <Pagination :total="pageTotal" @change="handlePageChange" />

@@ -8,9 +8,9 @@
       ratio="1:1"
       radius
     />
-    <a :href="'/'+cardType +'/' + card.id" class="list__name">
+    <router-link :to="'/'+cardType +'/' + card.id" class="list__name">
       {{card.name}}
-    </a>
+    </router-link>
   </div>
 </template>
 <script>

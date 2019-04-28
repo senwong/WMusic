@@ -25,8 +25,11 @@
           {{profile.nickname}}
         </div>
         <div class="actions">
-          <button class="follow-button button-rounded button-primary">关注</button>
-          <button class="message-button button-rounded">发私信</button>
+          <button class="follow-button button-rounded button-primary" v-if="!isSelf">关注</button>
+          <button class="message-button button-rounded" v-if="!isSelf">发私信</button>
+          <button class="message-button button-rounded" v-if="!isSelf">发私信</button>
+          <button class="message-button button-rounded" v-if="isSelf" @click="handleLogout">退出</button>
+          <button class="message-button button-rounded" v-if="isSelf" @click="handleEdit">编辑</button>
         </div>
       </div>
       <div class="detail-row interactive">
@@ -70,10 +73,11 @@
 </div>
 </template>
 <script>
-import { getUserDetail } from '@/service';
+import { getUserDetail, logout } from '@/service';
 import districtCodeNameMap from './districtCode.json';
 import UserPlaylist from '@/components/FindMusic/UserPlaylist';
 import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
+import { mapState, mapMutations } from 'vuex';
 
 export default {
   name: "UserDetail",
@@ -88,7 +92,23 @@ export default {
     getDistrictName(districtCode) {
       const name = districtCodeNameMap[districtCode];
       return name ? name : '其他';
-    }
+    },
+    handleLogout() {
+      logout().then(
+        res => {
+          // logout success
+         this.setCurrentUser(null);
+         this.$router.push('/');
+        },
+        error => {
+          // logout faile
+          alert('log out fail', error);
+        }
+      );
+    },
+    ...mapMutations('currentUser', [
+      'setCurrentUser'
+    ])
   },
   computed: {
     parsedAge() {
@@ -100,6 +120,12 @@ export default {
       else if (this.profile.birthday >= Date.parse('Jan 1 1970')) return '70后';
       else if (this.profile.birthday >= Date.parse('Jan 1 1960')) return '60后';
       else return '其他';
+    },
+    ...mapState('currentUser', {
+      currentUserId: state => state.profile && state.profile.userId,
+    }),
+    isSelf() {
+      return this.currentUserId && this.currentUserId == this.userId;
     }
   },
   created() {
@@ -134,14 +160,17 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  align-items: center;
 // first row includes nickname, message button and follow button
 .nickname-action
   justify-content: space-between;
 .nickname
   font-size: 24px;
+  margin-right: 10px;
 .follow-button
   margin-right: 1em;
-
+.message-button
+  margin-right: 1em;
 // second row includes eventCount, follows and followeds
 .interactive
   margin-top: 1em;

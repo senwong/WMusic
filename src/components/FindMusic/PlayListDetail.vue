@@ -12,12 +12,12 @@
         </div>
         <div class="desc">
           <div class="creator">
-            <a class="creator-avatar" :href="'/user/' + creator.userId">
+            <router-link class="creator-avatar" :to="'/user/' + creator.userId">
               <img :src="creator.avatarUrl | convert2Https" :alt="creator.nickname" />
-            </a>
-            <a class="creator-name" :href="'/user/' + creator.userId">
+            </router-link>
+            <router-link class="creator-name" :to="'/user/' + creator.userId">
               {{creator.nickname}}
-            </a>
+            </router-link>
             <span class="update-time">{{updateTimeFormated}}更新</span>
           </div>
           <h2 class="name">{{name}}</h2>

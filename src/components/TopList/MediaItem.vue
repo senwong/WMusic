@@ -8,7 +8,7 @@
       :alt="card.name"
       ratio="1:1"
     />
-    <a :href="'/'+cardType +'/'+ card.id" class="song__list">
+    <router-link :to="'/'+cardType +'/'+ card.id" class="song__list">
       <div
         v-for="(track, i) in tracks"
         :key="track.id"
@@ -19,7 +19,7 @@
         <span class="track-name">{{track.name}}</span>
         <span class="track-artists">- {{track.ar.map(ar => ar.name).join(";")}}</span>
       </div>
-    </a>
+    </router-link>
     <div class="list__name">
       {{card.name}}
     </div>

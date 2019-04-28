@@ -10,7 +10,11 @@ import TopListIndex from "@/components/TopList/Index"
 import MV from "@/components/MV/Index"
 import MVPlayer from "@/components/MV/MVPlayer"
 import MVRankList from "@/components/MV/RankList"
-import SearchIndex from "@/components/Search/Index"
+import SearchIndex from "@/components/Search/Index";
+import LogIn from '@/components/login/index';
+import UserRecord from '@/components/userRecord';
+import LikedSongs from '@/components/likedSongs';
+
 export default new VueRouter({
   mode: "history",
   // base: __dirname,
@@ -27,5 +31,8 @@ export default new VueRouter({
     { path: "/mvplay/:id", component: MVPlayer },
     { path: "/mv/rank", component: MVRankList },
     { path: "/search", component: SearchIndex },
+    { path: "/login", component: LogIn },
+    { path: "/userrecord", component: UserRecord },
+    { path: "/likedsongs", component: LikedSongs },
   ],
 })

@@ -25,12 +25,12 @@ const Songs = {
           {
             songs.map(song => (
               <li key={song.id} class="list-item">
-                <a class="item" href={'/song/' + song.id} >
+                <RouterLink class="item" to={'/song/' + song.id} >
                   <span class="item-title">
                     {song.name} -&nbsp;
                     {song.artists.filter(ar => ar.id != 0).map(ar => ar.name).join('/')}
                   </span>
-                </a>
+                </RouterLink>
               </li>
             ))
           }
@@ -51,7 +51,7 @@ const Artists = {
           {
             artists.map(artist => (
               <li key={artist.id}>
-                <a class="item" href={'/artist/' + artist.id}>
+                <RouterLink class="item" to={'/artist/' + artist.id}>
                   <img
                     class="artist-avatar"
                     src={clipImage(artist.img1v1Url, 200, 200)}
@@ -59,7 +59,7 @@ const Artists = {
                   <span class="item-title">
                     {artist.name}
                   </span>
-                </a>
+                </RouterLink>
               </li>
             ))
           }
@@ -80,9 +80,9 @@ const Albums = {
           {
             albums.map(album => (
               <li key={album.id}>
-                <a class="item" href={'/album/'+ album.id}>
+                <RouterLink class="item" to={'/album/'+ album.id}>
                   <span class="item-title">{album.name}</span>
-                </a>
+                </RouterLink>
               </li>
             ))
           }
@@ -103,11 +103,11 @@ const Mvs = {
           {
             mvs.map(mv => (
               <li key={mv.id}>
-                <a href={'/mvplay/'+ mv.id} class="item">
+                <RouterLink to={'/mvplay/'+ mv.id} class="item">
                   <span class="item-title">
                     {mv.name}
                   </span>
-                </a>
+                </RouterLink>
               </li>
             ))
           }
@@ -128,7 +128,7 @@ const Playlists = {
           {
             playlists.map(playlist => (
               <li key={playlist.id}>
-                <a href={'/playlist/' + playlist.id} class="item">
+                <RouterLink to={'/playlist/' + playlist.id} class="item">
                   <img
                     class="playlist-img"
                     src={clipImage(playlist.coverImgUrl, 100, 100)}
@@ -136,7 +136,7 @@ const Playlists = {
                   <span class="item-title">
                     {playlist.name}
                   </span>
-                </a>
+                </RouterLink>
               </li>
             ))
           }

@@ -17,13 +17,13 @@
         <span>{{ formatPlayCount(card.playCount) }}</span>
       </div>     
     </CardImage>
-    <a :href="`/${cardType}/${card.id}`" class="list__name">
+    <router-link :to="`/${cardType}/${card.id}`" class="list__name">
       {{card.name}}
-    </a>
+    </router-link>
     <!-- creator -->
-    <a v-if="card.creator" class="creator-name" :href="`/user/${card.creator.userId}`">
+    <router-link v-if="card.creator" class="creator-name" :to="`/user/${card.creator.userId}`">
       {{card.creator.nickname}}
-    </a>
+    </router-link>
     <!-- 点击更多，弹出菜单 -->
     <popup-menu :target="morePopupButton">
       <more-list>

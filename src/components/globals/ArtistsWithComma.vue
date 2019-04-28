@@ -7,7 +7,7 @@ export default {
     return arrayJoin(artists, 'comma').map(ar => {
       return ar == 'comma'
         ? <span class={commaClass}>, </span>
-        : <a class={aTagClass} href={ '/artist/' + ar.id}>{ar.name}</a>
+        : <RouterLink class={aTagClass} to={ '/artist/' + ar.id}>{ar.name}</RouterLink>
     });
   }  
 }

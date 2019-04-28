@@ -175,6 +175,45 @@ function getUserDetail(uid) {
 function getUserPlaylist(uid, offset=0) {
   return Api().get("/user/playlist?uid=" + uid + '&offset=' + offset);
 }
+/**
+ * 邮箱登录
+ * @param {String} email 邮箱地址
+ * @param {String} password 密码
+ */
+function loginEmail(email, password) {
+  return Api().get(`/login?email=${email}&password=${password}`, {withCredentials: true});
+}
+/**
+ * 手机登录
+ * @param {Number} phone 手机号码
+ * @param {String} password 密码
+ * @param {Number} countrycode 国家码
+ */
+function loginPhone(phone, password, countrycode) {
+  let url = `/login/cellphone?phone=${phone}&password=${password}`;
+  url += typeof countrycode == 'undefined' ? '' : `&countrycode=${countrycode}`;
+  return Api().get(url, {withCredentials: true});
+}
+function logout() {
+  return Api().get('/logout');
+}
+/**
+ * 登陆后调用此接口 , 传入用户 id, 可获取用户播放记录
+ * @param {Number} uid 用户 id
+ * @param {Number} type type=1 时只返回 weekData, type=0 时返回 allData
+ */
+function getRecord(uid, type) {
+  let url = `/user/record?uid=${uid}`
+  url += typeof type == 'undefined' ? '' : `&type=${type}`;
+  return Api().get(url, {withCredentials: true});
+}
+/**
+ * 调用此接口 , 传入用户 id, 可获取已喜欢音乐id列表(id数组)
+ * @param {Number} uid 用户 id
+ */
+function getLikelist(uid) {
+  return Api().get(`/likelist?uid=${uid}`, {withCredentials: true});
+}
 export {
   getBanner,
   getSongURL,
@@ -201,4 +240,9 @@ export {
   getSimiSongs,
   getUserDetail,
   getUserPlaylist,
+  loginEmail,
+  loginPhone,
+  logout,
+  getRecord,
+  getLikelist,
 }

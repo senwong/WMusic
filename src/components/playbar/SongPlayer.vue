@@ -7,9 +7,9 @@
       <div class="name">{{currentSong.name}}</div>
       <div class="artist-album">
         <span>歌手：
-          <a v-for="ar in currentSong.artists" :key="ar.id" :href="'/artist/'+ar.id">
+          <router-link v-for="ar in currentSong.artists" :key="ar.id" :to="'/artist/'+ar.id">
             {{ar.name}}
-          </a>
+          </router-link>
         </span>
         <span>专辑：<a href="#">{{msg}}</a></span>
       </div>
