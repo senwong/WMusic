@@ -35,10 +35,11 @@
               @click.native="handleLogout"
             >退出</Button>
             <Button
+              as='a'
               class="action-button"
               rounded
               v-if="isSelf"
-              @click.native="handleEdit"
+              href='/useredit'
             >编辑</Button>
           </div>
         </div>
@@ -64,8 +65,8 @@
           <div class="district">
             <span class="bold-txt">所在地区：</span>
             <span class="light-txt">
-              {{getDistrictName(profile.province)}}&nbsp;
-              {{getDistrictName(profile.city)}}
+              {{ province ? province.name : '其他' }}&nbsp;
+              {{ city ? city.name : '其他' }}
             </span>
           </div>
           <div class="age" v-if="profile.birthday">
@@ -87,7 +88,7 @@
 </template>
 <script>
 import { getUserDetail, logout } from '@/service';
-import districtCodeNameMap from './districtCode.json';
+import provinceCitys from './provinceCitys.json';
 import UserPlaylist from '@/components/user/UserPlaylist';
 import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
 import { mapState, mapMutations } from 'vuex';
@@ -110,10 +111,6 @@ export default {
     Button,
   },
   methods: {
-    getDistrictName(districtCode) {
-      const name = districtCodeNameMap[districtCode];
-      return name ? name : '其他';
-    },
     handleLogout() {
       logout().then(
         res => {
@@ -126,9 +123,6 @@ export default {
           alert('log out fail', error);
         }
       );
-    },
-    handleEdit() {
-
     },
     ...mapMutations('currentUser', [
       'setCurrentUser'
@@ -150,6 +144,16 @@ export default {
     }),
     isSelf() {
       return this.currentUserId && this.currentUserId == this.userId;
+    },
+    province() {
+      if (this.profile && this.profile.province) {
+        return provinceCitys.find(p => p.code == this.profile.province);
+      }
+    },
+    city() {
+      if (this.province && this.province.children) {
+        return this.province.children.find(c => c.code == this.profile.city);
+      }
     }
   },
   created() {
@@ -158,6 +162,9 @@ export default {
       res => {
         this.profile = res.data.profile;
         this.isGetUserDetailFailed = false;
+        if (this.isSelf) {
+          this.setCurrentUser(res.data.profile);
+        }
       },
       error => {
         this.isGetUserDetailFailed = true;

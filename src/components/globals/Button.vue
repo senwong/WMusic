@@ -62,4 +62,6 @@ export default {
     text-align: center;
   &.button-large
     font-size: 18px;
+  &[disabled]
+    opacity: 0.5
 </style>

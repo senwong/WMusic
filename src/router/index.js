@@ -16,6 +16,7 @@ import UserRecord from '@/components/userRecord';
 import LikedSongs from '@/components/likedSongs';
 import UserFollows from '@/components/user/UserFollows';
 import UserFolloweds from '@/components/user/UserFolloweds';
+import UserEdit from '@/components/user/UserEdit';
 
 export default new VueRouter({
   mode: "history",
@@ -38,5 +39,6 @@ export default new VueRouter({
     { path: "/likedsongs", component: LikedSongs },
     { path: "/follows/:id", component: UserFollows },
     { path: "/followeds/:id", component: UserFolloweds },
+    { path: "/useredit", component: UserEdit },
   ],
 })

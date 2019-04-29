@@ -232,6 +232,20 @@ function getUserFollows(uid, offset, limit) {
 function getUserFolloweds(uid, offset, limit) {
   return Api().get(`/user/followeds?uid=${uid}&offset=${offset}&limit=${limit}`);
 }
+/**
+ * 登陆后调用此接口 , 传入相关信息,可以更新用户信息
+ */
+function userUpdate(nickname, signature, gender, birthday, province, city) {
+  const params = {
+    nickname,
+    signature,
+    gender,
+    birthday,
+    province,
+    city,
+  };
+  return Api().get('/user/update/?', { params, withCredentials: true });
+}
 export {
   getBanner,
   getSongURL,
@@ -265,4 +279,5 @@ export {
   getLikelist,
   getUserFollows,
   getUserFolloweds,
+  userUpdate,
 }
