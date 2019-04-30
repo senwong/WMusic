@@ -246,6 +246,34 @@ function userUpdate(nickname, signature, gender, birthday, province, city) {
   };
   return Api().get('/user/update/?', { params, withCredentials: true });
 }
+
+/**
+ * 调用此接口 , 可获得已收藏专辑列表
+ * @param {Number} offset 偏移数量 , 用于分页 , 如 :( 页数 -1)*25, 其中 25 为 limit 的值 , 默认 为 0
+ * @param {Number} limit 取出数量 , 默认为 25 
+ */
+function getAlbumSublist(offset = 0, limit = 25) {
+  const params = { offset, limit };
+  return Api().get('/album/sublist', { params, withCredentials: true });
+}
+/**
+ * 调用此接口 , 可获得已收藏的歌手列表
+ * @param {Number} offset 偏移数量 , 用于分页 , 如 :( 页数 -1)*25, 其中 25 为 limit 的值 , 默认 为 0
+ * @param {Number} limit 取出数量 , 默认为 25 
+ */
+function getArtistSublist(offset = 0, limit = 25) {
+  const params = { offset, limit };
+  return Api().get('/artist/sublist', { params, withCredentials: true });
+}
+/**
+ * 调用此接口 , 可获得已收藏的MV列表
+ * @param {Number} offset 偏移数量 , 用于分页 , 如 :( 页数 -1)*25, 其中 25 为 limit 的值 , 默认 为 0
+ * @param {Number} limit 取出数量 , 默认为 25 
+ */
+function getMvSublist(offset = 0, limit = 25) {
+  const params = { offset, limit };
+  return Api().get('/mv/sublist', { params, withCredentials: true });
+}
 export {
   getBanner,
   getSongURL,
@@ -280,4 +308,7 @@ export {
   getUserFollows,
   getUserFolloweds,
   userUpdate,
+  getAlbumSublist,
+  getArtistSublist,
+  getMvSublist,
 }

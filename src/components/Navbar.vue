@@ -73,14 +73,14 @@
             最近播放
           </div>
         </router-link>
-        <a href="#" class="nav__link">
+        <router-link to="/sublist" class="nav__link">
           <div class="icon icon_m">
             <MusicIcon />
           </div>
           <div class="nav__link_txt">
             我的收藏
           </div>
-        </a>
+        </router-link>
         <a href="#" class="nav__link">
           <div class="icon icon_m">
             <MusicIcon />

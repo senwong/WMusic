@@ -1,0 +1,64 @@
+<template>
+  <router-link class="list-item__container" :to="to">
+    <div class="list-item__cover">
+      <ImageWithPlaceholder :src="imgSrc" :alt="imgAlt" ratio="1:1" />
+    </div>
+    <div class="list-item__title">
+      <slot name="title"></slot>
+    </div>
+    <div class="list-item__subtitle-1">
+      <slot name="subtitle_1"></slot>
+    </div>
+    <div class="list-item__subtitle-2">
+      <slot name="subtitle_2"></slot>
+    </div>
+  </router-link>
+</template>
+
+<script>
+import ArtistsWithComma from '@/components/globals/ArtistsWithComma';
+import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
+
+export default {
+  props: {
+    imgSrc: {
+      required: true,
+      type: String,
+    },
+    imgAlt: {
+      required: true,
+      type: String,
+    },
+    to: {
+      type: String,
+      required: true,
+    }
+  },
+  components: { ArtistsWithComma, ImageWithPlaceholder },
+}
+</script>
+
+<style lang="sass" scoped>
+.list-item__container
+  font-size: 16px
+  align-items: center
+  padding: 1em 2em
+  display: grid
+  grid-template-columns: auto 2fr 1fr auto
+  transition: all 250ms
+  &:nth-of-type(2n)
+    background: #f8f8f8
+  &:hover
+    background: #f0f0f0
+  .list-item__cover
+    margin-right: 1em
+    border-radius: 0.2em
+    width: 3em
+    height: 3em
+    border-radius: 0.3em
+    overflow: hidden
+  .list-item__subtitle-1,
+  .list-item__subtitle-2
+    font-size: 0.875em
+    color: #546e7a
+</style>

@@ -9,17 +9,18 @@
       radius
     />
     <router-link :to="`/${cardType}/${card.id}`" class="list__name">
-      <span>{{card.name}}</span><span> - {{card.artistName}}</span>
+      <span>{{card.name}}</span><span> - </span><ArtistsWithComma :artists="card.artists" />
     </router-link>
   </div>
 </template>
 <script>
 import CardImage from '@/components/globals/CardImage';
+import ArtistsWithComma from '@/components/globals/ArtistsWithComma';
 
 export default {
   name: "CardItem",
   props: ['card', 'cardType'],
-  components: { CardImage },
+  components: { CardImage, ArtistsWithComma },
   methods: {
     formatPlayCount(playCount) {
       if (playCount < 10000) return playCount
