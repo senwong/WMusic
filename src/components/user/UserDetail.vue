@@ -39,7 +39,7 @@
               class="action-button"
               rounded
               v-if="isSelf"
-              href='/useredit'
+              :href="`/useredit/${userId}`"
             >编辑</Button>
           </div>
         </div>
@@ -115,7 +115,7 @@ export default {
       logout().then(
         res => {
           // logout success
-         this.setCurrentUser(null);
+         this.setCurrentUserId(undefined);
          this.$router.push('/');
         },
         error => {
@@ -125,7 +125,7 @@ export default {
       );
     },
     ...mapMutations('currentUser', [
-      'setCurrentUser'
+      'setCurrentUserId'
     ])
   },
   computed: {
@@ -140,10 +140,10 @@ export default {
       else return '其他';
     },
     ...mapState('currentUser', {
-      currentUserId: state => state.profile && state.profile.userId,
+      currentUserId: state => state.userId,
     }),
     isSelf() {
-      return this.currentUserId && this.currentUserId == this.userId;
+      return this.currentUserId == this.userId;
     },
     province() {
       if (this.profile && this.profile.province) {

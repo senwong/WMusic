@@ -7,6 +7,12 @@
   </div>
 </template>
 
+<script>
+export default {
+  
+}
+</script>
+
 <style lang="sass" scoped>
 .with-hover-mask-container
   width: 100%;

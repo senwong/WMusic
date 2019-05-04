@@ -1,5 +1,5 @@
 <template>
-<div class="container main-wrapper" ref="wrapper">
+<div class="container main-wrapper" @scroll="handleScroll">
   <SearchBarWithRecommendations
     v-model="keyWords"
     @enter="handleInputEnter"
@@ -23,7 +23,7 @@
     <!-- 搜索单曲 -->
     <div v-if="currentSearchType == 1">
       <h3 class="fallback" v-if="searchSongs.length == 0">没有与此相关的单曲</h3>
-      <song-list :tracks="searchSongs" />
+      <SongList :tracks="searchSongs" />
     </div>
     <!-- 搜索歌手 -->
     <div v-else-if="currentSearchType == 100">
@@ -66,8 +66,8 @@
       <card-item
         v-for="mv in searchMvs"
         :key="mv.id"
-        :link = "'/mvplay/' + mv.id"
-        :picUrl = "mv.cover | clipImage(640, 360)"
+        :link="'/mvplay/' + mv.id"
+        :picUrl="mv.cover | clipImage(640, 360)"
         :title = mv.name
         :subTitles = getMvSubTitles(mv)
         :subLinks = getMvSubLinks(mv)
@@ -136,14 +136,14 @@
       <h3 class="fallback" v-if="searchUsers.length == 0">没有与此相关的用户</h3>
       <ul>
         <li v-for="user in searchUsers" :key="user.id" class="user-item-search">
-          <a :href="'/user/' + user.id" class="user-pic-search">
+          <router-link :to="'/user/' + user.id" class="user-pic-search">
             <img :src="user.avatarUrl | convert2Https | clipImage(200, 200)" :alt="user.name">
-          </a>
-          <a :href="'/user/' + user.id" class="user-name-search">
+          </router-link>
+          <router-link :to="'/user/' + user.id" class="user-name-search">
             <span>{{user.nickname}}</span>
             <span v-if="user.gender == 1">男生</span>
             <span v-if="user.gender == 2">女生</span>
-          </a>
+          </router-link>
         </li>
       </ul>
     </div>
@@ -151,137 +151,143 @@
   <h2 v-show="currentSearchType !== null && isLoadMore" class="loading">Loading...</h2>
 </div>
 </template>
-<script>
+<script lang='ts'>
 import { search } from '@/service';
 import { formatTime } from '@/utilitys';
-import CardItem from './CardItem';
-import SongList from '@/components/FindMusic/SongList';
-import SearchBarWithRecommendations from './SearchBarWithRecommendations';
+import CardItem from './CardItem.vue';
+import SongList from '@/components/FindMusic/SongList.vue';
+import SearchBarWithRecommendations from './SearchBarWithRecommendations.vue';
+import { Vue, Component, Watch } from 'vue-property-decorator';
+import { Track, Artist, Album, MvCard } from '@/types';
+
 const SEARCH_OFFSET = 30
 
-export default {
-  name: "SearchIndex",
-  components: { CardItem, SongList, SearchBarWithRecommendations, },
-  data() {
-    return {
-      keyWords: "",
-      searchTypes: {
-        "单曲": 1,
-        "歌手": 100,
-        "专辑": 10,
-        "MV": 1004,
-        "歌单": 1000,
-        "歌词": 1006,
-        "主播电台": 1009,
-        "用户": 1002,
-      },
-      tabKey: null,
+enum SearchType {
+  Song = 1,
+  Artist = 100,
+  Album = 10,
+  Mv = 1004,
+  Playlist = 1000,
+  Lyric = 1006,
+  Radio = 1009,
+  User = 1002,
+}
+@Component({
+  components: { CardItem, SongList, SearchBarWithRecommendations, }
+})
+export default class Search extends Vue {
+  keyWords: string = "";
+  searchTypes: object = {
+    "单曲": SearchType.Song,
+    "歌手": SearchType.Artist,
+    "专辑": SearchType.Album,
+    "MV": SearchType.Mv,
+    "歌单": SearchType.Playlist,
+    "歌词": SearchType.Lyric,
+    "主播电台": SearchType.Radio,
+    "用户": SearchType.User,
+  };
 
-      // number referring to type, default 1
-      currentSearchType: 1,
+  // number referring to type, default 1
+  currentSearchType: SearchType = SearchType.Song;
 
-      // search result
-      searchSongs: [],
-      searchArtists: [],
-      searchAlbums: [],
-      searchMvs: [],
-      searchPlaylists: [],
-      searchLyrics: [],
-      searchDjRadios: [],
-      searchUsers: [],
-      isLoadMore: false,
-      count: 0,
-      prevLength: 0,
-      currentLength: 0,
-    }
-  },
-  methods: {
-    formatTime,
-    getMvSubTitles(mv) {
-      return mv.artists.map( ar => {
-        return {
-          id: ar.id,
-          txt: ar.name
-        }
-      })
-    },
-    getMvSubLinks(mv) {
-      const obj = {};
-      mv.artists.forEach(ar => {
-        obj[ar.id] = "/artist/" + ar.id
-      })
-      return obj
-    },
-    searchWithTypes() {
-      const searchType = this.currentSearchType;
-      if (this.keyWords.length < 1) return;
-      search(this.keyWords, searchType, this.currentLength).then(
-        res => {
-          const result = JSON.parse(JSON.stringify(res.data.result).replace(/http:\/\//g, "https://"));
-          if(searchType == 1 && result.songs) {
-            const songs = result.songs.map(song => ({
-              id: song.id,
-              name: song.name,
-              ar: song.artists,
-              dt: song.duration,
-              al: song.album,
-            }));
-            this.count = result.songCount
-            this.searchSongs = songs;
-          } else if (searchType == 100) {
-            this.searchArtists = result.artists;
-            this.count = result.artistCount
-          } else if (searchType == 10) {
-            this.searchAlbums = result.albums;
-            this.count = result.albumCount
-          } else if (searchType == 1004) {
-            this.searchMvs = result.mvs;
-            this.count = result.mvCount
-          } else if (searchType == 1000) {
-            this.searchPlaylists = result.playlists;
-            this.count = result.playlistCount
-          } else if (searchType == 1006) {
-            this.searchLyrics = result.songs;
-            this.count = result.songCount
-          } else if (searchType == 1009) {
-            this.searchDjRadios = result.djRadios;
-            this.count = result.djRadiosCount
-          } else if (searchType == 1002) {
-            this.searchUsers = result.userprofiles;
-            this.count = result.userprofileCount
-          }
-        },
-        error => alert('get search data error ' + error)
-      );
-    },
-    handleTabClick(searchType) {
-      this.currentSearchType = searchType
-      this.searchWithTypes();
-    },
-    getDjSubTitles(djRadio) {
-      return [{id: djRadio.dj.userId, txt: djRadio.dj.nickname}]
-    },
-    getDjSubLinks(djRadio) {
-      const obj = {};
-      obj[djRadio.dj.userId] = "/dj/" +  djRadio.dj.userId
-      return obj
-    },
-    handleInputEnter() {
-      this.searchWithTypes();
-    },
-  },
-  mounted() {
-    this.$refs.wrapper.addEventListener("scroll",  e => {
-      this.isLoadMore = this.currentSearchType !== null
-        && this.count !== this.currentLength
-        && e.target.scrollTop + e.target.clientHeight ==  e.target.scrollHeight
+  // search result
+  searchSongs: Track[] = [];
+  searchArtists: Artist[] = [];
+  searchAlbums: Album[] = [];
+  searchMvs: MvCard[] = [];
+  searchPlaylists: object[] = [];
+  searchLyrics: object[] = [];
+  searchDjRadios: object[] = [];
+  searchUsers: object[] = [];
+  isLoadMore: boolean = false;
+  count: number = 0;
+  prevLength: number = 0;
+  currentLength: number = 0;
+
+
+  formatTime = formatTime;
+  getMvSubTitles(mv: MvCard) {
+    return mv.artists.map( ar => {
+      return {
+        id: ar.id,
+        txt: ar.name
+      }
     })
-  },
-  watch: {
-    isLoadMore(val) {
-      if(val == false) return
-      this.searchWithTypes();
-    }
+  }
+  getMvSubLinks(mv: MvCard) {
+    const obj: {[index: number]: string} = {};
+    mv.artists.forEach(ar => {
+      obj[ar.id] = "/artist/" + ar.id
+    })
+    return obj
+  }
+  searchWithTypes() {
+    const searchType = this.currentSearchType;
+    if (this.keyWords.length < 1) return;
+    search(this.keyWords, searchType, this.currentLength).then(
+      res => {
+        const result = JSON.parse(JSON.stringify(res.data.result).replace(/http:\/\//g, "https://"));
+        if(searchType == SearchType.Song && result.songs) {
+          const songs = result.songs.map((song: Track) => ({
+            id: song.id,
+            name: song.name,
+            ar: song.artists,
+            dt: song.duration,
+            al: song.album,
+          }));
+          this.count = result.songCount
+          this.searchSongs = songs;
+        } else if (searchType == SearchType.Artist) {
+          this.searchArtists = result.artists;
+          this.count = result.artistCount
+        } else if (searchType == SearchType.Album) {
+          this.searchAlbums = result.albums;
+          this.count = result.albumCount
+        } else if (searchType == SearchType.Mv) {
+          this.searchMvs = result.mvs;
+          this.count = result.mvCount
+        } else if (searchType == SearchType.Playlist) {
+          this.searchPlaylists = result.playlists;
+          this.count = result.playlistCount
+        } else if (searchType == SearchType.Song) {
+          this.searchLyrics = result.songs;
+          this.count = result.songCount
+        } else if (searchType == SearchType.Radio) {
+          this.searchDjRadios = result.djRadios;
+          this.count = result.djRadiosCount
+        } else if (searchType == SearchType.User) {
+          this.searchUsers = result.userprofiles;
+          this.count = result.userprofileCount
+        }
+      },
+      error => alert('get search data error ' + error)
+    );
+  }
+  handleTabClick(searchType: SearchType) {
+    this.currentSearchType = searchType
+    this.searchWithTypes();
+  };
+  getDjSubTitles(djRadio: {dj: {userId: number, nickname: string}}) {
+    return [{id: djRadio.dj.userId, txt: djRadio.dj.nickname}]
+  };
+  getDjSubLinks(djRadio: {dj: {userId: number, nickname: string}}) {
+    const obj: {[index: number]: string} = {};
+    obj[djRadio.dj.userId] = "/dj/" +  djRadio.dj.userId
+    return obj
+  };
+  handleInputEnter() {
+    this.searchWithTypes();
+  };
+  handleScroll({ target }: {target: HTMLElement}) {
+    this.isLoadMore = this.currentSearchType !== null
+      && this.count !== this.currentLength
+      && target.scrollTop + target.clientHeight ==  target.scrollHeight
+  }
+  @Watch('isLoadMore')
+  onIsLoadingChange(val: boolean) {
+    if(val == false) return
+    this.searchWithTypes();
   }
 }
 </script>

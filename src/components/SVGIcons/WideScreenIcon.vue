@@ -3,3 +3,8 @@
     <path d="M2 8 V24 H30 V8 H2" />
   </svg>
 </template>
+<script>
+export default {
+  
+}
+</script>

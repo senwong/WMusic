@@ -1,24 +1,27 @@
 <template>
 <div class="lists">
-  <card-item v-for="card in cardLists" :key="card.id" :card="card" :cardType="cardType">
-  </card-item>
+  <CardItem v-for="card in cardLists" :key="card.id" :card="card" :cardType="cardType" />
 </div>
 </template>
-<script>
+<script lang='ts'>
 import CardItem from './CardItem.vue';
+import { Playlist, PlaylistType } from '@/types';
+import { Vue, Component, Prop } from 'vue-property-decorator'
 
-export default {
-  name: "SongCards",
-  props: ['cardLists', 'cardType'],
-  components: {CardItem, },
+@Component({
+  components: { CardItem }
+})
+export default class SongCards extends Vue {
+  @Prop() readonly cardType!: PlaylistType
+  @Prop() readonly cardLists!: Playlist[]
 }
 </script>
 <style lang="sass" scoped>
 .lists
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 2em;
+  display: grid
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr))
+  gap: 2em
   flex-wrap: wrap
-  justify-content: space-between;
+  justify-content: space-between
 </style>
 

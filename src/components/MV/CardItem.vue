@@ -13,23 +13,26 @@
     </router-link>
   </div>
 </template>
-<script>
-import CardImage from '@/components/globals/CardImage';
-import ArtistsWithComma from '@/components/globals/ArtistsWithComma';
+<script lang='ts'>
+import CardImage from '@/components/globals/CardImage.vue';
+import ArtistsWithComma from '@/components/globals/ArtistsWithComma.vue';
+import { MvCard } from '@/types';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
-export default {
-  name: "CardItem",
-  props: ['card', 'cardType'],
+@Component({
   components: { CardImage, ArtistsWithComma },
-  methods: {
-    formatPlayCount(playCount) {
-      if (playCount < 10000) return playCount
-      return (playCount / 10000).toFixed(1) + "万"
-    },
-    play() {
-      // TODO
-    }
-  },
+})
+export default class CardItem extends Vue {
+  @Prop() card!: MvCard;
+  @Prop() cardType!: string;
+  
+  formatPlayCount(playCount: number): string {
+    if (playCount < 10000) return playCount.toString();
+    return (playCount / 10000).toFixed(1) + "万"
+  }
+  play() {
+    // TODO
+  }
 }
 </script>
 <style lang="sass" scoped>

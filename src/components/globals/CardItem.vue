@@ -56,24 +56,22 @@
     </popup-menu>
   </div>
 </template>
-<script>
+<script lang="ts">
 import PopupMenu from '../PopupMenu.vue';
 import MoreItem from '../more-list/MoreItem.vue';
 import MoreList from '../more-list/MoreList.vue';
 import { mapMutations } from 'vuex';
-import { getPlaylistDetail, getAlbumDetail } from "@/service"
-import DownloadIcon from '../SVGIcons/DownloadIcon';
-import PlayWithoutCircleIcon from '../SVGIcons/PlayWithoutCircleIcon';
-import CardImage from './CardImage';
+import { getPlaylistDetail, getAlbumDetail } from "@/service";
+import DownloadIcon from '@/components/SVGIcons/DownloadIcon.vue';
+import PlayWithoutCircleIcon from '@/components/SVGIcons/PlayWithoutCircleIcon.vue';
+import CardImage from './CardImage.vue';
+import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Mutation, namespace } from 'vuex-class'
+import { Track, Playlist, PlaylistType } from '@/types';
 
-export default {
-  name: "CardItem",
-  data() {
-    return {
-      morePopupButton: null,
-    };
-  },
-  props: ['card', 'cardType'],
+const playlist = namespace('playlist');
+
+@Component({
   components: {
     PopupMenu,
     MoreItem,
@@ -81,75 +79,80 @@ export default {
     DownloadIcon,
     PlayWithoutCircleIcon,
     CardImage,
-  },
+  }
+})
+export default class CardItem extends Vue {
+  morePopupButton: HTMLElement | null  = null
+  @Prop() readonly card!: Playlist
+  @Prop() readonly cardType!: PlaylistType
+  $refs!: {
+    more: HTMLElement
+  }
+  @playlist.Mutation setTracks!: (tracks: Track[]) => void
+  @playlist.Mutation setCurrentSongId!: (id: number) => void
+
   mounted() {
     this.morePopupButton = this.$refs.more;
-  },
-  methods: {
-    addFav(type, id) {
-      if(!this.$store.state.isLogin) {
-        console.log("not login , cannot add fav "+ type + id);
-      } else {
-        console.log("add fav "+ type + id);
-      }
-    },
-    formatPlayCount(playCount) {
-      if (playCount < 10000) return playCount
-      return (playCount / 10000).toFixed(1) + "万"
-    },
-    setPlaylist() {
-      if (!this.card.id) return;
-      getPlaylistDetail(this.card.id).then(
-        res => {
-          this.setTracks(res.data.playlist.tracks);
-          this.setCurrentSongId(res.data.playlist.trackIds[0].id);
-        },
-        error => alert('getPlaylistDetail error ' + error)
-      );
-    },
-    ...mapMutations('playlist', [
-      'setCurrentSongId',
-      'setTracks',
-    ])
-  },
+  }
+  
+  addFav(type: PlaylistType, id: number): void {
+    if(!this.$store.state.isLogin) {
+      console.log("not login , cannot add fav "+ type + id);
+    } else {
+      console.log("add fav "+ type + id);
+    }
+  }
+  formatPlayCount(playCount: number): string {
+    if (playCount < 10000) return playCount.toString();
+    return (playCount / 10000).toFixed(1) + "万";
+  }
+  setPlaylist(): void {
+    if (!this.card.id) return;
+    getPlaylistDetail(this.card.id).then(
+      res => {
+        this.setTracks(res.data.playlist.tracks as Track[]);
+        this.setCurrentSongId(res.data.playlist.trackIds[0].id);
+      },
+      error => alert('getPlaylistDetail error ' + error)
+    );
+  }
 }
 </script>
 <style lang="sass" scoped>
-@import '../config.sass';
+@import '../config.sass'
 .list-item
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  user-select: none;
+  display: flex
+  flex-direction: column
+  position: relative
+  user-select: none
 
 .list__name
-  margin: 8px 0;
-  text-decoration: none;
-  color: inherit;
-  font-weight: bolder;
-  font-size: 14px;
+  margin: 8px 0
+  text-decoration: none
+  color: inherit
+  font-weight: bolder
+  font-size: 14px
   &:hover
-    text-decoration: underline;
+    text-decoration: underline
 .play-count
-  display: flex;
-  align-items: center;
-  margin: 0.5em;
-  padding: 0 0.2em;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 0.2em;
-  font-size: 12px;
+  display: flex
+  align-items: center
+  margin: 0.5em
+  padding: 0 0.2em
+  color: white
+  background-color: rgba(0, 0, 0, 0.5)
+  border-radius: 0.2em
+  font-size: 12px
 .play-count__icon
-  width: 1em;
-  height: 1em;
+  width: 1em
+  height: 1em
 
 .creator-name
-  color: $gray;
-  font-size: 12px;
-  transition-property: color;
-  transition-duration: 250ms;
+  color: $gray
+  font-size: 12px
+  transition-property: color
+  transition-duration: 250ms
   &:hover
-    color: black;
-
+    color: black
 </style>
 

@@ -30,39 +30,21 @@
       </div>
       
       <!-- 推荐歌单 -->
-      <recommend-song-list></recommend-song-list>
+      <RecommendSongList />
     </div>
   </div>
 </template>
 <script>
-  import CarouselPanel from './CarouselPanel.vue'
-  import RecommendSongList from './RecommendSongList.vue'
-  import MusicIcon from '../SVGIcons/MusicIcon';
+import CarouselPanel from './CarouselPanel.vue'
+import RecommendSongList from './RecommendSongList.vue'
+import MusicIcon from '../SVGIcons/MusicIcon';
 
-  export default {
-    name: "FindMusic",
-    components: {
-      CarouselPanel, RecommendSongList, MusicIcon,
-    },
-    beforeRouteUpdate (to, from, next) {
-      console.log("route to " + to + " from " + from)
-      // called when the route that renders this component has changed,
-      // but this component is reused in the new route.
-      // For example, for a route with dynamic params `/foo/:id`, when we
-      // navigate between `/foo/1` and `/foo/2`, the same `Foo` component instance
-      // will be reused, and this hook will be called when that happens.
-      // has access to `this` component instance.
-    },
-    watch: {
-      "$route" (to, from) {
-        console.log("route change")
-      }
-    },
-    mounted() {
-      console.log("mounted ")
-    }
-  }
-
+export default {
+  name: "FindMusic",
+  components: {
+    CarouselPanel, RecommendSongList, MusicIcon,
+  },
+}
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass";

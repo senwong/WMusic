@@ -4,52 +4,55 @@
     <div class="ripple-circle" ref="circle"></div>
   </button>
 </template>
-<script>
-import { addEventListenerOnce } from "@/utilitys.js"
-  export default {
-    name: "RippleButton",
-    data() {
-      return {
-        isAnimating: false,
-      }
-    },
-    methods: {
-      triggerRipple(e) {
-        this.isAnimating = true
-        const parent = this.$refs.button
-        let div = this.$refs.circle
-        const d = Math.max(parent.clientWidth, parent.clientHeight);
-        div.style.width = div.style.height = d + "px";
-        div.style.left = e.offsetX - d / 2 + "px";
-        div.style.top = e.offsetY - d / 2 + "px";
-        div.classList.remove("ripple-animation")
-        void div.offsetWidth;
-        div.classList.add("ripple-animation")
-        console.log("mouse down")
-        div.addEventListener("animationend", () => {
-          this.isAnimating = false
-        })
-        e.preventDefault();
-      },
-      cancelRipple(e) {
-        const parent = this.$refs.button
-        let div = this.$refs.circle
-        if (this.isAnimating) {
-          addEventListenerOnce(div, "animationend", () => {
-            div.classList.remove("ripple-animation")
-          })
-        } else {
-          div.classList.remove("ripple-animation")
-        }
-        console.log("mouseup")
-        void div.offsetWidth;
-        e.preventDefault();
-      }
-    }
+<script lang='ts'>
+import { addEventListenerOnce } from "@/utilitys"
+import { Vue, Component } from 'vue-property-decorator'
+
+@Component
+export default class RippleButton extends Vue {
+  isAnimating: boolean = false;
+  
+  $refs!: {
+    circle: HTMLDivElement,
+    button: HTMLButtonElement,
   }
+  
+  triggerRipple(e: MouseEvent ) {
+    this.isAnimating = true
+    const parent = this.$refs.button
+    let div = this.$refs.circle
+    const d = Math.max(parent.clientWidth, parent.clientHeight);
+    div.style.width = div.style.height = d + "px";
+    div.style.left = e.offsetX - d / 2 + "px";
+    div.style.top = e.offsetY - d / 2 + "px";
+    div.classList.remove("ripple-animation")
+    void div.offsetWidth;
+    div.classList.add("ripple-animation")
+    console.log("mouse down")
+    div.addEventListener("animationend", () => {
+      this.isAnimating = false
+    })
+    e.preventDefault();
+  }
+  cancelRipple(e: MouseEvent) {
+    const parent = this.$refs.button
+    let div = this.$refs.circle
+    if (this.isAnimating) {
+      addEventListenerOnce(div, "animationend", () => {
+        div.classList.remove("ripple-animation")
+      })
+    } else {
+      div.classList.remove("ripple-animation")
+    }
+    console.log("mouseup")
+    void div.offsetWidth;
+    e.preventDefault();
+  }
+}
 </script>
 <style lang="sass" scoped>
 @import "@/style/colors.sass";
+
 .ripple-button
   background-color: transparent;
   font-size: 14px;

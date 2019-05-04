@@ -27,136 +27,124 @@
   </div>
 </div>
 </template>
-<script>
+<script lang='ts'>
 import { formatDay } from '@/utilitys';
-import LikeIcon from '@/components/SVGIcons/LikeIcon';
-import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon';
-import CommentItem from './CommentItem';
-import CommentReplyEditor from './CommentReplyEditor';
+import LikeIcon from '@/components/SVGIcons/LikeIcon.vue';
+import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon.vue';
+import CommentItem from './CommentItem.vue';
+import CommentReplyEditor from './CommentReplyEditor.vue';
 import { getSongComment, getMVComments } from '@/service';
-import LoadingIcon from '@/components/globals/Loading';
+import LoadingIcon from '@/components/globals/Loading.vue';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import { Comment, CommentType } from '@/types';
 
-export default {
-  name: "CommentList",
-  data() {
-    return {
-      comments: [],
-      hotComments: [],
-      more: false,
-      moreHot: false,
-      isLoadingFirst: true,
-      isLoadingMore: false,
-      total: 0,
-    };
-  },
-  props: {
-    // 0: mv comment, 1: song comment
-    type: {
-      validator: val => [ 0, 1 ].indexOf(Number(val)) !== -1,
-      required: true,
-    },
-    id: {
-      type:  String,
-      required: true,
-    },
-  },
+@Component({
   components: { CommentItem, CommentReplyEditor, LoadingIcon },
+})
+export default class CommentList extends Vue {
+  comments: Comment[] = [];
+  hotComments: Comment[] = [];
+  more: boolean = false;
+  moreHot: boolean = false;
+  isLoadingFirst: boolean = true;
+  isLoadingMore: boolean = false;
+  total: number = 0;
+
+  @Prop() type!: CommentType;
+  @Prop(Number) id!: number; 
+  
   created() {
     this.isLoadingFirst = true;
     this.updateData(() => this.isLoadingFirst = false);
-  },
-  computed: {
-    isScrollBottom() {
-      return this.$store.state.isScrollBottom
-    },
-    serviceApi() {
-      let service;
-      switch(Number(this.type)) {
-        case 0:
-          service = getMVComments;
-          break;
-        case 1:
-          service = getSongComment;
-          break;
-        default:
-          return;
-      }
-      return service;      
-    },
-    commentsOffset () {
-      return this.comments.length;
-    },
-    isAllCommentsLoaded() {
-      return this.comments.length >= this.total;
-    },
-  },
-  watch: {
-    isScrollBottom(val) {
-      if(val === true) {
-        this.loadingMoreComments();
-      }
-    }
-  },
-  methods: {
-    updateData(cb) {
-      if (!this.serviceApi){
-        cb && cb();
+  }
+  get isScrollBottom() {
+    return this.$store.state.isScrollBottom
+  }
+  get serviceApi() {
+    let service;
+    switch(this.type) {
+      case CommentType.MvComment:
+        service = getMVComments;
+        break;
+      case CommentType.SongComment:
+        service = getSongComment;
+        break;
+      default:
         return;
-      }
-      
-      this.serviceApi(this.id, this.commentsOffset).then(
-        ({ data: {
-          hotComments,
-          comments,
-          more,
-          moreHot,
-          total,
-        } }) => {
-          if (hotComments && hotComments.length > 0) {
-            this.hotComments = this.hotComments.concat(hotComments);
-          }
-          if (comments && comments.length > 0) {
-            this.comments = this.comments.concat(comments);
-          }
-          this.more = more;
-          this.moreHot = moreHot;
-          this.total = total;
-          cb && cb();
-        },
-        error => {
-          cb && cb();
-          alert('get comments error ' + error)
+    }
+    return service;
+  }
+  get commentsOffset () {
+    return this.comments.length;
+  }
+  get isAllCommentsLoaded() {
+    return this.comments.length >= this.total;
+  }
+  @Watch('isScrollBottom')
+  onisScrollBottomChange(val: boolean) {
+    if(val === true) {
+      this.loadingMoreComments();
+    }
+  }
+
+  updateData(cb: () => {}) {
+    if (!this.serviceApi){
+      cb && cb();
+      return;
+    }
+    
+    this.serviceApi(this.id, this.commentsOffset).then(
+      ({ data: {
+        hotComments,
+        comments,
+        more,
+        moreHot,
+        total,
+      } }) => {
+        if (hotComments && hotComments.length > 0) {
+          this.hotComments = this.hotComments.concat(hotComments);
         }
-      );
-    },
-    loadingMoreComments() {
-      if (this.isAllCommentsLoaded) {
-        return
+        if (comments && comments.length > 0) {
+          this.comments = this.comments.concat(comments);
+        }
+        this.more = more;
+        this.moreHot = moreHot;
+        this.total = total;
+        cb && cb();
+      },
+      error => {
+        cb && cb();
+        alert('get comments error ' + error)
       }
-      if (this.isLoadingMore) {
-        return
-      }
-      if (!this.serviceApi) return;
-      this.isLoadingMore = true;
-      this.updateData(() => this.isLoadingMore = false);
-    },
+    );
+  }
+  loadingMoreComments() {
+    if (this.isAllCommentsLoaded) {
+      return
+    }
+    if (this.isLoadingMore) {
+      return
+    }
+    if (!this.serviceApi) return;
+    this.isLoadingMore = true;
+    this.updateData(() => this.isLoadingMore = false);
   }
 }
 </script>
 <style lang="sass" scoped>
 .loading-wrapper
-  height: 2em;
-  width: 2em;
-  margin: 3em auto 0;
+  height: 2em
+  width: 2em
+  margin: 3em auto 0
 .loaded-all-comments-sign-bard
-  margin: 3em auto;
-  text-align: center;
+  margin: 3em auto
+  text-align: center
   .loaded-all-comments-sign-bard__title
-    display: inline-block;
-    border: 1px solid #777;
-    color: #777;
-    padding: 0.2em 1em;
-    border-radius: 9999px;
-    font-size: 12px;
+    display: inline-block
+    border: 1px solid #777
+    color: #777
+    padding: 0.2em 1em
+    border-radius: 9999px
+    font-size: 12px
 </style>
 

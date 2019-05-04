@@ -1,12 +1,20 @@
 <template>
   <Motion :value="scale" tag="div" class="wrapper">
-    <div class="svg-wrapper" slot-scope="props" :style="{ transform: `scale(${props.value})` }" @mouseenter="zoomIn" @mouseleave="zoomOut" @touchstart="zoomIn" @touchend="zoomOut">
-      <button class="button_icon large" v-if="position == 'left'">
+    <div
+      class="svg-wrapper"
+      slot-scope="props"
+      :style="{ transform: `scale(${props.value})` }"
+      @mouseenter="zoomIn"
+      @mouseleave="zoomOut"
+      @touchstart="zoomIn"
+      @touchend="zoomOut"
+    >
+      <Button noborder svglarge v-if="position == 'left'">
         <LeftArrowIcon />
-      </button>
-      <button class="button_icon large" v-if="position == 'right'">
+      </Button>
+      <Button noborder svglarge v-if="position == 'right'">
         <RightArrowIcon />
-      </button>
+      </Button>
     </div>
   </Motion>
 </template>
@@ -14,9 +22,9 @@
 import { Motion } from 'vue-motion'
 import LeftArrowIcon from '@/components/SVGIcons/LeftArrowIcon';
 import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon';
+import Button from '@/components/globals/Button';
 
 export default {
-  name: 'scaleable-button-wrapper',
   data() {
     return {
       scale: 1.0,
@@ -25,7 +33,12 @@ export default {
   props: {
     position: String,
   },
-  components: { Motion, LeftArrowIcon, RightArrowIcon, },
+  components: {
+    Motion,
+    LeftArrowIcon,
+    RightArrowIcon,
+    Button,
+  },
   methods: {
     zoomIn: function() {
       this.scale = 1.2;

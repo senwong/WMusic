@@ -1,21 +1,20 @@
 <template>
 <div>
   <h1>推荐歌单</h1>
-  <song-cards v-if="songList && songList.length > 0" :cardLists="songList" cardType="playlist"></song-cards>
+  <SongCards v-if="songList && songList.length > 0" :cardLists="songList" cardType="playlist" />
 </div>
 </template>
-<script>
+<script lang='ts'>
 import { getRecommendSongList } from '@/service';
-import SongCards from '@/components/globals/SongCards';
+import SongCards from '@/components/globals/SongCards.vue';
+import { Playlist } from '@/types';
+import { Vue, Component } from 'vue-property-decorator';
 
-export default {
-  name: "RecommendSongList",
-  data() {
-    return {
-      songList: null,
-    };
-  },
-  components: { SongCards },
+@Component({
+  components: { SongCards }
+})
+export default class  RecommendSongList extends Vue {
+  songList: Playlist[] =  [];
   created() {
     getRecommendSongList().then(
       res => {
@@ -26,6 +25,5 @@ export default {
   }
 }
 </script>
-<style lang="sass" scoped>
-</style>
+
 

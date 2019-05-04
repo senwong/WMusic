@@ -5,35 +5,41 @@
   </div>
 </template>
 
-<script>
-import TabMenu from '@/components/globals/TabMenu';
-import AlbumSublist from './albumSublist';
-import ArtistSublist from './artistSublist';
-import MvSublist from './mvSublist';
+<script lang='ts'>
+import TabMenu from '@/components/globals/TabMenu.vue';
+import AlbumSublist from './albumSublist.vue';
+import ArtistSublist from './artistSublist.vue';
+import MvSublist from './mvSublist.vue';
+import { Vue, Component } from 'vue-property-decorator';
+import { TabMenuItem } from '@/types';
 
+// content type: 专辑: 0, 歌手: 1, MV: 2
+enum ContentType { Album, Artist, Mv }
 const contentTypes = ['专辑', '歌手', 'MV'];
-export default {
-  components: { TabMenu, AlbumSublist, ArtistSublist, MvSublist },
-  data() {
-    return {
-      // current content type: 专辑: 0, 歌手: 1, MV: 2
-      currentType: 0,
-    };
+
+type SubListComponentName = 'AlbumSublist' | 'ArtistSublist' | 'MvSublist';
+const typeComponents: SubListComponentName[] = ['AlbumSublist', 'ArtistSublist', 'MvSublist'];
+@Component({
+  components: {
+    TabMenu,
+    AlbumSublist,
+    ArtistSublist,
+    MvSublist,
   },
-  computed: {
-    // navgator header 专辑 歌手 MV
-    navList() {
-      return contentTypes.map((title, idx) => ({
-        key: idx,
-        isActive: this.currentType == idx,
-        onClick: () => this.currentType = idx,
-        title,
-      }));
-    },
-    currentComponent() {
-      const typeComponents= ['AlbumSublist', 'ArtistSublist', 'MvSublist'];
-      return typeComponents[this.currentType];
-    }
+})
+export default class SubList extends Vue {
+  currentType: ContentType = ContentType.Album;
+
+  get navList(): TabMenuItem[] {
+    return contentTypes.map((title, idx) => ({
+      key: idx,
+      isActive: this.currentType == idx,
+      onClick: () => this.currentType = idx,
+      title,
+    }));
+  }
+  get currentComponent(): SubListComponentName {
+    return typeComponents[this.currentType];
   }
 }
 </script>

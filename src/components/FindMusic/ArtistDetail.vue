@@ -8,139 +8,128 @@
       <div class="media__right">
         <div class="media__heading">{{name}}</div>
         <div>
-          <button class="button-rounded button-primary button-controll" @click="handlePlayAll">播放</button>
-          <button class="button-rounded button-controll">收藏</button>
-          <button class="button-rounded button-controll">歌词</button>
-          <button class="button-rounded button-controll">more</button>
+          <Button rounded primary class="button-controll" @click="handlePlayAll">播放</Button>
+          <Button rounded class="button-controll">收藏</Button>
+          <Button rounded class="button-controll">歌词</Button>
+          <Button rounded class="button-controll">more</Button>
         </div>
       </div>
     </div>
     <p class="brief-desc">{{briefDesc}}</p>
-    <div class="tabs">
-      <span class="tab__title tab__1 active">热门歌曲</span>
-      <span class="tab__title tab__2">专辑</span>
-      <hr class="hr">
-      <song-list :tracks="tracks" class="tab__content tab__1"></song-list>
-      <song-cards class="tab__content tab__2" :cardLists="hotAlbums" :cardType="'album'"></song-cards>
-    </div>
+    <TabMenu align-left :list="tabs"/>
+    <song-list :tracks="tracks" class="tab__content tab__1" v-if="showSongs"/>
+    <SongCards class="artist-detail__albums" :cardLists="hotAlbums" cardType='album' v-if="showAlbums"/>
   </div>
 </div>
 </template>
-<script>
+<script lang='ts'>
 import { getArtistInfo, getArtistAlbums, } from '@/service';
-import {formatDate} from '@/utilitys';
-import SongList from './SongList';
-import SongCards from '@/components/globals/SongCards';
+import { formatDate } from '@/utilitys';
+import SongList from './SongList.vue';
+import SongCards from '@/components/globals/SongCards.vue';
 import { mapMutations } from 'vuex';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Playlist, Track } from '@/types'
+import { Mutation, namespace } from 'vuex-class'
+import TabMenu from '@/components/globals/TabMenu.vue';
+import Button from '@/components/globals/Button.vue';
 
-export default {
-  name: "SongDetail",
-  data() {
-    return {
-      name: "",
-      img: "",
-      briefDesc: "",
-      tracks: [],
-      hotAlbums: [{id: "", publishTime: "", name: "", picUrl: "",}],
-      formatDate: formatDate,
-    }
-  },
-  methods: {
-    initData(artistId) {
-      getArtistInfo(artistId).then(res => {
-        console.log(res.data);
-        if (res.data.code == 200) {
-          ({
-            name: this.name,
-            img1v1Url: this.img,
-            briefDesc: this.briefDesc,
-          } = res.data.artist);
-          this.tracks = res.data.hotSongs;
-        }
-      })
-      getArtistAlbums(artistId).then(res => {
-        this.hotAlbums = res.data.hotAlbums;
-      })
-    },
-    handleTabClick(e) {
-      if (e.target.classList.contains("active")) return;
-      this.$el.querySelector(".tab__title.active").classList.remove("active");
-      e.target.classList.add("active");
-    },
-    handlePlayAll() {
-      this.setTracks(this.tracks);
-      this.setCurrentSongId(this.tracks[0].id);
-    },
-    ...mapMutations('playlist', [
-      'setCurrentSongId',
-      'setTracks',
-    ]),
-  },
-  components: { SongList, SongCards, },
+const playlist =  namespace('playlist');
+enum ContentType { Songs, Albums }
+
+@Component({
+  components: { SongList, SongCards, TabMenu, Button }
+})
+export default class ArtistDetail extends Vue {
+  name: string = "";
+  img: string =  "";
+  briefDesc: string = "";
+  tracks: Track[] = [];
+  hotAlbums: Playlist[] = []
+  currentContent: ContentType = ContentType.Songs
+  formatDate = formatDate
+
+  @playlist.Mutation setTracks!: (tracks: Track[]) => void
+  @playlist.Mutation setCurrentSongId!: (id: number) => void
+
+  get tabs() {
+    return [
+      {
+        key: 0,
+        isActive: this.currentContent == ContentType.Songs,
+        onClick: () => this.currentContent = ContentType.Songs,
+        title: '热门歌曲'
+      },
+      {
+        key: 1,
+        isActive: this.currentContent == ContentType.Albums,
+        onClick: () => this.currentContent = ContentType.Albums,
+        title: '专辑'
+      },
+    ];
+  }
+  get showSongs() {
+    return this.currentContent == ContentType.Songs;
+  }
+  get showAlbums() {
+    return this.currentContent == ContentType.Albums;
+  }
+  initData(artistId: number) {
+    getArtistInfo(artistId).then(
+      res => {
+      const {name, img1v1Url, briefDesc} = res.data.artist;
+      console.log(res.data);
+      this.name = name;
+      this.img = img1v1Url;
+      this.briefDesc = briefDesc;
+      this.tracks = res.data.hotSongs;
+    })
+    getArtistAlbums(artistId).then(res => {
+      this.hotAlbums = res.data.hotAlbums;
+    })
+  }
+  handlePlayAll() {
+    this.setTracks(this.tracks);
+    this.setCurrentSongId(this.tracks[0].id);
+  }
   created() {
-    const songId = this.$route.params.id;
+    const songId = Number(this.$route.params.id);
     this.initData(songId);
-  },
-  watch: {
-    '$route' (to, from) {
-      this.initData(to.params.id);
-    }
-  },
-  mounted() {
-    const tabs = this.$el.querySelectorAll(".tab__title");
-    tabs.forEach(t => t.addEventListener("click", this.handleTabClick));
-  },
+  }
 }
 </script>
 <style lang="sass" scoped>
-@import '../config.sass';
+@import '../config.sass'
 
 .media
-  display: flex;
-  height: 200px;
+  display: flex
+  height: 200px
 .media__left
-  flex: 0 0 200px;
-  font-size: 0;
-  margin-right: 20px;
+  flex: 0 0 200px
+  font-size: 0
+  margin-right: 20px
   img
-    width: 100%;
-    height: 100%;
-    border-radius: 15px;
+    width: 100%
+    height: 100%
+    border-radius: 15px
 .media__right
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex: 1 1 auto
+  display: flex
+  flex-direction: column
+  justify-content: space-between
 .media__heading
-  font-size: 2em;
+  font-size: 2em
 .brief-desc
-  text-overflow: ellipsis;
-  overflow: hidden;
+  text-overflow: ellipsis
+  overflow: hidden
 
-.tab__title
-  display: inline-block;
-  margin-right: 20px;
-  border-bottom: 2px solid transparent;
-.tab__title.active
-  border-bottom: 2px solid $orange;
-.hr
-  margin-top: -1px;
-.tab__content
-  display: none;
-.tab__title.tab__1.active ~ .tab__content.tab__1
-  display: block;
-.tab__title.tab__2.active ~ .tab__content.tab__2
-  display: grid;
-.tab__content.tab__2
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 2em;
+.artist-detail__albums
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr))
+  gap: 2em
   flex-wrap: wrap
-  justify-content: space-between;
-  .img
-    width: 100%;
-    heihgt: auto;
-    border-radius: 15px;
+  justify-content: space-between
+  padding: 1em 0
 
 .button-controll
-  margin-right: 1em;
+  margin-right: 1em
 </style>

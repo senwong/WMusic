@@ -2,7 +2,7 @@
  * 把毫秒数转换成 分钟：秒，秒数2位补齐
  * @param {Number} time 毫秒
  */
-function formatTime(time) {
+function formatTime(time: number): string {
   time /= 1000
   const minute = Math.floor(time / 60)
   const second = Math.floor(time -  minute * 60)
@@ -12,7 +12,7 @@ function formatTime(time) {
  * 把毫秒数转换成 年-月-日
  * @param {Number} milliseconds 代表日期的毫秒数
  */
-function formatDate(milliseconds) {
+function formatDate(milliseconds: number): string {
   const date = new Date(milliseconds)
   return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()
 }
@@ -20,19 +20,16 @@ function formatDate(milliseconds) {
  * 把毫秒数转换成 年-月-日 小时：分钟
  * @param {Number} milliseconds 代表日期的毫秒数
  */
-function formatDay(milliseconds) {
+function formatDay(milliseconds: number): string {
   const date = new Date(milliseconds)
   return date.getFullYear() + "-" + date.getMonth() + "-"+ date.getDate()
     + " " +date.getHours() + ":" + date.getMinutes()
-}
-function warn(msg) {
-  console.warn(msg)
 }
 /**
  * 优化过的resize事件
  */
 function optimizedResize() {
-  var throttle = function(type, name, obj) {
+  var throttle = function(type: string, name: string, obj: EventTarget): void {
     obj = obj || window
     var running = false
     var func = function() {
@@ -49,7 +46,7 @@ function optimizedResize() {
   }
 
   /* init - you can init any event */
-  throttle("resize", "optimizedResize")
+  throttle("resize", "optimizedResize", window)
 }
 /**
  * 
@@ -59,24 +56,29 @@ function optimizedResize() {
  * @param {*} addOptions 
  * @param {*} removeOptions 
  */
-function addEventListenerOnce(target, type, listener, addOptions, removeOptions) {
+function addEventListenerOnce(
+  target: HTMLElement,
+  type: string,
+  listener: () => any,
+  addOptions?: object,
+  removeOptions?: object
+) {
   target.addEventListener(type, function fn() {
-      target.removeEventListener(type, fn, removeOptions)
-      listener.apply(this, arguments, addOptions)
+    target.removeEventListener(type, fn, removeOptions);
+    listener.apply(null);
   })
 }
-function clipImage(imgUrl, width, height) {
-  return imgUrl + `?param=${width}y${height}`
+function clipImage(imgUrl: string, width: number, height: number): string {
+  return imgUrl + `?param=${width}y${height}`;
 }
 /**
  * format count to 万， 百万， 千万， 亿， 十亿
  * @param {Number} number The number to format
  */
-function formatCount(number) {
+function formatCount(number: number): string {
   const n = Number(number)
-  if (isNaN(n)) return number;
   if (n < Math.pow(10, 4)) {
-    return n;
+    return String(n);
   } else if (n < Math.pow(10, 6)) {
     return (n / Math.pow(10, 4)).toFixed(2) + '万';
   } else if (n < Math.pow(10, 7)) {
@@ -93,7 +95,7 @@ function formatCount(number) {
   } else if (n < Math.pow(10, 12)) {
     return (n / Math.pow(10, 11)).toFixed(2) + '千亿';
   }
-  return n;
+  return String(n);
 }
 /**
  * less than 1 minute, x秒钟以前
@@ -104,7 +106,7 @@ function formatCount(number) {
  * else, x年以前
  * @param {Number} milliseconds milliseconds presents date time since January 1, 1970 00:00:00 UTC
  */
-function formatDateToBefore(milliseconds) {
+function formatDateToBefore(milliseconds: number): string {
   const now = Date.now();
   const delta = now - milliseconds;
   if (delta < 0) {
@@ -129,7 +131,7 @@ function formatDateToBefore(milliseconds) {
 /**
  *  arrayJoin([a, b, c, d, e], x), return [a, x, b, x, c, x, d, x, e]
  */
-function arrayJoin(array, obj) {
+function arrayJoin(array: any[], obj: any) {
   if (array.length == 0) return array;
   const ret = [array[0]];
   for (let i = 1; i < array.length; i++) {
@@ -141,7 +143,6 @@ function arrayJoin(array, obj) {
 export {
   formatTime,
   formatDate,
-  warn,
   formatDay,
   optimizedResize,
   addEventListenerOnce,

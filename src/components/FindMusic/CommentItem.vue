@@ -68,133 +68,132 @@
   </div>
 </div>
 </template>
-<script>
+<script lang='ts'>
 import { formatDay, formatCount, formatDateToBefore } from '@/utilitys';
-import LikeIcon from '@/components/SVGIcons/LikeIcon';
-import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon';
-import CommentReplyEditor from './CommentReplyEditor';
+import LikeIcon from '@/components/SVGIcons/LikeIcon.vue';
+import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon.vue';
+import CommentReplyEditor from './CommentReplyEditor.vue';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Comment } from '@/types';
 
-export default {
-  name: "CommentItem",
-  props: ["comment"],
-  data() {
-    return {
-      replysFolded: true,
-      isShowReplyEditor: false,
-    };
-  },
+@Component({
   components: { LikeIcon, RightArrowIcon, CommentReplyEditor },
-  methods: {
-    formatDay,
-    formatCount,
-    formatDateToBefore,
-    handleViewReplys() {
-      this.replysFolded = !this.replysFolded;
-    },
-  },
+})
+export default class CommentItem extends Vue {
+  @Prop() comment!: Comment;
+  replysFolded: boolean =  true;
+  isShowReplyEditor: boolean = false
+  
+  
+  formatDay = formatDay;
+  formatCount = formatCount;
+  formatDateToBefore = formatDateToBefore;
+  handleViewReplys() {
+    this.replysFolded = !this.replysFolded;
+  }
 }
 </script>
 <style lang="sass" scoped>
-@import "@/components/config.sass";
-@import "@/style/colors.sass";
+@import "@/components/config.sass"
+@import "@/style/colors.sass"
 
 // 歌曲评论样式
 a
-  text-decoration: none;
-  color: inherit;
+  text-decoration: none
+  color: inherit
   &:hover
-    text-decoration: underline;
+    text-decoration: underline
 .comment__container
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-top: 20px;
+  display: flex
+  flex-direction: row
+  justify-content: flex-start
+  align-items: flex-start
+  margin-top: 20px
 .comment__avatar
-  flex: 0 0 50px;
-  display: block;
-  margin-right: 1rem;
+  flex: 0 0 50px
+  display: block
+  margin-right: 1rem
 .comment__info
-  flex: 1 1 auto;
+  flex: 1 1 auto
 .comment__username
-  display: inline-block;
-  margin-right: 8px;
+  display: inline-block
+  margin-right: 8px
 .comment__datetime
-  display: inline-block;
+  display: inline-block
 .comment__content
-  margin-top: 8px;
+  margin-top: 8px
 .comment__actions
-  margin-top: 8px;
+  margin-top: 8px
 
 
 .avatar
-  display: block;
-  font-size: 0;
-  border-radius: 9999px;
-  overflow: hidden;
+  display: block
+  font-size: 0
+  border-radius: 9999px
+  overflow: hidden
   img
-    width: 100%;
-    height: auto;
+    width: 100%
+    height: auto
 .username
   font-weight: bolder
-  font-size: 14px;
+  font-size: 14px
 .datetime
-  color: rgba(0, 0, 0, 0.4);
-  font-size: 14px;
+  color: rgba(0, 0, 0, 0.4)
+  font-size: 14px
 .content
-  font-size: 14px;
+  font-size: 14px
 
 .liked__count
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  font-size: 0.875em;
-  color: $gray;
+  display: flex
+  flex-direction: row
+  justify-content: flex-start
+  align-items: center
+  font-size: 0.875em
+  color: $gray
   .icon
-    margin-right: 0.5em;
-    height: 16px;
-    width: 16px;
-    fill: currentColor;
-    cursor: pointer;
+    margin-right: 0.5em
+    height: 16px
+    width: 16px
+    fill: currentColor
+    cursor: pointer
     &:hover
-      color: #333;
+      color: #333
   .count
-    white-space: nowrap;
+    white-space: nowrap
   .reply
-    display: inline-block;
-    cursor: pointer;
-    border: none;
-    font-size: 14px;
-    border-radius: 2px;
-    padding: 4px 8px;
-    color: #999;
+    display: inline-block
+    cursor: pointer
+    border: none
+    font-size: 14px
+    border-radius: 2px
+    padding: 4px 8px
+    color: #999
     &:focus, &:active
-      outline: none;
+      outline: none
     &:active
-      background-color: #eee;
+      background-color: #eee
     &:hover
-      color: #222;
+      color: #222
 
 .view-replys__btn
-  display: inline-block;
-  cursor: pointer;
-  border: none;
-  font-size: 14px;
-  border-radius: 2px;
-  padding: 4px 8px 4px 0;
-  font-weight: bolder;
+  display: inline-block
+  cursor: pointer
+  border: none
+  font-size: 14px
+  border-radius: 2px
+  padding: 4px 8px 4px 0
+  font-weight: bolder
   &:focus, &:active
-    outline: none;
+    outline: none
 
 .view-replys__icon
-  width: 1em;
-  height: 1em;
-  display: inline-block;
-  transform: rotate(-90deg);
-  vertical-align: bottom;
+  width: 1em
+  height: 1em
+  display: inline-block
+  transform: rotate(-90deg)
+  vertical-align: bottom
   &.rotate
-    transform: rotate(90deg);
+    transform: rotate(90deg)
   svg
-    stroke-width: 4px;
+    stroke-width: 4px
 </style>

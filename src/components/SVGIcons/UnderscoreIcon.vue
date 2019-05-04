@@ -3,3 +3,8 @@
     <path d="M 8 5 H24 Z"/>
   </svg>
 </template>
+<script>
+export default {
+  
+}
+</script>

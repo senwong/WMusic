@@ -1,7 +1,7 @@
 <template>
   <div class="nav__bar">
     <!-- Log in and Sign in -->
-    <div v-if="currentUserProfile">
+    <div v-if="isLoggedin">
       <router-link class="current-user" :to="`/user/${currentUserProfile.userId}`">
         <img class="current-user__avatar" :src="currentUserProfile.avatarUrl" :alt="currentUserProfile.nickname"/>
         <span class="current-user__nickname">{{currentUserProfile.nickname}}</span>
@@ -61,11 +61,11 @@
 
     </section>
     <!-- 需要登录 -->
-    <section v-if="currentUserProfile">
+    <section v-if="isLoggedin">
       <!-- 我的音乐 -->
       <section class="nav__card">
         <p class="nav__card__title">我的音乐</p>
-        <router-link to="/userrecord" class="nav__link">
+        <router-link :to="`/record/${currentUserProfile.userId}`" class="nav__link">
           <div class="icon icon_m">
             <MusicIcon />
           </div>
@@ -159,34 +159,50 @@
     </section>
   </div>
 </template>
-<script>
-import MusicIcon from '@/components/SVGIcons/MusicIcon';
-import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon';
-import Button from '@/components/globals/Button';
-import { mapState } from 'vuex';
+<script lang='ts'>
+import MusicIcon from '@/components/SVGIcons/MusicIcon.vue';
+import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon.vue';
+import Button from '@/components/globals/Button.vue';
+import auth from '@/auth';
+import { mapMutations } from 'vuex';
+import { Vue, Component } from 'vue-property-decorator';
+import { Mutation, namespace } from 'vuex-class';
+import { User } from '@/types';
 
-export default {
-  name: "Navbar",
-  data() {
-    return {
-      isShowMyList: true,
-      isShowMyFavr: true,
-    }
-  },
+const currentUser = namespace('currentUser');
+
+@Component({
   components: { MusicIcon, RightArrowIcon, Button },
-  computed: {
-    ...mapState('currentUser', {
-      currentUserProfile: 'profile',
-    })
-  },
-  methods: {
-    toggleMyList() {
-      this.isShowMyList = !this.isShowMyList;
-    },
-    toggleMyFavr() {
-      this.isShowMyFavr = !this.isShowMyFavr;
-    },
-  },
+})
+export default class Navbar extends Vue {
+  isShowMyList: boolean =  true;
+  isShowMyFavr: boolean = true;
+  isLoggedin: boolean = false;
+  currentUserProfile: User | null = null;
+
+  @currentUser.Mutation setCurrentUserId!: (id: number) => void;
+  
+  toggleMyList() {
+    this.isShowMyList = !this.isShowMyList;
+  }
+  toggleMyFavr() {
+    this.isShowMyFavr = !this.isShowMyFavr;
+  }
+  updateLoginStatus() {
+    auth.loggedIn().then(
+      (res: any): void => {
+        this.isLoggedin = true;
+        this.currentUserProfile = res;
+        this.setCurrentUserId(res.userId);
+      },
+      () => {
+        this.isLoggedin = false;
+      }
+    )
+  }
+  created() {
+    this.updateLoginStatus();
+  }
   mounted() {
     const navLinks = Array.from(this.$el.querySelectorAll(".nav__link"))
   }

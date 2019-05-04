@@ -1,18 +1,24 @@
-import { getPlaylistDetail, getAlbumDetail } from "@/service";
+import { getPlaylistDetail, getAlbumDetail } from "@/service/index";
+import { Track } from '@/types';
 
-const state = {
-  currentSongId: null,
+interface PlaylistState {
+  currentSongId: number | undefined,
+  tracks: Track[],
+}
+
+const state: PlaylistState = {
+  currentSongId: undefined,
   tracks: [],
 };
 const getters = {
-  trackCount: state => state.tracks.length,
-  trackIds: state => state.tracks.map(o => o.id),
+  trackCount: (state: PlaylistState) => state.tracks.length,
+  trackIds: (state: PlaylistState) => state.tracks.map((o: Track) => o.id),
 };
 const mutations = {
-  setTracks(state, tracks) {
+  setTracks(state: PlaylistState, tracks: Track[]) {
     state.tracks = tracks;
   },
-  setCurrentSongId(state, id) {
+  setCurrentSongId(state: PlaylistState, id: number) {
     state.currentSongId = id;
   },
   // 下一首播放
@@ -37,18 +43,19 @@ const mutations = {
         front.push(track);
         state.tracks = front.concat(rear);
   */
-  addToNext(state, track) {
+  addToNext(state: PlaylistState, track: Track) {
     if (state.tracks.length == 0) {
       state.tracks = [track];
       state.currentSongId = track.id;
       return;
     }
-    const trackIdx = state.tracks.findIndex(t => t.id == track.id);
-    const currentSongIdx = state.tracks.findIndex(t => t.id === state.currentSongId);
+    const trackIdx = state.tracks.findIndex((t: Track) => t.id == track.id);
+    const currentSongIdx = state.tracks.findIndex( (t: Track) => t.id === state.currentSongId);
     if (trackIdx > -1) {
       if (state.currentSongId != track.id) {
         if (currentSongIdx == state.tracks.length - 1) {
-          const newTracks = state.tracks.slice().splice(trackIdx, 1).push(track);
+          const newTracks = state.tracks.slice().splice(trackIdx, 1);
+          newTracks.push(track);
           state.tracks = newTracks;
           return;
         } else {

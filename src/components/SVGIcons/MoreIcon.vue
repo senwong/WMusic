@@ -5,3 +5,9 @@
     <circle cx="25" cy="16" r="2"></circle>
   </svg>
 </template>
+<script>
+export default {
+  
+}
+</script>
+

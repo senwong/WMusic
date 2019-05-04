@@ -3,13 +3,12 @@
     <div class="container">
       <h1>最新MV</h1>
       <div class="card-container">
-        <card-item
+        <CardItem
           v-for="mv in newMVList"
           :key="mv.id"
           :card="mv"
           cardType="mvplay"
-        >
-        </card-item>
+        />
       </div>
       <div class="title">
         <span class="text-h1">MV排行榜</span>
@@ -17,61 +16,51 @@
         <router-link to="/mv/rank" class="button-bg-right">更多</router-link>
       </div>
       <div class="rank-container">
-        <rank-item
-          v-for="(media, i) in MVrankList"
+        <RankItem
+          v-for="media in MVrankList"
           :key="media.id"
           :rank-item="media"
-          :index="i">
-        </rank-item>
+        />
       </div>
     </div>
   </div>
 </template>
-<script>
-  import { getNewMV, getPersonalizedMV, getMVrank } from "@/service"
-  import CardItem from "./CardItem"
-  import RankItem from "./RankItem"
-  import { formatDate } from "@/utilitys"
-  export default {
-    name: "MV",
-    components: { CardItem, RankItem },
-    data() {
-      return {
-        newMVList: [],
-        MVrankList: [],
-        updateTime: 0,
-        formatDate: formatDate,
+<script lang='ts'>
+import { getNewMV, getPersonalizedMV, getMVrank } from "@/service"
+import CardItem from "./CardItem.vue"
+import RankItem from "./RankItem.vue"
+import { formatDate } from "@/utilitys"
+import { Vue, Component } from 'vue-property-decorator';
+import { Rank, MvCard } from '@/types';
+
+@Component({
+  components: { CardItem, RankItem },
+})
+export default class Mv extends Vue {
+  newMVList: MvCard[] = [];
+  MVrankList: Rank[] = [];
+  updateTime: number =  0;
+  formatDate = formatDate;
+  created() {
+    getNewMV().then(res => {
+      if(res.data.code == 200) {
+        this.newMVList = res.data.data
+      } else {
+        alert("获取最新MV数据错误" + res.data)
       }
-    },
-    created() {
-      getNewMV().then(res => {
-        if(res.data.code == 200) {
-          this.newMVList = res.data.data
-          this.newMVList.forEach(mv => {
-            mv.cover = mv.cover.replace(/http:\/\//g, "https://")
-          })
-        } else {
-          alert("获取最新MV数据错误" + res.data)
-        }
-      })
-      getMVrank().then(res => {
-        if(res.data.code == 200) {
-          this.updateTime = res.data.updateTime
-          this.MVrankList = res.data.data
-          this.MVrankList.forEach(mv => {
-            mv.cover = mv.cover.replace(/http:\/\//g, "https://")
-          })
-        } else {
-          alert("获取MV排行榜数据错误" + res.data)
-        }
-      })
-    },
-    methods: {
-      formatIndex(i) {
-        return i < 10 ? '0'+i : i
+    })
+    getMVrank().then(res => {
+      if(res.data.code == 200) {
+        this.updateTime = res.data.updateTime
+        this.MVrankList = res.data.data.map(
+          (rank: Rank, i: number) => ({rank: i, ...rank})
+        )
+      } else {
+        alert("获取MV排行榜数据错误" + res.data)
       }
-    }
+    })
   }
+}
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass"

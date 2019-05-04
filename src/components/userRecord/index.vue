@@ -5,80 +5,104 @@
       <RecordItem
         v-for="r in records"
         :key="r.song.id"
-        :playCount="r.playCount"
-        :song="r.song"
-        :score="r.score"
+        :record="r"
         @play="handlePlay"
       />
     </ul>
   </div>
 </template>
 
-<script>
+<script lang='ts'>
 import { getRecord } from '@/service';
 import { mapState } from 'vuex';
-import TabMenu from '@/components/globals/TabMenu';
-import RecordItem from './RecordItem';
+import TabMenu from '@/components/globals/TabMenu.vue';
+import RecordItem from './RecordItem.vue';
 import { mapMutations } from 'vuex';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import { Track, TrackQuality, Record, Artist, Album } from '@/types';
+import { Mutation, namespace } from 'vuex-class';
 
-export default {
-  data() {
-    return {
-      // type=1 时只返回 weekData, type=0 时返回 allData
-      type: 1,
-      records: [],
-    }
-  },
-  computed: {
-    ...mapState('currentUser', {
-      currentUserId: state => state.profile.userId,
-    }),
-    navTabList() {
-      return [
-        {
-          key: 0,
-          isActive: this.type == 1,
-          onClick: () => this.type = 1,
-          title: '一周',
-        },
-        {
-          key: 1,
-          isActive: this.type == 0,
-          onClick: () => this.type = 0,
-          title: '所有',
-        },
-      ];
-    },
-  },
+// 服务端返回的数据结构
+interface song {
+  ar: Artist[],
+  al: Album,
+  id: number,
+  name: string,
+  dt: number,
+  l: TrackQuality
+}
+// 0 时返回 allData, 1 时只返回 weekData
+enum DataType { AllData, WeekData };
+
+const playlist = namespace('playlist');
+
+@Component({
   components: { TabMenu, RecordItem },
+})
+export default class UserRecord extends Vue {
+  
+  type: DataType = DataType.WeekData;
+  records: Record[] | null = null;
+
+  get navTabList() {
+    return [
+      {
+        key: 0,
+        isActive: this.type == DataType.WeekData,
+        onClick: () => this.type = 1,
+        title: '一周',
+      },
+      {
+        key: 1,
+        isActive: this.type == DataType.AllData,
+        onClick: () => this.type = 0,
+        title: '所有',
+      },
+    ];
+  }
+  @Watch('type')
+  onTypeChange() {
+    this.updateRecords();
+  }
   mounted() {
     this.updateRecords();
-  },
-  watch: {
-    type() {
-      this.updateRecords();
-    }
-  },
-  methods: {
-    updateRecords() {
-      getRecord(this.currentUserId, this.type).then(
-        res => {
-          if (this.type == 1) {
-            this.records = res.data.weekData;
-          }
-          if (this.type == 0) {
-            this.records = res.data.allData;
-          }
-        },
-        error => {
-          console.log('get record ', error);
+  }
+  
+  @playlist.Mutation setTracks!: (tracks: Track[]) => void;
+  updateRecords() {
+    const userId = Number(this.$route.params.id);
+    if (!userId) return;
+    getRecord(userId, this.type).then(
+      res => {
+        let data;
+        if (this.type == DataType.WeekData) {
+          data = res.data.weekData;
         }
-      )
-    },
-    ...mapMutations('playlist', [
-      'setTracks'
-    ]),
-    handlePlay() {
+        if (this.type == DataType.AllData) {
+          data = res.data.allData;
+        }
+        if (data) {
+          this.records = data.map((r: {song: song, playCount: number, score: number }): Record => ({
+            playCount: r.playCount,
+            score: r.score,
+            song: {
+              id: r.song.id,
+              name: r.song.name,
+              album: r.song.al,
+              artists: r.song.ar,
+              duration: r.song.dt,
+              low: r.song.l,
+            }
+          }));
+        }
+      },
+      error => {
+        console.log('get record ', error);
+      }
+    )
+  }
+  handlePlay() {
+    if (this.records) {
       this.setTracks(this.records.map(r => r.song));
     }
   }

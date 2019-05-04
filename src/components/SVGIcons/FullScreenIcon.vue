@@ -4,3 +4,8 @@
 			H306v76.5h51V0H229.5z"/>
 </svg>
 </template>
+<script>
+export default {
+	
+}
+</script>

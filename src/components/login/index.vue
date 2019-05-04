@@ -97,7 +97,7 @@ export default {
       responsePromise.then(
         res => {
           console.log('response ', res);
-          this.setCurrentUser(res.data.profile);
+          this.setCurrentUserId(res.data.profile.userId);
           this.$router.push('/');          
         },
         error => {
@@ -114,7 +114,7 @@ export default {
       this.emptyErrorsHint();
     },
     ...mapMutations('currentUser', [
-      'setCurrentUser',
+      'setCurrentUserId',
     ])
   }
 }

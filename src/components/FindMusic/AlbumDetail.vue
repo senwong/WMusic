@@ -2,82 +2,83 @@
 <div class="main-wrapper">
   <div>
     <div class="media">
-      <div class="media__left">
+      <div class="media__left" v-if="album">
         <img :src="album.picUrl | convert2Https" :alt="album.name">
       </div>
       <div class="media__right">
         <div class="media__heading">{{album.name}}</div>
         <div>
-          <button @click="playAll" class="button-rounded button-primary button-controll">播放</button>
-          <button class="button-rounded button-controll">收藏</button>
-          <button class="button-rounded button-controll">歌词</button>
-          <button class="button-rounded button-controll">more</button>
+          <Button rounded primary @click.native="playAll" class="button-controll">播放</Button>
+          <Button rounded  class="button-controll">收藏</Button>
+          <Button rounded  class="button-controll">歌词</Button>
+          <Button rounded  class="button-controll">more</Button>
         </div>
       </div>
     </div>
-    <song-list :tracks="songs"></song-list>
+    <SongList :tracks="songs" />
   </div>
 </div>
 </template>
-<script>
-  import {getAlbumDetail} from '../../service';
-  import SongList from './SongList';
-  import { mapMutations } from 'vuex';
+<script lang='ts'>
+import { getAlbumDetail } from '@/service';
+import SongList from './SongList.vue';
+import { mapMutations } from 'vuex';
+import { Vue, Component } from 'vue-property-decorator';
+import { Track, Album } from '@/types';
+import { Mutation, namespace } from 'vuex-class';
+import Button from '@/components/globals/Button.vue';
 
-  export default {
-    name: "AlbumDetail",
-    data() {
-      return {
-        album: {},
-        songs: [],
-      }
-    },
-    methods: {
-      playAll() {
-        if (!this.songs) return;
-        this.setTracks(this.songs);
-        this.setCurrentSongId(this.songs[0].id);
-      },
-      ...mapMutations('playlist', [
-        'setTracks',
-        'setCurrentSongId',
-      ]),
-    },
-    created() {
-      const albumId = this.$route.params.id;
-      getAlbumDetail(albumId).then(
-        res => {
-          this.album = res.data.album;
-          this.songs = res.data.songs;
-        },
-        error => alert('getAlbumDetail' + error)
-      );
-    },
-    components: { SongList }
+const playlist = namespace('playlist');
+@Component({
+  components: { SongList, Button }
+})
+export default class AlbumDetail extends Vue {
+  album: Album | null =  null;
+  songs: Track[] = [];
+  
+  playAll() {
+    if (!this.songs) return;
+    this.setTracks(this.songs);
+    this.setCurrentSongId(this.songs[0].id);
   }
+
+  @playlist.Mutation setTracks!: (tracks: Track[]) => void;
+  @playlist.Mutation setCurrentSongId!: (id: number) => void;
+
+  created() {
+    const albumId = Number(this.$route.params.id);
+    getAlbumDetail(albumId).then(
+      res => {
+        this.album = res.data.album;
+        this.songs = res.data.songs;
+      },
+      error => alert('getAlbumDetail' + error)
+    );
+  }
+}
 </script>
 <style lang="sass" scoped>
-@import '../config.sass';
+@import '../config.sass'
 
 .media
-  display: flex;
-  height: 200px;
+  display: flex
+  height: 200px
 .media__left
-  flex: 0 0 200px;
-  font-size: 0;
-  margin-right: 20px;
+  flex: 0 0 200px
+  font-size: 0
+  margin-right: 20px
   img
-    width: 100%;
-    height: 100%;
-    border-radius: 15px;
+    width: 100%
+    height: 100%
+    border-radius: 15px
 .media__right
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex: 1 1 auto
+  display: flex
+  flex-direction: column
+  justify-content: space-between
 .media__heading
-  font-size: 2em;
+  font-size: 2em
 .button-controll
-  margin-right: 0.5em;
+  margin-right: 0.5em
 </style>
 

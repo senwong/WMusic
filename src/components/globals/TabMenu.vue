@@ -6,7 +6,7 @@
       v-for='(item, idx) in list'
       :key="item.key"
       :class="{
-        active: booleanActive(item.isActive, item),
+        active: item.isActive,
         'margin-right': idx < list.length - 1 && alignLeft
       }"
       @click="item.onClick"
@@ -16,12 +16,12 @@
   </ul>
 </div>
 </template>
-<script>
+<script lang='ts'>
 /*
   list: [
     {
       key: key,
-      isActive: boolean | function:boolean,
+      isActive: function:boolean,
       onClick: function,
       title: String
     }
@@ -33,32 +33,16 @@
     align-right: boolean,
   
 */
-export default {
-  props: {
-    list: Array,
-    spaceBetween: {
-      type: Boolean,
-      default: false,
-    },
-    alignLeft: {
-      type: Boolean,
-      default: false,
-    },
-    alignMiddle: {
-      type: Boolean,
-      default: false,
-    },
-    alignRight: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  methods: {
-    booleanActive(val, item) {
-      if (typeof val === 'function') return val(item);
-      else return Boolean(val);
-    }
-  }
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { TabMenuItem } from '@/types';
+
+@Component
+export default class TabMenu extends Vue {
+  @Prop() list!: TabMenuItem[];
+  @Prop(Boolean) spaceBetween!: boolean;
+  @Prop(Boolean) alignLeft!: boolean;
+  @Prop(Boolean) alignMiddle!: boolean;
+  @Prop(Boolean) alignRight!: boolean;
 }
 </script>
 

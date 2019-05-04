@@ -22,7 +22,7 @@
       </more-item>
     </more-list>
   </popup-menu>
-  <ul class="play-list scrollbar-invisible">
+  <ul class="play-list scrollbar-invisible" @scroll="handleScroll">
     <!-- 单个歌曲信息 -->
     <PlaylistItem
       v-for="track in tracks"
@@ -76,106 +76,93 @@
   <loading v-if="isLoading"></loading>
 </div>
 </template>
-<script>
+<script lang='ts'>
 import PopupMenu from './PopupMenu.vue';
 import MoreItem from './more-list/MoreItem.vue';
 import MoreList from './more-list/MoreList.vue';
 import Loading from '@/components/Loading.vue';
 import { mapState, mapMutations } from 'vuex';
 import { getSongURL } from '@/service';
-import PlaylistItem from './PlaylistItem';
-import MoreIcon from './SVGIcons/MoreIcon';
-import DownloadIcon from './SVGIcons/DownloadIcon';
+import PlaylistItem from './PlaylistItem.vue';
+import MoreIcon from './SVGIcons/MoreIcon.vue';
+import DownloadIcon from './SVGIcons/DownloadIcon.vue';
+import { Vue, Component } from 'vue-property-decorator';
+import { Mutation, namespace } from 'vuex-class';
+import { Track } from '@/types';
 
-export default {
-  name: "PlayList",
+const playlist = namespace('playlist');
+
+@Component({
   components: {
-    PopupMenu, MoreList, MoreItem, Loading, PlaylistItem, MoreIcon, DownloadIcon,
-  },
-  data() {
-    return {
-      listControlButton: null,
-      songControlButton: null,
-      isLoading: false,
-      popMenuSongId: null,
-    };
-  },
-  methods: {
-    toggleFav() {
-      // TODO
-    },
-    handleSongMoreMouseenter(e) {
-      this.songControlButton = e.target;
-    },
-    handleScroll(e) {
-      this.songControlButton = null;
-    },
-    registerEvents() {
-      this.listControlButton = this.$refs.titleMore;
-      // 滚动时隐藏弹出菜单
-      this.$el.querySelector(".play-list").addEventListener("scroll", this.handleScroll);
-      this.$el.querySelectorAll(".song-more").forEach(el => {
-        el.addEventListener('mousedown', this.handleSongMoreMouseenter);
-      })
-    },
-    unRegisterEvents() {
-      this.listControlButton = null;
-      // 滚动时隐藏弹出菜单
-      this.$el.querySelector(".play-list").removeEventListener("scroll", this.handleScroll);
-      this.$el.querySelectorAll(".song-more").forEach(el => {
-        el.removeEventListener('mousedown', this.handleSongMoreMouseenter);
-      })
-    },
-    handlePlay() {
-      if (!this.popMenuSongId) return;
-      this.setCurrentSongId(this.popMenuSongId);
-    },
-    handleRemove() {
-      // TODO
-    },
-    downloadSong(url) {
-      fetch(song.songUrl).then(res => res.blob().then(blob => {
-        var a = document.createElement('a');
-        var url = window.URL.createObjectURL(blob);
-        var filename = song.name + ".mp3";
-        a.href = url;
-        a.download = filename;
-        a.click();
-        window.URL.revokeObjectURL(url);
-        this.isLoading = false
-      }));
-    },
-    handleDownload() {
-      // TODO
-      if (!this.popMenuSongId) return;
-      this.isLoading = true
-      getSongURL(this.popMenuSongId).then(
-        res => {
-          const songUrl = res.data.data[0].url;
-          downloadSong(songUrl);
-        },
-        error => alert(' get song url error ' + error)
-      );
-    },
-    handleMoreClick(id) {
-      this.popMenuSongId = id;
-    },
-    ...mapMutations('playlist', [
-      'setCurrentSongId'
-    ])
-  },
-  computed: {
-    ...mapState('playlist', [
-      'tracks',
-      'currentSongId',
-    ])
-  },
+    PopupMenu,
+    MoreList,
+    MoreItem,
+    Loading,
+    PlaylistItem,
+    MoreIcon,
+    DownloadIcon,
+  }
+})
+export default class PlayList extends Vue {
+  
+  listControlButton: EventTarget | null =  null;
+  songControlButton: EventTarget | null =  null;
+  isLoading: boolean = false;
+  popMenuSongId: number | null = null;
+  
+  $refs!: {
+    titleMore: Element
+  }
+  toggleFav() {
+    // TODO
+  }
+  handleSongMoreMouseenter(e: UIEvent) {
+    this.songControlButton = e.target;
+  }
+  handleScroll(e: UIEvent) {
+    this.songControlButton = null;
+  }
   mounted() {
-    this.registerEvents();
-  },
-  beforeDestroy() {
-    this.unRegisterEvents();
-  },
+    this.listControlButton = this.$refs.titleMore;
+  }
+  handlePlay() {
+    if (!this.popMenuSongId) return;
+    this.setCurrentSongId(this.popMenuSongId);
+  }
+  handleRemove() {
+    // TODO
+  }
+  downloadSong(url: string) {
+    fetch(url).then(res => res.blob().then(blob => {
+      var a = document.createElement('a');
+      var url = window.URL.createObjectURL(blob);
+      var filename = "untitled.mp3";
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      this.isLoading = false
+    }));
+  }
+  handleDownload() {
+    // TODO
+    if (!this.popMenuSongId) return;
+    this.isLoading = true
+    getSongURL(this.popMenuSongId).then(
+      res => {
+        const songUrl = res.data.data[0].url;
+        this.downloadSong(songUrl);
+      },
+      error => alert(' get song url error ' + error)
+    );
+  }
+  handleMoreClick(id: number) {
+    this.popMenuSongId = id;
+  }
+  @playlist.Mutation setCurrentSongId!: (id: number) => void;
+  @playlist.State tracks!: Track[];
+  @playlist.State currentSongId!: number;
+  
 }
 </script>
 <style lang="sass" scoped>

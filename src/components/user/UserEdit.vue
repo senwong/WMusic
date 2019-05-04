@@ -58,11 +58,13 @@ import { userUpdate } from '@/service';
 import provinceCitys from './provinceCitys.json';
 import ErrorLabel from '@/components/globals/ErrorLabel';
 import Select from '@/components/globals/Select';
+import { getUserDetail } from '@/service';
 
 export default {
   name: 'UserEdit',
   data() {
     return {
+      currentUser: null,
       nicknameTemp: null,
       signatureTemp: null,
       genderTemp: null,
@@ -85,7 +87,7 @@ export default {
   components: { Input, Button, ErrorLabel, Select },
   computed: {
     ...mapState('currentUser', {
-      currentUser: state => state.profile,
+      currentUserId: state => state.userId,
     }),
     // get days arry in the specify year and month
     dateOptions() {
@@ -142,6 +144,14 @@ export default {
           setTimeout(() => {
             this.isSaveSuccess = false;
           }, 1000);
+          this.currentUser = Object.assign(this.currentUser, {
+            nickname: this.nicknameTemp,
+            signature: this.signatureTemp,
+            gender: this.genderTemp,
+            birthday,
+            province : this.provinceTemp,
+            city: this.cityTemp,
+          });
         },
         error => {
           this.isSaving = false;
@@ -170,23 +180,26 @@ export default {
       this.monthTemp = d.getMonth() + 1;
       this.dateTemp = d.getDate();
     },
-    ...mapActions('currentUser', {
-      refreshCurrentUser: 'refresh'
-    })
+    getCurrentUser() {
+      const userId = this.$route.params.id;
+      console.log('this.currentUserId', userId);
+      getUserDetail(userId).then(
+        res => {
+          this.currentUser = res.data.profile;
+        },
+        error => {
+          this.isSaveError = true;
+          if (error && error.msg) {
+            this.errorMsg = error.msg;
+          } else {
+            this.errorMsg = '获取用户详情错误';
+          }
+        }
+      );
+    }
   },
   created() {
-    this.refreshCurrentUser().then(
-      () => {
-        this.mapCurrentUserToTemp();
-      },
-      error => {
-        this.isSaveError = true;
-        if (error.msg) {
-          this.errorMsg = error.msg;
-        }
-      }
-    );
-
+    this.getCurrentUser();
     this.yearOptions = [];
     for (let i = 1920; i <= new Date().getFullYear(); i++) {
       this.yearOptions.push({key: i, value: i, title: `${i}年`});

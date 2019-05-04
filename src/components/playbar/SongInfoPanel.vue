@@ -127,7 +127,7 @@ export default {
   align-items: center;
   justify-content: flex-start;
 .album-img
-  width: 6em;
+  flex: 0 0 6em
   height: 100%;
   position: relative;
   img

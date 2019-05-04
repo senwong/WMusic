@@ -9,56 +9,49 @@
     <div class="record-item__track-info" v-if="song">
       <router-link class="track-info__track-name" :to="`/song/${song.id}`">{{song.name}}</router-link>
       <div class="track-info__artist-album">
-        <ArtistsWithComma :artists="song.ar" commaClass="artist-album__comma" aTagClass="artist-album__artist" />
+        <ArtistsWithComma :artists="song.artists" commaClass="artist-album__comma" aTagClass="artist-album__artist" />
         <span class="artist-album__dot"> . </span>
         <router-link
           class="artist-album__album"
-          v-if="song.al && song.al.id && song.al.name"
-          :to="`/album/${song.al.id}`"
-        >{{song.al.name}}</router-link>
+          :to="`/album/${song.album.id}`"
+        >{{song.album.name}}</router-link>
       </div>
     </div>
     <!-- play count score  -->
     <div class="play-core__wrapper">
-      <div class="play-core__score" :style="{width: score + '%'}"></div>
+      <div class="play-core__score" :style="{width: record.score + '%'}"></div>
     </div>
     <div class="play-count__count">
-      {{playCount}}次
+      {{record.playCount}}次
     </div>
   </li>
 </template>
 
-<script>
-import MusicIcon from '@/components/SVGIcons/MusicIcon';
-import PausedIcon from '@/components/SVGIcons/PausedIcon';
-import ArtistsWithComma from '@/components/globals/ArtistsWithComma';
+<script lang='ts'>
+import MusicIcon from '@/components/SVGIcons/MusicIcon.vue';
+import PausedIcon from '@/components/SVGIcons/PausedIcon.vue';
+import ArtistsWithComma from '@/components/globals/ArtistsWithComma.vue';
 import { mapMutations } from 'vuex';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Record } from '@/types';
+import { Mutation, namespace } from 'vuex-class';
 
-export default {
-  name: 'RecordItem',
-  props: {
-    playCount: {
-      type: Number,
-      required: true,
-    },
-    score: {
-      type: Number,
-      required: true,
-    },
-    song: {
-      type: Object,
-      required: true,
-    },
-  },
+const playlist = namespace('playlist');
+@Component({
   components: { MusicIcon, PausedIcon, ArtistsWithComma },
-  methods: {
-    ...mapMutations('playlist', [
-      'setCurrentSongId',
-    ]),
-    handlePlay() {
-      this.setCurrentSongId(this.song.id);
-      this.$emit('play');
-    }
+})
+export default class RecordItem extends Vue {
+  @Prop() record!: Record
+
+  get song() {
+    return this.record.song;
+  }
+
+  @playlist.Mutation setCurrentSongId!: (id: number) => void
+  
+  handlePlay() {
+    this.setCurrentSongId(this.record.song.id);
+    this.$emit('play');
   }
 }
 </script>

@@ -8,6 +8,7 @@ const isDev = () => process.env.NODE_ENV == 'development';
 module.exports = {
   lintOnSave: false,
   publicPath: "/",
+  runtimeCompiler: true,
   devServer: {
     port,
     host,
@@ -34,14 +35,14 @@ module.exports = {
     plugins: isDev
       ? []
       : [
-      new UglifyJsPlugin({
-        uglifyOptions: {      
-          compress: {
-            drop_console: true
+        new UglifyJsPlugin({
+          uglifyOptions: {      
+            compress: {
+              drop_console: true
+            }
           }
-        }
-      })
-    ]
+        })
+      ]
   }
 
 }

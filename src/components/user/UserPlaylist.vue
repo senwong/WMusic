@@ -73,22 +73,29 @@ export default {
 
 <style lang="sass" scoped>
 .title
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 0.5em 2em;
-  font-size: 14px;
-  opacity: 0.6;
+  border-top: 1px solid rgba(0, 0, 0, 0.1)
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1)
+  padding: 0.5em 2em
+  font-size: 14px
+  opacity: 0.6
 .list-container
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
-  gap: 2em;
+  display: grid
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr))
+  gap: 2em
   flex-wrap: wrap
-  justify-content: flex-start;
-  padding: 2em;
+  justify-content: flex-start
+  padding: 2em
 .list-item
-  display: block;
+  display: block
   .playlist-cover
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1)
+    transition: all 250ms
+    transform-origin: center
+    transform-perspective: 100px
+    &:hover
+      transform: scale(1.1) translateY(-5px)
+      box-shadow: 0 0 20px 6px #bbb
   .name
-    font-size: 14px;
+    margin-top: 1em
+    font-size: 14px
 </style>

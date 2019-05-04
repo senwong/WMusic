@@ -25,10 +25,10 @@
             <li class="tag">#{{tags.join("  #")}}</li>
           </ul>
           <div>
-            <button @click="handlePlayAll" class="button-rounded button-controll button-primary">全部播放</button>
-            <button class="button-rounded button-controll">收藏</button>
-            <button class="button-rounded button-controll">全部下载</button>
-            <button class="button-rounded button-controll">more</button>
+            <Button class="btn-control" rounded primary @click.native="handlePlayAll">全部播放</Button>
+            <Button class="btn-control" rounded>收藏</Button>
+            <Button class="btn-control" rounded>全部下载</Button>
+            <Button class="btn-control" rounded>more</Button>
           </div>
         </div>
       </div>
@@ -42,6 +42,7 @@ import { formatTime } from '@/utilitys';
 import SongList from './SongList';
 import { mapMutations } from 'vuex'
 import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
+import Button from '@/components/globals/Button';
 
 export default {
   data() {
@@ -56,7 +57,7 @@ export default {
       playlistId: null,
     }
   },
-  components: { SongList, ImageWithPlaceholder },
+  components: { SongList, ImageWithPlaceholder, Button },
   computed: {
     updateTimeFormated() {
       if (!this.updateTime) return "";
@@ -135,7 +136,7 @@ export default {
     margin-right: 15px;
 
 
-.button-controll
+.btn-control
   margin-right: 0.5em;
 
 </style>

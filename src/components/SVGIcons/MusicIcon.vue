@@ -5,3 +5,8 @@
     <ellipse cx="20" cy="23" rx="4" ry="5"></ellipse>
   </svg>
 </template>
+<script>
+export default {
+  
+}
+</script>

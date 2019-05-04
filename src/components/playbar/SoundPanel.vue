@@ -15,9 +15,9 @@
     class="button_icon large play-mode"
     @click=" $emit('changeMode')"
     >
-    <LoopIcon v-if="currentMode === PLAYMODES.LOOP" />
-    <OneLoopIcon v-if="currentMode === PLAYMODES.ONE_LOOP" />
-    <ShuffleIcon v-if="currentMode === PLAYMODES.SHUFFLE" />
+    <LoopIcon v-if="currentMode === PlayMode.Loop" />
+    <OneLoopIcon v-if="currentMode === PlayMode.OneLoop" />
+    <ShuffleIcon v-if="currentMode === PlayMode.Shuffle" />
   </button>
   <!-- 音效调节 -->
   <button class="button_icon large sound-effect" :class="{'sound-effect-active': isEffect}">
@@ -48,131 +48,136 @@
   </button>
 </div>
 </template>
-<script>
+<script lang='ts'>
 import PopupMenu from '../PopupMenu.vue';
 import SelectList from '../more-list/SelectList.vue';
 import AwesomeButton from '../AwesomeButton.vue';
-import PLAYMODES from './PLAYMODES'
-import LoopIcon from '@/components/SVGIcons/LoopIcon';
-import OneLoopIcon from '@/components/SVGIcons/OneLoopIcon';
-import ShuffleIcon from '@/components/SVGIcons/ShuffleIcon';
-import OptionsIcon from '@/components/SVGIcons/OptionsIcon';
-import VolumeIcon from '@/components/SVGIcons/VolumeIcon';
-import VolumeMuteIcon from '@/components/SVGIcons/VolumeMuteIcon';
-import MenuIcon from '@/components/SVGIcons/MenuIcon';
+import LoopIcon from '@/components/SVGIcons/LoopIcon.vue';
+import OneLoopIcon from '@/components/SVGIcons/OneLoopIcon.vue';
+import ShuffleIcon from '@/components/SVGIcons/ShuffleIcon.vue';
+import OptionsIcon from '@/components/SVGIcons/OptionsIcon.vue';
+import VolumeIcon from '@/components/SVGIcons/VolumeIcon.vue';
+import VolumeMuteIcon from '@/components/SVGIcons/VolumeMuteIcon.vue';
+import MenuIcon from '@/components/SVGIcons/MenuIcon.vue';
+import { PlayMode, Album, Artist, } from '@/types'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import { State, Getter, namespace } from 'vuex-class';
 
-export default {
-  name: "SoundPanel",
+@Component({
   components: {
-    PopupMenu, SelectList, AwesomeButton, LoopIcon, OneLoopIcon, ShuffleIcon, OptionsIcon, VolumeIcon, VolumeMuteIcon, MenuIcon,
+    PopupMenu,
+    SelectList,
+    AwesomeButton,
+    LoopIcon,
+    OneLoopIcon,
+    ShuffleIcon,
+    OptionsIcon,
+    VolumeIcon,
+    VolumeMuteIcon,
+    MenuIcon,
   },
-  data() {
-    return {
-      isVolume: true,
-      volume: 50,
-      oldVolume: 50,
-      MINVOLUME: 0,
-      MAXVOLUME: 100,
-      soundEffectButton: null,
-      soundEffects: [
-        {id: 1, title: "无", isSelected: false},
-        {id: 2, title: "演唱会", isSelected: false},
-        {id: 3, title: "卧室", isSelected: false},
-        {id: 4, title: "石屋", isSelected: false},
-        {id: 5, title: "剧院", isSelected: false},
-        {id: 6, title: "洞穴", isSelected: false},
-        {id: 7, title: "空巷", isSelected: false},
-        {id: 8, title: "城市", isSelected: false},
-      ],
-      currentEffect: 1,
-      isEffect: false,
-      PLAYMODES,
+})
+export default class SoundPanel extends Vue {
+  isVolume: boolean = true
+  volume: number = 50;
+  oldVolume: number = 50;
+  MINVOLUME: number = 0;
+  MAXVOLUME: number = 100;
+  soundEffectButton: HTMLElement | null = null;
+  soundEffects = [
+    {id: 1, title: "无", isSelected: false},
+    {id: 2, title: "演唱会", isSelected: false},
+    {id: 3, title: "卧室", isSelected: false},
+    {id: 4, title: "石屋", isSelected: false},
+    {id: 5, title: "剧院", isSelected: false},
+    {id: 6, title: "洞穴", isSelected: false},
+    {id: 7, title: "空巷", isSelected: false},
+    {id: 8, title: "城市", isSelected: false},
+  ]
+  currentEffect: number = 1;
+  isEffect: boolean = false;
+  PlayMode = PlayMode;
+  @Prop() currentMode!: PlayMode;
+  
+
+  toggleVolume() {
+    if (this.volume > this.MINVOLUME) {
+      this.oldVolume = this.volume;
+      this.volume = this.MINVOLUME;
+    } else {
+      this.volume = this.oldVolume;
     }
-  },
-  props: [ 'currentMode' ],
-  methods: {
-    toggleVolume() {
-      if (this.volume > this.MINVOLUME) {
-        this.oldVolume = this.volume;
-        this.volume = this.MINVOLUME;
-      } else {
-        this.volume = this.oldVolume;
-      }
-    },
-    toggleEffect() {
-      this.isEffect = !this.isEffect;
-    },
-    effectChange(id) {
-      console.log("effect change ", id)
-      this.currentEffect = id;
-      this.isEffect = id > 1 ? true : false;
-    },
-    toggleRightPlaylist() {
-      this.$store.commit('toggleRightPlaylist');
-    },
-  },
-  watch: {
-    volume: function(newVal, oldVal) {
-      this.isVolume = newVal > this.MINVOLUME ? true : false;
-      this.$emit('changeVolume', newVal / 100);
-    },
-  },
+  }
+  toggleEffect() {
+    this.isEffect = !this.isEffect;
+  }
+  effectChange(id: number) {
+    console.log("effect change ", id)
+    this.currentEffect = id;
+    this.isEffect = id > 1 ? true : false;
+  }
+  toggleRightPlaylist() {
+    this.$store.commit('toggleRightPlaylist');
+  }
+  @Watch('volume')
+  onVolumeChange(newVal: number, oldVal: number) {
+    this.isVolume = newVal > this.MINVOLUME ? true : false;
+    this.$emit('changeVolume', newVal / 100);
+  }
   mounted() {
     this.soundEffectButton = this.$el.querySelector(".sound-effect")
-  },
-  computed: {
-    playList() {
-      return this.$store.state.playList;
-    }
+  }
+  get playList() {
+    return this.$store.state.playList;
   }
 }
 </script>
 <style lang="sass" scoped>
-@import "../config.sass";
+@import "../config.sass"
 .sound-panel
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  display: flex
+  align-items: center
+  justify-content: flex-end
 .volume__setter
-  width: 6em;
-  margin: 0;
-  font-size: inherit;
+  width: 6em
+  margin: 0
+  font-size: inherit
 .mute-volume, .volume__setter, .play-mode, .sound-effect, .play-list
-  margin-right: 1em;
+  margin-right: 1em
 // 音效设置弹出菜单
 .sound-effect-set
-  display: flex;
-  align-items: center;
+  display: flex
+  align-items: center
 .sound-effect-title
-  padding: 6px;
+  padding: 6px
 .sound-effect-desc
-  font-size: 1.0em;
-  color: $orange;
+  font-size: 1.0em
+  color: $orange
 .set-title
-  font-size: 1.4em;
-  margin-right: 1.4em;
+  font-size: 1.4em
+  margin-right: 1.4em
 .sound-effect-active
-  color: $orange;
+  color: $orange
 
 .volume__setter
-  -webkit-appearance: none;
-  height: 0.6em;
-  border-radius: 0.4em;
-  background: $black-3;
-  outline: none;
+  -webkit-appearance: none
+  height: 0.6em
+  border-radius: 0.4em
+  background: $black-3
+  outline: none
   &::-moz-range-thumb
-    width: 1em;
-    height: 1em;
-    cursor: pointer;
-    border-radius: 0.5em;
-    background-color: white;
+    width: 1em
+    height: 1em
+    cursor: pointer
+    border-radius: 0.5em
+    background-color: white
   &::-webkit-slider-thumb
-    -webkit-appearance: none;
-    appearance: none;
-    width: 1em;
-    height: 1em;
-    cursor: pointer;
-    border-radius: 0.5em;
-    background-color: white;
+    -webkit-appearance: none
+    appearance: none
+    width: 1em
+    height: 1em
+    cursor: pointer
+    border-radius: 0.5em
+    background-color: white
 </style>
 

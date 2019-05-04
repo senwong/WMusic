@@ -45,43 +45,47 @@
             {key: 2, title: '最新', onClick: () => orderType='new', isActive: orderType == 'new' },
           ]"
         />
-        <song-cards :cardLists="playlists" :cardType="'playlist'" class="song-cards"/>
+        <SongCards :cardLists="playlists" cardType="playlist" class="song-cards"/>
         <Pagination :total="pageTotal" @change="handlePageChange" />
       </div>
     </div>
   </div>
 </template>
-<script>
+<script lang='ts'>
 import { getPlayListCatlist, getPlayList } from '@/service';
-import SongCards from '@/components/globals/SongCards';
-import ChevronTopIcon from '@/components/SVGIcons/ChevronTopIcon';
-import ChevronBottomIcon from '@/components/SVGIcons/ChevronBottomIcon';
-import Pagination from '@/components/globals/Pagination';
-import TabMenu from '@/components/globals/TabMenu';
+import SongCards from '@/components/globals/SongCards.vue';
+import ChevronTopIcon from '@/components/SVGIcons/ChevronTopIcon.vue';
+import ChevronBottomIcon from '@/components/SVGIcons/ChevronBottomIcon.vue';
+import Pagination from '@/components/globals/Pagination.vue';
+import TabMenu from '@/components/globals/TabMenu.vue';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import { Playlist, PlaylistCreator } from '@/types';
 
-export default {
-  name: "PlayListIndex",
+interface SubCategory {
+  category: number;
+  name: string;
+}
+
+@Component({
   components: {
     SongCards,
     ChevronTopIcon,
     ChevronBottomIcon,
     Pagination,
     TabMenu,
-  },
-  data() {
-    return {
-      categories: {},
-      sub: [],
-      selected: "全部",
-      showMenu: false,
-      orderType: "hot",
-      playlists: [],
-      total: 0,
-      offset: 0,
-      showCards: true,
-      limit: 20,
-    }
-  },
+  }
+})
+export default class PlaylistComponent extends Vue {
+  categories: object = {};
+  sub: SubCategory[] = [];
+  selected: string = "全部";
+  showMenu: boolean = false;
+  orderType: 'hot' | 'new' = "hot";
+  playlists: Playlist[] = [];
+  total: number = 0;
+  offset: number = 0;
+  showCards: boolean = true;
+  limit = 20;
   created() {
     getPlayListCatlist().then(res => {
       if(res.data.code == 200) {
@@ -92,130 +96,125 @@ export default {
       }
     })
     this.updatePlayList()
-  },
-  methods: {
-    afterEnter() {
-      console.log("afterEnter")
-      if (this.showMenu == true) {
-        this.showCards = false
-      }
-    },
-    beforeLeave() {
-      console.log("beforeLeave")
-      if (this.showCards == false) {
-        this.showCards = true
-      }
-    },
-    updatePlayList() {
-      getPlayList(this.selected, this.orderType, this.offset ).then(res => {
-        if(res.data.code == 200) {
-          this.total = res.data.total
-          this.playlists = res.data.playlists.map(list => {
-            return {
-              id: list.id,
-              picUrl: list.coverImgUrl,
-              name: list.name,
-              publishTime: list.updateTime,
-              playCount: list.playCount,
-              creator: list.creator,
-            }
-          })
-        } else {
-          alert("获取歌单失败： " + res.data)
-        }
-      })
-    },
-    selectCat(newCat) {
-      this.selected = newCat
-      this.showMenu = false
-    },
-    handlePageChange(currentPageidx) {
-      this.offset = this.limit * currentPageidx;
-      this.updatePlayList();
-    },
-  },
-  computed: {
-    pageTotal() {
-      return Math.ceil(this.total / this.limit);
-    },
-  },
-  watch: {
-    selected(val) {
-      this.offset = 0
-      this.updatePlayList();
-    },
-    orderType(val) {
-      this.offset = 0;
-      this.updatePlayList();
+  }
+
+  afterEnter() {
+    console.log("afterEnter")
+    if (this.showMenu == true) {
+      this.showCards = false
     }
-  },
-  mounted() {
-    this.$el.querySelectorAll(".order__item").forEach(item => {
-      item.addEventListener("click", e => {
-        const oldActive = this.$el.querySelector(".order__item.active")
-        if(oldActive !== item) oldActive.classList.remove("active")
-        item.classList.add("active")
-        this.order = item.dataset.order
-      })
+  }
+  beforeLeave() {
+    console.log("beforeLeave")
+    if (this.showCards == false) {
+      this.showCards = true
+    }
+  }
+  updatePlayList() {
+    getPlayList(this.selected, this.orderType, this.offset ).then(res => {
+      if(res.data.code == 200) {
+        this.total = res.data.total
+        this.playlists = res.data.playlists.map(
+          (list: {
+            id: number,
+            coverImgUrl: string,
+            name: string,
+            updateTime: number,
+            playCount: number,
+            creator: PlaylistCreator
+          }) => {
+          return {
+            id: list.id,
+            picUrl: list.coverImgUrl,
+            name: list.name,
+            publishTime: list.updateTime,
+            playCount: list.playCount,
+            creator: list.creator,
+          }
+        })
+      } else {
+        alert("获取歌单失败： " + res.data)
+      }
     })
+  }
+  selectCat(newCat: string) {
+    this.selected = newCat
+    this.showMenu = false
+  }
+  handlePageChange(currentPageidx: number) {
+    this.offset = this.limit * currentPageidx;
+    this.updatePlayList();
+  }
+  get pageTotal() {
+    return Math.ceil(this.total / this.limit);
+  }
+  @Watch('selected')
+  onSelectedChange() {
+    this.offset = 0
+    this.updatePlayList();
+  }
+  @Watch('orderType')
+  onOrderTypeChange() {
+    this.offset = 0;
+    this.updatePlayList();    
   }
 }
 </script>
 <style lang="sass" scoped>
-@import "@/components/config.sass";
+@import "@/components/config.sass"
 
 .category__selected
-  position: relative;
-  z-index: 2;
-  font-size: 20px;
-  padding: 2em 0 1em;
-  margin-top: -1em;
-  background-color: white;
+  position: relative
+  z-index: 2
+  font-size: 20px
+  padding: 2em 0 1em
+  margin-top: -1em
+  background-color: white
 .category__title
-  margin-right: 0.5em;
+  margin-right: 0.5em
 .category__toggle__btn
-  cursor: pointer;
+  cursor: pointer
 .category__title, .category__title__icon
-  vertical-align: middle;
+  vertical-align: middle
 .category__title__icon
-  width: 0.5em;
-  height: 0.5em;
+  width: 0.5em
+  height: 0.5em
 .category__list-wrapper
-  position: relative;
+  position: relative
 .category__list-container
-  background-color: white;
-  z-index: 1;
+  background-color: white
+  z-index: 1
 .category__sub
-  display: none;
+  display: none
 .category__list
-  display: flex;
-  flex-wrap: wrap;
+  display: flex
+  flex-wrap: wrap
 .category__item
-  font-size: 14px;
-  margin: 1em 2em 1em 0;
-  padding: 0.5em 1em;
-  border-radius: 1.5em;
-  background-color: $whitegray2;
-  cursor: pointer;
+  font-size: 14px
+  margin: 1em 2em 1em 0
+  padding: 0.5em 1em
+  border-radius: 1.5em
+  background-color: $whitegray2
+  cursor: pointer
   &.active
-    color: white;
-    background-color: $orange;
+    color: white
+    background-color: $orange
 @keyframes move-down
   0%
-    top: -1200px;
+    top: -1200px
   100%
-    top: 0px;
+    top: 0px
 @keyframes move-up
   0%
-    top: 0px;
+    top: 0px
   100%
-    top: -1200px;
+    top: -1200px
 .move-enter-active
-  animation: move-down 0.5s ease forwards;
+  animation: move-down 0.5s ease forwards
 .move-leave-active
-  animation: move-up 0.5s ease forwards;
+  animation: move-up 0.5s ease forwards
 
 
 .song-cards
-  margin-top: 2em;
+  margin-top: 2em
 </style>

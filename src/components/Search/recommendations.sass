@@ -1,0 +1,29 @@
+@import "../config.sass"
+.recommendation-section
+  padding: 0 6px
+.title
+  font-size: 12px
+  color: $gray
+  padding-left: 6px
+.item
+  padding: 6px
+  display: flex
+  flex-direction: row
+  justify-content: flex-start
+  align-items: center
+  border-radius: 4px
+  transition-property: background color
+  transition-duration: 250ms
+  &:hover
+    background: $orange
+    color: white
+  .item-title
+    display: block
+    padding: 0.5em 0
+.artist-avatar, .album-img, .playlist-img
+  width: 3em
+  height: 3em
+  border-radius: 4px
+  margin-right: 9px
+.artist-avatar
+  border-radius: 9999px

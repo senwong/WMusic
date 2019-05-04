@@ -14,17 +14,17 @@
   >
     <!-- 靠左显示 -->
     <div class="album-img">
-      <img :src="track.al.picUrl | convert2Https | clipImage(80, 80)" :alt="track.name">
+      <img :src="track.album.picUrl | convert2Https | clipImage(80, 80)" :alt="track.name">
     </div>
     <div class="name-songer">
       <div class="name">{{track.name}}</div>
       <div class="songer">
-        <ArtistsWithComma :artists="track.ar" aTagClass="" commaClass="" />
+        <ArtistsWithComma :artists="track.artists" aTagClass="" commaClass="" />
       </div>
     </div>
     <!-- 靠右显示 -->
     <div class="duration">
-      {{formatTime(track.dt)}}
+      {{formatTime(track.duration)}}
     </div>
     <!-- hover时才显示收藏和更多 -->
     <div class="fav-more">
@@ -40,115 +40,114 @@
   </div>
 </Motion>
 </template>
-<script>
+<script lang='ts'>
 import { Motion } from 'vue-motion';
 import { formatTime } from '@/utilitys';
-import FavIcon from './SVGIcons/FavIcon';
-import MoreIcon from './SVGIcons/MoreIcon';
-import ArtistsWithComma from '@/components/globals/ArtistsWithComma'
+import FavIcon from '@/components/SVGIcons/FavIcon.vue';
+import MoreIcon from '@/components/SVGIcons/MoreIcon.vue';
+import ArtistsWithComma from '@/components/globals/ArtistsWithComma.vue'
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Track } from '@/types';
 
-export default {
-  data() {
-    return {
-      isHover: false,
-    };
-  },
-  props: [ 'track', 'currentSongId' ],
+@Component({
   components: {
     Motion,
     FavIcon,
     MoreIcon,
     ArtistsWithComma,
   },
-  computed: {
-    styles() {
-      return {
-        translateX: this.isHover ? 0 : 0,
-        scale: this.isHover ? 1.05 : 1,
-        blurRadius: this.isHover ? 5 : 0,
-        spreadRadius: this.isHover ? 5 : 0,
-      };
-    }
-  },
-  methods: {
-    formatTime,
-    handleMouseEnter() {
-      this.isHover = true;
-    },
-    handleMouseLeave() {
-      this.isHover = false;
-    },
+})
+export default class Playlist extends Vue {
+  isHover: boolean = false;
+
+  @Prop() track!: Track;
+  @Prop() currentSongId!: number;
+
+  get styles() {
+    return {
+      translateX: this.isHover ? 0 : 0,
+      scale: this.isHover ? 1.05 : 1,
+      blurRadius: this.isHover ? 5 : 0,
+      spreadRadius: this.isHover ? 5 : 0,
+    };
+  }
+  formatTime = formatTime
+  handleMouseEnter() {
+    this.isHover = true;
+  }
+  handleMouseLeave() {
+    this.isHover = false;
   }
 }
 </script>
 <style lang="sass" scoped>
-@import "config.sass";
+@import "config.sass"
 .motion
-  z-index: 0;
-  position: relative;
+  z-index: 0
+  position: relative
   &.ishover
-    z-index: 1;
+    z-index: 1
 
 // 单个歌曲样式
 .container
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 10px;
+  display: flex
+  justify-content: space-between
+  align-items: center
+  padding: 0 10px
   &.active
-    color: $orange;
+    color: $orange
 .container:nth-of-type(2n+1)
-  background-color: $whitegray;
+  background-color: $whitegray
 .container:not(.not-play):hover
-  background-color: $whitegray3;
+  background-color: $whitegray3
 // 专辑封面
 .album-img
-  flex: 0 0 40px;
-  height: 40px;
+  flex: 0 0 40px
+  height: 40px
   img
-    width: 100%;
-    height: 100%;
-    border-radius: 4px;
+    width: 100%
+    height: 100%
+    border-radius: 4px
 .name-songer
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 10px;
-  max-width: 100%;
-  overflow: hidden;
+  flex: 1 1 auto
+  display: flex
+  flex-direction: column
+  justify-content: center
+  padding: 10px
+  max-width: 100%
+  overflow: hidden
   .name
-    font-size: 14px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 14px
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
   .songer
-    font-size: 12px;
-    color: $gray;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-size: 12px
+    color: $gray
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
 .container
   .songer:hover,
-    color: $orange;
+    color: $orange
 .duration
-  color: $gray;
-  font-size: 12px;
-  flex: 0 0 50px;
+  color: $gray
+  font-size: 12px
+  flex: 0 0 50px
 // hover时显示更多和收藏
 .fav-more
-  display: none;
-  color: $gray;
-  flex: 0 0 50px;
+  display: none
+  color: $gray
+  flex: 0 0 50px
   .fav
-    margin-right: 10px;
+    margin-right: 10px
   .is-fav
-    color: $orange;
+    color: $orange
   &.is-fav svg
-    fill: $orange;
+    fill: $orange
 .container:hover
   .duration
-    display: none;
+    display: none
   .fav-more
-    display: flex;
+    display: flex
 </style>

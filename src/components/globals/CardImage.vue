@@ -29,76 +29,79 @@
   </div>
 </div>
 </template>
-<script>
-import FavIcon from '../SVGIcons/FavIcon';
-import PausedIcon from '../SVGIcons/PausedIcon';
-import MoreIcon from '../SVGIcons/MoreIcon';
-import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
-import WithHoverMask from '@/components/globals/WithHoverMask';
+<script lang='ts'>
+import FavIcon from '@/components/SVGIcons/FavIcon.vue';
+import PausedIcon from '@/components/SVGIcons/PausedIcon.vue';
+import MoreIcon from '@/components/SVGIcons/MoreIcon.vue';
+import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder.vue';
+import WithHoverMask from '@/components/globals/WithHoverMask.vue';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
-export default {
-  props: {
-    fav: Object, // fav icon
-    play: Object, // play icon
-    more: Object, // more icon
-    href: String, // image href
-    src: String, // image src
-    alt: String, // image alt
-    ratio: String, // width:height
-    radius: Boolean,
-  },
+import { ControlBtn } from '@/types';
+
+@Component({
   components: {
     FavIcon,
     PausedIcon,
     MoreIcon,
     ImageWithPlaceholder,
     WithHoverMask,
-  },
+  }
+})
+export default  class CardImage extends Vue {
+  @Prop() fav?: ControlBtn;
+  @Prop() play?: ControlBtn;
+  @Prop() more?: ControlBtn;
+  @Prop(String) href!: string; // image href
+  @Prop(String) src!: string; // image src
+  @Prop(String) alt!: string; // image alt
+  @Prop(String) ratio!: string; // width:height
+  @Prop(Boolean) radius!: boolean;
 }
 </script>
 <style lang="sass" scoped>
-@import '../../style/colors.sass';
+@import '../../style/colors.sass'
 .card-item-container
-  width: 100%;
-  position: relative; 
+  width: 100%
+  position: relative 
 .list-item
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  user-select: none;
+  display: flex
+  flex-direction: column
+  position: relative
+  user-select: none
 .item-cover
   &.radius
-    overflow: hidden;
-    border-radius: 15px;
+    overflow: hidden
+    border-radius: 15px
 
 .item-controlls
-  display: block;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  display: block
+  width: 100%
+  height: 100%
+  display: flex
+  flex-direction: row
+  justify-content: center
+  align-items: center
 
 .img-wrapper
-  display: block;
-  // height: 100%;
-  width: 100%;
-  box-sizing: border-box;
+  display: block
+  // height: 100%
+  width: 100%
+  box-sizing: border-box
 
 .control__item
-  color: white;
-  margin: 5px;
+  color: white
+  margin: 5px
 .control__play
-  padding: 5px;
-  border-radius: 50%;
-  background: $primary;
+  padding: 5px
+  border-radius: 50%
+  background: $primary
 
 .left-top, .right-top
-  position: absolute;
-  top: 0;
+  position: absolute
+  top: 0
 .left-top
-  left: 0;
+  left: 0
 .right-top
-  right: 0;
+  right: 0
 </style>

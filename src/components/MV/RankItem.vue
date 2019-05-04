@@ -1,10 +1,10 @@
 <template>
   <div class="rank-item">
     <div class="rank-title">
-      <span class="rank-index text-gray">{{formatIndex(index + 1)}}</span>
-      <UnderscoreIcon class="text-gray rank_icon" v-if="index + 1 == rankItem.lastRank"/>
-      <ArrowTopIcon class="rank_icon" v-else-if="index + 1 < rankItem.lastRank" />
-      <ArrowBottomIcon class="rank_icon" v-else-if="index + 1 > rankItem.lastRank && rankItem.lastRank <= 10" />
+      <span class="rank-index text-gray">{{formatIndex(rankItem.rank + 1)}}</span>
+      <UnderscoreIcon class="text-gray rank_icon" v-if="rankItem.rank + 1 == rankItem.lastRank"/>
+      <ArrowTopIcon class="rank_icon" v-else-if="rankItem.rank + 1 < rankItem.lastRank" />
+      <ArrowBottomIcon class="rank_icon" v-else-if="rankItem.rank + 1 > rankItem.lastRank && rankItem.lastRank <= 10" />
       <span v-else class="rank-index_new">new</span>
     </div>
     <CardImage
@@ -23,28 +23,29 @@
     </div>
   </div>
 </template>
-<script>
-import UnderscoreIcon from '@/components/SVGIcons/UnderscoreIcon';
-import ArrowTopIcon from '@/components/SVGIcons/ArrowTopIcon';
-import ArrowBottomIcon from '@/components/SVGIcons/ArrowBottomIcon';
-import CardImage from '@/components/globals/CardImage';
+<script lang='ts'>
+import UnderscoreIcon from '@/components/SVGIcons/UnderscoreIcon.vue';
+import ArrowTopIcon from '@/components/SVGIcons/ArrowTopIcon.vue';
+import ArrowBottomIcon from '@/components/SVGIcons/ArrowBottomIcon.vue';
+import CardImage from '@/components/globals/CardImage.vue';
+import { Rank } from '@/types';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
-export default {
-  name: "RankItem",
-  props: ['rankItem', 'index'],
+@Component({
   components: {
     UnderscoreIcon,
     ArrowTopIcon,
     ArrowBottomIcon,
     CardImage,
   },
-  methods: {
-    formatIndex(i) {
-      return i < 10 ? '0'+i : i
-    },
-    play() {
-      // TODO
-    }
+})
+export default class RankItem extends Vue {
+  @Prop() rankItem!: Rank;
+  formatIndex(i: number):string {
+    return i < 10 ? '0'+i : i.toString();
+  }
+  play() {
+    // TODO
   }
 }
 </script>
