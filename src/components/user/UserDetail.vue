@@ -27,7 +27,7 @@
           </div>
           <div class="actions">
             <Button class="action-button" primary rounded v-if="!isSelf">关注</Button>
-            <button class="action-button" primary rounded v-if="!isSelf">发私信</Button>
+            <Button class="action-button" primary rounded v-if="!isSelf">发私信</Button>
             <Button
               class="action-button"
               rounded
@@ -99,7 +99,7 @@ export default {
   name: "UserDetail",
   data() {
     return {
-      userId: 0,
+      userId: 0, // from router param
       profile: null,
       isGetUserDetailFailed: false, 
     }
@@ -117,6 +117,7 @@ export default {
           // logout success
          this.setCurrentUserId(undefined);
          this.$router.push('/');
+         this.profile = null;
         },
         error => {
           // logout faile
