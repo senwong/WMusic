@@ -29,7 +29,7 @@ import SongList from './SongList.vue';
 import SongCards from '@/components/globals/SongCards.vue';
 import { mapMutations } from 'vuex';
 import { Vue, Component, Prop } from 'vue-property-decorator';
-import { Playlist, Track } from '@/types'
+import { Playlist, Track, convertTrack } from '@/types'
 import { Mutation, namespace } from 'vuex-class'
 import TabMenu from '@/components/globals/TabMenu.vue';
 import Button from '@/components/globals/Button.vue';
@@ -82,7 +82,7 @@ export default class ArtistDetail extends Vue {
       this.name = name;
       this.img = img1v1Url;
       this.briefDesc = briefDesc;
-      this.tracks = res.data.hotSongs;
+      this.tracks = res.data.hotSongs.map(convertTrack);
     })
     getArtistAlbums(artistId).then(res => {
       this.hotAlbums = res.data.hotAlbums;

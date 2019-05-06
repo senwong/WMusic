@@ -32,7 +32,7 @@ export default {
   height: 100%;
   left: 0;
   top: 0;
-  background: rgba(72, 72, 72, 0.5);
+  background: rgba(72, 72, 72, 0.4);
   display: flex;
   flex-direction: row;
   justify-content: center;

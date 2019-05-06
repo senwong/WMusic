@@ -1,5 +1,6 @@
 <template>
 <div class="song-info-panel">
+  <div v-if="isLoading" class="loading-spinner"><Spinner /></div>
   <div class="album-img">
     <img v-if="albumImg" :src="albumImg | convert2Https | clipImage(192, 192)" :alt="name">
     <div v-else class="img-placeholder"></div>
@@ -15,7 +16,7 @@
     <div v-if="artists" class="songer">{{artists && artists.map(ar => ar.name).join("/")}}</div>
   </div>
   <!-- 选择音质 -->
-  <button class="quality button">
+  <button class="quality button" :disabled="disabled">
     {{currentQuality}}
   </button>
   <!-- 点击音质，弹出选择菜单 -->
@@ -26,17 +27,23 @@
     ></select-list>
   </popup-menu>
   <!-- 收藏 -->
-  <button
-    class="button_icon large faver"
-    @click="toggleFaver"
+  <SvgBtnWrapper
+    xlarge
+    class="faver"
+    @click.native="toggleFaver"
     :class="{'is-faver': isFaver}"
+    :disabled="disabled"
   >
     <FavIcon />
-  </button>
+  </SvgBtnWrapper>
   <!-- 三点 更多选项 -->
-  <button class="button_icon large more">
+  <SvgBtnWrapper
+    xlarge
+    class="more"
+    :disabled="disabled"
+  >
     <MoreIcon />
-  </button>
+  </SvgBtnWrapper>
   <!-- 点击更多，弹出菜单 -->
   <popup-menu :target="morePopupButton">
     <more-list>
@@ -78,6 +85,8 @@ import MoreIcon from '../SVGIcons/MoreIcon';
 import FavIcon from '../SVGIcons/FavIcon';
 import SlideUpIcon from '../SVGIcons/SlideUpIcon';
 import DownloadIcon from '../SVGIcons/DownloadIcon';
+import SvgBtnWrapper from '@/components/globals/SvgBtnWrapper.vue';
+import Spinner from '@/components/globals/Spinner.vue';
 
 export default {
   name: "SongInfoPanel",
@@ -90,8 +99,10 @@ export default {
     FavIcon,
     SlideUpIcon,
     DownloadIcon,
+    SvgBtnWrapper,
+    Spinner,
   },
-  props: ['name', 'artists', 'albumImg', 'isShowSongPlayer'],
+  props: ['name', 'artists', 'albumImg', 'isShowSongPlayer', 'isLoading', 'disabled'],
   data() {
     return {
       isFaver: false,
@@ -122,10 +133,21 @@ export default {
 </script>
 <style lang="sass" scoped>
 @import "../config.sass";
+
 .song-info-panel
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  position: relative
+.loading-spinner
+  position: absolute
+  left: 0
+  top: 0
+  width: 6em
+  height: 100%
+  padding: 1.5em
+  box-sizing: border-box
+  z-index: 1
 .album-img
   flex: 0 0 6em
   height: 100%;
@@ -149,6 +171,7 @@ export default {
     display: block;
 
 .name-songer
+  flex: 0 0 auto
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -176,6 +199,8 @@ export default {
     white-space: nowrap;
     cursor: pointer;
 .faver, .more
+  flex-shrink: 0
+  flex-grow: 0
   margin-left: 1em;
 .faver.is-faver
   color: $orange;

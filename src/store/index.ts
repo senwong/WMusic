@@ -10,12 +10,14 @@ import { getSongDetail, getSongURL, getPlaylistDetail, } from "@/service"
 // })]);
 import playlist from './modules/playlist';
 import currentUser from './modules/currentUser';
+import playbar from './modules/playbar';
 
 Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
     playlist,
     currentUser,
+    playbar,
   },
   state: {
     isScrollBottom: false,

@@ -1,7 +1,17 @@
 <template>
 <div>
   <div class="playbar">
-    <audio :src="songUrl | convert2Https" autoplay ref="audio" @play="handlePlay" @pause="handlePause" @loadedmetadata="handleLoadedMetaData" @ended="nextSong"/>
+    <audio
+      :src="songUrl | convert2Https"
+      autoplay
+      ref="audio"
+      @play="handlePlay"
+      @pause="handlePause"
+      @loadedmetadata="handleLoadedMetaData"
+      @ended="nextSong"
+      @canplaythrough="handleCanPlayThrough"
+      @waiting="handleWaiting"
+    />
     <!-- 左边区域 开始-->
     <song-info-panel
       class="playbar__item_left"
@@ -10,26 +20,25 @@
       :albumImg="album && album.picUrl"
       :isShowSongPlayer="isShowSongPlayer"
       @toggle-song-player="toggleSongPlayer"
+      :isLoading="isLoading"
+      :disabled="disabled"
     ></song-info-panel>
     <!-- 左边区域 结束-->
     <!-- 中间区域 开始-->
     <div class="playbar__item_middle pause-panel">
       <!-- 上一曲按钮 -->
-      <button class="button_icon large prev-song" @click="prevSong">
+      <SvgBtnWrapper xlarge class="prev-song" @click.native="prevSong" :disabled="disabled">
         <PrevSongIcon />
-      </button>
+      </SvgBtnWrapper>
       <!-- 播放/暂停按钮 -->
-      <div
-        class="pause-song"
-        @click="togglePlay"
-      >
+      <SvgBtnWrapper xlarge primary class="pause-song" @click.native="togglePlay" :disabled="disabled">
         <PausedIcon v-if="paused" />
         <PlayingIcon v-else />
-      </div>
+      </SvgBtnWrapper>
       <!-- 下一曲按钮 -->
-      <button class="button_icon large next-song" @click="nextSong">
+      <SvgBtnWrapper xlarge class="next-song" @click.native="nextSong" :disabled="disabled">
         <NextSongIcon />
-      </button>
+      </SvgBtnWrapper>
     </div>
     <!-- 中间区域 结束 -->
     <!-- 右边区域 开始-->
@@ -38,6 +47,8 @@
       :currentMode="currentMode"
       @changeVolume="changeVolume"
       @changeMode="changeMode"
+      :isLoading="isLoading"
+      :disabled="disabled"
     ></sound-panel>
     <!-- 右边区域 结束-->
     <div class="progress-bar">
@@ -65,6 +76,7 @@ import PlayingIcon from '@/components/SVGIcons/PlayingIcon.vue';
 import { PlayMode, Album, Artist } from '@/types'
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { State, Getter, namespace } from 'vuex-class';
+import SvgBtnWrapper from '@/components/globals/SvgBtnWrapper.vue';
 
 const playlist = namespace('playlist');
 
@@ -78,6 +90,7 @@ const playlist = namespace('playlist');
     NextSongIcon,
     PausedIcon,
     PlayingIcon,
+    SvgBtnWrapper,
   },
 })
 export default class Playbar extends Vue {
@@ -92,6 +105,7 @@ export default class Playbar extends Vue {
   currentMode: PlayMode =  PlayMode.Loop;
   volume: number = 0.5;
   duration: number = 0;
+  isLoading: boolean = false;
 
   // get progressPercent():  {
     // TODO
@@ -100,6 +114,9 @@ export default class Playbar extends Vue {
     // }
     // return (this.currentSong.currentTime * 1000 / this.currentSong.duration).toFixed(2);
   // }
+  get disabled(): boolean {
+    return this.songUrl.length < 1 || this.isLoading;
+  }
   $refs!: {
     audio: HTMLAudioElement
   }
@@ -222,16 +239,22 @@ export default class Playbar extends Vue {
   handleJumpTo(percent: number) {
     this.$refs.audio.currentTime = percent * this.$refs.audio.duration;
   }
-
   
   mounted() {
     // this.registeDragLable(this.$el.querySelector(".progress__state"), this.$el.querySelector(".progress-bar"))
     // initial set volume
     this.setAudioEleVolume(this.volume);
   }
+  handleCanPlayThrough() {
+    this.isLoading = false;
+  }
+  handleWaiting() {
+    this.isLoading = true;
+  }
   @Watch('currentSongId')
   onCurrentSongIdChange(id: number) {
     if (id) {
+      this.isLoading = true;
       getSongURL(id).then(
         res => {
           const newSongUrl = res.data.data[0].url;
@@ -289,14 +312,8 @@ export default class Playbar extends Vue {
   align-items: center
   justify-content: center
 .pause-song
-  background-color: $orange
-  border-radius: 50%
-  color: white
-  padding: 5px
-  font-size: inherit
-  width: 2em
-  height: 2em
-  cursor: pointer
+  flex-shrink: 0
+  flex-grow: 0
 .pause-song:active
   opacity: 0.3
 .prev-song, .pause-song, .next-song

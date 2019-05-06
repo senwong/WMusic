@@ -2,7 +2,7 @@
   <div class="list-item">
     <CardImage
       :fav="{onClick: () => addFav(cardType, card.id)}"
-      :play="{onClick: () => setPlaylist()}"
+      :play="{onClick: () => handlePlay()}"
       :more="{onClick: () => {}}"
       :href="`/${cardType}/${card.id}`"
       :src="card.picUrl | convert2Https | clipImage(400, 400)"
@@ -10,7 +10,7 @@
       ratio="1:1"
       radius
     >
-      <div class="play-count" slot="rightTop">
+      <div v-if="card.playCount" class="play-count" slot="rightTop">
         <span class="play-count__icon">
           <PlayWithoutCircleIcon />
         </span>
@@ -67,7 +67,7 @@ import PlayWithoutCircleIcon from '@/components/SVGIcons/PlayWithoutCircleIcon.v
 import CardImage from './CardImage.vue';
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { Mutation, namespace } from 'vuex-class'
-import { Track, Playlist, PlaylistType } from '@/types';
+import { Track, convertTrack, Playlist, PlaylistType } from '@/types';
 
 const playlist = namespace('playlist');
 
@@ -96,25 +96,63 @@ export default class CardItem extends Vue {
   }
   
   addFav(type: PlaylistType, id: number): void {
-    if(!this.$store.state.isLogin) {
-      console.log("not login , cannot add fav "+ type + id);
-    } else {
-      console.log("add fav "+ type + id);
-    }
+    // TODO
   }
   formatPlayCount(playCount: number): string {
     if (playCount < 10000) return playCount.toString();
     return (playCount / 10000).toFixed(1) + "万";
   }
-  setPlaylist(): void {
+  updatePlaylist() {
+    return new Promise((resolve: (value: Track[]) => void, reject) => {
+      getPlaylistDetail(this.card.id).then(
+        res => {
+          const tracks: Track[] = res.data.playlist.tracks.map(convertTrack);
+          resolve(tracks as Track[]);
+        },
+        error => reject(error)
+      );
+    });
+  }
+  updateAlbum() {
+    return new Promise((resolve: (value: Track[]) => void, reject) => {
+      getAlbumDetail(this.card.id).then(
+        res => {
+          const tracks: Track[] = res.data.songs.map(convertTrack);
+          resolve(tracks as Track[]);
+        },
+        error => reject(error)
+      )
+    });
+  }
+  handlePlay(): void {
     if (!this.card.id) return;
-    getPlaylistDetail(this.card.id).then(
-      res => {
-        this.setTracks(res.data.playlist.tracks as Track[]);
-        this.setCurrentSongId(res.data.playlist.trackIds[0].id);
+    let tracksPromise;
+    switch (this.cardType) {
+      case 'playlist': {
+        tracksPromise = this.updatePlaylist();
+        break;
+      }
+      case 'album': {
+        tracksPromise = this.updateAlbum();
+        break;
+      }
+      default:
+        return;
+    }
+    if (!tracksPromise) { return }
+    tracksPromise.then(
+      (tracks: Track[]): void => {
+        if (tracks.every(track => track.status < 0)) {
+            // TODO 资源下架
+          return;
+        }
+        this.setTracks(tracks);
+        this.setCurrentSongId(tracks[0].id);
       },
-      error => alert('getPlaylistDetail error ' + error)
-    );
+      error => {
+        // TODO
+      }
+    )
   }
 }
 </script>

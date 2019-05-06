@@ -226,6 +226,9 @@ export default class Navbar extends Vue {
   padding: 5px;
   border-radius: 2px;
   margin-bottom: 5px;
+  transition: all 250ms
+  &:hover
+    background: #ddd
   &.router-link-exact-active
     background-color: $orange;
     color: white;

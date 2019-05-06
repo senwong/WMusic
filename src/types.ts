@@ -35,7 +35,23 @@ export interface Track {
   high?: TrackQuality;
   middle?: TrackQuality;
   low?: TrackQuality;
-  mvId?: number
+  mvId?: number,
+  status: number,
+}
+export function convertTrack(trackServer: TrackServer): Track {
+  const { id, name, ar, al, dt, h, l, m, mv, st, } = trackServer;
+  return {
+    id: id,
+    name: name,
+    artists: ar,
+    album: al,
+    duration: dt,
+    high: h,
+    middle: m,
+    low: l,
+    mvId: mv,
+    status: st
+  };
 }
 export interface TrackServer {
   id: number
@@ -46,7 +62,8 @@ export interface TrackServer {
   h: TrackQuality
   l: TrackQuality
   m: TrackQuality
-  mv: number
+  mv: number,
+  st: number,
 }
 export interface PlaylistCreator {
   userId: number;

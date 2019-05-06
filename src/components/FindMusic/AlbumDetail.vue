@@ -1,7 +1,7 @@
 <template>
 <div class="main-wrapper">
   <div>
-    <div class="media">
+    <div class="media" v-if="album">
       <div class="media__left" v-if="album">
         <img :src="album.picUrl | convert2Https" :alt="album.name">
       </div>
@@ -24,7 +24,7 @@ import { getAlbumDetail } from '@/service';
 import SongList from './SongList.vue';
 import { mapMutations } from 'vuex';
 import { Vue, Component } from 'vue-property-decorator';
-import { Track, Album } from '@/types';
+import { Track, Album, convertTrack } from '@/types';
 import { Mutation, namespace } from 'vuex-class';
 import Button from '@/components/globals/Button.vue';
 
@@ -38,6 +38,10 @@ export default class AlbumDetail extends Vue {
   
   playAll() {
     if (!this.songs) return;
+    if (this.songs.every(t => t.status < 0)) {
+      // TODO
+      return;
+    }
     this.setTracks(this.songs);
     this.setCurrentSongId(this.songs[0].id);
   }
@@ -50,7 +54,8 @@ export default class AlbumDetail extends Vue {
     getAlbumDetail(albumId).then(
       res => {
         this.album = res.data.album;
-        this.songs = res.data.songs;
+        const tracks: Track[] = res.data.songs.map(convertTrack);
+        this.songs = tracks;
       },
       error => alert('getAlbumDetail' + error)
     );

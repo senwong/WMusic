@@ -1,10 +1,13 @@
 <template>
-<div v-if="tracks && tracks.length > 0">
+<div v-if="tracks">
   <ul class="tracks" @scroll="handleScroll">
     <li class="track"
       v-for="track in tracks"
       :key="track.id"
-      :class="{'active': track.id == currentSongId}"
+      :class="{
+        'active': track.id == currentSongId,
+        'disabled': track.status < 0,
+      }"
     >
       <div class="track-icon" @click="handlePlay(track.id)">
         <MusicIcon class="music-icon" />
@@ -20,10 +23,10 @@
           </router-link>
         </div>
         <div class="track-ar-al">
-          <ArtistsWithComma :artists="track.ar" aTagClass="track-artist" commaClass="track-dot" />
+          <ArtistsWithComma :artists="track.artists" aTagClass="track-artist" commaClass="track-dot" />
           <span class="track-dot"> • </span>
-          <router-link :to="'/album/'+track.al.id" class="track-album">
-            {{track.al.name}}
+          <router-link :to="'/album/'+track.album.id" class="track-album">
+            {{track.album.name}}
           </router-link>
         </div>
       </div>
@@ -31,7 +34,7 @@
         <MoreIcon />
       </div>
       <div class="track-duration">
-        {{formatTime(track.dt)}}
+        {{formatTime(track.duration)}}
       </div>
     </li>
   </ul>
@@ -106,10 +109,9 @@ const playlist = namespace('playlist');
   }
 })
 export default class SongList extends Vue {
-  @Prop() readonly tracks!: Track[];
+  @Prop() tracks!: Track[];
   moreButton: EventTarget | null =  null;
   selectedTrackId: number | null = null;
-
   
   formatTime = formatTime;
 
@@ -120,6 +122,10 @@ export default class SongList extends Vue {
   @playlist.Mutation addToNext!: (track: Track) => void;
     // play specify song
   handlePlay(trackId: number) {
+    if (this.tracks.every(t => t.status < 0)) {
+      // TODO 资源展示下架
+      return;
+    }
     if (this.tracks.every((track, idx) => track.id == this.trackIds[idx])) {
       if (trackId != this.currentSongId) {
         this.setCurrentSongId(trackId);
@@ -161,6 +167,14 @@ export default class SongList extends Vue {
   padding-top: 0.7em
   transition-property: background
   transition-duration: 250ms
+  &.active
+    color: $primary
+    .play-icon
+      display: block
+    .music-icon
+      display: none
+  &.disabled
+    color: #999
   &:hover
     background-color: rgba(0,0,0,.2)
     .track-more

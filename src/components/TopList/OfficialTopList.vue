@@ -51,13 +51,14 @@ import { DomesticTopList } from './MediaItem.vue';
 import Button from '@/components/globals/Button.vue';
 import { Mutation, namespace } from 'vuex-class';
 import PlayIcon from '@/components/SVGIcons/PlayIcon.vue';
+
 import {
   PlaylistType,
   Track,
-  TrackServer,
   Album,
   TabMenuItem,
   Artist,
+  convertTrack,
 } from '@/types';
 import {
   Vue,
@@ -121,13 +122,8 @@ export default class OfficialTopList extends Vue {
     getTopList(this.selectedType).then(
       res => {
         const p = res.data.playlist;
-        const tracks = p.tracks.map((t: TrackServer): Track => ({
-          id: t.id,
-          name: t.name,
-          artists: t.ar,
-          album: t.al,
-          duration: t.dt
-        }))
+
+        const tracks: Track[] = p.tracks.map(convertTrack);
         this.content = {
           id: p.id,
           title: p.name,

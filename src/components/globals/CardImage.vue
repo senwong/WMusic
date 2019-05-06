@@ -3,17 +3,17 @@
   <WithHoverMask class="item-cover" :class="{radius: radius}">
     <router-link :to="href" slot="controlls" class="item-controlls">
       <!-- 收藏 -->
-      <button v-if="fav" class="button_icon large control__item " @click.stop.prevent="fav.onClick">
+      <SvgBtnWrapper large v-if="fav" class="control__item" @click.native.stop.prevent="fav.onClick">
         <FavIcon />
-      </button>
+      </SvgBtnWrapper>
       <!-- 播放 -->
-      <button v-if="play" class="button_icon large control__play control__item" @click.stop.prevent="play.onClick">
+      <SvgBtnWrapper large primary v-if="play" class="control__item" @click.native.stop.prevent="play.onClick">
         <PausedIcon />
-      </button>
+      </SvgBtnWrapper>
       <!-- 更多 -->
-      <button v-if="more" class="button_icon large control__item" @click.stop.prevent="more.onClick" >
+      <SvgBtnWrapper large v-if="more" class="control__item" @click.native.stop.prevent="more.onClick">
         <MoreIcon />
-      </button>
+      </SvgBtnWrapper>
     </router-link>
     <ImageWithPlaceholder
       :src="src"
@@ -36,6 +36,7 @@ import MoreIcon from '@/components/SVGIcons/MoreIcon.vue';
 import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder.vue';
 import WithHoverMask from '@/components/globals/WithHoverMask.vue';
 import { Vue, Component, Prop } from 'vue-property-decorator';
+import SvgBtnWrapper from '@/components/globals/SvgBtnWrapper.vue';
 
 import { ControlBtn } from '@/types';
 
@@ -46,6 +47,7 @@ import { ControlBtn } from '@/types';
     MoreIcon,
     ImageWithPlaceholder,
     WithHoverMask,
+    SvgBtnWrapper,
   }
 })
 export default  class CardImage extends Vue {
@@ -92,11 +94,7 @@ export default  class CardImage extends Vue {
 .control__item
   color: white
   margin: 5px
-.control__play
-  padding: 5px
-  border-radius: 50%
-  background: $primary
-
+  
 .left-top, .right-top
   position: absolute
   top: 0
