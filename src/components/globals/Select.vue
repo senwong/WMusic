@@ -1,22 +1,24 @@
 <template>
   <div>
     <div class="select-container">
-      <div class="select__element" @click="handleClick" :class="{focused: showOptions}">
-        <span class="select__element__title">{{title}}</span>
-        <span class="select__element__icon" :class="{rotated: showOptions}">
-          <ChevronBottomIcon/>
+      <div class="select__element" @click="handleClick" :class="{ focused: showOptions }">
+        <span class="select__element__title">{{ title }}</span>
+        <span class="select__element__icon" :class="{ rotated: showOptions }">
+          <ChevronBottomIcon />
         </span>
       </div>
       <div class="options__position">
         <transition name="slide-fade">
-          <div class="options__container" :class="{'is-top': top}" v-show="showOptions">
+          <div class="options__container" :class="{ 'is-top': top }" v-show="showOptions">
             <div
               class="options__item"
               v-for="opt in options"
               :key="opt.key"
               @click="handleOptClick(opt)"
-              :class="{selected: opt.value == value}"
-            >{{opt.title}}</div>
+              :class="{ selected: opt.value == value }"
+            >
+              {{ opt.title }}
+            </div>
           </div>
         </transition>
       </div>
@@ -25,14 +27,14 @@
 </template>
 
 <script>
-import ChevronBottomIcon from '@/components/SVGIcons/ChevronBottomIcon';
+import ChevronBottomIcon from "@/components/SVGIcons/ChevronBottomIcon";
 
 export default {
   name: "Select",
   props: {
     // option: {key, value, title}
     options: {
-      type: Array,
+      type: Array
     },
     // selected from v-model
     value: {
@@ -40,8 +42,8 @@ export default {
     },
     // options on the top of select element, because bottom has no room
     top: {
-      type: Boolean,
-    },
+      type: Boolean
+    }
   },
   data() {
     return {
@@ -161,5 +163,4 @@ export default {
 .slide-fade-leave
   transform: translateY(0px)
   opacity: 1
-
 </style>

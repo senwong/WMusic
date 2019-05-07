@@ -14,17 +14,17 @@ export interface User {
 
 // client is same as server
 export interface Album {
-  id: number,
-  name: string,
-  picUrl: string,
+  id: number;
+  name: string;
+  picUrl: string;
 }
 
 // client is same as server
 export interface TrackQuality {
-  br: number,
-  fid: number,
-  size: number,
-  vd: number,
+  br: number;
+  fid: number;
+  size: number;
+  vd: number;
 }
 export interface Track {
   id: number;
@@ -35,14 +35,14 @@ export interface Track {
   high?: TrackQuality;
   middle?: TrackQuality;
   low?: TrackQuality;
-  mvId?: number,
-  status: number,
+  mvId?: number;
+  status: number;
 }
 export function convertTrack(trackServer: TrackServer): Track {
-  const { id, name, ar, al, dt, h, l, m, mv, st, } = trackServer;
+  const { id, name, ar, al, dt, h, l, m, mv, st } = trackServer;
   return {
-    id: id,
-    name: name,
+    id,
+    name,
     artists: ar,
     album: al,
     duration: dt,
@@ -54,23 +54,23 @@ export function convertTrack(trackServer: TrackServer): Track {
   };
 }
 export interface TrackServer {
-  id: number
-  name: string
-  ar: Artist[],
-  al: Album,
-  dt: number,
-  h: TrackQuality
-  l: TrackQuality
-  m: TrackQuality
-  mv: number,
-  st: number,
+  id: number;
+  name: string;
+  ar: Artist[];
+  al: Album;
+  dt: number;
+  h: TrackQuality;
+  l: TrackQuality;
+  m: TrackQuality;
+  mv: number;
+  st: number;
 }
 export interface PlaylistCreator {
   userId: number;
   nickname: string;
 }
 
-export type PlaylistType = 'playlist' | 'album';
+export type PlaylistType = "playlist" | "album";
 export interface Playlist {
   id: number;
   picUrl: string;
@@ -89,7 +89,10 @@ export interface Comment {
   beReplied: Comment[];
 }
 // 0 : mv comment 1: song comment
-export enum CommentType {MvComment, SongComment};
+export enum CommentType {
+  MvComment,
+  SongComment
+}
 
 export interface ControlBtn {
   onClick: () => void;
@@ -108,7 +111,7 @@ export interface MvCard {
   id: number;
   cover: string;
   name: string;
-  artists: {id: number, name: string}[];
+  artists: { id: number; name: string }[];
 }
 export interface Record {
   playCount: number;
@@ -116,10 +119,14 @@ export interface Record {
   song: Track;
 }
 export interface TabMenuItem {
-  key: number,
-  isActive: boolean
-  onClick: () => any,
-  title: string,
+  key: number;
+  isActive: boolean;
+  onClick: () => any;
+  title: string;
 }
 
-export enum PlayMode { Loop, OneLoop, Shuffle }
+export enum PlayMode {
+  Loop,
+  OneLoop,
+  Shuffle
+}

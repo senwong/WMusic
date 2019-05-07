@@ -1,19 +1,20 @@
 <template>
-<div class="lists">
-  <CardItem v-for="card in cardLists" :key="card.id" :card="card" :cardType="cardType" />
-</div>
+  <div class="lists">
+    <CardItem v-for="card in cardLists" :key="card.id" :card="card" :cardType="cardType" />
+  </div>
 </template>
-<script lang='ts'>
-import CardItem from './CardItem.vue';
-import { Playlist, PlaylistType } from '@/types';
-import { Vue, Component, Prop } from 'vue-property-decorator'
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+import CardItem from "./CardItem.vue";
+import { Playlist, PlaylistType } from "@/types";
 
 @Component({
   components: { CardItem }
 })
 export default class SongCards extends Vue {
-  @Prop() readonly cardType!: PlaylistType
-  @Prop() readonly cardLists!: Playlist[]
+  @Prop() readonly cardType!: PlaylistType;
+
+  @Prop() readonly cardLists!: Playlist[];
 }
 </script>
 <style lang="sass" scoped>
@@ -24,4 +25,3 @@ export default class SongCards extends Vue {
   flex-wrap: wrap
   justify-content: space-between
 </style>
-

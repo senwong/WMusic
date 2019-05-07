@@ -5,7 +5,7 @@
       ref="video"
       class="video"
       :src="currentSrc | convert2Https"
-      @loadedmetadata="e => this.duration = e.target.duration"
+      @loadedmetadata="e => (this.duration = e.target.duration)"
       @progress="handleVideoProgress"
       @play="handlePlay"
       @pause="handlePause"
@@ -19,32 +19,46 @@
       <div class="fadeout-wrapper" ref="fadeoutWrapper">
         <div class="icon-wrapper">
           <PausedIcon v-if="paused" />
-          <PlayingIcon v-else/>
+          <PlayingIcon v-else />
         </div>
       </div>
     </div>
-    <div class="control-wrapper" :class="{'show': paused}">
+    <div class="control-wrapper" :class="{ show: paused }">
       <div class="progress-list" ref="progressBar">
-        <div class="play-progress" :style= "playProgressStyle"></div>
-        <div class="buffer-progress" :style= "bufferProgressStyle"></div>
-        <div class="thumbnail-progress" :class="{'show': isShowThumbnailPorgress}" :style="{'transform': `scaleX(${thumbnailPercent})`}"></div>
-        <div class="hover-area"
+        <div class="play-progress" :style="playProgressStyle"></div>
+        <div class="buffer-progress" :style="bufferProgressStyle"></div>
+        <div
+          class="thumbnail-progress"
+          :class="{ show: isShowThumbnailPorgress }"
+          :style="{ transform: `scaleX(${thumbnailPercent})` }"
+        ></div>
+        <div
+          class="hover-area"
           @mousemove="handleThumbnailMousemove"
           @mouseleave="handleThumbnailMouseleave"
           @mouseenter="handleThumbnailMouseenter"
           @click="handleThumbnailClick"
-          ></div>
+        ></div>
       </div>
-      <div class="thumbnail" ref="thumbnail" :class="{'show': isShowThumbnail}">
+      <div class="thumbnail" ref="thumbnail" :class="{ show: isShowThumbnail }">
         <canvas class="thumbnail-canvas" ref="canvas"></canvas>
-        <div class="thumbnail-time">{{thumbnailTime}}</div>
+        <div class="thumbnail-time">{{ thumbnailTime }}</div>
       </div>
       <div class="controls">
         <div class="left">
           <play-pause-button @click.native="togglePlay" :paused="paused" />
           <div class="volume">
             <volume-button @click.native="toggleMute" :volume="volume"></volume-button>
-            <input v-model="volume" :style="{'background': `linear-gradient(to right, white ${volume}%, rgba(247, 247, 247, 0.2) 0%)`}" class="volume-range" type="range" min="0" max="100"/>
+            <input
+              v-model="volume"
+              :style="{
+                background: `linear-gradient(to right, white ${volume}%, rgba(247, 247, 247, 0.2) 0%)`
+              }"
+              class="volume-range"
+              type="range"
+              min="0"
+              max="100"
+            />
           </div>
           <div class="duration">
             {{ formatTime(currentTime * 1000) }}/{{ formatTime(duration * 1000) }}
@@ -52,14 +66,18 @@
         </div>
         <div class="right">
           <!-- 设置按钮 -->
-          <button class="button_icon large controll__icon" ref="setting" @click="isShowSettingsPannel = !isShowSettingsPannel">
-            <SettingsIcon class="settings-icon" :class="{rotate: isShowSettingsPannel}"/>
+          <button
+            class="button_icon large controll__icon"
+            ref="setting"
+            @click="isShowSettingsPannel = !isShowSettingsPannel"
+          >
+            <SettingsIcon class="settings-icon" :class="{ rotate: isShowSettingsPannel }" />
             <div class="hd-sign" v-if="currentQuality && currentQuality >= 20">
               <HDIcon />
             </div>
           </button>
           <!-- 设置弹出菜单 -->
-          <popup-menu :target="$refs.setting" direction="top" enableClick= true >
+          <popup-menu :target="$refs.setting" direction="top" enableClick="true">
             <setting-container :qualitys="qualitys" @set-quality="setQuality"></setting-container>
           </popup-menu>
           <!-- 开启/关闭宽屏 -->
@@ -67,7 +85,10 @@
             <WideScreenIcon />
           </button>
           <!-- 开启/关闭全屏 -->
-          <button class="button_icon large controll__icon fullscreen-icon" @click="toggleFullScreen">
+          <button
+            class="button_icon large controll__icon fullscreen-icon"
+            @click="toggleFullScreen"
+          >
             <FullScreenIcon />
           </button>
         </div>
@@ -81,7 +102,7 @@
     </div>
     <!-- loading animation -->
     <div class="loading-container" v-if="isLoading">
-      <div class="loading__icon" >
+      <div class="loading__icon">
         <Loading />
       </div>
     </div>
@@ -89,19 +110,19 @@
 </template>
 <script>
 import PlayPauseButton from "./PlayPauseButton";
-import VolumeButton from "./VolumeButton"
+import VolumeButton from "./VolumeButton";
 import PopupMenu from "@/components/PopupMenu";
 import SettingContainer from "@/components/MV/SettingContainer";
 import axios from "axios";
-import { formatTime, optimizedResize } from "@/utilitys"
-import WideScreenIcon from '@/components/SVGIcons/WideScreenIcon';
-import FullScreenIcon from '@/components/SVGIcons/FullScreenIcon';
-import ReplayIcon from '@/components/SVGIcons/ReplayIcon';
-import Loading from '@/components/globals/Loading';
-import PausedIcon from '@/components/SVGIcons/PausedIcon';
-import PlayingIcon from '@/components/SVGIcons/PlayingIcon';
-import SettingsIcon from '@/components/SVGIcons/SettingsIcon';
-import HDIcon from '@/components/SVGIcons/HDIcon';
+import { formatTime, optimizedResize } from "@/utilitys";
+import WideScreenIcon from "@/components/SVGIcons/WideScreenIcon";
+import FullScreenIcon from "@/components/SVGIcons/FullScreenIcon";
+import ReplayIcon from "@/components/SVGIcons/ReplayIcon";
+import Loading from "@/components/globals/Loading";
+import PausedIcon from "@/components/SVGIcons/PausedIcon";
+import PlayingIcon from "@/components/SVGIcons/PlayingIcon";
+import SettingsIcon from "@/components/SVGIcons/SettingsIcon";
+import HDIcon from "@/components/SVGIcons/HDIcon";
 
 optimizedResize();
 export default {
@@ -121,7 +142,7 @@ export default {
       ended: false,
       currentQuality: null,
       isLoading: true,
-      isShowSettingsPannel: false,
+      isShowSettingsPannel: false
     };
   },
   props: ["brs"],
@@ -137,7 +158,7 @@ export default {
     Loading,
     PausedIcon,
     PlayingIcon,
-    HDIcon,
+    HDIcon
   },
   computed: {
     qualitys() {
@@ -145,8 +166,8 @@ export default {
       return Object.keys(this.brs).map(Number);
     },
     currentSrc() {
-      if (!this.brs || Object.keys(this.brs).length == 0) return '';
-      if (!Object.hasOwnProperty.call(this.brs, this.currentQuality)) return '';
+      if (!this.brs || Object.keys(this.brs).length == 0) return "";
+      if (!Object.hasOwnProperty.call(this.brs, this.currentQuality)) return "";
       return this.brs[this.currentQuality];
     },
     tempSrc() {
@@ -154,26 +175,20 @@ export default {
     },
     playProgressStyle() {
       return {
-        transform:
-          "scaleX(" +
-          (this.duration == 0 ? 0 : this.currentTime / this.duration) +
-          ")"
+        transform: `scaleX(${this.duration == 0 ? 0 : this.currentTime / this.duration})`
       };
     },
     bufferProgressStyle() {
       return {
-        transform:
-          "scaleX(" +
-          (this.duration == 0 ? 0 : this.bufferedEnd / this.duration) +
-          ")"
+        transform: `scaleX(${this.duration == 0 ? 0 : this.bufferedEnd / this.duration})`
       };
     },
     /**
      * thumbnail截图上的时间
      */
     thumbnailTime() {
-      return formatTime(this.duration * this.thumbnailPercent * 1000)
-    },
+      return formatTime(this.duration * this.thumbnailPercent * 1000);
+    }
   },
   methods: {
     formatTime,
@@ -207,77 +222,79 @@ export default {
       }
     },
     setQuality(newQuality) {
-      if (typeof newQuality == 'undefined' || typeof this.$refs.video == 'undefined') return;
+      if (typeof newQuality === "undefined" || typeof this.$refs.video === "undefined") return;
       this.currentQuality = newQuality;
-      const paused = this.$refs.video.paused;
+      const { paused } = this.$refs.video;
       this.$refs.video.currentTime = this.currentTime;
       if (!paused) this.$refs.video.play();
     },
     jumpToPercentTime(percent) {
-      this.video.currentTime = this.video.duration * percent
+      this.video.currentTime = this.video.duration * percent;
     },
     createDrawer(videoPath, canvas) {
-      const video = document.createElement("video"),
-      ctx = canvas.getContext("2d")
-      let videoWidth, videoHeight, duration
+      const video = document.createElement("video");
+      const ctx = canvas.getContext("2d");
+      let videoWidth;
+      let videoHeight;
+      let duration;
       const getMetadata = function(cb) {
         video.addEventListener("loadedmetadata", () => {
-          videoWidth = video.videoWidth
-          videoHeight = video.videoHeight
-          duration = video.duration
+          videoWidth = video.videoWidth;
+          videoHeight = video.videoHeight;
+          duration = video.duration;
           cb && cb();
-        })
-      }
+        });
+      };
       getMetadata();
-      video.src = videoPath
+      video.src = videoPath;
       function percentDrawer(percent) {
         video.addEventListener("seeked", () => {
-          ctx.drawImage(video, 0, 0, videoWidth, videoHeight, 0, 0, canvas.width, canvas.height)
-        })
+          ctx.drawImage(video, 0, 0, videoWidth, videoHeight, 0, 0, canvas.width, canvas.height);
+        });
         if (!duration) {
           getMetadata(() => {
-            video.currentTime = parseInt(duration * percent)
-          })
-          return
+            video.currentTime = parseInt(duration * percent);
+          });
+          return;
         }
-        video.currentTime = parseInt(duration * percent)
+        video.currentTime = parseInt(duration * percent);
       }
-      return percentDrawer
+      return percentDrawer;
     },
     /**
      * hover时 显示对应时间点，视频截图
      */
     handleThumbnailMousemove(e) {
-      if (this.isThumbnailMoving) return
-      this.isThumbnailMoving = true
-      setTimeout(handleMouseMove.bind(this), 1000 / 30)
+      if (this.isThumbnailMoving) return;
+      this.isThumbnailMoving = true;
+      setTimeout(handleMouseMove.bind(this), 1000 / 30);
       function handleMouseMove() {
-        this.isThumbnailMoving = false
-        const progressBarRect = this.$refs.progressBar.getBoundingClientRect()
-        const percentTime = (e.clientX - progressBarRect.left) / progressBarRect.width
-        this.thumbnailPercent = percentTime
-        this.thumbnailDrawer && this.thumbnailDrawer(percentTime)
+        this.isThumbnailMoving = false;
+        const progressBarRect = this.$refs.progressBar.getBoundingClientRect();
+        const percentTime = (e.clientX - progressBarRect.left) / progressBarRect.width;
+        this.thumbnailPercent = percentTime;
+        this.thumbnailDrawer && this.thumbnailDrawer(percentTime);
       }
     },
     /**
      * mouse离开hover area时隐藏thumbnail截图和进度条
      */
     handleThumbnailMouseleave() {
-      this.isShowThumbnail = false
-      this.isShowThumbnailPorgress = false
+      this.isShowThumbnail = false;
+      this.isShowThumbnailPorgress = false;
     },
     /**
      * mouse进入hover area时显示thumbnail截图和进度条
      */
     handleThumbnailMouseenter() {
-      this.isShowThumbnail = true
-      this.isShowThumbnailPorgress = true
+      this.isShowThumbnail = true;
+      this.isShowThumbnailPorgress = true;
     },
     /**
      * mouse点击hover area视频跳入到指定进度
      */
     handleThumbnailClick() {
-      this.jumpToPercentTime(this.thumbnailPercent)
+      this.jumpToPercentTime(this.thumbnailPercent);
     },
     /**
      * toggle视频全屏显示
@@ -309,27 +326,29 @@ export default {
      * 设置Thumbnai截图位置
      */
     setThumbnailLeft(percent) {
-      if(Object.keys(this.$refs) == 0) return
-      const progressBarRect = this.$refs.progressBar.getBoundingClientRect()
-      let left =  percent * progressBarRect.width
-      const thumbnailWidth = parseInt(getComputedStyle(this.$refs.thumbnail).width.replace("px", ""))
-      if(left <= thumbnailWidth / 2) {
-        left = 0
-      } else if(left >=  progressBarRect.width - thumbnailWidth / 2) {
-        left = progressBarRect.width - thumbnailWidth
+      if (Object.keys(this.$refs) == 0) return;
+      const progressBarRect = this.$refs.progressBar.getBoundingClientRect();
+      let left = percent * progressBarRect.width;
+      const thumbnailWidth = parseInt(
+        getComputedStyle(this.$refs.thumbnail).width.replace("px", "")
+      );
+      if (left <= thumbnailWidth / 2) {
+        left = 0;
+      } else if (left >= progressBarRect.width - thumbnailWidth / 2) {
+        left = progressBarRect.width - thumbnailWidth;
       } else {
-        left -= thumbnailWidth / 2
+        left -= thumbnailWidth / 2;
       }
-      this.$refs.thumbnail.style.left = left + "px"
+      this.$refs.thumbnail.style.left = `${left}px`;
     },
     /**
      * 更新buffered
      */
     handleVideoProgress({ target: { buffered } }) {
       if (buffered.length > 0) {
-        console.log('buffered: ', buffered);
-        console.log('start: ', buffered.start(0));
-        console.log('end: ', buffered.end(0));
+        console.log("buffered: ", buffered);
+        console.log("start: ", buffered.start(0));
+        console.log("end: ", buffered.end(0));
         this.bufferedEnd = buffered.end(0);
       }
       // this.bufferedEnd = e.target.buffered.end(Math.max(0, e.target.buffered.length - 1));
@@ -338,16 +357,17 @@ export default {
      * 开启关闭网页全屏
      */
     toggleTheaterMode() {
-      this.$emit('toggle-theater-mode')
+      this.$emit("toggle-theater-mode");
       // this.$nextTick(this.setVideoDemension)
     },
     /**
      * 根据元素更新video的长度和宽度
      */
     setVideoDemension() {
-      const computedStyle = getComputedStyle(this.$refs.video.parentElement)
-      this.$refs.video.style.width = computedStyle.width
-      this.$refs.video.style.height = parseInt(computedStyle.width.replace("px", "")) * 9 / 16 + "px"
+      const computedStyle = getComputedStyle(this.$refs.video.parentElement);
+      this.$refs.video.style.width = computedStyle.width;
+      this.$refs.video.style.height = `${(parseInt(computedStyle.width.replace("px", "")) * 9) /
+        16}px`;
     },
     handleEnded() {
       this.ended = true;
@@ -364,14 +384,14 @@ export default {
     hideFadeout() {
       this.$refs.fadeoutWrapper.style.visibility = "hidden";
       this.$refs.fadeoutWrapper.style.opacity = 1;
-      this.$refs.fadeoutWrapper.style.transition = `none`;
-      this.$refs.fadeoutWrapper.style.transform = `scale(1)`;
+      this.$refs.fadeoutWrapper.style.transition = "none";
+      this.$refs.fadeoutWrapper.style.transform = "scale(1)";
     },
     showFadeout() {
       this.$refs.fadeoutWrapper.style.visibility = "visible";
-      this.$refs.fadeoutWrapper.style.transition = `all 800ms`;
+      this.$refs.fadeoutWrapper.style.transition = "all 800ms";
       this.$refs.fadeoutWrapper.style.opacity = 0;
-      this.$refs.fadeoutWrapper.style.transform = `scale(3)`;
+      this.$refs.fadeoutWrapper.style.transform = "scale(3)";
     },
     handleScreenClick() {
       if (!this.lastScreenClick) {
@@ -396,10 +416,10 @@ export default {
       this.currentQuality = this.qualitys.length == 0 ? null : Math.max(...this.qualitys);
     },
     currentQuality(quality) {
-      this.thumbnailDrawer = this.createDrawer(this.brs[quality], this.$refs.canvas)
+      this.thumbnailDrawer = this.createDrawer(this.brs[quality], this.$refs.canvas);
     },
     thumbnailPercent(val) {
-      this.setThumbnailLeft(val)
+      this.setThumbnailLeft(val);
     },
     paused() {
       this.toggleFadeout();
@@ -659,4 +679,3 @@ export default {
   top: 0;
   right: 0;
 </style>
-

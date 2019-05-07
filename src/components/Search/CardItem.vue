@@ -1,38 +1,41 @@
 <template>
-  <div class="artist-item" :class=shapeClass>
+  <div class="artist-item" :class="shapeClass">
     <router-link
       :to="link"
       class="artist-pic"
-      :style="{'background-image': 'url(' + picUrl + ')'}">
+      :style="{ 'background-image': 'url(' + picUrl + ')' }"
+    >
       <div class="artist-pic-mask">
         <div class="artist-pic-play"></div>
       </div>
     </router-link>
     <div class="artist-info">
-      <router-link class="title" :to="link">{{title}}</router-link><br>
+      <router-link class="title" :to="link">{{ title }}</router-link
+      ><br />
       <router-link
         class="sub-title"
         v-for="subTitle in subTitles"
         :key="subTitle.id"
         :href="subLinks[subTitle.id]"
-      >{{subTitle.txt}}</router-link>
+        >{{ subTitle.txt }}</router-link
+      >
     </div>
   </div>
 </template>
 <script>
-  export default {
-    name: "CardItem",
-    props: ["link", "picUrl", "title", "subTitles", "subLinks", "shape"],
-    computed:{
-      shapeClass() {
-        return {
-          round: this.shape == "round",
-          square: this.shape == "square",
-          rectangle: this.shape == "rectangle",
-        }
-      }
+export default {
+  name: "CardItem",
+  props: ["link", "picUrl", "title", "subTitles", "subLinks", "shape"],
+  computed: {
+    shapeClass() {
+      return {
+        round: this.shape == "round",
+        square: this.shape == "square",
+        rectangle: this.shape == "rectangle"
+      };
     }
   }
+};
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass"
@@ -89,7 +92,7 @@ a
       background: url('../../assets/triangle-right-fill.svg') no-repeat  center / 60%;
       &:hover
         transform: scale(1.1, 1.1);
-        
+
 .artist-info
   text-align: center;
   overflow: hidden;
@@ -102,4 +105,3 @@ a
     font-size: 87.5%;
     color: $black-8;
 </style>
-

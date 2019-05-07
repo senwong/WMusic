@@ -16,16 +16,18 @@
             <img :src="creator.avatarUrl | convert2Https" :alt="creator.nickname" />
           </router-link>
           <router-link class="creator-name" :to="'/user/' + creator.userId">
-            {{creator.nickname}}
+            {{ creator.nickname }}
           </router-link>
-          <span class="update-time">{{updateTimeFormated}}更新</span>
+          <span class="update-time">{{ updateTimeFormated }}更新</span>
         </div>
-        <h2 class="name">{{name}}</h2>
+        <h2 class="name">{{ name }}</h2>
         <ul class="tags">
-          <li class="tag">#{{tags.join("  #")}}</li>
+          <li class="tag">#{{ tags.join("  #") }}</li>
         </ul>
         <div>
-          <Button class="btn-control" rounded primary @click.native="handlePlayAll">全部播放</Button>
+          <Button class="btn-control" rounded primary @click.native="handlePlayAll"
+            >全部播放</Button
+          >
           <Button class="btn-control" rounded>收藏</Button>
           <Button class="btn-control" rounded>全部下载</Button>
           <Button class="btn-control" rounded>more</Button>
@@ -35,50 +37,58 @@
     <!-- playlist tracks -->
     <SongList v-if="tracks" :tracks="tracks" :id="playlistId" />
     <!-- error label -->
-    <ErrorLabel :show="isError" >{{errorMsg}}</ErrorLabel>
-  </div> 
+    <ErrorLabel :show="isError">{{ errorMsg }}</ErrorLabel>
+  </div>
 </template>
-<script lang='ts'>
-import { getPlaylistDetail } from '../../service';
-import { formatTime } from '@/utilitys';
-import SongList from './SongList.vue';
-import { mapMutations } from 'vuex'
-import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder.vue';
-import Button from '@/components/globals/Button.vue';
-import { Vue, Component, Prop } from 'vue-property-decorator'
-import { Mutation, namespace } from 'vuex-class'
-import { User, Track, Playlist, PlaylistType, convertTrack } from '@/types';
-import ErrorLabel from '@/components/globals/ErrorLabel.vue';
+<script lang="ts">
+import { getPlaylistDetail } from "../../service";
+import { formatTime } from "@/utilitys";
+import SongList from "./SongList.vue";
+import { mapMutations } from "vuex";
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
+import Button from "@/components/globals/Button.vue";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { Mutation, namespace } from "vuex-class";
+import { User, Track, Playlist, PlaylistType, convertTrack } from "@/types";
+import ErrorLabel from "@/components/globals/ErrorLabel.vue";
 
-const playlist = namespace('playlist');
+const playlist = namespace("playlist");
 @Component({
   components: {
     SongList,
     ImageWithPlaceholder,
     Button,
-    ErrorLabel,
-  },
+    ErrorLabel
+  }
 })
 export default class PlaylistDetail extends Vue {
-
   name: string = "";
-  coverImgUrl: string = '';
+
+  coverImgUrl: string = "";
+
   creator: User | null = null;
+
   updateTime: number = 0;
+
   tags: string[] = [];
+
   tracks: Track[] = [];
+
   formatTime = formatTime;
+
   playlistId: number | null = null;
+
   // error handle
   isError: boolean = false;
-  errorMsg: string = '获取用户详情错误';
-  
+
+  errorMsg: string = "获取用户详情错误";
+
   get updateTimeFormated(): string {
     if (!this.updateTime) return "";
-    const date = new  Date(this.updateTime)
-    return date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+    const date = new Date(this.updateTime);
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
   }
-  
+
   created() {
     this.playlistId = Number(this.$route.params.id);
     getPlaylistDetail(this.playlistId).then(
@@ -100,7 +110,9 @@ export default class PlaylistDetail extends Vue {
       }
     );
   }
+
   @playlist.Mutation setTracks!: (tracks: Track[]) => void;
+
   @playlist.Mutation setCurrentSongId!: (od: number) => void;
 
   handlePlayAll() {
@@ -159,6 +171,4 @@ export default class PlaylistDetail extends Vue {
 
 .btn-control
   margin-right: 0.5em;
-
 </style>
-

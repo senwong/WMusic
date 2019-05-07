@@ -8,9 +8,7 @@
 </template>
 
 <script>
-export default {
-  
-}
+export default {};
 </script>
 
 <style lang="sass" scoped>
@@ -37,5 +35,4 @@ export default {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-
 </style>

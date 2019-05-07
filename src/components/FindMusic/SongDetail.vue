@@ -1,23 +1,24 @@
 <template>
-<div class="main-wrapper">
+  <div class="main-wrapper">
     <!-- 歌曲信息 -->
     <div class="song-info">
       <div class="album-img" v-if="album">
-        <img
-          :src="album.picUrl | convert2Https | clipImage(400, 400)"
-          :alt="name"
-        >
+        <img :src="album.picUrl | convert2Https | clipImage(400, 400)" :alt="name" />
       </div>
       <div class="song-desc">
-        <div class="song-name">{{name}}</div>
-        <div>艺人：
+        <div class="song-name">{{ name }}</div>
+        <div>
+          艺人：
           <router-link
             v-for="artist in artists.filter(ar => ar.id !== 0)"
             :key="artist.id"
-            :to="'/artist/'+ artist.id">{{artist.name}}</router-link>
+            :to="'/artist/' + artist.id"
+            >{{ artist.name }}</router-link
+          >
         </div>
-        <div v-if="album">专辑：
-          <router-link :to="'/album/'+album.id">{{album.name}}</router-link>
+        <div v-if="album">
+          专辑：
+          <router-link :to="'/album/' + album.id">{{ album.name }}</router-link>
         </div>
         <div class="controls">
           <RippleButton @click.native="play">播放</RippleButton>
@@ -37,54 +38,68 @@
         <ul>
           <li v-for="song in simiSongs" :key="song.id" class="simi-item">
             <div class="img-container">
-              <img :src="song.album.picUrl | convert2Https | clipImage(100, 100)" :alt="song.album.name">
+              <img
+                :src="song.album.picUrl | convert2Https | clipImage(100, 100)"
+                :alt="song.album.name"
+              />
               <div class="mask-container">
-                <div class="mask">
-                </div>
+                <div class="mask"></div>
                 <div class="play" @click="play(song.id)"><play-svg></play-svg></div>
               </div>
             </div>
             <div class="info-container">
-              <router-link class="name" :to="'/song/' + song.id ">{{ song.name }}</router-link>
+              <router-link class="name" :to="'/song/' + song.id">{{ song.name }}</router-link>
               <router-link
                 class="artists"
-                :to="'/artist/' + song.id "
+                :to="'/artist/' + song.id"
                 v-for="ar in song.artists"
                 :key="ar.id"
-              >{{ ar.name }}</router-link>
+                >{{ ar.name }}</router-link
+              >
             </div>
           </li>
         </ul>
       </div>
     </div>
-</div>
+  </div>
 </template>
-<script lang='ts'>
-import { getSongDetail, getSimiSongs} from '@/service';
+<script lang="ts">
+import { getSongDetail, getSimiSongs } from "@/service";
 import CommentList from "./CommentList.vue";
-import RippleButton from '@/components/globals/RippleButton.vue';
+import RippleButton from "@/components/globals/RippleButton.vue";
 import PlaySvg from "@/components/globals/PlaySvg.vue";
-import { Vue, Component } from 'vue-property-decorator';
-import { Artist, Album, Track, TrackQuality, CommentType } from '@/types';
-import { Mutation, namespace } from 'vuex-class';
+import { Vue, Component } from "vue-property-decorator";
+import { Artist, Album, Track, TrackQuality, CommentType, convertTrack } from "@/types";
+import { Mutation, namespace } from "vuex-class";
 
-const playlist = namespace('playlist');
+const playlist = namespace("playlist");
 
-const  OFEESETCOUNT = 20
+const OFEESETCOUNT = 20;
 @Component({
-  components : {CommentList, RippleButton, PlaySvg },
+  components: { CommentList, RippleButton, PlaySvg }
 })
 export default class SongDetail extends Vue {
   currentCommentType: CommentType = CommentType.SongComment;
-  songId: number | null = null
+
+  songId: number | null = null;
+
   name: string = "";
+
   artists: Artist[] = [];
+
   simiSongs: Track[] = [];
+
   duration: number = 0;
+
   high?: TrackQuality;
+
   middle?: TrackQuality;
+
   low: TrackQuality | null = null;
+
   album: Album | null = null;
+
+  status: number = 0;
 
   created() {
     this.songId = Number(this.$route.params.id);
@@ -100,32 +115,37 @@ export default class SongDetail extends Vue {
           this.high = song.h;
           this.middle = song.m;
           this.low = song.low;
+          this.status = song.st;
         }
       },
       error => {}
     );
     // 获取相似歌曲
     getSimiSongs(this.songId).then(res => {
-      this.simiSongs = res.data.songs
-    })
+      this.simiSongs = res.data.songs;
+    });
   }
 
   @playlist.Mutation setCurrentSongId!: (id: number) => void;
+
   @playlist.Mutation setTracks!: (tracks: Track[]) => void;
-  
+
   play() {
     if (this.songId && this.album && this.low) {
       this.setCurrentSongId(this.songId);
-      this.setTracks([{
-        name: this.name,
-        id: this.songId,
-        artists: this.artists,
-        album: this.album,
-        duration: this.duration,
-        high: this.high,
-        middle: this.middle,
-        low: this.low,
-      }]);
+      this.setTracks([
+        {
+          name: this.name,
+          id: this.songId,
+          artists: this.artists,
+          album: this.album,
+          duration: this.duration,
+          high: this.high,
+          middle: this.middle,
+          low: this.low,
+          status: this.status
+        }
+      ]);
     }
   }
 }
@@ -147,7 +167,7 @@ export default class SongDetail extends Vue {
   img
     width: 100%
     height: 100%
-    
+
 .song-desc
   flex: 1 1 auto
   display: flex
@@ -208,7 +228,7 @@ export default class SongDetail extends Vue {
     img
       width: 100%
       height: 100%
-      
+
   .mask-container
     display: none
     position: absolute
@@ -249,5 +269,4 @@ export default class SongDetail extends Vue {
     .artists
       font-size: 80%
       color: $secondary
-
 </style>

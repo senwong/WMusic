@@ -10,7 +10,7 @@
             :alt="playlist.name"
           />
           <span class="item-title">
-            {{playlist.name}}
+            {{ playlist.name }}
           </span>
         </RouterLink>
       </li>
@@ -18,9 +18,9 @@
   </section>
 </template>
 
-<script lang='ts'>
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import { Playlist } from '@/types';
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { Playlist } from "@/types";
 
 @Component
 export default class Playlists extends Vue {
@@ -28,6 +28,6 @@ export default class Playlists extends Vue {
 }
 </script>
 
-<style lang='sass' scoped>
+<style lang="sass" scoped>
 @import "./recommendations.sass"
 </style>

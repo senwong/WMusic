@@ -1,25 +1,25 @@
 <template>
-<FadeTransition>
-  <div class="error-label__wrapper" v-if="show">
-    <div class="error-label__title">
-      <slot></slot>
+  <FadeTransition>
+    <div class="error-label__wrapper" v-if="show">
+      <div class="error-label__title">
+        <slot></slot>
+      </div>
     </div>
-  </div>
-</FadeTransition>
+  </FadeTransition>
 </template>
 
 <script>
-import FadeTransition from '@/components/globals/FadeTransition';
+import FadeTransition from "@/components/globals/FadeTransition";
 
 export default {
   props: {
     show: {
       required: true,
-      type: Boolean,
-    },
+      type: Boolean
+    }
   },
-  components: { FadeTransition },
-}
+  components: { FadeTransition }
+};
 </script>
 
 <style lang="sass" scoped>

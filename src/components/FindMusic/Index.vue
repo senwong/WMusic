@@ -28,23 +28,25 @@
           </div>
         </div>
       </div>
-      
+
       <!-- 推荐歌单 -->
       <RecommendSongList />
     </div>
   </div>
 </template>
 <script>
-import CarouselPanel from './CarouselPanel.vue'
-import RecommendSongList from './RecommendSongList.vue'
-import MusicIcon from '../SVGIcons/MusicIcon';
+import CarouselPanel from "./CarouselPanel.vue";
+import RecommendSongList from "./RecommendSongList.vue";
+import MusicIcon from "../SVGIcons/MusicIcon";
 
 export default {
   name: "FindMusic",
   components: {
-    CarouselPanel, RecommendSongList, MusicIcon,
-  },
-}
+    CarouselPanel,
+    RecommendSongList,
+    MusicIcon
+  }
+};
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass";
@@ -63,4 +65,3 @@ export default {
     color: $orange;
     margin-bottom: 1em;
 </style>
-

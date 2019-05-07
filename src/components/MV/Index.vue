@@ -3,62 +3,55 @@
     <div class="container">
       <h1>最新MV</h1>
       <div class="card-container">
-        <CardItem
-          v-for="mv in newMVList"
-          :key="mv.id"
-          :card="mv"
-          cardType="mvplay"
-        />
+        <CardItem v-for="mv in newMVList" :key="mv.id" :card="mv" cardType="mvplay" />
       </div>
       <div class="title">
         <span class="text-h1">MV排行榜</span>
-        <span class="text-gray">{{formatDate(updateTime)}}更新</span>
+        <span class="text-gray">{{ formatDate(updateTime) }}更新</span>
         <router-link to="/mv/rank" class="button-bg-right">更多</router-link>
       </div>
       <div class="rank-container">
-        <RankItem
-          v-for="media in MVrankList"
-          :key="media.id"
-          :rank-item="media"
-        />
+        <RankItem v-for="media in MVrankList" :key="media.id" :rank-item="media" />
       </div>
     </div>
   </div>
 </template>
-<script lang='ts'>
-import { getNewMV, getPersonalizedMV, getMVrank } from "@/service"
-import CardItem from "./CardItem.vue"
-import RankItem from "./RankItem.vue"
-import { formatDate } from "@/utilitys"
-import { Vue, Component } from 'vue-property-decorator';
-import { Rank, MvCard } from '@/types';
+<script lang="ts">
+import { getNewMV, getPersonalizedMV, getMVrank } from "@/service";
+import CardItem from "./CardItem.vue";
+import RankItem from "./RankItem.vue";
+import { formatDate } from "@/utilitys";
+import { Vue, Component } from "vue-property-decorator";
+import { Rank, MvCard } from "@/types";
 
 @Component({
-  components: { CardItem, RankItem },
+  components: { CardItem, RankItem }
 })
 export default class Mv extends Vue {
   newMVList: MvCard[] = [];
+
   MVrankList: Rank[] = [];
-  updateTime: number =  0;
+
+  updateTime: number = 0;
+
   formatDate = formatDate;
+
   created() {
     getNewMV().then(res => {
-      if(res.data.code == 200) {
-        this.newMVList = res.data.data
+      if (res.data.code == 200) {
+        this.newMVList = res.data.data;
       } else {
-        alert("获取最新MV数据错误" + res.data)
+        alert(`获取最新MV数据错误${res.data}`);
       }
-    })
+    });
     getMVrank().then(res => {
-      if(res.data.code == 200) {
-        this.updateTime = res.data.updateTime
-        this.MVrankList = res.data.data.map(
-          (rank: Rank, i: number) => ({rank: i, ...rank})
-        )
+      if (res.data.code == 200) {
+        this.updateTime = res.data.updateTime;
+        this.MVrankList = res.data.data.map((rank: Rank, i: number) => ({ rank: i, ...rank }));
       } else {
-        alert("获取MV排行榜数据错误" + res.data)
+        alert(`获取MV排行榜数据错误${res.data}`);
       }
-    })
+    });
   }
 }
 </script>
@@ -79,7 +72,7 @@ a
   opacity: 0.3;
 .text-h1
   font-size: 28px;
-  padding-right: 10px; 
+  padding-right: 10px;
 .card-container
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
@@ -110,4 +103,3 @@ a
     border: 1px solid rgba(0, 0, 0, 0.3);;
     outline: none;
 </style>
-

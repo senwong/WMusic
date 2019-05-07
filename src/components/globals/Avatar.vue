@@ -5,21 +5,21 @@
 </template>
 
 <script>
-import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder";
 
 export default {
   props: {
     name: {
       type: String,
-      required: true,
+      required: true
     },
     imgSrc: {
       type: String,
-      required: true,
-    },
+      required: true
+    }
   },
-  components: { ImageWithPlaceholder },
-}
+  components: { ImageWithPlaceholder }
+};
 </script>
 
 <style lang="sass" scoped>

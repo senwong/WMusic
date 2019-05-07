@@ -2,13 +2,9 @@
   <div>
     <div class="wrapper">
       <div class="fill-lower-wrapper">
-        <div
-          class="fill-lower"
-          ref='fillLower'
-          :style="{transform: `translateX(${percent})`}"
-        />
+        <div class="fill-lower" ref="fillLower" :style="{ transform: `translateX(${percent})` }" />
       </div>
-      <input type="range" :min="min" :max="max" step="0.1" v-model="value">
+      <input type="range" :min="min" :max="max" step="0.1" v-model="value" />
     </div>
   </div>
 </template>
@@ -17,37 +13,37 @@
 export default {
   data() {
     return {
-      value: 50,
-    }
+      value: 50
+    };
   },
   props: {
     min: Number,
-    max: Number,
+    max: Number
   },
   computed: {
     percent() {
       if (this.$refs.fillLower) {
         const width = this.$refs.fillLower.clientWidth;
-        if (this.value / (this.max - this.min) * width < 7) {
-          return 'clac(-100% + 7px)';
+        if ((this.value / (this.max - this.min)) * width < 7) {
+          return "clac(-100% + 7px)";
         }
       }
-      return 100 * this.value / (this.max - this.min) - 100 + '%';
+      return `${(100 * this.value) / (this.max - this.min) - 100}%`;
     }
   },
   model: {
-    prop: 'value',
-    event: 'input',
+    prop: "value",
+    event: "input"
   },
   watch: {
     value(val) {
-      this.$emit('input', val)
+      this.$emit("input", val);
     }
   }
-}
+};
 </script>
 
-<style lang='sass' scoped>
+<style lang="sass" scoped>
 .wrapper
   position: relative
   height: 14px
@@ -64,7 +60,7 @@ input[type="range"]
   border-radius: 9999px
   margin: 0
   position: relative
-  
+
 
 input[type="range"]:focus
   outline: none
@@ -73,7 +69,7 @@ input[type="range"]:focus
 // https://stackoverflow.com/questions/18794026/remove-dotted-outline-from-range-input-element-in-firefox
 input[type=range]::-moz-focus-outer
   border: 0
-    
+
 
 input[type="range"]::-webkit-slider-thumb
   -webkit-appearance: none

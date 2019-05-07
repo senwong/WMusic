@@ -1,22 +1,26 @@
 <template>
-<div class="tab-menu-wrapper">
-  <ul class="tab-menu" ref="tabMenu" :class="{'space-between': spaceBetween, 'flex-start': alignLeft}">
-    <li
-      class="tab-item"
-      v-for='(item, idx) in list'
-      :key="item.key"
-      :class="{
-        active: item.isActive,
-        'margin-right': idx < list.length - 1 && alignLeft
-      }"
-      @click="item.onClick"
+  <div class="tab-menu-wrapper">
+    <ul
+      class="tab-menu"
+      ref="tabMenu"
+      :class="{ 'space-between': spaceBetween, 'flex-start': alignLeft }"
     >
-      {{item.title}}
-    </li>
-  </ul>
-</div>
+      <li
+        class="tab-item"
+        v-for="(item, idx) in list"
+        :key="item.key"
+        :class="{
+          active: item.isActive,
+          'margin-right': idx < list.length - 1 && alignLeft
+        }"
+        @click="item.onClick"
+      >
+        {{ item.title }}
+      </li>
+    </ul>
+  </div>
 </template>
-<script lang='ts'>
+<script lang="ts">
 /*
   list: [
     {
@@ -31,17 +35,21 @@
     align-left: boolean
     align-middle: boolean
     align-right: boolean,
-  
+
 */
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import { TabMenuItem } from '@/types';
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { TabMenuItem } from "@/types";
 
 @Component
 export default class TabMenu extends Vue {
   @Prop() list!: TabMenuItem[];
+
   @Prop(Boolean) spaceBetween!: boolean;
+
   @Prop(Boolean) alignLeft!: boolean;
+
   @Prop(Boolean) alignMiddle!: boolean;
+
   @Prop(Boolean) alignRight!: boolean;
 }
 </script>
@@ -94,5 +102,4 @@ export default class TabMenu extends Vue {
     transform: scaleX(0);
 .margin-right
   margin-right: 2em;
-
 </style>

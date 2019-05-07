@@ -5,7 +5,7 @@
       cy="4"
       r="4"
       class="circle"
-      v-for="(_, idx ) in new Array(this.numberOfCircle)"
+      v-for="(_, idx) in new Array(this.numberOfCircle)"
       :key="idx"
       ref="circles"
     ></circle>
@@ -22,7 +22,7 @@ export default {
   methods: {
     startAnimation(element) {
       let currentRad = 0;
-      let gravityForce = 0.01;
+      const gravityForce = 0.01;
       let velocity = 0; // angle add per 1/60second
       let a = 0.01;
       function step() {

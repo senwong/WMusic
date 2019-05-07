@@ -11,14 +11,11 @@
             transform: `translateX(${style.translateX}px) scale(${style.scale})`,
             transformOrigin: transformOrigins[idx],
             zIndex: zIndexs[idx],
-            opacity: opacitys[idx],
+            opacity: opacitys[idx]
           }"
           :href="images[idx].url | convert2Https"
         >
-          <ImageWithPlaceholder
-            :src="images[idx].src | convert2Https"
-            ratio="27:10"
-          />
+          <ImageWithPlaceholder :src="images[idx].src | convert2Https" ratio="27:10" />
         </a>
       </template>
     </Motion>
@@ -29,21 +26,21 @@
       <ScaleableButton position="right" />
     </div>
     <div class="spot-wrapper">
-      <div 
+      <div
         class="spot"
         v-for="(img, idx) in images"
         :key="img.id"
-        :class="{spot_active: idx===midIdx}"
+        :class="{ spot_active: idx === midIdx }"
       ></div>
     </div>
   </div>
 </template>
-<script lang='ts'>
-import { getBanner } from '@/service'
-import { Motion } from 'vue-motion';
-import ScaleableButton from './ScaleableButton.vue';
-import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder.vue';
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+<script lang="ts">
+import { getBanner } from "@/service";
+import { Motion } from "vue-motion";
+import ScaleableButton from "./ScaleableButton.vue";
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 
 interface Banner {
   imageUrl: string;
@@ -62,23 +59,23 @@ enum TargetType {
   URL = 3000,
   PLAYLIST = 1000,
   ALBUM = 10,
-  SONG = 1,
+  SONG = 1
 }
 interface StyleProp {
   scale: number;
   translateX: number;
 }
 const targetType = {
-  "3000": "url",
-  "1000": "playlist",
-  "10": "album",
-  "1": "song"
+  3000: "url",
+  1000: "playlist",
+  10: "album",
+  1: "song"
 };
 interface TransformValuesCalor {
-  getTranslateX(itemWidth?: number) : number;
+  getTranslateX(itemWidth?: number): number;
   scale: number;
 }
-type position = 'left' | 'middle' | 'right';
+type position = "left" | "middle" | "right";
 interface PositionedTransformValuesCalor {
   [index: string]: TransformValuesCalor;
   left: TransformValuesCalor;
@@ -90,34 +87,37 @@ function getTransformValues(containerWidth: number): PositionedTransformValuesCa
   return {
     left: {
       getTranslateX: () => 0,
-      scale: 0.85,
+      scale: 0.85
     },
     middle: {
       getTranslateX: (itemWidth: number): number => (containerWidth - itemWidth) / 2,
-      scale: 1,
+      scale: 1
     },
     right: {
       getTranslateX: (itemWidth: number): number => containerWidth - itemWidth,
-      scale: 0.85,
+      scale: 0.85
     }
   };
 }
 @Component({
-  components: { Motion, ScaleableButton, ImageWithPlaceholder  },
+  components: { Motion, ScaleableButton, ImageWithPlaceholder }
 })
 export default class CarouselPanel extends Vue {
   images: BannerImage[] = [];
+
   midIdx = 1;
+
   styleProps: StyleProp[] = [];
 
   $refs!: {
-    items: HTMLInputElement[],
-  }
+    items: HTMLInputElement[];
+  };
+
   created() {
     getBanner().then(res => {
       let uid = 1;
       res.data.banners.forEach((banner: Banner) => {
-        const bannerImg : BannerImage = {
+        const bannerImg: BannerImage = {
           id: uid,
           src: banner.imageUrl,
           url: this.formatUrl(banner),
@@ -127,68 +127,72 @@ export default class CarouselPanel extends Vue {
         this.images.push(bannerImg);
         uid++;
         // 下载图片
-        var img = document.createElement('img');
+        const img = document.createElement("img");
         img.src = banner.imageUrl;
       });
-    })
+    });
   }
+
   leftClick() {
     this.midIdx = this.getNext(this.midIdx);
   }
+
   rightClick() {
     this.midIdx = this.getPrev(this.midIdx);
   }
+
   getPrev(index: number) {
     return (this.images.length - 1 + index) % this.images.length;
   }
+
   getNext(index: number) {
     return (this.images.length + 1 + index) % this.images.length;
   }
+
   handleWindowResize() {
     this.updateStyleProps();
   }
+
   formatUrl(banner: Banner) {
-    const {targetType, targetId, url} = banner;
+    const { targetType, targetId, url } = banner;
     switch (targetType) {
       case 3000:
         return url;
-        break;
       case 1000:
-        return targetId ? `/playlist/${targetId}` : '#';
-        break;
+        return targetId ? `/playlist/${targetId}` : "#";
       case 10:
-        return targetId ? `/album/${targetId}` : '#';
-        break;
+        return targetId ? `/album/${targetId}` : "#";
       case 1:
-        return targetId ? `/song/${targetId}` : '#';
-        break;
+        return targetId ? `/song/${targetId}` : "#";
       default:
-        return '#';
+        return "#";
     }
   }
+
   updateStyleProps(): void {
-    const transformValues: PositionedTransformValuesCalor  = getTransformValues(this.$el.clientWidth);
+    const transformValues: PositionedTransformValuesCalor = getTransformValues(
+      this.$el.clientWidth
+    );
     this.styleProps = this.images.map((_, idx: number) => {
       let p;
       if (idx == this.midIdx) {
-        p = 'middle';
-      } else if (this.prevStack.indexOf(idx) > -1){
-        p = 'left'
+        p = "middle";
+      } else if (this.prevStack.indexOf(idx) > -1) {
+        p = "left";
       } else {
-        p = 'right';
-      };
+        p = "right";
+      }
 
       const { getTranslateX, scale } = transformValues[p.toString()];
-      const items = this.$refs.items;
-      const itemWidth = items && items[idx]
-        ? this.$refs.items[idx].clientWidth
-        : 540;
+      const { items } = this.$refs;
+      const itemWidth = items && items[idx] ? this.$refs.items[idx].clientWidth : 540;
       return {
         translateX: getTranslateX(itemWidth),
-        scale,
+        scale
       };
     });
   }
+
   get zIndexs(): number[] {
     return this.images.map((_, idx) => {
       if (idx == this.midIdx) return 1;
@@ -196,38 +200,41 @@ export default class CarouselPanel extends Vue {
       if (leftIdx > -1) return -1 * leftIdx;
       const rightIdx = this.nextStack.indexOf(idx);
       return -1 * rightIdx;
-    })
-  }
-  get transformOrigins(): string[] {
-    return this.images.map((_, idx) => {
-      if (idx == this.midIdx) return 'center';
-      const leftIdx = this.prevStack.indexOf(idx);
-      if (leftIdx > -1) return 'center left';
-      const rightIdx = this.nextStack.indexOf(idx);
-      return 'center right';
     });
   }
+
+  get transformOrigins(): string[] {
+    return this.images.map((_, idx) => {
+      if (idx == this.midIdx) return "center";
+      const leftIdx = this.prevStack.indexOf(idx);
+      if (leftIdx > -1) return "center left";
+      const rightIdx = this.nextStack.indexOf(idx);
+      return "center right";
+    });
+  }
+
   get opacitys(): number[] {
     return this.images.map((_, idx) => {
-
       if (idx == this.midIdx) return 1;
       const leftIdx = this.prevStack.indexOf(idx);
       if (leftIdx > 1) {
         return 0;
-      } else if (leftIdx < 2 && leftIdx > -1) {
+      }
+      if (leftIdx < 2 && leftIdx > -1) {
         return 1;
       }
       const rightIdx = this.nextStack.indexOf(idx);
-      if (rightIdx > 1){
+      if (rightIdx > 1) {
         return 0;
-      } else if (rightIdx < 2 && rightIdx > -1) {
+      }
+      if (rightIdx < 2 && rightIdx > -1) {
         return 1;
       }
-      console.log('getOpacity(): index ' + idx + ' are neither in prevStack nor in nextStack');
+      console.log(`getOpacity(): index ${idx} are neither in prevStack nor in nextStack`);
       return 0;
     });
   }
-  
+
   get prevStack() {
     const ret: number[] = [];
     const prevCount = (this.images.length - 1) / 2;
@@ -238,9 +245,10 @@ export default class CarouselPanel extends Vue {
     }, this.midIdx);
     return ret;
   }
+
   get nextStack() {
     const ret: number[] = [];
-    const nextCount = this.images.length - ((this.images.length - 1) / 2) - 1;
+    const nextCount = this.images.length - (this.images.length - 1) / 2 - 1;
     new Array(nextCount).fill(true).reduce((acc, _) => {
       const next = this.getNext(acc);
       ret.push(next);
@@ -248,21 +256,23 @@ export default class CarouselPanel extends Vue {
     }, this.midIdx);
     return ret;
   }
-  @Watch('images')
+
+  @Watch("images")
   onImagesChange() {
     this.updateStyleProps();
   }
 
-  @Watch('midIdx')
+  @Watch("midIdx")
   onmidIdxChange() {
     this.updateStyleProps();
   }
 
   mounted() {
-    window.addEventListener('resize', this.handleWindowResize);
+    window.addEventListener("resize", this.handleWindowResize);
   }
+
   beforeDestory() {
-    window.removeEventListener('resize', this.handleWindowResize);
+    window.removeEventListener("resize", this.handleWindowResize);
   }
 }
 </script>

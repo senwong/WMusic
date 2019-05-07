@@ -1,92 +1,89 @@
 <template>
-<div class="song-info-panel">
-  <div v-if="isLoading" class="loading-spinner"><Spinner /></div>
-  <div class="album-img">
-    <img v-if="albumImg" :src="albumImg | convert2Https | clipImage(192, 192)" :alt="name">
-    <div v-else class="img-placeholder"></div>
-    <div class="img-mask">
-      <button class="button_icon large button_center-center" @click="$emit('toggle-song-player')" :class="{'invert': !isShowSongPlayer}">
-        <SlideUpIcon />
-      </button>
+  <div class="song-info-panel">
+    <div v-if="isLoading" class="loading-spinner"><Spinner /></div>
+    <div class="album-img">
+      <img v-if="albumImg" :src="albumImg | convert2Https | clipImage(192, 192)" :alt="name" />
+      <div v-else class="img-placeholder"></div>
+      <div class="img-mask">
+        <button
+          class="button_icon large button_center-center"
+          @click="$emit('toggle-song-player')"
+          :class="{ invert: !isShowSongPlayer }"
+        >
+          <SlideUpIcon />
+        </button>
+      </div>
     </div>
+    <div class="name-songer">
+      <div v-if="name" class="name">{{ name }}</div>
+      <div v-else>听见不同</div>
+      <div v-if="artists" class="songer">{{ artists && artists.map(ar => ar.name).join("/") }}</div>
+    </div>
+    <!-- 选择音质 -->
+    <button class="quality button" :disabled="disabled">
+      {{ currentQuality }}
+    </button>
+    <!-- 点击音质，弹出选择菜单 -->
+    <popup-menu :target="qualityPopupButton">
+      <select-list :data="qualitys" @selected-change="selectedChange"></select-list>
+    </popup-menu>
+    <!-- 收藏 -->
+    <SvgBtnWrapper
+      xlarge
+      class="faver"
+      @click.native="toggleFaver"
+      :class="{ 'is-faver': isFaver }"
+      :disabled="disabled"
+    >
+      <FavIcon />
+    </SvgBtnWrapper>
+    <!-- 三点 更多选项 -->
+    <SvgBtnWrapper xlarge class="more" :disabled="disabled">
+      <MoreIcon />
+    </SvgBtnWrapper>
+    <!-- 点击更多，弹出菜单 -->
+    <popup-menu :target="morePopupButton">
+      <more-list>
+        <more-item>
+          <DownloadIcon slot="icon" />
+          <span slot="txt" class="txt">漫游相似歌曲</span>
+        </more-item>
+        <more-item>
+          <DownloadIcon slot="icon" />
+          <span slot="txt" class="txt">下载</span>
+        </more-item>
+        <!-- 添加到歌单 hover时右侧扩展 -->
+        <more-item spread="'right'">
+          <DownloadIcon slot="icon" />
+          <span slot="txt" class="txt">添加到歌单</span>
+          <!-- hover时右侧扩展内容 -->
+          <more-list slot="spread-list">
+            <more-item>
+              <DownloadIcon slot="icon" />
+              <span slot="txt" class="txt">喜欢的音乐</span>
+            </more-item>
+          </more-list>
+        </more-item>
+        <!-- 评论分享 -->
+        <more-item>
+          <DownloadIcon slot="icon" />
+          <span slot="txt" class="txt">评论分享</span>
+        </more-item>
+      </more-list>
+    </popup-menu>
   </div>
-  <div class="name-songer">
-    <div v-if="name" class="name">{{name}}</div>
-    <div v-else>听见不同</div>
-    <div v-if="artists" class="songer">{{artists && artists.map(ar => ar.name).join("/")}}</div>
-  </div>
-  <!-- 选择音质 -->
-  <button class="quality button" :disabled="disabled">
-    {{currentQuality}}
-  </button>
-  <!-- 点击音质，弹出选择菜单 -->
-  <popup-menu :target="qualityPopupButton">
-    <select-list 
-      :data="qualitys"
-      @selected-change="selectedChange"
-    ></select-list>
-  </popup-menu>
-  <!-- 收藏 -->
-  <SvgBtnWrapper
-    xlarge
-    class="faver"
-    @click.native="toggleFaver"
-    :class="{'is-faver': isFaver}"
-    :disabled="disabled"
-  >
-    <FavIcon />
-  </SvgBtnWrapper>
-  <!-- 三点 更多选项 -->
-  <SvgBtnWrapper
-    xlarge
-    class="more"
-    :disabled="disabled"
-  >
-    <MoreIcon />
-  </SvgBtnWrapper>
-  <!-- 点击更多，弹出菜单 -->
-  <popup-menu :target="morePopupButton">
-    <more-list>
-      <more-item>
-        <DownloadIcon slot="icon" />
-        <span slot="txt" class="txt">漫游相似歌曲</span>
-      </more-item>
-      <more-item>
-        <DownloadIcon slot="icon" />
-        <span slot="txt" class="txt">下载</span>
-      </more-item>
-      <!-- 添加到歌单 hover时右侧扩展 -->
-      <more-item spread="'right'">
-        <DownloadIcon slot="icon" />
-        <span slot="txt" class="txt">添加到歌单</span>
-        <!-- hover时右侧扩展内容 -->
-        <more-list slot="spread-list">
-          <more-item>
-            <DownloadIcon slot="icon" />
-            <span slot="txt" class="txt">喜欢的音乐</span>
-          </more-item>
-        </more-list>
-      </more-item>
-      <!-- 评论分享 -->
-      <more-item>
-        <DownloadIcon slot="icon" />
-        <span slot="txt" class="txt">评论分享</span>
-      </more-item>
-    </more-list>
-  </popup-menu>
-</div>
 </template>
 <script>
-import PopupMenu from '../PopupMenu.vue';
-import MoreItem from '../more-list/MoreItem.vue';
-import MoreList from '../more-list/MoreList.vue';
-import SelectList from '../more-list/SelectList.vue';
-import MoreIcon from '../SVGIcons/MoreIcon';
-import FavIcon from '../SVGIcons/FavIcon';
-import SlideUpIcon from '../SVGIcons/SlideUpIcon';
-import DownloadIcon from '../SVGIcons/DownloadIcon';
-import SvgBtnWrapper from '@/components/globals/SvgBtnWrapper.vue';
-import Spinner from '@/components/globals/Spinner.vue';
+import PopupMenu from "../PopupMenu.vue";
+import MoreItem from "../more-list/MoreItem.vue";
+import MoreList from "../more-list/MoreList.vue";
+import SelectList from "../more-list/SelectList.vue";
+import MoreIcon from "../SVGIcons/MoreIcon";
+import FavIcon from "../SVGIcons/FavIcon";
+import SlideUpIcon from "../SVGIcons/SlideUpIcon";
+import DownloadIcon from "../SVGIcons/DownloadIcon";
+import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
+import Spinner from "@/components/globals/Spinner.vue";
 
 export default {
   name: "SongInfoPanel",
@@ -100,9 +97,9 @@ export default {
     SlideUpIcon,
     DownloadIcon,
     SvgBtnWrapper,
-    Spinner,
+    Spinner
   },
-  props: ['name', 'artists', 'albumImg', 'isShowSongPlayer', 'isLoading', 'disabled'],
+  props: ["name", "artists", "albumImg", "isShowSongPlayer", "isLoading", "disabled"],
   data() {
     return {
       isFaver: false,
@@ -110,11 +107,11 @@ export default {
       qualityPopupButton: null,
       currentQuality: "标准品质",
       qualitys: [
-        {id: 1, title: "标准品质", isSelected: false},
-        {id: 2, title: "高品质", isSelected: false},
-        {id: 3, title: "无损品质", isSelected: false},
+        { id: 1, title: "标准品质", isSelected: false },
+        { id: 2, title: "高品质", isSelected: false },
+        { id: 3, title: "无损品质", isSelected: false }
       ]
-    }
+    };
   },
   methods: {
     toggleFaver() {
@@ -128,8 +125,8 @@ export default {
   mounted() {
     this.morePopupButton = this.$el.querySelector(".more");
     this.qualityPopupButton = this.$el.querySelector(".quality");
-  },
-}
+  }
+};
 </script>
 <style lang="sass" scoped>
 @import "../config.sass";

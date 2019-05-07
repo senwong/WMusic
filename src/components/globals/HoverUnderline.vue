@@ -9,7 +9,7 @@
 export default {};
 </script>
 
-<style lang='sass' scoped>
+<style lang="sass" scoped>
 .container:hover .underline
   transform: scaleX(1)
 
@@ -20,5 +20,4 @@ export default {};
   background: #000
   transition: all 250ms
   transform: scaleX(0)
-
 </style>

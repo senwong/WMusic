@@ -1,37 +1,39 @@
 <template>
-<div class="settings-container">
-  <ul class="list level-1">
-    <li class="list-item">
-      <div class="list-item-label">
-        画质
-      </div>
-      <div class="list-item-content">
-        <span class="select-result">{{curQuality}}</span>
-      </div>
-    </li>
-  </ul>
-  <div class="panel hide">
-    <div class="list-panel-header">
-      <button class="as-btn list-panel-title">
-          返回
-      </button>
-    </div>
-    <hr>
-    <ul class="list">
-      <li class="list-item"
-        role="list-item-radio"
-        v-for="(quality, i) in qualitys"
-        :key="i"
-        :data-br="quality"
-        :aria-checked="quality == curQuality"
-        @click="setQuality(quality)">
-        <span class="list-item-label">
-          {{quality + 'p'}}
-        </span>
+  <div class="settings-container">
+    <ul class="list level-1">
+      <li class="list-item">
+        <div class="list-item-label">
+          画质
+        </div>
+        <div class="list-item-content">
+          <span class="select-result">{{ curQuality }}</span>
+        </div>
       </li>
     </ul>
+    <div class="panel hide">
+      <div class="list-panel-header">
+        <button class="as-btn list-panel-title">
+          返回
+        </button>
+      </div>
+      <hr />
+      <ul class="list">
+        <li
+          class="list-item"
+          role="list-item-radio"
+          v-for="(quality, i) in qualitys"
+          :key="i"
+          :data-br="quality"
+          :aria-checked="quality == curQuality"
+          @click="setQuality(quality)"
+        >
+          <span class="list-item-label">
+            {{ quality + "p" }}
+          </span>
+        </li>
+      </ul>
+    </div>
   </div>
-</div>
 </template>
 <script>
 export default {
@@ -39,8 +41,8 @@ export default {
   props: ["qualitys"],
   data() {
     return {
-      currentQuality: "",
-    }
+      currentQuality: ""
+    };
   },
   mounted() {
     this.level1 = this.$el.querySelector(".level-1");
@@ -64,14 +66,14 @@ export default {
       this.level2.classList.add("hide");
     },
     setQuality(quality) {
-      this.currentQuality = quality
-      this.level2ToLevel1()
-      this.$emit("set-quality", quality)
+      this.currentQuality = quality;
+      this.level2ToLevel1();
+      this.$emit("set-quality", quality);
     }
   },
   computed: {
     curQuality() {
-      return this.currentQuality ? this.currentQuality : this.qualitys[this.qualitys.length - 1]
+      return this.currentQuality ? this.currentQuality : this.qualitys[this.qualitys.length - 1];
     }
   }
 };
@@ -143,5 +145,4 @@ export default {
   display: none;
 .invisible
   visibility: hidden;
-
 </style>

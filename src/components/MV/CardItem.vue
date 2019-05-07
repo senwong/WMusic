@@ -1,7 +1,7 @@
 <template>
   <div class="list-item">
     <CardImage
-      :play="{onClick: () => play()}"
+      :play="{ onClick: () => play() }"
       :href="`/${cardType}/${card.id}`"
       :src="this.card.cover | convert2Https | clipImage(640, 360)"
       :alt="card.name"
@@ -9,27 +9,30 @@
       radius
     />
     <router-link :to="`/${cardType}/${card.id}`" class="list__name">
-      <span>{{card.name}}</span><span> - </span><ArtistsWithComma :artists="card.artists" />
+      <span>{{ card.name }}</span
+      ><span> - </span><ArtistsWithComma :artists="card.artists" />
     </router-link>
   </div>
 </template>
-<script lang='ts'>
-import CardImage from '@/components/globals/CardImage.vue';
-import ArtistsWithComma from '@/components/globals/ArtistsWithComma.vue';
-import { MvCard } from '@/types';
-import { Vue, Component, Prop } from 'vue-property-decorator';
+<script lang="ts">
+import CardImage from "@/components/globals/CardImage.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import { MvCard } from "@/types";
+import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component({
-  components: { CardImage, ArtistsWithComma },
+  components: { CardImage, ArtistsWithComma }
 })
 export default class CardItem extends Vue {
   @Prop() card!: MvCard;
+
   @Prop() cardType!: string;
-  
+
   formatPlayCount(playCount: number): string {
     if (playCount < 10000) return playCount.toString();
-    return (playCount / 10000).toFixed(1) + "万"
+    return `${(playCount / 10000).toFixed(1)}万`;
   }
+
   play() {
     // TODO
   }

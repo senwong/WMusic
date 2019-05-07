@@ -8,7 +8,8 @@
         large
         :primary="type == 'email'"
         @click.native="switchToEmail"
-      >邮箱登录</Button>
+        >邮箱登录</Button
+      >
       <Button
         class="login-type__phone"
         block
@@ -16,10 +17,12 @@
         large
         :primary="type == 'phone'"
         @click.native="switchToPhone"
-      >手机登录</Button>
+        >手机登录</Button
+      >
     </div>
     <!-- 使用邮箱登录 -->
-    <Input v-if="type == 'email'"
+    <Input
+      v-if="type == 'email'"
       class="input-email"
       type="text"
       large
@@ -38,10 +41,9 @@
       v-model="password"
       @focus.native="handlePasswordFocus"
     />
-    <div
-      class="login-failed"
-      :class="{ 'login-failed_show': isLoginFailed }"
-    >登录错误，请重试。</div>
+    <div class="login-failed" :class="{ 'login-failed_show': isLoginFailed }">
+      登录错误，请重试。
+    </div>
     <Button class="login-btn" block primary large @click.native="handleLogin">登录</Button>
 
     <div class="signup__container">
@@ -52,32 +54,33 @@
 </template>
 
 <script>
-import Button from '@/components/globals/Button';
-import Input from '@/components/globals/Input';
-import { loginEmail, loginPhone } from '@/service';
-import { mapMutations } from 'vuex';
-import PhoneInput from './PhoneInput';
+import Button from "@/components/globals/Button";
+import Input from "@/components/globals/Input";
+import { loginEmail, loginPhone } from "@/service";
+import { mapMutations } from "vuex";
+import PhoneInput from "./PhoneInput";
 
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     return {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
       isLoginFailed: false,
-      type: 'email',
+      type: "email",
       phone: {
         countryCode: 86,
-        number: null,
-      },
+        number: null
+      }
     };
   },
   components: { Button, Input, PhoneInput },
   methods: {
     handleLogin() {
-      const responsePromise = this.type == 'email'
-        ? loginEmail(this.email, this.password)
-        : loginPhone(this.phone.number, this.password, this.phone.countryCode);
+      const responsePromise =
+        this.type == "email"
+          ? loginEmail(this.email, this.password)
+          : loginPhone(this.phone.number, this.password, this.phone.countryCode);
       this.handleLoginResponsePromsie(responsePromise);
     },
     handleEmailFocus() {
@@ -87,8 +90,8 @@ export default {
       this.emptyErrorsHint();
     },
     emptyInput() {
-      this.email = '';
-      this.password = '';
+      this.email = "";
+      this.password = "";
     },
     emptyErrorsHint() {
       this.isLoginFailed = false;
@@ -96,28 +99,26 @@ export default {
     handleLoginResponsePromsie(responsePromise) {
       responsePromise.then(
         res => {
-          console.log('response ', res);
+          console.log("response ", res);
           this.setCurrentUserId(res.data.profile.userId);
-          this.$router.push('/');          
+          this.$router.push("/");
         },
         error => {
-          this.isLoginFailed = true;    
+          this.isLoginFailed = true;
         }
       );
     },
     switchToEmail() {
-      this.type = 'email';
+      this.type = "email";
       this.emptyErrorsHint();
     },
     switchToPhone() {
-      this.type = 'phone';
+      this.type = "phone";
       this.emptyErrorsHint();
     },
-    ...mapMutations('currentUser', [
-      'setCurrentUserId',
-    ])
+    ...mapMutations("currentUser", ["setCurrentUserId"])
   }
-}
+};
 </script>
 
 <style lang="sass" scoped>

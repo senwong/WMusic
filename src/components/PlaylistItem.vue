@@ -1,66 +1,67 @@
 <template>
-<Motion :values="styles" tag="div" ref="container" class="motion" :class="{ ishover: isHover }">
-  <div
-    class="container"
-    :class="{ 'active': track.id == currentSongId }"
-    slot-scope="_size"
-    :style="{
-      transform: `scale(${_size.scale})`,
-      boxShadow: `0px 0px ${_size.blurRadius}px ${_size.spreadRadius}px rgba(0, 0, 0, 0.2)`,
-      zIndex: isHover ? 1 : 0,
-    }"
-    @mouseenter="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
-  >
-    <!-- 靠左显示 -->
-    <div class="album-img">
-      <img :src="track.album.picUrl | convert2Https | clipImage(80, 80)" :alt="track.name">
-    </div>
-    <div class="name-songer">
-      <div class="name">{{track.name}}</div>
-      <div class="songer">
-        <ArtistsWithComma :artists="track.artists" aTagClass="" commaClass="" />
+  <Motion :values="styles" tag="div" ref="container" class="motion" :class="{ ishover: isHover }">
+    <div
+      class="container"
+      :class="{ active: track.id == currentSongId }"
+      slot-scope="_size"
+      :style="{
+        transform: `scale(${_size.scale})`,
+        boxShadow: `0px 0px ${_size.blurRadius}px ${_size.spreadRadius}px rgba(0, 0, 0, 0.2)`,
+        zIndex: isHover ? 1 : 0
+      }"
+      @mouseenter="handleMouseEnter"
+      @mouseleave="handleMouseLeave"
+    >
+      <!-- 靠左显示 -->
+      <div class="album-img">
+        <img :src="track.album.picUrl | convert2Https | clipImage(80, 80)" :alt="track.name" />
+      </div>
+      <div class="name-songer">
+        <div class="name">{{ track.name }}</div>
+        <div class="songer">
+          <ArtistsWithComma :artists="track.artists" aTagClass="" commaClass="" />
+        </div>
+      </div>
+      <!-- 靠右显示 -->
+      <div class="duration">
+        {{ formatTime(track.duration) }}
+      </div>
+      <!-- hover时才显示收藏和更多 -->
+      <div class="fav-more">
+        <!-- 收藏  TODO  -->
+        <button class="button_icon fav" :class="{ 'is-fav': false }">
+          <FavIcon />
+        </button>
+        <!-- 更多 popMenuSongId = track.id -->
+        <button class="button_icon song-more" @click="$emit('handleMoreClick', track.id)">
+          <MoreIcon />
+        </button>
       </div>
     </div>
-    <!-- 靠右显示 -->
-    <div class="duration">
-      {{formatTime(track.duration)}}
-    </div>
-    <!-- hover时才显示收藏和更多 -->
-    <div class="fav-more">
-      <!-- 收藏  TODO  -->
-      <button class="button_icon fav" :class="{'is-fav': false}">
-        <FavIcon />
-      </button>
-      <!-- 更多 popMenuSongId = track.id -->
-      <button class="button_icon song-more" @click="$emit('handleMoreClick', track.id)">
-        <MoreIcon />
-      </button>
-    </div>
-  </div>
-</Motion>
+  </Motion>
 </template>
-<script lang='ts'>
-import { Motion } from 'vue-motion';
-import { formatTime } from '@/utilitys';
-import FavIcon from '@/components/SVGIcons/FavIcon.vue';
-import MoreIcon from '@/components/SVGIcons/MoreIcon.vue';
-import ArtistsWithComma from '@/components/globals/ArtistsWithComma.vue'
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import { Track } from '@/types';
+<script lang="ts">
+import { Motion } from "vue-motion";
+import { formatTime } from "@/utilitys";
+import FavIcon from "@/components/SVGIcons/FavIcon.vue";
+import MoreIcon from "@/components/SVGIcons/MoreIcon.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { Track } from "@/types";
 
 @Component({
   components: {
     Motion,
     FavIcon,
     MoreIcon,
-    ArtistsWithComma,
-  },
+    ArtistsWithComma
+  }
 })
 export default class Playlist extends Vue {
   isHover: boolean = false;
 
   @Prop() track!: Track;
+
   @Prop() currentSongId!: number;
 
   get styles() {
@@ -68,13 +69,16 @@ export default class Playlist extends Vue {
       translateX: this.isHover ? 0 : 0,
       scale: this.isHover ? 1.05 : 1,
       blurRadius: this.isHover ? 5 : 0,
-      spreadRadius: this.isHover ? 5 : 0,
+      spreadRadius: this.isHover ? 5 : 0
     };
   }
-  formatTime = formatTime
+
+  formatTime = formatTime;
+
   handleMouseEnter() {
     this.isHover = true;
   }
+
   handleMouseLeave() {
     this.isHover = false;
   }

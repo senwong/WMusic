@@ -1,21 +1,19 @@
 <template>
-<div class="wrapper">
-  <input type="checkbox" :checked="!!isClose" id="left" name="btn">
-  <label for="left" @click="$emit('toggle')"></label>
-  <div class="rot"></div>
-  <div class="bg"></div>
-</div>
+  <div class="wrapper">
+    <input type="checkbox" :checked="!!isClose" id="left" name="btn" />
+    <label for="left" @click="$emit('toggle')"></label>
+    <div class="rot"></div>
+    <div class="bg"></div>
+  </div>
 </template>
 <script>
-  export default {
-    name: "AwesomeButton",
-    props: ['isClose'],
-    watch: {
-      isClose: function(val) {
-        
-      }
-    }
+export default {
+  name: "AwesomeButton",
+  props: ["isClose"],
+  watch: {
+    isClose(val) {}
   }
+};
 </script>
 <style lang="sass" scoped>
 @import 'config.sass';
@@ -68,6 +66,4 @@ input:checked ~ .rot
 
 input:checked ~ .bg
   right: 0;
-
 </style>
-

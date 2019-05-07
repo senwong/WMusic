@@ -1,5 +1,5 @@
 <template>
-<!--
+  <!--
   +--------+---------+----------------+
   |        | usename | datetime           |
   |        +---------+----------------+
@@ -15,79 +15,86 @@
   +--------+--------------------------+
 
 -->
-<div class="comment__container">
-  <!-- left avatar -->
-  <router-link class="comment__avatar avatar" :to="'/user/'+comment.user.userId">
-    <img :src="comment.user.avatarUrl | convert2Https | clipImage(100, 100)" :alt="comment.user.nickname">
-  </router-link>
-  <!-- right info -->
-  <div class="comment__info">
-    <!-- usename and datetime -->
-    <div>
-      <router-link class="comment__username username" :to="'/user/'+comment.user.userId">
-        {{comment.user.nickname}}
-      </router-link>
-      <span class="comment__datetime datetime" v-if="comment.time">
-        {{formatDateToBefore(comment.time)}}
-      </span>
-    </div>
-    <!-- comment content -->
-    <div class="comment__content content">
-      {{comment.content}}
-    </div>
-    <!-- actions: like and reply button -->
-    <div class="comment__actions">
-      <div class="liked__count">
-        <span class="icon">
-          <LikeIcon  />
+  <div class="comment__container">
+    <!-- left avatar -->
+    <router-link class="comment__avatar avatar" :to="'/user/' + comment.user.userId">
+      <img
+        :src="comment.user.avatarUrl | convert2Https | clipImage(100, 100)"
+        :alt="comment.user.nickname"
+      />
+    </router-link>
+    <!-- right info -->
+    <div class="comment__info">
+      <!-- usename and datetime -->
+      <div>
+        <router-link class="comment__username username" :to="'/user/' + comment.user.userId">
+          {{ comment.user.nickname }}
+        </router-link>
+        <span class="comment__datetime datetime" v-if="comment.time">
+          {{ formatDateToBefore(comment.time) }}
         </span>
-        <span class="count" v-if="comment.likedCount > 0">{{ formatCount(comment.likedCount) }}</span>
-        <button class="reply" @click="isShowReplyEditor = true">回复</button>
+      </div>
+      <!-- comment content -->
+      <div class="comment__content content">
+        {{ comment.content }}
+      </div>
+      <!-- actions: like and reply button -->
+      <div class="comment__actions">
+        <div class="liked__count">
+          <span class="icon">
+            <LikeIcon />
+          </span>
+          <span class="count" v-if="comment.likedCount > 0">{{
+            formatCount(comment.likedCount)
+          }}</span>
+          <button class="reply" @click="isShowReplyEditor = true">回复</button>
+        </div>
+      </div>
+      <!-- reply editor -->
+      <CommentReplyEditor v-if="isShowReplyEditor" @hide="isShowReplyEditor = false" />
+      <!-- view replys toggle button -->
+      <div class="comment__view-replys" v-if="comment.beReplied && comment.beReplied.length">
+        <button @click="handleViewReplys" class="view-replys__btn">
+          <span v-if="replysFolded"> 查看{{ formatCount(comment.beReplied.length) }}条回复 </span>
+          <span v-else>
+            隐藏回复
+          </span>
+          <span class="view-replys__icon" :class="{ rotate: !replysFolded }">
+            <RightArrowIcon />
+          </span>
+        </button>
+      </div>
+      <!-- replys -->
+      <div class="view-replys__comment-list" v-if="!replysFolded">
+        <CommentItem v-for="c in comment.beReplied" :key="c.beRepliedCommentId" :comment="c" />
       </div>
     </div>
-    <!-- reply editor -->
-    <CommentReplyEditor v-if="isShowReplyEditor" @hide="isShowReplyEditor = false" />
-    <!-- view replys toggle button -->
-    <div class="comment__view-replys" v-if="comment.beReplied && comment.beReplied.length">
-      <button @click="handleViewReplys" class="view-replys__btn">
-        <span v-if="replysFolded">
-          查看{{ formatCount(comment.beReplied.length) }}条回复
-        </span>
-        <span v-else>
-          隐藏回复
-        </span>
-        <span class="view-replys__icon" :class="{rotate: !replysFolded}">
-          <RightArrowIcon />
-        </span>
-      </button>
-    </div>
-    <!-- replys -->
-    <div class="view-replys__comment-list" v-if="!replysFolded">
-      <CommentItem v-for="c in comment.beReplied" :key="c.beRepliedCommentId" :comment="c" />
-    </div>
   </div>
-</div>
 </template>
-<script lang='ts'>
-import { formatDay, formatCount, formatDateToBefore } from '@/utilitys';
-import LikeIcon from '@/components/SVGIcons/LikeIcon.vue';
-import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon.vue';
-import CommentReplyEditor from './CommentReplyEditor.vue';
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import { Comment } from '@/types';
+<script lang="ts">
+import { formatDay, formatCount, formatDateToBefore } from "@/utilitys";
+import LikeIcon from "@/components/SVGIcons/LikeIcon.vue";
+import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon.vue";
+import CommentReplyEditor from "./CommentReplyEditor.vue";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { Comment } from "@/types";
 
 @Component({
-  components: { LikeIcon, RightArrowIcon, CommentReplyEditor },
+  components: { LikeIcon, RightArrowIcon, CommentReplyEditor }
 })
 export default class CommentItem extends Vue {
   @Prop() comment!: Comment;
-  replysFolded: boolean =  true;
-  isShowReplyEditor: boolean = false
-  
-  
+
+  replysFolded: boolean = true;
+
+  isShowReplyEditor: boolean = false;
+
   formatDay = formatDay;
+
   formatCount = formatCount;
+
   formatDateToBefore = formatDateToBefore;
+
   handleViewReplys() {
     this.replysFolded = !this.replysFolded;
   }

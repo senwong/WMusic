@@ -2,11 +2,12 @@
   <ul class="pagination__list">
     <li
       class="pagination__item"
-      v-for="p in pagination" :key="p.pageIdx"
+      v-for="p in pagination"
+      :key="p.pageIdx"
       @click="handleClick(p)"
-      :class="{'active': p.pageIdx == currentPageIdx}"
+      :class="{ active: p.pageIdx == currentPageIdx }"
     >
-      {{p.symbol}}
+      {{ p.symbol }}
     </li>
   </ul>
 </template>
@@ -16,49 +17,46 @@ export default {
   data() {
     return {
       // start from 0
-      currentPageIdx: 0,
+      currentPageIdx: 0
     };
   },
   props: {
     // how many pages
-    total: Number,
+    total: Number
   },
   computed: {
     pagination() {
       const result = [];
       new Array(this.total).fill(true).map((_, idx) => {
         if (this.isPageNum(idx)) {
-          result.push({symbol: idx + 1, pageIdx: idx});
+          result.push({ symbol: idx + 1, pageIdx: idx });
         } else if (this.isPageSpread(idx)) {
-          result.push({symbol: '...', pageIdx: idx});
+          result.push({ symbol: "...", pageIdx: idx });
         }
       });
       return result;
-    },
+    }
   },
   methods: {
     // 0, n-1, idx-2, idx -1 idx idx+1 idx+2
     isPageNum(pageIdx) {
       const lastPageIdx = this.total - 1;
-      return pageIdx == 0
-        || pageIdx == lastPageIdx
-        || (
-          pageIdx < Math.min(lastPageIdx, this.currentPageIdx + 3)
-          && pageIdx > Math.max(0, this.currentPageIdx - 3)
-        );
+      return (
+        pageIdx == 0 ||
+        pageIdx == lastPageIdx ||
+        (pageIdx < Math.min(lastPageIdx, this.currentPageIdx + 3) &&
+          pageIdx > Math.max(0, this.currentPageIdx - 3))
+      );
     },
     isPageSpread(pageIdx) {
-      return (
-        pageIdx == this.currentPageIdx + 3
-        || pageIdx == this.currentPageIdx - 3
-      );
+      return pageIdx == this.currentPageIdx + 3 || pageIdx == this.currentPageIdx - 3;
     },
     handleClick({ pageIdx }) {
       this.currentPageIdx = pageIdx;
-      this.$emit('change', this.currentPageIdx);
+      this.$emit("change", this.currentPageIdx);
     }
   }
-}
+};
 </script>
 
 <style lang="sass" scoped>

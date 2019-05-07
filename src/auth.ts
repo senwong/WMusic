@@ -1,5 +1,5 @@
-import { getLoginStatus } from '@/service';
-import { User } from '@/types';
+import { getLoginStatus } from "@/service";
+import { User } from "@/types";
 
 const auth = {
   loggedIn() {
@@ -7,7 +7,7 @@ const auth = {
       getLoginStatus().then(
         (res: any): void => {
           if (res.data.code == 200) {
-            const profile: User = res.data.profile;
+            const { profile } = res.data;
             resolve(profile);
           } else {
             reject();

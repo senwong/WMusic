@@ -1,84 +1,90 @@
 <template>
-<div>
-  <div class="playbar">
-    <audio
-      :src="songUrl | convert2Https"
-      autoplay
-      ref="audio"
-      @play="handlePlay"
-      @pause="handlePause"
-      @loadedmetadata="handleLoadedMetaData"
-      @ended="nextSong"
-      @canplaythrough="handleCanPlayThrough"
-      @waiting="handleWaiting"
-    />
-    <!-- 左边区域 开始-->
-    <song-info-panel
-      class="playbar__item_left"
-      :name="name"
-      :artists="artists"
-      :albumImg="album && album.picUrl"
-      :isShowSongPlayer="isShowSongPlayer"
-      @toggle-song-player="toggleSongPlayer"
-      :isLoading="isLoading"
-      :disabled="disabled"
-    ></song-info-panel>
-    <!-- 左边区域 结束-->
-    <!-- 中间区域 开始-->
-    <div class="playbar__item_middle pause-panel">
-      <!-- 上一曲按钮 -->
-      <SvgBtnWrapper xlarge class="prev-song" @click.native="prevSong" :disabled="disabled">
-        <PrevSongIcon />
-      </SvgBtnWrapper>
-      <!-- 播放/暂停按钮 -->
-      <SvgBtnWrapper xlarge primary class="pause-song" @click.native="togglePlay" :disabled="disabled">
-        <PausedIcon v-if="paused" />
-        <PlayingIcon v-else />
-      </SvgBtnWrapper>
-      <!-- 下一曲按钮 -->
-      <SvgBtnWrapper xlarge class="next-song" @click.native="nextSong" :disabled="disabled">
-        <NextSongIcon />
-      </SvgBtnWrapper>
+  <div>
+    <div class="playbar">
+      <audio
+        :src="songUrl | convert2Https"
+        autoplay
+        ref="audio"
+        @play="handlePlay"
+        @pause="handlePause"
+        @loadedmetadata="handleLoadedMetaData"
+        @ended="nextSong"
+        @canplaythrough="handleCanPlayThrough"
+        @waiting="handleWaiting"
+      />
+      <!-- 左边区域 开始-->
+      <song-info-panel
+        class="playbar__item_left"
+        :name="name"
+        :artists="artists"
+        :albumImg="album && album.picUrl"
+        :isShowSongPlayer="isShowSongPlayer"
+        @toggle-song-player="toggleSongPlayer"
+        :isLoading="isLoading"
+        :disabled="disabled"
+      ></song-info-panel>
+      <!-- 左边区域 结束-->
+      <!-- 中间区域 开始-->
+      <div class="playbar__item_middle pause-panel">
+        <!-- 上一曲按钮 -->
+        <SvgBtnWrapper xlarge class="prev-song" @click.native="prevSong" :disabled="disabled">
+          <PrevSongIcon />
+        </SvgBtnWrapper>
+        <!-- 播放/暂停按钮 -->
+        <SvgBtnWrapper
+          xlarge
+          primary
+          class="pause-song"
+          @click.native="togglePlay"
+          :disabled="disabled"
+        >
+          <PausedIcon v-if="paused" />
+          <PlayingIcon v-else />
+        </SvgBtnWrapper>
+        <!-- 下一曲按钮 -->
+        <SvgBtnWrapper xlarge class="next-song" @click.native="nextSong" :disabled="disabled">
+          <NextSongIcon />
+        </SvgBtnWrapper>
+      </div>
+      <!-- 中间区域 结束 -->
+      <!-- 右边区域 开始-->
+      <sound-panel
+        class="playbar__item_right "
+        :currentMode="currentMode"
+        @changeVolume="changeVolume"
+        @changeMode="changeMode"
+        :isLoading="isLoading"
+        :disabled="disabled"
+      ></sound-panel>
+      <!-- 右边区域 结束-->
+      <div class="progress-bar">
+        <!-- TODO -->
+        <ProgressBar :totalTime="duration" :isPlaying="!paused" @jumpTo="handleJumpTo" />
+      </div>
     </div>
-    <!-- 中间区域 结束 -->
-    <!-- 右边区域 开始-->
-    <sound-panel
-      class="playbar__item_right "
-      :currentMode="currentMode"
-      @changeVolume="changeVolume"
-      @changeMode="changeMode"
-      :isLoading="isLoading"
-      :disabled="disabled"
-    ></sound-panel>
-    <!-- 右边区域 结束-->
-    <div class="progress-bar">
-      <!-- TODO -->
-      <ProgressBar :totalTime="duration" :isPlaying="!paused" @jumpTo="handleJumpTo" />
-    </div>
+    <transition name="slide-up">
+      <song-player v-if="isShowSongPlayer"></song-player>
+    </transition>
   </div>
-  <transition name="slide-up">
-    <song-player v-if="isShowSongPlayer"></song-player>
-  </transition>
-</div>
 </template>
-<script lang='ts'>
-import SongInfoPanel from './SongInfoPanel.vue';
-import SoundPanel from './SoundPanel.vue';
-import { getSongDetail, getSongURL, getPlaylistDetail, } from '@/service';
-import { formatTime } from '@/utilitys';
-import SongPlayer from './SongPlayer.vue';
-import ProgressBar from './ProgressBar.vue';
-import { mapState } from 'vuex';
-import PrevSongIcon from '@/components/SVGIcons/PrevSongIcon.vue';
-import NextSongIcon from '@/components/SVGIcons/NextSongIcon.vue';
-import PausedIcon from '@/components/SVGIcons/PausedIcon.vue';
-import PlayingIcon from '@/components/SVGIcons/PlayingIcon.vue';
-import { PlayMode, Album, Artist } from '@/types'
-import { Vue, Component, Watch } from 'vue-property-decorator';
-import { State, Getter, namespace } from 'vuex-class';
-import SvgBtnWrapper from '@/components/globals/SvgBtnWrapper.vue';
+<script lang="ts">
+import SongInfoPanel from "./SongInfoPanel.vue";
+import SoundPanel from "./SoundPanel.vue";
+import { getSongDetail, getSongURL, getPlaylistDetail } from "@/service";
+import { formatTime } from "@/utilitys";
+import SongPlayer from "./SongPlayer.vue";
+import ProgressBar from "./ProgressBar.vue";
+import { mapState } from "vuex";
+import PrevSongIcon from "@/components/SVGIcons/PrevSongIcon.vue";
+import NextSongIcon from "@/components/SVGIcons/NextSongIcon.vue";
+import PausedIcon from "@/components/SVGIcons/PausedIcon.vue";
+import PlayingIcon from "@/components/SVGIcons/PlayingIcon.vue";
+import { PlayMode, Album, Artist } from "@/types";
+import { Vue, Component, Watch } from "vue-property-decorator";
+import { State, Getter, namespace } from "vuex-class";
+import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
 
-const playlist = namespace('playlist');
+const playlist = namespace("playlist");
 
 @Component({
   components: {
@@ -90,49 +96,65 @@ const playlist = namespace('playlist');
     NextSongIcon,
     PausedIcon,
     PlayingIcon,
-    SvgBtnWrapper,
-  },
+    SvgBtnWrapper
+  }
 })
 export default class Playbar extends Vue {
-
   formatTime = formatTime;
+
   isShowSongPlayer: boolean = false;
-  songUrl: string = '';
+
+  songUrl: string = "";
+
   paused: boolean = true;
-  name: string = '';
+
+  name: string = "";
+
   album: Album | null = null;
+
   artists: Artist[] = [];
-  currentMode: PlayMode =  PlayMode.Loop;
+
+  currentMode: PlayMode = PlayMode.Loop;
+
   volume: number = 0.5;
+
   duration: number = 0;
+
   isLoading: boolean = false;
 
   // get progressPercent():  {
-    // TODO
-    // if(!this.currentSong.currentTime || !this.currentSong.duration) {
-    //   return 0;
-    // }
-    // return (this.currentSong.currentTime * 1000 / this.currentSong.duration).toFixed(2);
+  // TODO
+  // if(!this.currentSong.currentTime || !this.currentSong.duration) {
+  //   return 0;
+  // }
+  // return (this.currentSong.currentTime * 1000 / this.currentSong.duration).toFixed(2);
   // }
   get disabled(): boolean {
     return this.songUrl.length < 1 || this.isLoading;
   }
+
   $refs!: {
-    audio: HTMLAudioElement
-  }
+    audio: HTMLAudioElement;
+  };
+
   @playlist.State currentSongId!: number;
+
   @playlist.Getter trackIds!: number[];
+
   @playlist.Mutation setCurrentSongId!: (id: number) => void;
+
   play() {
     if (this.$refs.audio && this.songUrl) {
       this.$refs.audio.play();
     }
   }
+
   pause() {
     if (this.$refs.audio && this.songUrl) {
       this.$refs.audio.pause();
     }
   }
+
   togglePlay() {
     if (this.paused) {
       this.play();
@@ -159,34 +181,39 @@ export default class Playbar extends Vue {
   //   })
   // }
   toggleSongPlayer() {
-    this.isShowSongPlayer= !this.isShowSongPlayer
+    this.isShowSongPlayer = !this.isShowSongPlayer;
   }
-  animateProgressBar() {
-    window.requestAnimationFrame(() => {
 
-    });
+  animateProgressBar() {
+    window.requestAnimationFrame(() => {});
   }
+
   handlePlay() {
     this.paused = false;
   }
+
   handlePause() {
     this.paused = true;
   }
+
   changeMode() {
-    const PLAYMODES = [ PlayMode.Loop, PlayMode.OneLoop, PlayMode.Shuffle ];
+    const PLAYMODES = [PlayMode.Loop, PlayMode.OneLoop, PlayMode.Shuffle];
     let currentIdx = PLAYMODES.indexOf(this.currentMode);
     currentIdx = (currentIdx + 1 + PLAYMODES.length) % PLAYMODES.length;
     this.currentMode = PLAYMODES[currentIdx];
   }
+
   setAudioEleVolume(newVolume: number) {
-    const audio = this.$refs.audio;
+    const { audio } = this.$refs;
     if (audio) {
       audio.volume = newVolume;
     }
   }
+
   changeVolume(val: number) {
     this.volume = val;
   }
+
   prevSong() {
     switch (this.currentMode) {
       case PlayMode.Loop: {
@@ -207,9 +234,9 @@ export default class Playbar extends Vue {
         break;
       }
       default:
-        return;
     }
   }
+
   nextSong() {
     switch (this.currentMode) {
       case PlayMode.Loop: {
@@ -230,28 +257,32 @@ export default class Playbar extends Vue {
         break;
       }
       default:
-        return;
     }
   }
-  handleLoadedMetaData({ target }: {target: HTMLAudioElement}) {
+
+  handleLoadedMetaData({ target }: { target: HTMLAudioElement }) {
     this.duration = target.duration;
   }
+
   handleJumpTo(percent: number) {
     this.$refs.audio.currentTime = percent * this.$refs.audio.duration;
   }
-  
+
   mounted() {
     // this.registeDragLable(this.$el.querySelector(".progress__state"), this.$el.querySelector(".progress-bar"))
     // initial set volume
     this.setAudioEleVolume(this.volume);
   }
+
   handleCanPlayThrough() {
     this.isLoading = false;
   }
+
   handleWaiting() {
     this.isLoading = true;
   }
-  @Watch('currentSongId')
+
+  @Watch("currentSongId")
   onCurrentSongIdChange(id: number) {
     if (id) {
       this.isLoading = true;
@@ -264,7 +295,7 @@ export default class Playbar extends Vue {
             this.nextSong();
           }
         },
-        error => alert('get song url error '+ error)
+        error => alert(`get song url error ${error}`)
       );
       getSongDetail(id).then(
         res => {
@@ -273,11 +304,12 @@ export default class Playbar extends Vue {
           this.artists = song.ar;
           this.album = song.al;
         },
-        error => alert('get song detail error ' + error)
+        error => alert(`get song detail error ${error}`)
       );
     }
   }
-  @Watch('volume')
+
+  @Watch("volume")
   onVolumeChange(val: number) {
     this.setAudioEleVolume(val);
   }
@@ -355,4 +387,3 @@ export default class Playbar extends Vue {
   to
     top: 0
 </style>
-

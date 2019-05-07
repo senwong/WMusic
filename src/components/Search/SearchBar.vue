@@ -1,47 +1,48 @@
 <template>
-<div class="search-container" :class="{ spread: isSpread }">
-  <div class="search-icon" @click="$emit('keyup.enter')">
-    <SearchIcon />
+  <div class="search-container" :class="{ spread: isSpread }">
+    <div class="search-icon" @click="$emit('keyup.enter')">
+      <SearchIcon />
+    </div>
+    <input
+      type="text"
+      class="input"
+      @focus="$emit('focus', $event)"
+      @input="$emit('input', $event.target.value)"
+      v-model="value"
+      v-on:keyup.enter="$emit('enter')"
+      :placeholder="placeholder"
+    />
+    <div class="clear-icon" v-show="value && value.length > 0" @click="handleClear">
+      <ClearIcon />
+    </div>
   </div>
-  <input
-    type="text"
-    class="input"
-    @focus="$emit('focus', $event)"
-    @input="$emit('input', $event.target.value)"
-    v-model="value"
-    v-on:keyup.enter="$emit('enter')"
-    :placeholder="placeholder"
-  >
-  <div class="clear-icon" v-show="value && value.length > 0" @click="handleClear">
-    <ClearIcon />
-  </div>
-</div>
 </template>
 <script>
-import SearchIcon from '@/components/SVGIcons/SearchIcon';
-import ClearIcon from '@/components/SVGIcons/ClearIcon';
+import SearchIcon from "@/components/SVGIcons/SearchIcon";
+import ClearIcon from "@/components/SVGIcons/ClearIcon";
 
 export default {
   data() {
     return {
-      value: null,
+      value: null
     };
   },
   model: {
-    prop: 'value',
-    event: 'input'
+    prop: "value",
+    event: "input"
   },
   components: {
-    SearchIcon, ClearIcon,
+    SearchIcon,
+    ClearIcon
   },
-  props: [ 'placeholder', 'isSpread' ],
+  props: ["placeholder", "isSpread"],
   methods: {
     handleClear() {
       this.value = null;
-      this.$emit('input', null);
-    },
+      this.$emit("input", null);
+    }
   }
-}
+};
 </script>
 <style lang="sass" scoped>
 @import "../config.sass";
@@ -85,5 +86,3 @@ export default {
   &:focus
     outline: none;
 </style>
-
-

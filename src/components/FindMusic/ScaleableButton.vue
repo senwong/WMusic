@@ -19,42 +19,42 @@
   </Motion>
 </template>
 <script>
-import { Motion } from 'vue-motion'
-import LeftArrowIcon from '@/components/SVGIcons/LeftArrowIcon';
-import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon';
-import Button from '@/components/globals/Button';
+import { Motion } from "vue-motion";
+import LeftArrowIcon from "@/components/SVGIcons/LeftArrowIcon";
+import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon";
+import Button from "@/components/globals/Button";
 
 export default {
   data() {
     return {
-      scale: 1.0,
+      scale: 1.0
     };
   },
   props: {
-    position: String,
+    position: String
   },
   components: {
     Motion,
     LeftArrowIcon,
     RightArrowIcon,
-    Button,
+    Button
   },
   methods: {
-    zoomIn: function() {
+    zoomIn() {
       this.scale = 1.2;
     },
-    zoomOut: function() {
+    zoomOut() {
       this.scale = 1.0;
     }
   }
-}
+};
 </script>
 <style lang="sass" scoped>
 .wrapper
   display: flex;
   align-items: center;
   height: 100%;
-  
+
   color: white;
   background-color: transparent;
   cursor: pointer;
@@ -65,4 +65,3 @@ export default {
   height: 100%;
   transform-origin: center;
 </style>
-

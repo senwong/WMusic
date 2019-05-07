@@ -6,35 +6,35 @@
 </template>
 
 <script>
-import Button from '@/components/globals/Button';
+import Button from "@/components/globals/Button";
 
 export default {
   props: {
     offset: {
       required: true,
-      type: Number,
+      type: Number
     },
-    limit:  {
+    limit: {
       required: true,
-      type: Number,
+      type: Number
     },
     hasMore: {
       required: true,
-      type: Boolean,
+      type: Boolean
     }
   },
   components: { Button },
   methods: {
     handlePrev() {
       if (this.offset <= 0) return;
-      this.$emit('offsetChange', Math.max(0, this.offset - this.limit));
+      this.$emit("offsetChange", Math.max(0, this.offset - this.limit));
     },
     handleNext() {
       if (!this.hasMore) return;
-      this.$emit('offsetChange', this.offset + this.limit);
+      this.$emit("offsetChange", this.offset + this.limit);
     }
   }
-}
+};
 </script>
 
 <style lang="sass" scoped>

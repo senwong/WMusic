@@ -3,13 +3,13 @@
     <div class="bar">
       <div
         class="bg"
-        :style="{transform: `translateX(${bgAccTranslateX}px)`, left: `${-bgTotalWidth}px`}"
+        :style="{ transform: `translateX(${bgAccTranslateX}px)`, left: `${-bgTotalWidth}px` }"
       />
     </div>
     <div
       class="circle"
       ref="circle"
-      :style="{transform: `translate(${circleAccTranslateX}px, -50%)`}"
+      :style="{ transform: `translate(${circleAccTranslateX}px, -50%)` }"
     />
   </div>
 </template>
@@ -66,7 +66,10 @@ export default {
     },
     startAnimation(timestamp) {
       if (!this.animatable) return;
-      if (this.circleAccTranslateX >= this.circleTotalWidth || this.bgAccTranslateX >= this.bgTotalWidth) {
+      if (
+        this.circleAccTranslateX >= this.circleTotalWidth ||
+        this.bgAccTranslateX >= this.bgTotalWidth
+      ) {
         this.circleAccTranslateX = 0;
         this.bgAccTranslateX = 0;
         return;
@@ -90,7 +93,7 @@ export default {
       this.bgAccTranslateX = 0;
     },
     handleClick({ clientX }) {
-      const container = this.$refs.container;
+      const { container } = this.$refs;
       const { left } = container.getBoundingClientRect();
 
       this.bgAccTranslateX = clientX - left;

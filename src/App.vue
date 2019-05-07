@@ -1,42 +1,45 @@
 <template>
-<div class="page-container">
-  <navbar-component class="container__aside scrollbar-invisible" />
-  <main class="container__main">
-    <router-view :key="$route.path" />
-  </main>
-  <playbar-component class="container__footer" />
-  <!-- 右边弹出菜单 -->
-  <play-list-component v-if="rightPlaylistVisible" class="right-menu" />
+  <div class="page-container">
+    <navbar-component class="container__aside scrollbar-invisible" />
+    <main class="container__main">
+      <router-view :key="$route.path" />
+    </main>
+    <playbar-component class="container__footer" />
+    <!-- 右边弹出菜单 -->
+    <play-list-component v-if="rightPlaylistVisible" class="right-menu" />
 
-  <!-- 滚动页面返回顶部按钮 -->
-  <transition name="fade">
-    <button v-if="isScrolled" @click="scrollToTop" class="button_icon large back-top" >
-      <ScrollToTopIcon />
-    </button>
-  </transition>
-</div>
+    <!-- 滚动页面返回顶部按钮 -->
+    <transition name="fade">
+      <button v-if="isScrolled" @click="scrollToTop" class="button_icon large back-top">
+        <ScrollToTopIcon />
+      </button>
+    </transition>
+  </div>
 </template>
 
 <script>
-import NavbarComponent from './components/Navbar.vue'
-import PlaybarComponent from './components/playbar/Playbar.vue'
-import PlayListComponent from './components/PlayList.vue';
-import ScrollToTopIcon from './components/SVGIcons/ScrollToTopIcon';
+import NavbarComponent from "./components/Navbar.vue";
+import PlaybarComponent from "./components/playbar/Playbar.vue";
+import PlayListComponent from "./components/PlayList.vue";
+import ScrollToTopIcon from "./components/SVGIcons/ScrollToTopIcon";
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
-    NavbarComponent, PlaybarComponent, PlayListComponent, ScrollToTopIcon,
+    NavbarComponent,
+    PlaybarComponent,
+    PlayListComponent,
+    ScrollToTopIcon
   },
   data() {
     return {
-      isScrolled: false,
-    }
+      isScrolled: false
+    };
   },
   computed: {
     rightPlaylistVisible() {
       return this.$store.state.rightPlaylistVisible;
-    },
+    }
   },
   methods: {
     toggleRightMenu() {
@@ -45,38 +48,42 @@ export default {
     },
 
     scrollToTop() {
-      if(!this.$el) return
-      const el = document.scrollingElement
-      if(!el) return
-      const duration = 0.6, distance = el.scrollTop, step = Math.floor(distance / (60 * duration));
+      if (!this.$el) return;
+      const el = document.scrollingElement;
+      if (!el) return;
+      const duration = 0.6;
+      const distance = el.scrollTop;
+      const step = Math.floor(distance / (60 * duration));
       function s() {
-        el.scrollTop -= step
-        if(el.scrollTop > 0){
-          window.requestAnimationFrame(s)
+        el.scrollTop -= step;
+        if (el.scrollTop > 0) {
+          window.requestAnimationFrame(s);
         }
       }
-      window.requestAnimationFrame(s)
+      window.requestAnimationFrame(s);
     }
   },
   mounted() {
     this.rightMenu = this.$el.querySelector(".right-menu");
     this.$el.querySelector(".container__main").addEventListener("scroll", e => {
-      console.log("scroll")
-      const isScrollBottom = e.target.scrollTop + e.target.offsetHeight === e.target.scrollHeight
+      console.log("scroll");
+      const isScrollBottom = e.target.scrollTop + e.target.offsetHeight === e.target.scrollHeight;
       if (isScrollBottom !== this.$store.state.isScrollBottom) {
-        this.$store.commit('changeScroll', isScrollBottom)
+        this.$store.commit("changeScroll", isScrollBottom);
       }
-      this.isScrolled = e.target.scrollTop > 0
-    })
+      this.isScrolled = e.target.scrollTop > 0;
+    });
     document.addEventListener("scroll", e => {
-      const isScrollBottom =  document.scrollingElement.scrollTop + document.scrollingElement.clientHeight === document.scrollingElement.scrollHeight
+      const isScrollBottom =
+        document.scrollingElement.scrollTop + document.scrollingElement.clientHeight ===
+        document.scrollingElement.scrollHeight;
       if (isScrollBottom !== this.$store.state.isScrollBottom) {
-        this.$store.commit('changeScroll', isScrollBottom)
+        this.$store.commit("changeScroll", isScrollBottom);
       }
-      this.isScrolled = document.scrollingElement.scrollTop > 0
-    })
-  },
-}
+      this.isScrolled = document.scrollingElement.scrollTop > 0;
+    });
+  }
+};
 </script>
 
 <style lang="sass">
@@ -93,7 +100,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-.page-container 
+.page-container
   margin: auto;
   width: 100%;
   height: 100%;

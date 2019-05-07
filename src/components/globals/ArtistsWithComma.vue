@@ -8,7 +8,7 @@
 // export default class ArtistWithComma extends Vue {
 //   functional: boolean = true
 //   @Prop() readonly artists!: Artist[];
-//   @Prop(String) readonly commaClass?: string; 
+//   @Prop(String) readonly commaClass?: string;
 //   @Prop(String) readonly aTagClass?: string;
 
 //   render(h: CreateElement): VNode {
@@ -34,16 +34,25 @@
 //     // return children;
 //   }
 // }
-import { arrayJoin } from '@/utilitys';
+import { arrayJoin } from "@/utilitys";
 
 export default {
   functional: true,
-  render(h, { props: { artists, aTagClass, commaClass } }) {
-    return arrayJoin(artists, 'comma').map(ar => {
-      return ar == 'comma'
-        ? <span class={commaClass} >, </span>
-        : <RouterLink class={aTagClass} to={ '/artist/' + ar.id}>{ar.name}</RouterLink>
+  render(
+    h,
+    {
+      props: { artists, aTagClass, commaClass }
+    }
+  ) {
+    return arrayJoin(artists, "comma").map(ar => {
+      return ar == "comma" ? (
+        <span class={commaClass}>, </span>
+      ) : (
+        <RouterLink class={aTagClass} to={"/artist/" + ar.id}>
+          {ar.name}
+        </RouterLink>
+      );
     });
   }
-}
+};
 </script>

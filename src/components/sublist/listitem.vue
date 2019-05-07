@@ -16,26 +16,25 @@
 </template>
 
 <script>
-import ArtistsWithComma from '@/components/globals/ArtistsWithComma';
-import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder";
 
 export default {
   props: {
     imgSrc: {
       required: true,
-      type: String,
+      type: String
     },
     imgAlt: {
       required: true,
-      type: String,
+      type: String
     },
     to: {
       type: String,
-      required: true,
+      required: true
     }
   },
-  components: { ArtistsWithComma, ImageWithPlaceholder },
-}
+  components: { ImageWithPlaceholder }
+};
 </script>
 
 <style lang="sass" scoped>

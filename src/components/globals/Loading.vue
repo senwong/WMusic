@@ -7,8 +7,8 @@
 </template>
 
 <script>
-let cy = 75;
-let lastRafTime = {
+const cy = 75;
+const lastRafTime = {
   left: (Math.PI * 3) / 2,
   middle: Math.PI,
   right: Math.PI / 2
@@ -16,15 +16,15 @@ let lastRafTime = {
 export default {
   data() {
     return {
-      animationId: null,
+      animationId: null
     };
   },
   mounted() {
-    const {left, middle, right} = this.$refs;
+    const { left, middle, right } = this.$refs;
     this.left = left;
     this.middle = middle;
     this.right = right;
-    console.log('right ', this.right);
+    console.log("right ", this.right);
     this.animationId = requestAnimationFrame(this.animate);
   },
   methods: {
@@ -41,9 +41,7 @@ export default {
   beforeDestroy() {
     if (this.animationId) cancelAnimationFrame(this.animationId);
   }
-}
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

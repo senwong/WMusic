@@ -1,47 +1,46 @@
 <template>
   <div class="list-item" v-if="content">
     <CardImage
-      :play="{onClick: () => play()}"
-      :href="'/playlist/'+ content.id"
+      :play="{ onClick: () => play() }"
+      :href="'/playlist/' + content.id"
       :src="content.picUrl | convert2Https"
       :alt="content.name"
       ratio="1:1"
       radius
     />
     <router-link :to="'/playlist/' + content.id" class="list__name">
-      {{content.name}}
+      {{ content.name }}
     </router-link>
   </div>
 </template>
-<script lang='ts'>
-import CardImage from '@/components/globals/CardImage.vue';
-import { Vue, Component, Prop } from 'vue-property-decorator';
+<script lang="ts">
+import CardImage from "@/components/globals/CardImage.vue";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { getTopList } from "@/service";
 
 @Component({
-  components: { CardImage },
+  components: { CardImage }
 })
 export default class CardItem extends Vue {
   @Prop() typeId!: number;
-  
+
   content: {
-    id: number,
-    picUrl: string,
-    name: string,
+    id: number;
+    picUrl: string;
+    name: string;
   } | null = null;
 
   created() {
-    getTopList(this.typeId).then(
-      res => {
-        const p = res.data.playlist;
-        this.content = {
-          id: p.id,
-          picUrl: p.coverImgUrl,
-          name: p.name,
-        }
-      }
-    )
+    getTopList(this.typeId).then(res => {
+      const p = res.data.playlist;
+      this.content = {
+        id: p.id,
+        picUrl: p.coverImgUrl,
+        name: p.name
+      };
+    });
   }
+
   play() {
     // TODO
   }
@@ -65,4 +64,3 @@ export default class CardItem extends Vue {
   &:hover
     text-decoration: underline
 </style>
-

@@ -1,37 +1,44 @@
 <template>
-<div class="user-media-card-grid" v-if="users">
-  <div class="user-media-card-grid__container">
-    <UserMediaCard v-for="user in users" :key="user.userId" :user="user"/>
+  <div class="user-media-card-grid" v-if="users">
+    <div class="user-media-card-grid__container">
+      <UserMediaCard v-for="user in users" :key="user.userId" :user="user" />
+    </div>
+    <div class="pagination">
+      <Button class="pagination__back-btn" :disabled="backBtnDisabled" @click.native="handleBack"
+        >上一页</Button
+      >
+      <Button
+        class="pagination__forward-btn"
+        :disabled="forwardBtnDisabled"
+        @click.native="handleForward"
+        >下一页</Button
+      >
+    </div>
   </div>
-  <div class="pagination">
-    <Button class="pagination__back-btn" :disabled="backBtnDisabled" @click.native="handleBack">上一页</Button>
-    <Button class="pagination__forward-btn" :disabled="forwardBtnDisabled" @click.native="handleForward">下一页</Button>
-  </div>
-</div>
 </template>
 
 <script>
-import UserMediaCard from './UserMediaCard';
-import Button from '@/components/globals/Button';
+import UserMediaCard from "./UserMediaCard";
+import Button from "@/components/globals/Button";
 
 export default {
   props: {
     users: {
       required: true,
-      type: Array,
+      type: Array
     },
     more: {
       required: true,
-      type: Boolean,
+      type: Boolean
     },
     offset: {
       required: true,
-      type: Number,
+      type: Number
     },
     limit: {
       required: true,
-      type: Number,
-    },
+      type: Number
+    }
   },
   components: { UserMediaCard, Button },
   computed: {
@@ -45,14 +52,14 @@ export default {
   methods: {
     handleBack() {
       if (this.offset <= 0) return;
-      this.$emit('offsetChange', Math.max(0, this.offset - this.limit));
+      this.$emit("offsetChange", Math.max(0, this.offset - this.limit));
     },
     handleForward() {
       if (!this.more) return;
-      this.$emit('offsetChange', this.offset + this.limit);
-    },
+      this.$emit("offsetChange", this.offset + this.limit);
+    }
   }
-}
+};
 </script>
 
 <style lang="sass" scoped>

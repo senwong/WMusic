@@ -1,5 +1,5 @@
 <template>
-  <button 
+  <button
     class="wrapper"
     :class="{
       large: large,
@@ -8,26 +8,30 @@
       small: small,
       primary: primary
     }"
-    >
-    <div class="background"></div> 
+  >
+    <div class="background"></div>
     <slot></slot>
   </button>
 </template>
 
-<script lang='ts'>
-import { Vue, Component, Prop } from 'vue-property-decorator';
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class SvgBtnWrapper extends Vue {
   @Prop(Boolean) small!: boolean;
+
   @Prop(Boolean) middle!: boolean;
+
   @Prop(Boolean) large!: boolean;
+
   @Prop(Boolean) xlarge!: boolean;
+
   @Prop(Boolean) primary!: boolean;
 }
 </script>
 
-<style lang='sass' scoped>
+<style lang="sass" scoped>
 @import '@/style/colors.sass'
 
 .wrapper
@@ -52,7 +56,7 @@ export default class SvgBtnWrapper extends Vue {
   &.primary
     color: $primary
     svg
-      fill: $primary  
+      fill: $primary
   &.primary:hover
     color: #fff
     svg

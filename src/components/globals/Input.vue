@@ -2,7 +2,7 @@
   <input
     class="input-container"
     :type="type"
-    :class="{'input-large': large}"
+    :class="{ 'input-large': large }"
     :placeholder="placeholder"
     :value="value"
     @input="$emit('input', $event.target.value)"
@@ -15,13 +15,13 @@ export default {
     type: String,
     large: Boolean,
     placeholder: String,
-    value: String,
+    value: String
   },
   model: {
-    prop: 'value',
-    event: 'input', 
+    prop: "value",
+    event: "input"
   }
-}
+};
 </script>
 
 <style lang="sass" scoped>

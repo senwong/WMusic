@@ -1,26 +1,26 @@
 <template>
-<div>
-  <UserMediaCardGrid
-    :users="users"
-    :more="more"
-    :offset="offset"
-    :limit="limit"
-    @offsetChange="handleOffsetChange"
-  />
-  <ErrorLabel class="get-user-follows-fail" :show="isGetUserFollowsFail">
-    获取用户关注错误。
-  </ErrorLabel>
-</div>
+  <div>
+    <UserMediaCardGrid
+      :users="users"
+      :more="more"
+      :offset="offset"
+      :limit="limit"
+      @offsetChange="handleOffsetChange"
+    />
+    <ErrorLabel class="get-user-follows-fail" :show="isGetUserFollowsFail">
+      获取用户关注错误。
+    </ErrorLabel>
+  </div>
 </template>
 
 <script>
-import UserMediaCardGrid from './UserMediaCardGrid';
-import { getUserFollows } from '@/service';
-import ErrorLabel from '@/components/globals/ErrorLabel';
+import UserMediaCardGrid from "./UserMediaCardGrid";
+import { getUserFollows } from "@/service";
+import ErrorLabel from "@/components/globals/ErrorLabel";
 
 // getUserFollows limit in request
 export default {
-  name: 'UserFollows',
+  name: "UserFollows",
   data() {
     return {
       users: [],
@@ -28,7 +28,7 @@ export default {
       offset: 0,
       uid: null,
       limit: 30,
-      isGetUserFollowsFail: false,
+      isGetUserFollowsFail: false
     };
   },
   components: { UserMediaCardGrid, ErrorLabel },
@@ -38,7 +38,7 @@ export default {
   },
   watch: {
     offset() {
-      this.updateUsers(); 
+      this.updateUsers();
     }
   },
   methods: {
@@ -50,14 +50,14 @@ export default {
           this.more = res.data.more;
           this.isGetUserFollowsFail = false;
         },
-        error => this.isGetUserFollowsFail = true
-      )
+        error => (this.isGetUserFollowsFail = true)
+      );
     },
     handleOffsetChange(val) {
       this.offset = val;
     }
   }
-}
+};
 </script>
 <style lang="sass" scoped>
 .get-user-follows-fail

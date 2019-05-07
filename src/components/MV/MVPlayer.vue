@@ -1,15 +1,16 @@
 <template>
-<div class="main-wrapper">
-  <div class="mvplay-container" :class="{'theater-mode': isTheaterMode}">
+  <div class="main-wrapper">
+    <div class="mvplay-container" :class="{ 'theater-mode': isTheaterMode }">
       <div class="video-contaner">
-        <video-player :brs="brs" @toggle-theater-mode="isTheaterMode = !isTheaterMode"></video-player>
+        <video-player
+          :brs="brs"
+          @toggle-theater-mode="isTheaterMode = !isTheaterMode"
+        ></video-player>
         <p class="name">
           <span>
             <ArtistsWithComma :artists="artists" />
           </span>
-          <span>
-            - {{name}}
-          </span>
+          <span> - {{ name }} </span>
         </p>
         <p class="space-between">
           <span>{{ formatCount(playCount) }}次播放</span>
@@ -22,27 +23,31 @@
       <div class="similar-mv">
         <h3>相似MV</h3>
         <router-link
-          :to="'/mvplay/'+simiMV.id"
+          :to="'/mvplay/' + simiMV.id"
           class="similar-mv__item"
           v-for="simiMV in similarMVs"
           :key="simiMV.id"
         >
-          <img class="left__item" :src="simiMV.cover | convert2Https | clipImage(336, 188)" :alt="simiMV.name">
+          <img
+            class="left__item"
+            :src="simiMV.cover | convert2Https | clipImage(336, 188)"
+            :alt="simiMV.name"
+          />
           <div class="right__item">
-            <div class="txt_main">{{simiMV.name}}</div>
-            <div class="txt_sub">{{simiMV.artistName}}</div>
+            <div class="txt_main">{{ simiMV.name }}</div>
+            <div class="txt_sub">{{ simiMV.artistName }}</div>
           </div>
         </router-link>
       </div>
+    </div>
   </div>
-</div>
 </template>
 <script>
-import { getMvData, getSimilarMV } from '@/service';
-import CommentList from '@/components/FindMusic/CommentList';
-import VideoPlayer from '@/components/MV/VideoPlayer';
-import { formatCount, arrayJoin } from '@/utilitys';
-import ArtistsWithComma from '@/components/globals/ArtistsWithComma';
+import { getMvData, getSimilarMV } from "@/service";
+import CommentList from "@/components/FindMusic/CommentList";
+import VideoPlayer from "@/components/MV/VideoPlayer";
+import { formatCount, arrayJoin } from "@/utilitys";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma";
 
 export default {
   name: "MVPlayer",
@@ -58,44 +63,44 @@ export default {
       shareCount: 0,
       brs: null,
       similarMVs: [],
-      isTheaterMode: false,
-    }
+      isTheaterMode: false
+    };
   },
   created() {
-    this.updateView()
+    this.updateView();
   },
   methods: {
     formatCount,
     arrayJoin,
     updateView() {
-      this.id = this.$route.params.id
+      this.id = this.$route.params.id;
       getMvData(this.id).then(
         res => {
-          res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
-          const brsKeys = Object.keys(res.data.data.brs)
-          this.videoUrl = res.data.data.brs[brsKeys[brsKeys.length - 1]]
-          this.videoUrl = this.videoUrl.replace(/http:\/\//g, "https://")
-          this.name = res.data.data.name
-          this.artists = res.data.data.artists
-          this.playCount = res.data.data.playCount
-          this.likeCount = res.data.data.likeCount
-          this.shareCount = res.data.data.shareCount
-          this.brs = res.data.data.brs
+          res = JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"));
+          const brsKeys = Object.keys(res.data.data.brs);
+          this.videoUrl = res.data.data.brs[brsKeys[brsKeys.length - 1]];
+          this.videoUrl = this.videoUrl.replace(/http:\/\//g, "https://");
+          this.name = res.data.data.name;
+          this.artists = res.data.data.artists;
+          this.playCount = res.data.data.playCount;
+          this.likeCount = res.data.data.likeCount;
+          this.shareCount = res.data.data.shareCount;
+          this.brs = res.data.data.brs;
         },
-        error => alert('getMvData error ' + error)
+        error => alert(`getMvData error ${error}`)
       );
       getSimilarMV(this.id).then(res => {
-        res =  JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"))
-        this.similarMVs = res.data.mvs
+        res = JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"));
+        this.similarMVs = res.data.mvs;
       });
-    },
+    }
   },
   watch: {
     $route(val) {
-      this.updateView()
+      this.updateView();
     }
   }
-}
+};
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass"
@@ -146,4 +151,3 @@ export default {
   font-size: 14px;
   color: $gray3;
 </style>
-

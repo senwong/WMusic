@@ -1,40 +1,40 @@
 <template>
-<div>
-  <div v-if="playlist">
-    <div class="title">歌单（{{count}}）</div>
-    <ul class="list-container">
-      <li v-for="list in playlist" :key="list.id">
-        <router-link :to="'/playlist/' + list.id" class="list-item">
-          <div class="playlist-cover">
-            <ImageWithPlaceholder
-              :src="list.coverImgUrl | convert2Https | clipImage(300, 300)"
-              :alt="list.name"
-              ratio="1:1"
-            />
-          </div>
-          <HoverUnderline>
-            <div class="name">{{list.name}}</div>
-          </HoverUnderline>
-        </router-link>
-      </li>
-    </ul>
-    <Pagination :total="pageTotal" @change="handlePageChange" />
+  <div>
+    <div v-if="playlist">
+      <div class="title">歌单（{{ count }}）</div>
+      <ul class="list-container">
+        <li v-for="list in playlist" :key="list.id">
+          <router-link :to="'/playlist/' + list.id" class="list-item">
+            <div class="playlist-cover">
+              <ImageWithPlaceholder
+                :src="list.coverImgUrl | convert2Https | clipImage(300, 300)"
+                :alt="list.name"
+                ratio="1:1"
+              />
+            </div>
+            <HoverUnderline>
+              <div class="name">{{ list.name }}</div>
+            </HoverUnderline>
+          </router-link>
+        </li>
+      </ul>
+      <Pagination :total="pageTotal" @change="handlePageChange" />
+    </div>
+    <div class="loading-spinenr" v-else>
+      <Spinner />
+    </div>
+    <ErrorLabel :show="isShowError">{{ errorMsg }}</ErrorLabel>
   </div>
-  <div class="loading-spinenr"  v-else>
-    <Spinner/>
-  </div>
-  <ErrorLabel :show="isShowError">{{errorMsg}}</ErrorLabel>
-</div>
 </template>
 
 <script>
-import { getUserPlaylist } from '@/service';
-import SongCards from '@/components/globals/SongCards';
-import Pagination from '@/components/globals/Pagination';
-import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
-import Spinner from '@/components/globals/Spinner.vue';
-import ErrorLabel from '@/components/globals/ErrorLabel';
-import HoverUnderline from '@/components/globals/HoverUnderline.vue';
+import { getUserPlaylist } from "@/service";
+import SongCards from "@/components/globals/SongCards";
+import Pagination from "@/components/globals/Pagination";
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder";
+import Spinner from "@/components/globals/Spinner.vue";
+import ErrorLabel from "@/components/globals/ErrorLabel";
+import HoverUnderline from "@/components/globals/HoverUnderline.vue";
 
 export default {
   data() {
@@ -44,20 +44,19 @@ export default {
       offset: 0,
       isLoading: true,
       isShowError: false,
-      errorMsg: '获取用户歌单错误',
+      errorMsg: "获取用户歌单错误"
     };
   },
   props: {
     userId: Number,
-    count: Number,
+    count: Number
   },
   components: {
-    SongCards,
     Pagination,
     ImageWithPlaceholder,
     Spinner,
     ErrorLabel,
-    HoverUnderline,
+    HoverUnderline
   },
   watch: {
     userId() {
@@ -68,7 +67,7 @@ export default {
     // number of pages to display, 1 ... n
     pageTotal() {
       return Math.ceil(this.count / this.limit);
-    },
+    }
   },
   created() {
     this.updatePlaylist();
@@ -94,8 +93,8 @@ export default {
       this.offset = this.limit * currentPageIdx;
       this.updatePlaylist();
     }
-  },
-}
+  }
+};
 </script>
 
 <style lang="sass" scoped>

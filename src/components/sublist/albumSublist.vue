@@ -1,58 +1,68 @@
 <template>
-<div class="album-sublist">
-  <ul class="album-sublist__container">
-    <ListItem
-      v-for="album in albums"
-      :key="album.id"
-      :to="`/album/${album.id}`"
-      :imgSrc="album.picUrl | clipImage(150, 150)"
-      :imgAlt="album.name"
-    >
-      <template v-slot:title>
-        <router-link :to="`/album/${album.id}`">{{album.name}}</router-link>
-      </template>
-      <template v-slot:subtitle_1>
-        <ArtistsWithComma :artists="album.artists" aTagClass='' commaClass='' />
-      </template>
-      <template v-slot:subtitle_2>
-        {{album.size}}首
-      </template>
-    </ListItem>
-  </ul>
-  <ErrorLabel class="error-label" :show="isError">{{errorMsg}}</ErrorLabel>
-  <PrevNextPagination :offset="offset" :limit="limit" :hasMore="hasMore" @offsetChange="handleOffsetChange"/>
-</div>
+  <div class="album-sublist">
+    <ul class="album-sublist__container">
+      <ListItem
+        v-for="album in albums"
+        :key="album.id"
+        :to="`/album/${album.id}`"
+        :imgSrc="album.picUrl | clipImage(150, 150)"
+        :imgAlt="album.name"
+      >
+        <template v-slot:title>
+          <router-link :to="`/album/${album.id}`">{{ album.name }}</router-link>
+        </template>
+        <template v-slot:subtitle_1>
+          <ArtistsWithComma :artists="album.artists" aTagClass="" commaClass="" />
+        </template>
+        <template v-slot:subtitle_2>
+          {{ album.size }}首
+        </template>
+      </ListItem>
+    </ul>
+    <ErrorLabel class="error-label" :show="isError">{{ errorMsg }}</ErrorLabel>
+    <PrevNextPagination
+      :offset="offset"
+      :limit="limit"
+      :hasMore="hasMore"
+      @offsetChange="handleOffsetChange"
+    />
+  </div>
 </template>
 
-<script lang='ts'>
-import { getAlbumSublist } from '@/service';
-import ErrorLabel from '@/components/globals/ErrorLabel.vue';
-import ListItem from './listitem.vue';
-import ArtistsWithComma from '@/components/globals/ArtistsWithComma.vue';
-import PrevNextPagination from '@/components/globals/PrevNextPagination.vue';
-import { Album } from '@/types';
-import { Vue, Component } from 'vue-property-decorator';
+<script lang="ts">
+import { getAlbumSublist } from "@/service";
+import ErrorLabel from "@/components/globals/ErrorLabel.vue";
+import ListItem from "./listitem.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import PrevNextPagination from "@/components/globals/PrevNextPagination.vue";
+import { Album } from "@/types";
+import { Vue, Component } from "vue-property-decorator";
 
 @Component({
   components: {
     ErrorLabel,
     ListItem,
     ArtistsWithComma,
-    PrevNextPagination,
-  },
+    PrevNextPagination
+  }
 })
 export default class AlbumSubList extends Vue {
   albums: Album[] = [];
+
   isError: boolean = false;
-  errorMsg: string = '获取收藏的专辑列表错误';
+
+  errorMsg: string = "获取收藏的专辑列表错误";
+
   offset: number = 0;
+
   readonly limit: number = 25;
+
   hasMore: boolean = false;
-  
+
   created() {
     this.updateData();
   }
-  
+
   updateData(): void {
     getAlbumSublist(this.offset, this.limit).then(
       res => {
@@ -64,7 +74,8 @@ export default class AlbumSubList extends Vue {
         }
       }
     );
-  };
+  }
+
   handleOffsetChange(newOffset: number): void {
     this.offset = newOffset;
     this.updateData();
@@ -72,7 +83,7 @@ export default class AlbumSubList extends Vue {
 }
 </script>
 
-<style lang='sass' scoped>
+<style lang="sass" scoped>
 .album-sublist
   padding-bottom: 2em
 .error-label

@@ -1,26 +1,26 @@
-import VueRouter from "vue-router"
-import FindMusic from "@/components/FindMusic/Index.vue"
-import PlayListDetail from "@/components/FindMusic/PlayListDetail.vue"
-import SongDetail from "@/components/FindMusic/SongDetail.vue"
-import ArtistDetail from "@/components/FindMusic/ArtistDetail.vue"
-import AlbumDetail from "@/components/FindMusic/AlbumDetail.vue"
-import UserDetail from "@/components/user/UserDetail.vue"
-import Playlist from "@/components/Playlist/Index.vue"
-import TopListIndex from "@/components/TopList/Index.vue"
-import MV from "@/components/MV/Index.vue"
-import MVPlayer from "@/components/MV/MVPlayer.vue"
-import MVRankList from "@/components/MV/RankList.vue"
+import VueRouter from "vue-router";
+import FindMusic from "@/components/FindMusic/Index.vue";
+import PlayListDetail from "@/components/FindMusic/PlayListDetail.vue";
+import SongDetail from "@/components/FindMusic/SongDetail.vue";
+import ArtistDetail from "@/components/FindMusic/ArtistDetail.vue";
+import AlbumDetail from "@/components/FindMusic/AlbumDetail.vue";
+import UserDetail from "@/components/user/UserDetail.vue";
+import Playlist from "@/components/Playlist/Index.vue";
+import TopListIndex from "@/components/TopList/Index.vue";
+import MV from "@/components/MV/Index.vue";
+import MVPlayer from "@/components/MV/MVPlayer.vue";
+import MVRankList from "@/components/MV/RankList.vue";
 import SearchIndex from "@/components/Search/Index.vue";
-import LogIn from '@/components/login/index.vue';
-import UserRecord from '@/components/userRecord/index.vue';
-import LikedSongs from '@/components/likedSongs/index.vue';
-import UserFollows from '@/components/user/UserFollows.vue';
-import UserFolloweds from '@/components/user/UserFolloweds.vue';
-import UserEdit from '@/components/user/UserEdit.vue';
-import Sublist from '@/components/sublist/index.vue';
-import auth from '@/auth';
+import LogIn from "@/components/login/index.vue";
+import UserRecord from "@/components/userRecord/index.vue";
+import LikedSongs from "@/components/likedSongs/index.vue";
+import UserFollows from "@/components/user/UserFollows.vue";
+import UserFolloweds from "@/components/user/UserFolloweds.vue";
+import UserEdit from "@/components/user/UserEdit.vue";
+import Sublist from "@/components/sublist/index.vue";
+import auth from "@/auth";
 
-const router =  new VueRouter({
+const router = new VueRouter({
   mode: "history",
   // base: __dirname,
   routes: [
@@ -50,18 +50,15 @@ const router =  new VueRouter({
       path: "/sublist",
       component: Sublist,
       meta: { requiresAuth: true }
-    },
-  ],
+    }
+  ]
 });
 
 router.beforeEach((to, _, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    auth.loggedIn().then(
-      () => next(),
-      () => next({ path: '/login' }),
-    )
+    auth.loggedIn().then(() => next(), () => next({ path: "/login" }));
   } else {
     next();
   }

@@ -1,42 +1,42 @@
 <template>
-<div class="select-list">
-  <slot name="title"></slot>
-  <div
-    class="option-item"
-    v-for="option in data"
-    :key="option.id"
-    :data-id="option.id"
-    :class="{selected: option.isSelected}"
-  >
-    <span class="title">{{option.title}}</span>
-    <div class="icon" v-show="option.isSelected">
-      <CheckmarkIcon />
+  <div class="select-list">
+    <slot name="title"></slot>
+    <div
+      class="option-item"
+      v-for="option in data"
+      :key="option.id"
+      :data-id="option.id"
+      :class="{ selected: option.isSelected }"
+    >
+      <span class="title">{{ option.title }}</span>
+      <div class="icon" v-show="option.isSelected">
+        <CheckmarkIcon />
+      </div>
     </div>
   </div>
-</div>
 </template>
 <script>
-import CheckmarkIcon from '@/components/SVGIcons/CheckmarkIcon';
+import CheckmarkIcon from "@/components/SVGIcons/CheckmarkIcon";
 
 export default {
   name: "SelectList",
-  props: ['data'],
+  props: ["data"],
   components: { CheckmarkIcon },
   methods: {
     handleClick(optionEle) {
       const id = parseInt(optionEle.dataset.id);
-      this.data.forEach( option => option.isSelected = option.id === id ? true : false);
-      this.$emit('selected-change', id);
-    },
+      this.data.forEach(option => (option.isSelected = option.id === id));
+      this.$emit("selected-change", id);
+    }
   },
   mounted() {
-    this.$el.querySelectorAll(".option-item").forEach(option =>{
-      option.addEventListener('click', () => {
-        this.handleClick(option)
-      })
-    })
+    this.$el.querySelectorAll(".option-item").forEach(option => {
+      option.addEventListener("click", () => {
+        this.handleClick(option);
+      });
+    });
   }
-}
+};
 </script>
 <style lang="sass" scoped>
 @import "../config.sass";
@@ -69,4 +69,3 @@ export default {
   &:hover
     color: white;
 </style>
-

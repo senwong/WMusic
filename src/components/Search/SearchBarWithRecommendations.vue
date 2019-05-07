@@ -16,51 +16,51 @@
 </template>
 
 <script>
-import SearchBar from './SearchBar';
-import SearchRecommendations from './SearchRecommendations';
+import SearchBar from "./SearchBar";
+import SearchRecommendations from "./SearchRecommendations";
 
 export default {
   data() {
     return {
       showRecommendations: false,
-      value: null,
+      value: null
     };
   },
   model: {
-    prop: 'value',
-    event: 'input'
+    prop: "value",
+    event: "input"
   },
-  props: [ 'placeholder' ],
+  props: ["placeholder"],
   components: {
     SearchBar,
-    SearchRecommendations,
+    SearchRecommendations
   },
   methods: {
     handleFocus() {
       this.showRecommendations = true;
-      this.$emit('focus');
+      this.$emit("focus");
     },
     handleEnter() {
       this.showRecommendations = false;
-      this.$emit('enter');
+      this.$emit("enter");
     },
     handleInput(val) {
-      this.$emit('input', val);
+      this.$emit("input", val);
     },
     handleClick({ target }) {
       if (!this.$refs.container) return;
       if (!(target == this.$refs.container || this.$refs.container.contains(target))) {
         this.showRecommendations = false;
       }
-    },
+    }
   },
   mounted() {
-    window.addEventListener('click', this.handleClick);
+    window.addEventListener("click", this.handleClick);
   },
   beforeDestroy() {
-    window.removeEventListener('click', this.handleClick);
+    window.removeEventListener("click", this.handleClick);
   }
-}
+};
 </script>
 
 <style lang="sass" scoped>
@@ -84,5 +84,4 @@ export default {
 .slide-up-enter, .slide-up-leave-to
   transform: translateY(-100px);
   opacity: 0;
-
 </style>

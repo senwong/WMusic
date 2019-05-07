@@ -10,10 +10,18 @@
     <!-- first row -->
     <div class="comment-reply__avatar-input">
       <!-- avatar -->
-      <img src="" alt="" class="comment-reply__avatar" :class="{large: isMain}">
+      <img src="" alt="" class="comment-reply__avatar" :class="{ large: isMain }" />
       <div class="comment-reply__input__wrapper">
-        <textarea type="text" class="comment-reply__input" placeholder="添加回复" @focus="handleFocus" @blur="isFocused = false" :autofocus="!isMain" @keydown="autoAdjustHeight" />
-        <div class="comment-reply__input__fake-bot-border" :class="{show: isFocused}"/>
+        <textarea
+          type="text"
+          class="comment-reply__input"
+          placeholder="添加回复"
+          @focus="handleFocus"
+          @blur="isFocused = false"
+          :autofocus="!isMain"
+          @keydown="autoAdjustHeight"
+        />
+        <div class="comment-reply__input__fake-bot-border" :class="{ show: isFocused }" />
       </div>
     </div>
     <!-- second row -->
@@ -29,13 +37,13 @@ export default {
   data() {
     return {
       isFocused: false,
-      isShowActions: true,
-    }
+      isShowActions: true
+    };
   },
   props: {
     isMain: {
       type: Boolean,
-      default: false,
+      default: false
     }
   },
   created() {
@@ -54,13 +62,13 @@ export default {
       }
     },
     autoAdjustHeight({ target }) {
-      target.style.cssText = 'height:auto; padding:0';
+      target.style.cssText = "height:auto; padding:0";
       // for box-sizing other than "content-box" use:
       // el.style.cssText = '-moz-box-sizing:content-box';
-      target.style.cssText = 'height:' + target.scrollHeight + 'px';
+      target.style.cssText = `height:${target.scrollHeight}px`;
     }
   }
-}
+};
 </script>
 
 <style lang="sass" scoped>

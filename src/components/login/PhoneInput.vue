@@ -2,19 +2,15 @@
   <div class="phone-input__container">
     <Input type="phone" placeholder="手机号码" class="phone-input__input" v-model="phoneNumber" />
     <select class="phone-input__select" v-model="countryCode">
-      <option
-        v-for="(p, idx) in CountryPhoneCodes"
-        :key="idx"
-        :value="p.phoneCode"
-      >
-        +{{p.phoneCode}}({{p.countryName}})
+      <option v-for="(p, idx) in CountryPhoneCodes" :key="idx" :value="p.phoneCode">
+        +{{ p.phoneCode }}({{ p.countryName }})
       </option>
     </select>
   </div>
 </template>
 <script>
-import Input from '@/components/globals/Input';
-import CountryPhoneCodes from './CountryPhoneCodes.json';
+import Input from "@/components/globals/Input";
+import CountryPhoneCodes from "./CountryPhoneCodes.json";
 
 export default {
   components: { Input },
@@ -22,8 +18,8 @@ export default {
     return {
       CountryPhoneCodes,
       phoneNumber: null,
-      countryCode: null,
-    }
+      countryCode: null
+    };
   },
   created() {
     this.phoneNumber = this.phone.number;
@@ -40,22 +36,22 @@ export default {
   props: {
     phone: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
   },
   model: {
-    prop: 'phone',
-    event: 'change',
+    prop: "phone",
+    event: "change"
   },
   methods: {
     emitData() {
-      this.$emit('change', {
+      this.$emit("change", {
         number: this.phoneNumber,
-        countryCode: this.countryCode,
+        countryCode: this.countryCode
       });
     }
   }
-}
+};
 </script>
 <style lang="sass" scoped>
 .phone-input__container
@@ -75,4 +71,3 @@ export default {
   &:focus
     outline: none;
 </style>
-

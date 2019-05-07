@@ -2,43 +2,41 @@
   <div>
     <div class="title">
       <span class="text-h1">MV排行榜</span>
-      <span class="text-gray">{{formatDate(updateTime)}}更新</span>
+      <span class="text-gray">{{ formatDate(updateTime) }}更新</span>
     </div>
     <div class="rank-container">
-      <RankItem
-        v-for="(media, i) in MVrankList"
-        :key="media.id"
-        :rank-item="media"
-        :index="i"
-      />
+      <RankItem v-for="(media, i) in MVrankList" :key="media.id" :rank-item="media" :index="i" />
     </div>
   </div>
 </template>
-<script lang='ts'>
-import { getMVrank } from "@/service"
-import { formatDate } from "@/utilitys"
-import RankItem from "./RankItem.vue"
-import { Rank } from '@/types';
-import { Vue, Component } from 'vue-property-decorator';
+<script lang="ts">
+import { getMVrank } from "@/service";
+import { formatDate } from "@/utilitys";
+import RankItem from "./RankItem.vue";
+import { Rank } from "@/types";
+import { Vue, Component } from "vue-property-decorator";
 
 @Component({
-  components: { RankItem },
+  components: { RankItem }
 })
 export default class RankList extends Vue {
   MVrankList: Rank[] = [];
+
   updateTime: number = 0;
+
   formatDate = formatDate;
+
   created() {
-    const limit=50
+    const limit = 50;
     getMVrank(limit).then(res => {
-      if(res.data.code == 200) {
-        console.log(res.data)
-        this.updateTime = res.data.updateTime
-        this.MVrankList = res.data.data.map((r: Rank, i: number) => ({rank: i, ...r}));
+      if (res.data.code == 200) {
+        console.log(res.data);
+        this.updateTime = res.data.updateTime;
+        this.MVrankList = res.data.data.map((r: Rank, i: number) => ({ rank: i, ...r }));
       } else {
-        console.warn("获取MV排行榜数据错误" + res.data)
+        console.warn(`获取MV排行榜数据错误${res.data}`);
       }
-    })
+    });
   }
 }
 </script>
@@ -55,7 +53,7 @@ export default class RankList extends Vue {
   opacity: 0.3
 .text-h1
   font-size: 28px
-  padding-right: 10px 
+  padding-right: 10px
 .card-container
   display: grid
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr))

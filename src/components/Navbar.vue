@@ -3,13 +3,17 @@
     <!-- Log in and Sign in -->
     <div v-if="isLoggedin">
       <router-link class="current-user" :to="`/user/${currentUserProfile.userId}`">
-        <img class="current-user__avatar" :src="currentUserProfile.avatarUrl" :alt="currentUserProfile.nickname"/>
-        <span class="current-user__nickname">{{currentUserProfile.nickname}}</span>
+        <img
+          class="current-user__avatar"
+          :src="currentUserProfile.avatarUrl"
+          :alt="currentUserProfile.nickname"
+        />
+        <span class="current-user__nickname">{{ currentUserProfile.nickname }}</span>
       </router-link>
     </div>
     <p class="login-signup__wrapper" v-else>
-      <Button as='a' href='/login' primary class="login-signup__login">登录</Button>
-      <Button as='a' href='/signup'>注册</Button>
+      <Button as="a" href="/login" primary class="login-signup__login">登录</Button>
+      <Button as="a" href="/signup">注册</Button>
     </p>
     <!-- 音乐库 -->
     <section class="nav__card">
@@ -58,7 +62,6 @@
           搜索
         </div>
       </router-link>
-
     </section>
     <!-- 需要登录 -->
     <section v-if="isLoggedin">
@@ -97,9 +100,9 @@
           <span class="title__item_left">我的歌单</span>
           <span
             class="title__item_right icon icon_s"
-            :class="{arrow_up: isShowMyList}"
+            :class="{ arrow_up: isShowMyList }"
             @click="toggleMyList"
-            >
+          >
             <RightArrowIcon />
           </span>
         </p>
@@ -122,9 +125,9 @@
           <span class="title__item_left">收藏的歌单</span>
           <span
             class="title__item_right icon icon_s"
-            :class="{arrow_up: isShowMyFavr}"
+            :class="{ arrow_up: isShowMyFavr }"
             @click="toggleMyFavr"
-            >
+          >
             <RightArrowIcon />
           </span>
         </p>
@@ -159,35 +162,40 @@
     </section>
   </div>
 </template>
-<script lang='ts'>
-import MusicIcon from '@/components/SVGIcons/MusicIcon.vue';
-import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon.vue';
-import Button from '@/components/globals/Button.vue';
-import auth from '@/auth';
-import { mapMutations } from 'vuex';
-import { Vue, Component } from 'vue-property-decorator';
-import { Mutation, namespace } from 'vuex-class';
-import { User } from '@/types';
+<script lang="ts">
+import MusicIcon from "@/components/SVGIcons/MusicIcon.vue";
+import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon.vue";
+import Button from "@/components/globals/Button.vue";
+import auth from "@/auth";
+import { mapMutations } from "vuex";
+import { Vue, Component } from "vue-property-decorator";
+import { Mutation, namespace } from "vuex-class";
+import { User } from "@/types";
 
-const currentUser = namespace('currentUser');
+const currentUser = namespace("currentUser");
 
 @Component({
-  components: { MusicIcon, RightArrowIcon, Button },
+  components: { MusicIcon, RightArrowIcon, Button }
 })
 export default class Navbar extends Vue {
-  isShowMyList: boolean =  true;
+  isShowMyList: boolean = true;
+
   isShowMyFavr: boolean = true;
+
   isLoggedin: boolean = false;
+
   currentUserProfile: User | null = null;
 
   @currentUser.Mutation setCurrentUserId!: (id: number) => void;
-  
+
   toggleMyList() {
     this.isShowMyList = !this.isShowMyList;
   }
+
   toggleMyFavr() {
     this.isShowMyFavr = !this.isShowMyFavr;
   }
+
   updateLoginStatus() {
     auth.loggedIn().then(
       (res: any): void => {
@@ -198,13 +206,15 @@ export default class Navbar extends Vue {
       () => {
         this.isLoggedin = false;
       }
-    )
+    );
   }
+
   created() {
     this.updateLoginStatus();
   }
+
   mounted() {
-    const navLinks = Array.from(this.$el.querySelectorAll(".nav__link"))
+    const navLinks = Array.from(this.$el.querySelectorAll(".nav__link"));
   }
 }
 </script>

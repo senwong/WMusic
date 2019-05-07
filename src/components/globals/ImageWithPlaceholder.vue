@@ -1,6 +1,6 @@
 <template>
   <div class="img-placeholder-container">
-    <div class="img-wrapper" :style="{paddingBottom}">
+    <div class="img-wrapper" :style="{ paddingBottom }">
       <FadeTransition>
         <img v-if="showImg" :src="src" :alt="alt" />
       </FadeTransition>
@@ -9,23 +9,24 @@
 </template>
 
 <script>
-import FadeTransition from './FadeTransition';
+import FadeTransition from "./FadeTransition";
+
 export default {
   data() {
     return {
-      showImg: false,
+      showImg: false
     };
   },
   props: {
     src: String,
     alt: String,
     // 16:9 1:1
-    ratio: String,
+    ratio: String
   },
   computed: {
     paddingBottom() {
-      const [width, height] = this.ratio.split(':');
-      return (height / width) * 100 + '%';
+      const [width, height] = this.ratio.split(":");
+      return `${(height / width) * 100}%`;
     }
   },
   components: { FadeTransition },
@@ -39,9 +40,9 @@ export default {
         this.showImg = true;
       };
       img.src = this.src;
-    },
+    }
   }
-}
+};
 </script>
 
 <style lang="sass" scoped>

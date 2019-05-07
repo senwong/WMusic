@@ -1,7 +1,7 @@
 <template>
-<div>
-  <div v-if="profile">
-    <!--
+  <div>
+    <div v-if="profile">
+      <!--
     +---------------+----------------------------------+---------+---------+
     |               |  nickname                        | message | follow  |
     |               +------------+---------+-----------+---------+---------+
@@ -12,88 +12,86 @@
     |               | province city | age                                  |
     +---------------+------------------------------------------------------+
     -->
-    <div class="profile-panel">
-      <div class="avatar">
-        <ImageWithPlaceholder
-          :src="profile.avatarUrl | convert2Https | clipImage(300, 300)"
-          :alt="profile.nickname"
-          ratio="1:1"
-        />
+      <div class="profile-panel">
+        <div class="avatar">
+          <ImageWithPlaceholder
+            :src="profile.avatarUrl | convert2Https | clipImage(300, 300)"
+            :alt="profile.nickname"
+            ratio="1:1"
+          />
+        </div>
+        <div class="profile-detail">
+          <div class="detail-row nickname-action">
+            <div class="nickname">
+              {{ profile.nickname }}
+            </div>
+            <div class="actions">
+              <Button class="action-button" primary rounded v-if="!isSelf">关注</Button>
+              <Button class="action-button" primary rounded v-if="!isSelf">发私信</Button>
+              <Button class="action-button" rounded v-if="isSelf" @click.native="handleLogout"
+                >退出</Button
+              >
+              <Button
+                as="a"
+                class="action-button"
+                rounded
+                v-if="isSelf"
+                :href="`/useredit/${userId}`"
+                >编辑</Button
+              >
+            </div>
+          </div>
+          <div class="detail-row interactive">
+            <div class="event-count">
+              <div class="count-num">{{ profile.eventCount }}</div>
+              <div class="count-title">动态</div>
+            </div>
+            <router-link class="follows" :to="`/follows/${profile.userId}`">
+              <div class="count-num">{{ profile.follows }}</div>
+              <div class="count-title">关注</div>
+            </router-link>
+            <router-link class="followeds" :to="`/followeds/${profile.userId}`">
+              <div class="count-num">{{ profile.followeds }}</div>
+              <div class="count-title">粉丝</div>
+            </router-link>
+          </div>
+          <div class="signature">
+            <span class="bold-txt">个人介绍：</span>
+            <span class="light-txt">{{ profile.signature }}</span>
+          </div>
+          <div class="detail-row district-age">
+            <div class="district">
+              <span class="bold-txt">所在地区：</span>
+              <span class="light-txt">
+                {{ province ? province.name : "其他" }}&nbsp;
+                {{ city ? city.name : "其他" }}
+              </span>
+            </div>
+            <div class="age" v-if="profile.birthday">
+              <span class="bold-txt">年龄：</span>
+              <span class="light-txt">{{ parsedAge }}</span>
+            </div>
+          </div>
+          <div class="social-network light-txt">
+            社交网络未绑定
+          </div>
+        </div>
       </div>
-      <div class="profile-detail">
-        <div class="detail-row nickname-action">
-          <div class="nickname">
-            {{profile.nickname}}
-          </div>
-          <div class="actions">
-            <Button class="action-button" primary rounded v-if="!isSelf">关注</Button>
-            <Button class="action-button" primary rounded v-if="!isSelf">发私信</Button>
-            <Button
-              class="action-button"
-              rounded
-              v-if="isSelf"
-              @click.native="handleLogout"
-            >退出</Button>
-            <Button
-              as='a'
-              class="action-button"
-              rounded
-              v-if="isSelf"
-              :href="`/useredit/${userId}`"
-            >编辑</Button>
-          </div>
-        </div>
-        <div class="detail-row interactive">
-          <div class="event-count">
-            <div class="count-num">{{profile.eventCount}}</div>
-            <div class="count-title">动态</div>
-          </div>
-          <router-link class="follows" :to="`/follows/${profile.userId}`">
-            <div class="count-num">{{profile.follows}}</div>
-            <div class="count-title">关注</div>
-          </router-link>
-          <router-link class="followeds" :to="`/followeds/${profile.userId}`">
-            <div class="count-num">{{profile.followeds}}</div>
-            <div class="count-title">粉丝</div>
-          </router-link>
-        </div>
-        <div class="signature">
-          <span class="bold-txt">个人介绍：</span>
-          <span class="light-txt">{{profile.signature}}</span>
-        </div>
-        <div class="detail-row district-age">
-          <div class="district">
-            <span class="bold-txt">所在地区：</span>
-            <span class="light-txt">
-              {{ province ? province.name : '其他' }}&nbsp;
-              {{ city ? city.name : '其他' }}
-            </span>
-          </div>
-          <div class="age" v-if="profile.birthday">
-            <span class="bold-txt">年龄：</span>
-            <span class="light-txt">{{parsedAge}}</span>
-          </div>
-        </div>
-        <div class="social-network light-txt">
-          社交网络未绑定
-        </div>
-      </div>
+      <UserPlaylist :userId="userId" :count="profile.playlistCount" />
     </div>
-    <UserPlaylist :userId="userId" :count="profile.playlistCount" />
+    <ErrorLabel class="get-user-detail-faild" :show="isGetUserDetailFailed">
+      获取用户信息错误。
+    </ErrorLabel>
   </div>
-  <ErrorLabel class="get-user-detail-faild" :show="isGetUserDetailFailed">
-    获取用户信息错误。
-  </ErrorLabel>
-</div>
 </template>
 <script>
-import { getUserDetail, logout } from '@/service';
-import provinceCitys from './provinceCitys.json';
-import UserPlaylist from '@/components/user/UserPlaylist';
-import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder';
-import { mapState, mapMutations } from 'vuex';
-import ErrorLabel from '@/components/globals/ErrorLabel';
-import Button from '@/components/globals/Button';
+import { getUserDetail, logout } from "@/service";
+import provinceCitys from "./provinceCitys.json";
+import UserPlaylist from "@/components/user/UserPlaylist";
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder";
+import { mapState, mapMutations } from "vuex";
+import ErrorLabel from "@/components/globals/ErrorLabel";
+import Button from "@/components/globals/Button";
 
 export default {
   name: "UserDetail",
@@ -101,47 +99,45 @@ export default {
     return {
       userId: 0, // from router param
       profile: null,
-      isGetUserDetailFailed: false, 
-    }
+      isGetUserDetailFailed: false
+    };
   },
   components: {
     UserPlaylist,
     ImageWithPlaceholder,
     ErrorLabel,
-    Button,
+    Button
   },
   methods: {
     handleLogout() {
       logout().then(
         res => {
           // logout success
-         this.setCurrentUserId(undefined);
-         this.$router.push('/');
-         this.profile = null;
+          this.setCurrentUserId(undefined);
+          this.$router.push("/");
+          this.profile = null;
         },
         error => {
           // logout faile
-          alert('log out fail', error);
+          alert("log out fail", error);
         }
       );
     },
-    ...mapMutations('currentUser', [
-      'setCurrentUserId'
-    ])
+    ...mapMutations("currentUser", ["setCurrentUserId"])
   },
   computed: {
     parsedAge() {
       if (!this.profile.birthday) return;
-      if (this.profile.birthday >= Date.parse('Jan 1 2010')) return '10后';
-      else if (this.profile.birthday >= Date.parse('Jan 1 2000')) return '00后';
-      else if (this.profile.birthday >= Date.parse('Jan 1 1990')) return '90后';
-      else if (this.profile.birthday >= Date.parse('Jan 1 1980')) return '80后';
-      else if (this.profile.birthday >= Date.parse('Jan 1 1970')) return '70后';
-      else if (this.profile.birthday >= Date.parse('Jan 1 1960')) return '60后';
-      else return '其他';
+      if (this.profile.birthday >= Date.parse("Jan 1 2010")) return "10后";
+      if (this.profile.birthday >= Date.parse("Jan 1 2000")) return "00后";
+      if (this.profile.birthday >= Date.parse("Jan 1 1990")) return "90后";
+      if (this.profile.birthday >= Date.parse("Jan 1 1980")) return "80后";
+      if (this.profile.birthday >= Date.parse("Jan 1 1970")) return "70后";
+      if (this.profile.birthday >= Date.parse("Jan 1 1960")) return "60后";
+      return "其他";
     },
-    ...mapState('currentUser', {
-      currentUserId: state => state.userId,
+    ...mapState("currentUser", {
+      currentUserId: state => state.userId
     }),
     isSelf() {
       return this.currentUserId == this.userId;
@@ -150,11 +146,13 @@ export default {
       if (this.profile && this.profile.province) {
         return provinceCitys.find(p => p.code == this.profile.province);
       }
+      return null;
     },
     city() {
       if (this.province && this.province.children) {
         return this.province.children.find(c => c.code == this.profile.city);
       }
+      return null;
     }
   },
   created() {
@@ -171,8 +169,8 @@ export default {
         this.isGetUserDetailFailed = true;
       }
     );
-  },
-}
+  }
+};
 </script>
 <style lang="sass" scoped>
 // common style
@@ -223,7 +221,7 @@ export default {
   border-right: 1px solid rgba(0, 0, 0, 0.1);
   margin-right: 1em;
 
-// third row include userself signature 
+// third row include userself signature
 .signature
   margin-top: 1em;
 

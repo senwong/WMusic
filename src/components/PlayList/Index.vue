@@ -2,10 +2,10 @@
   <div class="main-wrapper">
     <div class="container">
       <div class="category__selected">
-        <span class="category__title">{{selected}}</span>
-        <span class="category__toggle__btn" @click="showMenu=!showMenu">
-          <ChevronTopIcon class="category__title__icon" v-show="!showMenu"  />
-          <ChevronBottomIcon class="category__title__icon" v-show="showMenu"  />
+        <span class="category__title">{{ selected }}</span>
+        <span class="category__toggle__btn" @click="showMenu = !showMenu">
+          <ChevronTopIcon class="category__title__icon" v-show="!showMenu" />
+          <ChevronBottomIcon class="category__title__icon" v-show="showMenu" />
         </span>
       </div>
       <transition name="move" @after-enter="afterEnter" @before-leave="beforeLeave">
@@ -15,24 +15,24 @@
               <span
                 @click="selectCat('全部')"
                 class="category__item"
-                :class="{'active': selected=='全部'}"
-              >全部</span>
+                :class="{ active: selected == '全部' }"
+                >全部</span
+              >
             </div>
-            <hr>
-            <div
-              v-for="categoryKey in Object.keys(categories)"
-              :key="categoryKey"
-            >
-              <h3>{{categories[categoryKey]}}</h3>
+            <hr />
+            <div v-for="categoryKey in Object.keys(categories)" :key="categoryKey">
+              <h3>{{ categories[categoryKey] }}</h3>
               <div class="category__list">
                 <span
-                  class="category__item"  
-                  :class="{'active': selected==c.name}"
-                  v-for="(c, i) in sub.filter(c => c.category == categoryKey)" :key="i"
+                  class="category__item"
+                  :class="{ active: selected == c.name }"
+                  v-for="(c, i) in sub.filter(c => c.category == categoryKey)"
+                  :key="i"
                   @click="selectCat(c.name)"
-                >{{c.name}}</span>
+                  >{{ c.name }}</span
+                >
               </div>
-              <hr>
+              <hr />
             </div>
           </div>
         </div>
@@ -41,25 +41,35 @@
         <TabMenu
           align-left
           :list="[
-            {key: 1, title: '最热', onClick: () => orderType='hot', isActive: orderType == 'hot' },
-            {key: 2, title: '最新', onClick: () => orderType='new', isActive: orderType == 'new' },
+            {
+              key: 1,
+              title: '最热',
+              onClick: () => (orderType = 'hot'),
+              isActive: orderType == 'hot'
+            },
+            {
+              key: 2,
+              title: '最新',
+              onClick: () => (orderType = 'new'),
+              isActive: orderType == 'new'
+            }
           ]"
         />
-        <SongCards :cardLists="playlists" cardType="playlist" class="song-cards"/>
+        <SongCards :cardLists="playlists" cardType="playlist" class="song-cards" />
         <Pagination :total="pageTotal" @change="handlePageChange" />
       </div>
     </div>
   </div>
 </template>
-<script lang='ts'>
-import { getPlayListCatlist, getPlayList } from '@/service';
-import SongCards from '@/components/globals/SongCards.vue';
-import ChevronTopIcon from '@/components/SVGIcons/ChevronTopIcon.vue';
-import ChevronBottomIcon from '@/components/SVGIcons/ChevronBottomIcon.vue';
-import Pagination from '@/components/globals/Pagination.vue';
-import TabMenu from '@/components/globals/TabMenu.vue';
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import { Playlist, PlaylistCreator } from '@/types';
+<script lang="ts">
+import { getPlayListCatlist, getPlayList } from "@/service";
+import SongCards from "@/components/globals/SongCards.vue";
+import ChevronTopIcon from "@/components/SVGIcons/ChevronTopIcon.vue";
+import ChevronBottomIcon from "@/components/SVGIcons/ChevronBottomIcon.vue";
+import Pagination from "@/components/globals/Pagination.vue";
+import TabMenu from "@/components/globals/TabMenu.vue";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Playlist, PlaylistCreator } from "@/types";
 
 interface SubCategory {
   category: number;
@@ -72,91 +82,107 @@ interface SubCategory {
     ChevronTopIcon,
     ChevronBottomIcon,
     Pagination,
-    TabMenu,
+    TabMenu
   }
 })
 export default class PlaylistComponent extends Vue {
   categories: object = {};
+
   sub: SubCategory[] = [];
+
   selected: string = "全部";
+
   showMenu: boolean = false;
-  orderType: 'hot' | 'new' = "hot";
+
+  orderType: "hot" | "new" = "hot";
+
   playlists: Playlist[] = [];
+
   total: number = 0;
+
   offset: number = 0;
+
   showCards: boolean = true;
+
   limit = 20;
+
   created() {
     getPlayListCatlist().then(res => {
-      if(res.data.code == 200) {
-        this.categories = res.data.categories
-        this.sub = res.data.sub
+      if (res.data.code == 200) {
+        this.categories = res.data.categories;
+        this.sub = res.data.sub;
       } else {
-        alert("获取歌单分类失败： " + res.data)
+        alert(`获取歌单分类失败： ${res.data}`);
       }
-    })
-    this.updatePlayList()
+    });
+    this.updatePlayList();
   }
 
   afterEnter() {
-    console.log("afterEnter")
+    console.log("afterEnter");
     if (this.showMenu == true) {
-      this.showCards = false
+      this.showCards = false;
     }
   }
+
   beforeLeave() {
-    console.log("beforeLeave")
+    console.log("beforeLeave");
     if (this.showCards == false) {
-      this.showCards = true
+      this.showCards = true;
     }
   }
+
   updatePlayList() {
-    getPlayList(this.selected, this.orderType, this.offset ).then(res => {
-      if(res.data.code == 200) {
-        this.total = res.data.total
+    getPlayList(this.selected, this.orderType, this.offset).then(res => {
+      if (res.data.code == 200) {
+        this.total = res.data.total;
         this.playlists = res.data.playlists.map(
           (list: {
-            id: number,
-            coverImgUrl: string,
-            name: string,
-            updateTime: number,
-            playCount: number,
-            creator: PlaylistCreator
-          }) => {
-          return {
+            id: number;
+            coverImgUrl: string;
+            name: string;
+            updateTime: number;
+            playCount: number;
+            creator: PlaylistCreator;
+          }) => ({
             id: list.id,
             picUrl: list.coverImgUrl,
             name: list.name,
             publishTime: list.updateTime,
             playCount: list.playCount,
-            creator: list.creator,
-          }
-        })
+            creator: list.creator
+          })
+        );
       } else {
-        alert("获取歌单失败： " + res.data)
+        alert(`获取歌单失败： ${res.data}`);
       }
-    })
+    });
   }
+
   selectCat(newCat: string) {
-    this.selected = newCat
-    this.showMenu = false
+    this.selected = newCat;
+    this.showMenu = false;
   }
+
   handlePageChange(currentPageidx: number) {
     this.offset = this.limit * currentPageidx;
     this.updatePlayList();
   }
+
   get pageTotal() {
     return Math.ceil(this.total / this.limit);
   }
-  @Watch('selected')
+
+  @Watch("selected")
   onSelectedChange() {
-    this.offset = 0
+    this.offset = 0;
     this.updatePlayList();
   }
-  @Watch('orderType')
+
+  @Watch("orderType")
   onOrderTypeChange() {
     this.offset = 0;
-    this.updatePlayList();    
+    this.updatePlayList();
   }
 }
 </script>

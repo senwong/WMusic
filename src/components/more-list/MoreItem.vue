@@ -11,7 +11,7 @@
         </div>
         <!-- 靠右显示 -->
         <div class="item__right">
-          <RightArrowIcon v-show="!!spread"/>
+          <RightArrowIcon v-show="!!spread" />
         </div>
       </div>
     </div>
@@ -21,30 +21,30 @@
   </div>
 </template>
 <script>
-import RightArrowIcon from '@/components/SVGIcons/RightArrowIcon';
+import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon";
 
 export default {
   name: "MoreItem",
-  props: ['spread'],
+  props: ["spread"],
   data() {
     return {
-      styleObj: { }
-    }
+      styleObj: {}
+    };
   },
-  components: { RightArrowIcon, },
+  components: { RightArrowIcon },
   mounted() {
     this.$nextTick(() => {
       const property = this.spread && this.spread.slice(1, -1);
-      property === "right" && (this.styleObj = {left: '100%'});
-      property === "left" && (this.styleObj = {right: '100%'});
-    })
+      property === "right" && (this.styleObj = { left: "100%" });
+      property === "left" && (this.styleObj = { right: "100%" });
+    });
   }
-}
+};
 </script>
 <style lang="sass" scoped>
 @import "../config.sass";
 .more-item__wrapper
-  position: relative;  
+  position: relative;
   border-radius: inherit;
 .more-item
   position: relative;
@@ -94,4 +94,3 @@ export default {
   &:hover
     display: block
 </style>
-

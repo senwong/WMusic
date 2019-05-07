@@ -3,9 +3,9 @@
     <div class="title">MV</div>
     <ul>
       <li v-for="mv in mvs" :key="mv.id">
-        <RouterLink :to="'/mvplay/'+ mv.id" class="item">
+        <RouterLink :to="'/mvplay/' + mv.id" class="item">
           <span class="item-title">
-            {{mv.name}}
+            {{ mv.name }}
           </span>
         </RouterLink>
       </li>
@@ -13,9 +13,9 @@
   </section>
 </template>
 
-<script lang='ts'>
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import { MvCard } from '@/types';
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { MvCard } from "@/types";
 
 @Component
 export default class Mvs extends Vue {
@@ -23,6 +23,6 @@ export default class Mvs extends Vue {
 }
 </script>
 
-<style lang='sass' scoped>
+<style lang="sass" scoped>
 @import "./recommendations.sass"
 </style>

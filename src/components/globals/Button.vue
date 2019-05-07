@@ -4,7 +4,7 @@
     :to="href"
     class="btn"
     :class="{
-      'btn-primary': primary, 
+      'btn-primary': primary,
       'btn-secondary': secondary,
       'btn-rounded': rounded,
       'btn-block': block,
@@ -17,28 +17,40 @@
     :disabled="disabled"
   >
     <slot></slot>
-  </button>  
+  </button>
 </template>
 
-<script lang='ts'>
-import { Vue, Component, Prop } from 'vue-property-decorator';
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class Button extends Vue {
   @Prop(Boolean) readonly primary!: boolean;
+
   @Prop(Boolean) readonly secondary!: boolean;
+
   @Prop(Boolean) readonly rounded!: boolean;
+
   @Prop(Boolean) readonly block!: boolean;
+
   @Prop(Boolean) readonly large!: boolean;
+
   @Prop(Boolean) readonly small!: boolean;
+
   @Prop(Boolean) readonly xsmall!: boolean;
+
   @Prop(String) readonly as!: string;
+
   @Prop(String) readonly href!: string;
+
   @Prop(Boolean) readonly disabled!: boolean;
+
   @Prop(Boolean) readonly noborder!: boolean;
+
   @Prop(Boolean) readonly svglarge!: boolean;
+
   get tag() {
-    return this.as && this.as == 'a' ? 'router-link' : 'button';
+    return this.as && this.as == "a" ? "router-link" : "button";
   }
 }
 </script>

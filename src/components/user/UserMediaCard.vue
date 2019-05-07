@@ -8,45 +8,43 @@
     |                 | 歌单：x  |  粉丝：x    |                  |
     +-----------------+----------------------+------------------+
     -->
-    <div class="user-media-card__container" v-if="user">
-      <router-link class="user-media-card__avatar" :to="`/user/${user.userId}`">
-        <Avatar :name="user.nickname" :imgSrc="user.avatarUrl | clipImage(70, 70)" />
-      </router-link>
-      <!-- user info -->
-      <div class="user-media-card__user-info">
-        <!-- username -->
-        <router-link class="user-info__nickname" :to="`/user/${user.userId}`">{{user.nickname}}</router-link>
-        <!-- signature -->
-        <div class="user-info__signature">{{user.signature}}</div>
-        <!-- playlist count and followeds -->
-        <div class="user-info__playlist-followeds">
-          <span class="user-info__playlist">
-            歌单：{{user.playlistCount}}
-          </span>
-          <span>&nbsp;|&nbsp; </span>
-          <span class="user-info__followeds">
-            粉丝：{{user.followeds}}
-          </span>
-        </div>
+  <div class="user-media-card__container" v-if="user">
+    <router-link class="user-media-card__avatar" :to="`/user/${user.userId}`">
+      <Avatar :name="user.nickname" :imgSrc="user.avatarUrl | clipImage(70, 70)" />
+    </router-link>
+    <!-- user info -->
+    <div class="user-media-card__user-info">
+      <!-- username -->
+      <router-link class="user-info__nickname" :to="`/user/${user.userId}`">{{
+        user.nickname
+      }}</router-link>
+      <!-- signature -->
+      <div class="user-info__signature">{{ user.signature }}</div>
+      <!-- playlist count and followeds -->
+      <div class="user-info__playlist-followeds">
+        <span class="user-info__playlist"> 歌单：{{ user.playlistCount }} </span>
+        <span>&nbsp;|&nbsp; </span>
+        <span class="user-info__followeds"> 粉丝：{{ user.followeds }} </span>
       </div>
-      <!-- message button -->
-      <Button class="user-media-card__message-button">私信</Button>
     </div>
+    <!-- message button -->
+    <Button class="user-media-card__message-button">私信</Button>
+  </div>
 </template>
 
 <script>
-import Avatar from '@/components/globals/Avatar';
-import Button from '@/components/globals/Button';
+import Avatar from "@/components/globals/Avatar";
+import Button from "@/components/globals/Button";
 
 export default {
   props: {
     user: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
   },
-  components: { Avatar, Button },
-}
+  components: { Avatar, Button }
+};
 </script>
 
 <style lang="sass" scoped>

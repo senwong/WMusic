@@ -1,166 +1,180 @@
 <template>
-<div class="container main-wrapper" @scroll="handleScroll">
-  <SearchBarWithRecommendations
-    v-model="keyWords"
-    @enter="handleInputEnter"
-    placeholder="搜索。。。"
-  />
-  <!-- search type tabs -->
-  <div class="tab-menu-wrapper">
-    <ul class="tab-menu" ref="tabMenu">
-      <li
-        class="tab-item"
-        v-for='type in Object.keys(searchTypes)'
-        :key="searchTypes[type]"
-        :class="{active: currentSearchType == searchTypes[type]}"
-        @click="handleTabClick(searchTypes[type])"
-      >{{type}}</li>
-    </ul>
-  </div>
+  <div class="container main-wrapper" @scroll="handleScroll">
+    <SearchBarWithRecommendations
+      v-model="keyWords"
+      @enter="handleInputEnter"
+      placeholder="搜索。。。"
+    />
+    <!-- search type tabs -->
+    <div class="tab-menu-wrapper">
+      <ul class="tab-menu" ref="tabMenu">
+        <li
+          class="tab-item"
+          v-for="type in Object.keys(searchTypes)"
+          :key="searchTypes[type]"
+          :class="{ active: currentSearchType == searchTypes[type] }"
+          @click="handleTabClick(searchTypes[type])"
+        >
+          {{ type }}
+        </li>
+      </ul>
+    </div>
 
-  <!-- search result -->
-  <div>
-    <!-- 搜索单曲 -->
-    <div v-if="currentSearchType == 1">
-      <h3 class="fallback" v-if="searchSongs.length == 0">没有与此相关的单曲</h3>
-      <SongList :tracks="searchSongs" />
-    </div>
-    <!-- 搜索歌手 -->
-    <div v-else-if="currentSearchType == 100">
-      <h3 class="fallback" v-if="searchArtists.length == 0">没有与此相关的歌手</h3>
-      <ul>
-        <li v-for="artist in searchArtists" :key="artist.key" class="artist-item-search">
-          <a :href="'/artist/' + artist.id" class="artist-pic-search">
-            <img :src="(artist.picUrl || artist.img1v1Url) | convert2Https | clipImage(100, 100)" :alt="artist.name">
-          </a>
-          <a :href="'/artist/' + artist.id" class="artis-name-search">
-            <span>{{artist.name}}</span><span v-if="artist.trans">({{artist.trans}})</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <!-- 搜索专辑 -->
-    <div v-else-if="currentSearchType == 10">
-      <h3 class="fallback" v-if="searchAlbums.length == 0">没有与此相关的专辑</h3>
-      <ul>
-        <li v-for="album in searchAlbums" :key="album.key" class="album-item-search">
-          <a :href="'/album/' + album.id" class="album-pic-search">
-            <img :src="album.picUrl | convert2Https | clipImage(100, 100)" :alt="album.name">
-          </a>
-          <div class="album-name-search">
-            <a :href="'/album/' + album.id">
-              {{album.name}}
+    <!-- search result -->
+    <div>
+      <!-- 搜索单曲 -->
+      <div v-if="currentSearchType == 1">
+        <h3 class="fallback" v-if="searchSongs.length == 0">没有与此相关的单曲</h3>
+        <SongList :tracks="searchSongs" />
+      </div>
+      <!-- 搜索歌手 -->
+      <div v-else-if="currentSearchType == 100">
+        <h3 class="fallback" v-if="searchArtists.length == 0">没有与此相关的歌手</h3>
+        <ul>
+          <li v-for="artist in searchArtists" :key="artist.key" class="artist-item-search">
+            <a :href="'/artist/' + artist.id" class="artist-pic-search">
+              <img
+                :src="(artist.picUrl || artist.img1v1Url) | convert2Https | clipImage(100, 100)"
+                :alt="artist.name"
+              />
             </a>
-          </div>
-          <div class="album-artist-search">
-            <a :href="'/artist/' + album.artist.id">
-              {{album.artist.name}}
-            </a>              
-          </div>
-        </li>
-      </ul>
-    </div>
-    <!-- 搜索MV -->
-    <div v-else-if="currentSearchType == 1004">
-      <h3 class="fallback" v-if="searchMvs.length == 0">没有与此相关的MV</h3>
-      <card-item
-        v-for="mv in searchMvs"
-        :key="mv.id"
-        :link="'/mvplay/' + mv.id"
-        :picUrl="mv.cover | clipImage(640, 360)"
-        :title = mv.name
-        :subTitles = getMvSubTitles(mv)
-        :subLinks = getMvSubLinks(mv)
-        shape = "rectangle"
+            <a :href="'/artist/' + artist.id" class="artis-name-search">
+              <span>{{ artist.name }}</span
+              ><span v-if="artist.trans">({{ artist.trans }})</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <!-- 搜索专辑 -->
+      <div v-else-if="currentSearchType == 10">
+        <h3 class="fallback" v-if="searchAlbums.length == 0">没有与此相关的专辑</h3>
+        <ul>
+          <li v-for="album in searchAlbums" :key="album.key" class="album-item-search">
+            <a :href="'/album/' + album.id" class="album-pic-search">
+              <img :src="album.picUrl | convert2Https | clipImage(100, 100)" :alt="album.name" />
+            </a>
+            <div class="album-name-search">
+              <a :href="'/album/' + album.id">
+                {{ album.name }}
+              </a>
+            </div>
+            <div class="album-artist-search">
+              <a :href="'/artist/' + album.artist.id">
+                {{ album.artist.name }}
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <!-- 搜索MV -->
+      <div v-else-if="currentSearchType == 1004">
+        <h3 class="fallback" v-if="searchMvs.length == 0">没有与此相关的MV</h3>
+        <card-item
+          v-for="mv in searchMvs"
+          :key="mv.id"
+          :link="'/mvplay/' + mv.id"
+          :picUrl="mv.cover | clipImage(640, 360)"
+          :title="mv.name"
+          :subTitles="getMvSubTitles(mv)"
+          :subLinks="getMvSubLinks(mv)"
+          shape="rectangle"
         ></card-item>
-    </div>
-    <!-- 搜索歌单 -->
-    <div v-else-if="currentSearchType == 1000">
-      <h3 class="fallback" v-if="searchPlaylists.length == 0">没有与此相关的歌单</h3>
-      <ul>
-        <li v-for="playlist in searchPlaylists" :key="playlist.key" class="playlist-item-search">
-          <a :href="'/playlist/' + playlist.id" class="playlist-pic-search">
-            <img :src="playlist.coverImgUrl | convert2Https | clipImage(200, 200)" :alt="playlist.name">
-          </a>
-          <div class="playlist-name-search">
-            <a :href="'/playlist/' + playlist.id">
-              {{playlist.name}}
+      </div>
+      <!-- 搜索歌单 -->
+      <div v-else-if="currentSearchType == 1000">
+        <h3 class="fallback" v-if="searchPlaylists.length == 0">没有与此相关的歌单</h3>
+        <ul>
+          <li v-for="playlist in searchPlaylists" :key="playlist.key" class="playlist-item-search">
+            <a :href="'/playlist/' + playlist.id" class="playlist-pic-search">
+              <img
+                :src="playlist.coverImgUrl | convert2Https | clipImage(200, 200)"
+                :alt="playlist.name"
+              />
             </a>
-          </div>
-          <span class="playlist-count-search">{{playlist.bookCount}}</span>
-          <div class="playlist-user-search">
-            <span>创建者：</span>
-            <a :href="'/user/' + playlist.creator.userId">
-              {{playlist.creator.nickname}}
+            <div class="playlist-name-search">
+              <a :href="'/playlist/' + playlist.id">
+                {{ playlist.name }}
+              </a>
+            </div>
+            <span class="playlist-count-search">{{ playlist.bookCount }}</span>
+            <div class="playlist-user-search">
+              <span>创建者：</span>
+              <a :href="'/user/' + playlist.creator.userId">
+                {{ playlist.creator.nickname }}
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <!-- 搜索歌词 -->
+      <div v-else-if="1006">
+        <h3 class="fallback" v-if="searchLyrics.length == 0">没有与此相关的歌词</h3>
+        <ul>
+          <li v-for="lyric in searchLyrics" :key="lyric.id" class="lyric-item-search">
+            <a :href="'/song/' + lyric.id" class="lyric-name-search">
+              {{ lyric.name }}
             </a>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <!-- 搜索歌词 -->
-    <div v-else-if="1006">
-      <h3 class="fallback" v-if="searchLyrics.length == 0">没有与此相关的歌词</h3>
-      <ul>
-        <li v-for="lyric in searchLyrics" :key="lyric.id" class="lyric-item-search">
-          <a :href="'/song/' + lyric.id" class="lyric-name-search">
-            {{lyric.name}}
-          </a>
-          <div class="lyric-artists-search">
-            <a v-for="ar in lyric.artists" :key="ar.id" :href="'/artist/' + ar.id" class="lyric-artist-search">
-              {{ar.name}}
+            <div class="lyric-artists-search">
+              <a
+                v-for="ar in lyric.artists"
+                :key="ar.id"
+                :href="'/artist/' + ar.id"
+                class="lyric-artist-search"
+              >
+                {{ ar.name }}
+              </a>
+            </div>
+            <a :href="'/album/' + lyric.album.id" class="lyric-album-search">
+              {{ lyric.album.name }}
             </a>
-          </div>
-          <a :href="'/album/' + lyric.album.id" class="lyric-album-search">
-            {{lyric.album.name}}
-          </a>
-          <div class="lyric-duration-search">{{formatTime(lyric.duration)}}</div>
-        </li>
-      </ul>
-    </div>
-    <!-- 搜索主播电台 -->
-    <div v-else-if="1009">
-      <h3 class="fallback" v-if="searchDjRadios.length == 0">没有与此相关的电台</h3>
-      <card-item
-        v-for="djRadio in searchDjRadios"
-        :key="djRadio.id"
-        :link = "'/djradio/' + djRadio.id"
-        :picUrl = "djRadio.picUrl | clipImage(320, 320)"
-        :title = djRadio.name
-        :subTitles = getDjSubTitles(djRadio)
-        :subLinks = getDjSubLinks(djRadio)
-        shape = "square"
+            <div class="lyric-duration-search">{{ formatTime(lyric.duration) }}</div>
+          </li>
+        </ul>
+      </div>
+      <!-- 搜索主播电台 -->
+      <div v-else-if="1009">
+        <h3 class="fallback" v-if="searchDjRadios.length == 0">没有与此相关的电台</h3>
+        <card-item
+          v-for="djRadio in searchDjRadios"
+          :key="djRadio.id"
+          :link="'/djradio/' + djRadio.id"
+          :picUrl="djRadio.picUrl | clipImage(320, 320)"
+          :title="djRadio.name"
+          :subTitles="getDjSubTitles(djRadio)"
+          :subLinks="getDjSubLinks(djRadio)"
+          shape="square"
         ></card-item>
+      </div>
+      <!-- 搜索用户 -->
+      <div v-else-if="1002">
+        <h3 class="fallback" v-if="searchUsers.length == 0">没有与此相关的用户</h3>
+        <ul>
+          <li v-for="user in searchUsers" :key="user.id" class="user-item-search">
+            <router-link :to="'/user/' + user.id" class="user-pic-search">
+              <img :src="user.avatarUrl | convert2Https | clipImage(200, 200)" :alt="user.name" />
+            </router-link>
+            <router-link :to="'/user/' + user.id" class="user-name-search">
+              <span>{{ user.nickname }}</span>
+              <span v-if="user.gender == 1">男生</span>
+              <span v-if="user.gender == 2">女生</span>
+            </router-link>
+          </li>
+        </ul>
+      </div>
     </div>
-    <!-- 搜索用户 -->
-    <div v-else-if="1002">
-      <h3 class="fallback" v-if="searchUsers.length == 0">没有与此相关的用户</h3>
-      <ul>
-        <li v-for="user in searchUsers" :key="user.id" class="user-item-search">
-          <router-link :to="'/user/' + user.id" class="user-pic-search">
-            <img :src="user.avatarUrl | convert2Https | clipImage(200, 200)" :alt="user.name">
-          </router-link>
-          <router-link :to="'/user/' + user.id" class="user-name-search">
-            <span>{{user.nickname}}</span>
-            <span v-if="user.gender == 1">男生</span>
-            <span v-if="user.gender == 2">女生</span>
-          </router-link>
-        </li>
-      </ul>
-    </div>
+    <h2 v-show="currentSearchType !== null && isLoadMore" class="loading">Loading...</h2>
   </div>
-  <h2 v-show="currentSearchType !== null && isLoadMore" class="loading">Loading...</h2>
-</div>
 </template>
-<script lang='ts'>
-import { search } from '@/service';
-import { formatTime } from '@/utilitys';
-import CardItem from './CardItem.vue';
-import SongList from '@/components/FindMusic/SongList.vue';
-import SearchBarWithRecommendations from './SearchBarWithRecommendations.vue';
-import { Vue, Component, Watch } from 'vue-property-decorator';
-import { Track, Artist, Album, MvCard } from '@/types';
+<script lang="ts">
+import { search } from "@/service";
+import { formatTime } from "@/utilitys";
+import CardItem from "./CardItem.vue";
+import SongList from "@/components/FindMusic/SongList.vue";
+import SearchBarWithRecommendations from "./SearchBarWithRecommendations.vue";
+import { Vue, Component, Watch } from "vue-property-decorator";
+import { Track, Artist, Album, MvCard } from "@/types";
 
-const SEARCH_OFFSET = 30
+const SEARCH_OFFSET = 30;
 
 enum SearchType {
   Song = 1,
@@ -170,22 +184,23 @@ enum SearchType {
   Playlist = 1000,
   Lyric = 1006,
   Radio = 1009,
-  User = 1002,
+  User = 1002
 }
 @Component({
-  components: { CardItem, SongList, SearchBarWithRecommendations, }
+  components: { CardItem, SongList, SearchBarWithRecommendations }
 })
 export default class Search extends Vue {
   keyWords: string = "";
+
   searchTypes: object = {
-    "单曲": SearchType.Song,
-    "歌手": SearchType.Artist,
-    "专辑": SearchType.Album,
-    "MV": SearchType.Mv,
-    "歌单": SearchType.Playlist,
-    "歌词": SearchType.Lyric,
-    "主播电台": SearchType.Radio,
-    "用户": SearchType.User,
+    单曲: SearchType.Song,
+    歌手: SearchType.Artist,
+    专辑: SearchType.Album,
+    MV: SearchType.Mv,
+    歌单: SearchType.Playlist,
+    歌词: SearchType.Lyric,
+    主播电台: SearchType.Radio,
+    用户: SearchType.User
   };
 
   // number referring to type, default 1
@@ -193,100 +208,120 @@ export default class Search extends Vue {
 
   // search result
   searchSongs: Track[] = [];
+
   searchArtists: Artist[] = [];
+
   searchAlbums: Album[] = [];
+
   searchMvs: MvCard[] = [];
+
   searchPlaylists: object[] = [];
+
   searchLyrics: object[] = [];
+
   searchDjRadios: object[] = [];
+
   searchUsers: object[] = [];
+
   isLoadMore: boolean = false;
+
   count: number = 0;
+
   prevLength: number = 0;
+
   currentLength: number = 0;
 
-
   formatTime = formatTime;
+
   getMvSubTitles(mv: MvCard) {
-    return mv.artists.map( ar => {
-      return {
-        id: ar.id,
-        txt: ar.name
-      }
-    })
+    return mv.artists.map(ar => ({
+      id: ar.id,
+      txt: ar.name
+    }));
   }
+
   getMvSubLinks(mv: MvCard) {
-    const obj: {[index: number]: string} = {};
+    const obj: { [index: number]: string } = {};
     mv.artists.forEach(ar => {
-      obj[ar.id] = "/artist/" + ar.id
-    })
-    return obj
+      obj[ar.id] = `/artist/${ar.id}`;
+    });
+    return obj;
   }
+
   searchWithTypes() {
     const searchType = this.currentSearchType;
     if (this.keyWords.length < 1) return;
     search(this.keyWords, searchType, this.currentLength).then(
       res => {
-        const result = JSON.parse(JSON.stringify(res.data.result).replace(/http:\/\//g, "https://"));
-        if(searchType == SearchType.Song && result.songs) {
+        const result = JSON.parse(
+          JSON.stringify(res.data.result).replace(/http:\/\//g, "https://")
+        );
+        if (searchType == SearchType.Song && result.songs) {
           const songs = result.songs.map((song: Track) => ({
             id: song.id,
             name: song.name,
             ar: song.artists,
             dt: song.duration,
-            al: song.album,
+            al: song.album
           }));
-          this.count = result.songCount
+          this.count = result.songCount;
           this.searchSongs = songs;
         } else if (searchType == SearchType.Artist) {
           this.searchArtists = result.artists;
-          this.count = result.artistCount
+          this.count = result.artistCount;
         } else if (searchType == SearchType.Album) {
           this.searchAlbums = result.albums;
-          this.count = result.albumCount
+          this.count = result.albumCount;
         } else if (searchType == SearchType.Mv) {
           this.searchMvs = result.mvs;
-          this.count = result.mvCount
+          this.count = result.mvCount;
         } else if (searchType == SearchType.Playlist) {
           this.searchPlaylists = result.playlists;
-          this.count = result.playlistCount
+          this.count = result.playlistCount;
         } else if (searchType == SearchType.Song) {
           this.searchLyrics = result.songs;
-          this.count = result.songCount
+          this.count = result.songCount;
         } else if (searchType == SearchType.Radio) {
           this.searchDjRadios = result.djRadios;
-          this.count = result.djRadiosCount
+          this.count = result.djRadiosCount;
         } else if (searchType == SearchType.User) {
           this.searchUsers = result.userprofiles;
-          this.count = result.userprofileCount
+          this.count = result.userprofileCount;
         }
       },
-      error => alert('get search data error ' + error)
+      error => alert(`get search data error ${error}`)
     );
   }
+
   handleTabClick(searchType: SearchType) {
-    this.currentSearchType = searchType
+    this.currentSearchType = searchType;
     this.searchWithTypes();
-  };
-  getDjSubTitles(djRadio: {dj: {userId: number, nickname: string}}) {
-    return [{id: djRadio.dj.userId, txt: djRadio.dj.nickname}]
-  };
-  getDjSubLinks(djRadio: {dj: {userId: number, nickname: string}}) {
-    const obj: {[index: number]: string} = {};
-    obj[djRadio.dj.userId] = "/dj/" +  djRadio.dj.userId
-    return obj
-  };
+  }
+
+  getDjSubTitles(djRadio: { dj: { userId: number; nickname: string } }) {
+    return [{ id: djRadio.dj.userId, txt: djRadio.dj.nickname }];
+  }
+
+  getDjSubLinks(djRadio: { dj: { userId: number; nickname: string } }) {
+    const obj: { [index: number]: string } = {};
+    obj[djRadio.dj.userId] = `/dj/${djRadio.dj.userId}`;
+    return obj;
+  }
+
   handleInputEnter() {
     this.searchWithTypes();
-  };
-  handleScroll({ target }: {target: HTMLElement}) {
-    this.isLoadMore = this.currentSearchType !== null
-      && this.count !== this.currentLength
-      && target.scrollTop + target.clientHeight ==  target.scrollHeight
   }
-  @Watch('isLoadMore')
+
+  handleScroll({ target }: { target: HTMLElement }) {
+    this.isLoadMore =
+      this.currentSearchType !== null &&
+      this.count !== this.currentLength &&
+      target.scrollTop + target.clientHeight == target.scrollHeight;
+  }
+
+  @Watch("isLoadMore")
   onIsLoadingChange(val: boolean) {
-    if(val == false) return
+    if (val == false) return;
     this.searchWithTypes();
   }
 }
@@ -361,7 +396,7 @@ a
       background-image: url('../../assets/caret-right.svg');
     & .list-item-icon.more
       background-image: url('../../assets/more.svg');
-    
+
 .list-item-icon
   width: 2em;
   background-repeat: no-repeat;
@@ -435,7 +470,7 @@ a
       background: url('../../assets/triangle-right-fill.svg') no-repeat  center / 60%;
       &:hover
         transform: scale(1.1, 1.1);
-        
+
 .artist-info
   text-align: center;
   margin: 1em 0;
@@ -498,4 +533,3 @@ a
   padding-top: 2em;
   color: rgb(110, 110, 110);
 </style>
-

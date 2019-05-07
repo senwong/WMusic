@@ -1,73 +1,55 @@
 <template>
   <div class="offical" v-if="content">
-      <TabMenu :list="typeList" align-left />
-      <div class="card">
-        <div class="card__left">
-          <ImageWithPlaceholder
-            :src="content.picUrl | convert2Https | clipImage(400, 400)"
-            :alt="content.title"
-            ratio="1:1"
-          />
-        </div>
-        <div class="card__right">
-          <div class="track-head">
-            <Button
-              class="track-head__play"
-              rounded
-              primary
-              xsmall
-              @click.native="playAll"
-            >全部播放</Button>
-            <Button
-              class="track-head__check"
-              as="a"
-              rounded
-              xsmall
-              :href="'/playlist/'+content.id"
-            >查看全部</Button>
-          </div>
-          <ul class="table-body">
-            <li class="track__item" v-for="(track, i) in content.tracks.slice(0, 5)" :key="track.id">
-              <div class="track__rank__play">
-                <span class="track__rank">0{{i+1}}</span>
-                <span class="track__play" @click="play(track.id)"><PlayIcon /></span>
-              </div>
-              <router-link class="track__name ellipsis" :to="'/song/'+track.id">{{track.name}}</router-link>
-              <span class="track__artists">
-                <ArtistsWithComma :artists="track.artists" aTagClass="track__artist" />
-              </span>
-            </li>
-          </ul>
-        </div>
+    <TabMenu :list="typeList" align-left />
+    <div class="card">
+      <div class="card__left">
+        <ImageWithPlaceholder
+          :src="content.picUrl | convert2Https | clipImage(400, 400)"
+          :alt="content.title"
+          ratio="1:1"
+        />
       </div>
+      <div class="card__right">
+        <div class="track-head">
+          <Button class="track-head__play" rounded primary xsmall @click.native="playAll"
+            >全部播放</Button
+          >
+          <Button class="track-head__check" as="a" rounded xsmall :href="'/playlist/' + content.id"
+            >查看全部</Button
+          >
+        </div>
+        <ul class="table-body">
+          <li class="track__item" v-for="(track, i) in content.tracks.slice(0, 5)" :key="track.id">
+            <div class="track__rank__play">
+              <span class="track__rank">0{{ i + 1 }}</span>
+              <span class="track__play" @click="play(track.id)"><PlayIcon /></span>
+            </div>
+            <router-link class="track__name ellipsis" :to="'/song/' + track.id">{{
+              track.name
+            }}</router-link>
+            <span class="track__artists">
+              <ArtistsWithComma :artists="track.artists" aTagClass="track__artist" />
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
-<script lang='ts'>
+<script lang="ts">
 import { getTopList } from "@/service";
-import ImageWithPlaceholder from '@/components/globals/ImageWithPlaceholder.vue';
-import ArtistsWithComma from '@/components/globals/ArtistsWithComma.vue';
-import TabMenu from '@/components/globals/TabMenu.vue';
-import { DomesticTopList } from './MediaItem.vue';
-import Button from '@/components/globals/Button.vue';
-import { Mutation, namespace } from 'vuex-class';
-import PlayIcon from '@/components/SVGIcons/PlayIcon.vue';
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import TabMenu from "@/components/globals/TabMenu.vue";
+import { DomesticTopList } from "./MediaItem.vue";
+import Button from "@/components/globals/Button.vue";
+import { Mutation, namespace } from "vuex-class";
+import PlayIcon from "@/components/SVGIcons/PlayIcon.vue";
 
-import {
-  PlaylistType,
-  Track,
-  Album,
-  TabMenuItem,
-  Artist,
-  convertTrack,
-} from '@/types';
-import {
-  Vue,
-  Component,
-  Prop,
-  Watch
-} from 'vue-property-decorator';
+import { PlaylistType, Track, Album, TabMenuItem, Artist, convertTrack } from "@/types";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 
-const playlist = namespace('playlist');
+const playlist = namespace("playlist");
 
 interface Card {
   id: number;
@@ -77,7 +59,11 @@ interface Card {
 }
 
 // "0": "云音乐新歌榜", "1": "云音乐热歌榜", "2": "网易原创歌曲榜"
-enum Type { New, Hot, Origin};
+enum Type {
+  New,
+  Hot,
+  Origin
+}
 interface TopListType {
   id: number;
   name: string;
@@ -97,61 +83,69 @@ interface OfficialConntent {
     ArtistsWithComma,
     TabMenu,
     Button,
-    PlayIcon,
-  },
+    PlayIcon
+  }
 })
 export default class OfficialTopList extends Vue {
-
-  readonly officialTabTitles: {key: Type, title: string}[] =  [
-    {key: Type.Hot, title: "热歌"},
-    {key: Type.New, title: "新歌"},
-    {key: Type.Origin, title: "原创"}
+  readonly officialTabTitles: { key: Type; title: string }[] = [
+    { key: Type.Hot, title: "热歌" },
+    { key: Type.New, title: "新歌" },
+    { key: Type.Origin, title: "原创" }
   ];
-  selectedType: Type =  Type.Hot;
+
+  selectedType: Type = Type.Hot;
 
   get typeList(): TabMenuItem[] {
-    return this.officialTabTitles.map((t: {key: Type, title: string}): TabMenuItem => ({
-      key: t.key,
-      isActive: this.selectedType == t.key,
-      onClick: () => this.selectedType = t.key,
-      title: t.title,
-    }));
+    return this.officialTabTitles.map(
+      (t: { key: Type; title: string }): TabMenuItem => ({
+        key: t.key,
+        isActive: this.selectedType == t.key,
+        onClick: () => (this.selectedType = t.key),
+        title: t.title
+      })
+    );
   }
-  content: OfficialConntent | null = null;
-  updateOfficial() {
-    getTopList(this.selectedType).then(
-      res => {
-        const p = res.data.playlist;
 
-        const tracks: Track[] = p.tracks.map(convertTrack);
-        this.content = {
-          id: p.id,
-          title: p.name,
-          picUrl: p.coverImgUrl,
-          tracks: tracks
-        };
-      }
-    )
+  content: OfficialConntent | null = null;
+
+  updateOfficial() {
+    getTopList(this.selectedType).then(res => {
+      const p = res.data.playlist;
+
+      const tracks: Track[] = p.tracks.map(convertTrack);
+      this.content = {
+        id: p.id,
+        title: p.name,
+        picUrl: p.coverImgUrl,
+        tracks
+      };
+    });
   }
+
   created() {
     this.updateOfficial();
   }
-  @Watch('selectedType')
+
+  @Watch("selectedType")
   onSelectedOfficialChange() {
     this.updateOfficial();
   }
-  @playlist.Mutation setCurrentSongId!: (id: number) => void
-  @playlist.Mutation setTracks!: (tracks: Track[]) => void
+
+  @playlist.Mutation setCurrentSongId!: (id: number) => void;
+
+  @playlist.Mutation setTracks!: (tracks: Track[]) => void;
+
   playAll() {
     if (this.content && this.content.tracks) {
-      const tracks = this.content.tracks;
+      const { tracks } = this.content;
       this.setCurrentSongId(tracks[0].id);
       this.setTracks(tracks);
     }
   }
+
   play(id: number) {
     if (this.content && this.content.tracks) {
-      const tracks = this.content.tracks;
+      const { tracks } = this.content;
       this.setCurrentSongId(id);
       this.setTracks(tracks);
     }
@@ -251,6 +245,4 @@ export default class OfficialTopList extends Vue {
 	white-space: nowrap
 	overflow: hidden
 	text-overflow: ellipsis
-
 </style>
-

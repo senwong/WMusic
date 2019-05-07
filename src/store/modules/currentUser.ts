@@ -1,17 +1,17 @@
-import { getUserDetail } from '@/service/index';
+import { getUserDetail } from "@/service/index";
 
 interface CurrentUserState {
-  userId: number | undefined
+  userId: number | undefined;
 }
 
 export default {
   namespaced: true,
   state: {
-    userId: undefined,
+    userId: undefined
   },
   mutations: {
-    setCurrentUserId(state : CurrentUserState, id: number) {
+    setCurrentUserId(state: CurrentUserState, id: number) {
       state.userId = id;
     }
   }
-}
+};
