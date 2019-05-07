@@ -1,8 +1,10 @@
 <template>
   <div class="song-info-panel">
-    <div v-if="isLoading" class="loading-spinner"><Spinner /></div>
+    <div v-if="isLoading" class="loading-spinner">
+      <Spinner/>
+    </div>
     <div class="album-img">
-      <img v-if="albumImg" :src="albumImg | convert2Https | clipImage(192, 192)" :alt="name" />
+      <img v-if="albumImg" :src="albumImg | convert2Https | clipImage(192, 192)" :alt="name">
       <div v-else class="img-placeholder"></div>
       <div class="img-mask">
         <button
@@ -10,7 +12,7 @@
           @click="$emit('toggle-song-player')"
           :class="{ invert: !isShowSongPlayer }"
         >
-          <SlideUpIcon />
+          <SlideUpIcon/>
         </button>
       </div>
     </div>
@@ -20,9 +22,7 @@
       <div v-if="artists" class="songer">{{ artists && artists.map(ar => ar.name).join("/") }}</div>
     </div>
     <!-- 选择音质 -->
-    <button class="quality button" :disabled="disabled">
-      {{ currentQuality }}
-    </button>
+    <button class="quality button" :disabled="disabled">{{ currentQuality }}</button>
     <!-- 点击音质，弹出选择菜单 -->
     <popup-menu :target="qualityPopupButton">
       <select-list :data="qualitys" @selected-change="selectedChange"></select-list>
@@ -35,38 +35,38 @@
       :class="{ 'is-faver': isFaver }"
       :disabled="disabled"
     >
-      <FavIcon />
+      <FavIcon/>
     </SvgBtnWrapper>
     <!-- 三点 更多选项 -->
     <SvgBtnWrapper xlarge class="more" :disabled="disabled">
-      <MoreIcon />
+      <MoreIcon/>
     </SvgBtnWrapper>
     <!-- 点击更多，弹出菜单 -->
     <popup-menu :target="morePopupButton">
       <more-list>
         <more-item>
-          <DownloadIcon slot="icon" />
+          <DownloadIcon slot="icon"/>
           <span slot="txt" class="txt">漫游相似歌曲</span>
         </more-item>
         <more-item>
-          <DownloadIcon slot="icon" />
+          <DownloadIcon slot="icon"/>
           <span slot="txt" class="txt">下载</span>
         </more-item>
         <!-- 添加到歌单 hover时右侧扩展 -->
         <more-item spread="'right'">
-          <DownloadIcon slot="icon" />
+          <DownloadIcon slot="icon"/>
           <span slot="txt" class="txt">添加到歌单</span>
           <!-- hover时右侧扩展内容 -->
           <more-list slot="spread-list">
             <more-item>
-              <DownloadIcon slot="icon" />
+              <DownloadIcon slot="icon"/>
               <span slot="txt" class="txt">喜欢的音乐</span>
             </more-item>
           </more-list>
         </more-item>
         <!-- 评论分享 -->
         <more-item>
-          <DownloadIcon slot="icon" />
+          <DownloadIcon slot="icon"/>
           <span slot="txt" class="txt">评论分享</span>
         </more-item>
       </more-list>
@@ -99,7 +99,14 @@ export default {
     SvgBtnWrapper,
     Spinner
   },
-  props: ["name", "artists", "albumImg", "isShowSongPlayer", "isLoading", "disabled"],
+  props: [
+    "name",
+    "artists",
+    "albumImg",
+    "isShowSongPlayer",
+    "isLoading",
+    "disabled"
+  ],
   data() {
     return {
       isFaver: false,
@@ -129,12 +136,12 @@ export default {
 };
 </script>
 <style lang="sass" scoped>
-@import "../config.sass";
+@import "../config.sass"
 
 .song-info-panel
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  display: flex
+  align-items: center
+  justify-content: flex-start
   position: relative
 .loading-spinner
   position: absolute
@@ -147,69 +154,74 @@ export default {
   z-index: 1
 .album-img
   flex: 0 0 6em
-  height: 100%;
-  position: relative;
+  height: 100%
+  position: relative
   img
-    width: 100%;
-    height: 100%;
+    width: 100%
+    height: 100%
   .img-placeholder
-    height: 100%;
-    width: 100%;
-    background-color: $gray;
+    height: 100%
+    width: 100%
+    background-color: $gray
   .img-mask
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: $whitegray-2;
+    display: none
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background-color: $whitegray-2
   &:hover .img-mask
-    display: block;
+    display: block
 
 .name-songer
-  flex: 0 0 auto
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 1em;
+  min-width: 0
+  flex: 0 1 auto
+  display: flex
+  flex-direction: column
+  justify-content: center
+  margin-left: 1em
   .songer
-    font-size: 0.8em;
-    color: $gray;
+    font-size: 0.8em
+    color: $gray
+    overflow: hidden
     white-space: nowrap
+    text-overflow: ellipsis
   .songer:hover, .name:hover
-    color: $orange;
+    color: $orange
   .name
+    overflow: hidden
     white-space: nowrap
+    text-overflow: ellipsis
 .quality
-    font-size: 0.8em;
-    // width: 5em;
-    color: $gray;
-    border: 1px solid $gray;
-    padding: 0px 2em 0px 3px;
-    background-image: url("../../assets/chevron-down-gray.svg");
-    background-position: right 3px center;
-    background-repeat: no-repeat;
-    background-size: 1em 1em;
-    border-radius: 2px;
-    margin-left: 1em;
-    white-space: nowrap;
-    cursor: pointer;
+    font-size: 0.8em
+    // width: 5em
+    color: $gray
+    border: 1px solid $gray
+    padding: 0px 2em 0px 3px
+    background-image: url("../../assets/chevron-down-gray.svg")
+    background-position: right 3px center
+    background-repeat: no-repeat
+    background-size: 1em 1em
+    border-radius: 2px
+    margin-left: 1em
+    white-space: nowrap
+    cursor: pointer
 .faver, .more
   flex-shrink: 0
   flex-grow: 0
-  margin-left: 1em;
+  margin-left: 1em
 .faver.is-faver
-  color: $orange;
+  color: $orange
   & svg
-    fill: $orange;
+    fill: $orange
 
 .button_center-center
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: absolute
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)
   &.invert
-    transform: translate(-50%, -50%) rotate(180deg);
-    transform-origin: center;
+    transform: translate(-50%, -50%) rotate(180deg)
+    transform-origin: center
 </style>
