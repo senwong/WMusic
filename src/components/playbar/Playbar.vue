@@ -49,7 +49,7 @@
       <!-- 中间区域 结束 -->
       <!-- 右边区域 开始-->
       <sound-panel
-        class="playbar__item_right "
+        class="playbar__item_right"
         :currentMode="currentMode"
         @changeVolume="changeVolume"
         @changeMode="changeMode"
@@ -85,6 +85,7 @@ import { State, Getter, namespace } from "vuex-class";
 import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
 
 const playlist = namespace("playlist");
+const playbar = namespace("playbar");
 
 @Component({
   components: {
@@ -142,6 +143,52 @@ export default class Playbar extends Vue {
   @playlist.Getter trackIds!: number[];
 
   @playlist.Mutation setCurrentSongId!: (id: number) => void;
+
+  @playbar.Mutation setPaused!: (paused: boolean) => void;
+  @playbar.Mutation setAudio!: (audio: HTMLAudioElement) => void;
+
+  @Watch("currentSongId")
+  onCurrentSongIdChange(id: number) {
+    if (id) {
+      this.isLoading = true;
+      getSongURL(id).then(
+        res => {
+          const newSongUrl = res.data.data[0].url;
+          if (newSongUrl) {
+            this.songUrl = newSongUrl;
+          } else {
+            this.nextSong();
+          }
+        },
+        error => alert(`get song url error ${error}`)
+      );
+      getSongDetail(id).then(
+        res => {
+          const song = res.data.songs[0];
+          this.name = song.name;
+          this.artists = song.ar;
+          this.album = song.al;
+        },
+        error => alert(`get song detail error ${error}`)
+      );
+    }
+  }
+
+  @Watch("volume")
+  onVolumeChange(val: number) {
+    this.setAudioEleVolume(val);
+  }
+  @Watch("paused")
+  onPausedChange(val: boolean) {
+    this.setPaused(val);
+  }
+
+  mounted() {
+    // this.registeDragLable(this.$el.querySelector(".progress__state"), this.$el.querySelector(".progress-bar"))
+    // initial set volume
+    this.setAudioEleVolume(this.volume);
+    this.setAudio(this.$refs.audio);
+  }
 
   play() {
     if (this.$refs.audio && this.songUrl) {
@@ -268,50 +315,12 @@ export default class Playbar extends Vue {
     this.$refs.audio.currentTime = percent * this.$refs.audio.duration;
   }
 
-  mounted() {
-    // this.registeDragLable(this.$el.querySelector(".progress__state"), this.$el.querySelector(".progress-bar"))
-    // initial set volume
-    this.setAudioEleVolume(this.volume);
-  }
-
   handleCanPlayThrough() {
     this.isLoading = false;
   }
 
   handleWaiting() {
     this.isLoading = true;
-  }
-
-  @Watch("currentSongId")
-  onCurrentSongIdChange(id: number) {
-    if (id) {
-      this.isLoading = true;
-      getSongURL(id).then(
-        res => {
-          const newSongUrl = res.data.data[0].url;
-          if (newSongUrl) {
-            this.songUrl = newSongUrl;
-          } else {
-            this.nextSong();
-          }
-        },
-        error => alert(`get song url error ${error}`)
-      );
-      getSongDetail(id).then(
-        res => {
-          const song = res.data.songs[0];
-          this.name = song.name;
-          this.artists = song.ar;
-          this.album = song.al;
-        },
-        error => alert(`get song detail error ${error}`)
-      );
-    }
-  }
-
-  @Watch("volume")
-  onVolumeChange(val: number) {
-    this.setAudioEleVolume(val);
   }
 }
 </script>

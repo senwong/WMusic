@@ -11,14 +11,17 @@
         }"
       >
         <div class="track-icon" @click="handlePlay(track.id)">
-          <MusicIcon class="music-icon" />
-          <PausedIcon class="play-icon" />
+          <SvgBtnWrapper middle class="music-icon">
+            <MusicIcon />
+          </SvgBtnWrapper>
+          <PlayStatusBtn primary middle class="play-icon" v-if="currentSongId === track.id" />
+          <SvgBtnWrapper middle class="play-icon" v-else>
+            <PausedIcon />
+          </SvgBtnWrapper>
         </div>
         <div class="track-names">
           <div class="track-name-mvlink">
-            <router-link :to="`/song/${track.id}`" class="track-name">
-              {{ track.name }}
-            </router-link>
+            <router-link :to="`/song/${track.id}`" class="track-name">{{ track.name }}</router-link>
             <router-link v-if="track.mv" :to="'/mvplay/' + track.mv" class="track-mvlink">
               <MvIcon />
             </router-link>
@@ -29,18 +32,16 @@
               aTagClass="track-artist"
               commaClass="track-dot"
             />
-            <span class="track-dot"> • </span>
-            <router-link :to="'/album/' + track.album.id" class="track-album">
-              {{ track.album.name }}
-            </router-link>
+            <span class="track-dot">•</span>
+            <router-link :to="'/album/' + track.album.id" class="track-album">{{
+              track.album.name
+            }}</router-link>
           </div>
         </div>
         <div class="track-more" @mousedown="handleMoreMousedown(track.id, $event)">
           <MoreIcon />
         </div>
-        <div class="track-duration">
-          {{ formatTime(track.duration) }}
-        </div>
+        <div class="track-duration">{{ formatTime(track.duration) }}</div>
       </li>
     </ul>
     <popup-menu :target="moreButton">
@@ -96,8 +97,11 @@ import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Track } from "@/types";
 import { Mutation, namespace, State, Getter } from "vuex-class";
+import PlayStatusBtn from "@/components/globals/PlayStatusBtn.vue";
+import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
 
 const playlist = namespace("playlist");
+const playbar = namespace("playbar");
 
 @Component({
   components: {
@@ -110,7 +114,9 @@ const playlist = namespace("playlist");
     DownloadIcon,
     MusicIcon,
     MvIcon,
-    ArtistsWithComma
+    ArtistsWithComma,
+    PlayStatusBtn,
+    SvgBtnWrapper
   }
 })
 export default class SongList extends Vue {
@@ -132,15 +138,20 @@ export default class SongList extends Vue {
 
   @playlist.Mutation addToNext!: (track: Track) => void;
 
+  @playbar.Mutation togglePlay!: () => void;
+
   // play specify song
   handlePlay(trackId: number) {
     if (this.tracks.every(t => t.status < 0)) {
       // TODO 资源展示下架
       return;
     }
+    //  if local component's tracks equal to store's tracks
     if (this.tracks.every((track, idx) => track.id == this.trackIds[idx])) {
       if (trackId != this.currentSongId) {
         this.setCurrentSongId(trackId);
+      } else {
+        this.togglePlay();
       }
     } else {
       this.setTracks(this.tracks);
@@ -200,13 +211,13 @@ export default class SongList extends Vue {
       display: block
 
 .track-icon
-  width: 3em
-  height: 1em
+  margin-left: 0.5em
   flex: 0 0 auto
   cursor: pointer
   .play-icon
     display: none
 .track-names
+  margin-left: 1em
   flex: 1 1 auto
 .track-name-mvlink
   display: flex
@@ -214,6 +225,7 @@ export default class SongList extends Vue {
   align-items: center
 .track-name
   line-height: 22px
+  user-select: none
 .track-mvlink
   margin-left: 0.5em
   width: 1.2em
@@ -230,21 +242,30 @@ export default class SongList extends Vue {
   transition-duration: 250ms
   line-height: 20px
   border-bottom: 1px solid rgba(0,0,0,0)
+  user-select: none
   &:hover
     opacity: 1
     border-color: rgba(0,0,0,0.8)
 
 .track-dot
   opacity: 0.6
+  margin: 0 0.25em
 .track-album
   opacity: 0.6
   transition-property: opacity border
   transition-duration: 250ms
   line-height: 20px
   border-bottom: 1px solid rgba(0,0,0,0)
+  user-select: none
   &:hover
     opacity: 1
     border-color: rgba(0,0,0,0.8)
+// if currentSongId == track.id, artist and album border-bottom color $primary
+.track.active
+  .track-artist:hover
+    border-color: $primary
+  .track-album:hover
+    border-color: $primary
 
 .track-more
   flex: 0 0 0
