@@ -30,7 +30,7 @@
 <script lang="ts">
 import { getArtistInfo, getArtistAlbums } from "@/service";
 import { formatDate } from "@/utilitys";
-import SongList from "./SongList.vue";
+import SongList from "@/components/globals/SongList.vue";
 import SongCards from "@/components/globals/SongCards.vue";
 import { mapMutations } from "vuex";
 import { Vue, Component, Prop } from "vue-property-decorator";

@@ -20,9 +20,7 @@
       </div>
       <!-- loaded all comments Sign board -->
       <div class="loaded-all-comments-sign-bard" v-if="isAllCommentsLoaded">
-        <span class="loaded-all-comments-sign-bard__title">
-          已加载完所有评论
-        </span>
+        <span class="loaded-all-comments-sign-bard__title">已加载完所有评论</span>
       </div>
     </div>
   </div>
@@ -33,7 +31,7 @@ import LikeIcon from "@/components/SVGIcons/LikeIcon.vue";
 import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon.vue";
 import CommentItem from "./CommentItem.vue";
 import CommentReplyEditor from "./CommentReplyEditor.vue";
-import { getSongComment, getMVComments } from "@/service";
+import { getSongComment, getMVComments, getPlaylistComments, getAlbumComments } from "@/service";
 import LoadingIcon from "@/components/globals/Loading.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Comment, CommentType } from "@/types";
@@ -77,6 +75,12 @@ export default class CommentList extends Vue {
         break;
       case CommentType.SongComment:
         service = getSongComment;
+        break;
+      case CommentType.PlaylistComment:
+        service = getPlaylistComments;
+        break;
+      case CommentType.AlbumComment:
+        service = getAlbumComments;
         break;
       default:
         return null;
@@ -139,6 +143,8 @@ export default class CommentList extends Vue {
 }
 </script>
 <style lang="sass" scoped>
+.comments
+  margin-top: 1.5em
 .loading-wrapper
   height: 2em
   width: 2em

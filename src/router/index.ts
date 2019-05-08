@@ -1,6 +1,6 @@
 import VueRouter from "vue-router";
 import FindMusic from "@/components/FindMusic/Index.vue";
-import PlayListDetail from "@/components/FindMusic/PlayListDetail.vue";
+import PlaylistDetail from "@/components/Playlist/PlaylistDetail.vue";
 import SongDetail from "@/components/FindMusic/SongDetail.vue";
 import ArtistDetail from "@/components/FindMusic/ArtistDetail.vue";
 import AlbumDetail from "@/components/FindMusic/AlbumDetail.vue";
@@ -26,7 +26,7 @@ const router = new VueRouter({
   routes: [
     { path: "/", component: FindMusic },
     { path: "/playlist", component: Playlist },
-    { path: "/playlist/:id", component: PlayListDetail },
+    { path: "/playlist/:id", component: PlaylistDetail },
     { path: "/song/:id", component: SongDetail },
     { path: "/artist/:id", component: ArtistDetail },
     { path: "/album/:id", component: AlbumDetail },

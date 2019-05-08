@@ -1,10 +1,10 @@
 <template>
   <div class="song-info-panel">
     <div v-if="isLoading" class="loading-spinner">
-      <Spinner/>
+      <Spinner />
     </div>
     <div class="album-img">
-      <img v-if="albumImg" :src="albumImg | convert2Https | clipImage(192, 192)" :alt="name">
+      <img v-if="albumImg" :src="albumImg | convert2Https | clipImage(192, 192)" :alt="name" />
       <div v-else class="img-placeholder"></div>
       <div class="img-mask">
         <button
@@ -12,21 +12,33 @@
           @click="$emit('toggle-song-player')"
           :class="{ invert: !isShowSongPlayer }"
         >
-          <SlideUpIcon/>
+          <SlideUpIcon />
         </button>
       </div>
     </div>
     <div class="name-songer">
       <div v-if="name" class="name">{{ name }}</div>
-      <div v-else>听见不同</div>
-      <div v-if="artists" class="songer">{{ artists && artists.map(ar => ar.name).join("/") }}</div>
+      <div v-else class="name">听见不同</div>
+      <div>
+        <ArtistsWithComma
+          v-if="artists.length > 0"
+          :artists="artists"
+          aTagClass="songer"
+          commaClass="comma"
+        />
+      </div>
     </div>
     <!-- 选择音质 -->
-    <button class="quality button" :disabled="disabled">{{ currentQuality }}</button>
-    <!-- 点击音质，弹出选择菜单 -->
-    <popup-menu :target="qualityPopupButton">
-      <select-list :data="qualitys" @selected-change="selectedChange"></select-list>
-    </popup-menu>
+    <btn-with-popup-menu class="quality-btn__wrapper" :disabled="disabled">
+      <template slot="btn">
+        <button class="quality button" :disabled="disabled">{{ currentQuality }}</button>
+      </template>
+      <!-- 点击音质，弹出选择菜单 -->
+      <template slot="menu">
+        <select-list :data="qualitys" @selected-change="selectedChange" />
+      </template>
+    </btn-with-popup-menu>
+
     <!-- 收藏 -->
     <SvgBtnWrapper
       xlarge
@@ -35,58 +47,72 @@
       :class="{ 'is-faver': isFaver }"
       :disabled="disabled"
     >
-      <FavIcon/>
+      <FavIcon />
     </SvgBtnWrapper>
     <!-- 三点 更多选项 -->
-    <SvgBtnWrapper xlarge class="more" :disabled="disabled">
-      <MoreIcon/>
-    </SvgBtnWrapper>
+    <btn-with-popup-menu class="more" :disabled="disabled">
+      <template slot="btn">
+        <SvgBtnWrapper xlarge :disabled="disabled">
+          <MoreIcon />
+        </SvgBtnWrapper>
+      </template>
+      <template slot="menu">
+        <more-list>
+          <more-item>
+            <DownloadIcon slot="icon" />
+            <span slot="txt" class="txt">漫游相似歌曲</span>
+          </more-item>
+          <more-item>
+            <DownloadIcon slot="icon" />
+            <span slot="txt" class="txt">下载</span>
+          </more-item>
+          <!-- 添加到歌单 hover时右侧扩展 -->
+          <more-item spread="'right'">
+            <DownloadIcon slot="icon" />
+            <span slot="txt" class="txt">添加到歌单</span>
+            <!-- hover时右侧扩展内容 -->
+            <more-list slot="spread-list">
+              <more-item>
+                <DownloadIcon slot="icon" />
+                <span slot="txt" class="txt">喜欢的音乐</span>
+              </more-item>
+            </more-list>
+          </more-item>
+          <!-- 评论分享 -->
+          <more-item>
+            <DownloadIcon slot="icon" />
+            <span slot="txt" class="txt">评论分享</span>
+          </more-item>
+        </more-list>
+      </template>
+    </btn-with-popup-menu>
     <!-- 点击更多，弹出菜单 -->
-    <popup-menu :target="morePopupButton">
-      <more-list>
-        <more-item>
-          <DownloadIcon slot="icon"/>
-          <span slot="txt" class="txt">漫游相似歌曲</span>
-        </more-item>
-        <more-item>
-          <DownloadIcon slot="icon"/>
-          <span slot="txt" class="txt">下载</span>
-        </more-item>
-        <!-- 添加到歌单 hover时右侧扩展 -->
-        <more-item spread="'right'">
-          <DownloadIcon slot="icon"/>
-          <span slot="txt" class="txt">添加到歌单</span>
-          <!-- hover时右侧扩展内容 -->
-          <more-list slot="spread-list">
-            <more-item>
-              <DownloadIcon slot="icon"/>
-              <span slot="txt" class="txt">喜欢的音乐</span>
-            </more-item>
-          </more-list>
-        </more-item>
-        <!-- 评论分享 -->
-        <more-item>
-          <DownloadIcon slot="icon"/>
-          <span slot="txt" class="txt">评论分享</span>
-        </more-item>
-      </more-list>
-    </popup-menu>
   </div>
 </template>
-<script>
-import PopupMenu from "../PopupMenu.vue";
-import MoreItem from "../more-list/MoreItem.vue";
-import MoreList from "../more-list/MoreList.vue";
-import SelectList from "../more-list/SelectList.vue";
-import MoreIcon from "../SVGIcons/MoreIcon";
-import FavIcon from "../SVGIcons/FavIcon";
-import SlideUpIcon from "../SVGIcons/SlideUpIcon";
-import DownloadIcon from "../SVGIcons/DownloadIcon";
+<script lang="ts">
+import PopupMenu from "@/components/PopupMenu.vue";
+import MoreItem from "@/components/more-list/MoreItem.vue";
+import MoreList from "@/components/more-list/MoreList.vue";
+import SelectList from "@/components/more-list/SelectList.vue";
+import MoreIcon from "@/components/SVGIcons/MoreIcon.vue";
+import FavIcon from "@/components/SVGIcons/FavIcon.vue";
+import SlideUpIcon from "@/components/SVGIcons/SlideUpIcon.vue";
+import DownloadIcon from "@/components/SVGIcons/DownloadIcon.vue";
 import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
 import Spinner from "@/components/globals/Spinner.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
+import { getUserPlaylist } from "@/service";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { Artist } from "@/types";
 
-export default {
-  name: "SongInfoPanel",
+interface Quality {
+  id: number;
+  title: string;
+  isSelected: boolean;
+}
+
+@Component({
   components: {
     PopupMenu,
     MoreItem,
@@ -97,43 +123,36 @@ export default {
     SlideUpIcon,
     DownloadIcon,
     SvgBtnWrapper,
-    Spinner
-  },
-  props: [
-    "name",
-    "artists",
-    "albumImg",
-    "isShowSongPlayer",
-    "isLoading",
-    "disabled"
-  ],
-  data() {
-    return {
-      isFaver: false,
-      morePopupButton: null,
-      qualityPopupButton: null,
-      currentQuality: "标准品质",
-      qualitys: [
-        { id: 1, title: "标准品质", isSelected: false },
-        { id: 2, title: "高品质", isSelected: false },
-        { id: 3, title: "无损品质", isSelected: false }
-      ]
-    };
-  },
-  methods: {
-    toggleFaver() {
-      this.isFaver = !this.isFaver;
-    },
-    selectedChange(id) {
-      console.log("selected change: ", id);
-      this.currentQuality = this.qualitys.find(q => q.id === id).title;
-    }
-  },
-  mounted() {
-    this.morePopupButton = this.$el.querySelector(".more");
-    this.qualityPopupButton = this.$el.querySelector(".quality");
+    Spinner,
+    ArtistsWithComma,
+    BtnWithPopupMenu
   }
-};
+})
+export default class SongInfoPanel extends Vue {
+  @Prop() name!: string;
+  @Prop() artists!: Artist[];
+  @Prop() albumImg!: string;
+  @Prop() isShowSongPlayer!: boolean;
+  @Prop() isLoading!: boolean;
+  @Prop() disabled!: boolean;
+  isFaver: boolean = false;
+  currentQuality: string = "标准品质";
+  qualitys: Quality[] = [
+    { id: 1, title: "标准品质", isSelected: false },
+    { id: 2, title: "高品质", isSelected: false },
+    { id: 3, title: "无损品质", isSelected: false }
+  ];
+  toggleFaver() {
+    this.isFaver = !this.isFaver;
+  }
+  selectedChange(id: number) {
+    console.log("selected change: ", id);
+    const q = this.qualitys.find(q => q.id === id);
+    if (q) {
+      this.currentQuality = q.title;
+    }
+  }
+}
 </script>
 <style lang="sass" scoped>
 @import "../config.sass"
@@ -189,24 +208,30 @@ export default {
     text-overflow: ellipsis
   .songer:hover, .name:hover
     color: $orange
+  .comma
+    font-size: 0.8em
+    color: $gray
   .name
+    cursor: pointer
     overflow: hidden
     white-space: nowrap
     text-overflow: ellipsis
+.quality-btn__wrapper
+  margin-left: 1em
 .quality
-    font-size: 0.8em
-    // width: 5em
-    color: $gray
-    border: 1px solid $gray
-    padding: 0px 2em 0px 3px
-    background-image: url("../../assets/chevron-down-gray.svg")
-    background-position: right 3px center
-    background-repeat: no-repeat
-    background-size: 1em 1em
-    border-radius: 2px
-    margin-left: 1em
-    white-space: nowrap
-    cursor: pointer
+  font-size: 0.8em
+  color: $gray
+  border: 1px solid $gray
+  padding: 0px 2em 0px 3px
+  background-image: url("../../assets/chevron-down-gray.svg")
+  background-position: right 3px center
+  background-repeat: no-repeat
+  background-size: 1em 1em
+  border-radius: 2px
+  white-space: nowrap
+  cursor: pointer
+  &:active, &:focus
+    outline: none
 .faver, .more
   flex-shrink: 0
   flex-grow: 0

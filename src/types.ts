@@ -91,7 +91,9 @@ export interface Comment {
 // 0 : mv comment 1: song comment
 export enum CommentType {
   MvComment,
-  SongComment
+  SongComment,
+  PlaylistComment,
+  AlbumComment
 }
 
 export interface ControlBtn {

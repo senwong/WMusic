@@ -37,9 +37,10 @@ export default class SvgBtnWrapper extends Vue {
 .wrapper
   position: relative
   font-size: 16px
+  margin: -0.375em
   padding: 0.375em
   cursor: pointer
-  display: fex
+  display: flex
   box-sizing: content-box
   width: 1em
   height: 1em

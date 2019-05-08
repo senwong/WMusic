@@ -55,7 +55,10 @@
             }
           ]"
         />
-        <SongCards :cardLists="playlists" cardType="playlist" class="song-cards" />
+        <div class="loading-spinner" v-if="isLoading">
+          <Spinner />
+        </div>
+        <SongCards v-else :cardLists="playlists" cardType="playlist" class="song-cards" />
         <Pagination :total="pageTotal" @change="handlePageChange" />
       </div>
     </div>
@@ -70,6 +73,7 @@ import Pagination from "@/components/globals/Pagination.vue";
 import TabMenu from "@/components/globals/TabMenu.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Playlist, PlaylistCreator } from "@/types";
+import Spinner from "@/components/globals/Spinner.vue";
 
 interface SubCategory {
   category: number;
@@ -82,7 +86,8 @@ interface SubCategory {
     ChevronTopIcon,
     ChevronBottomIcon,
     Pagination,
-    TabMenu
+    TabMenu,
+    Spinner
   }
 })
 export default class PlaylistComponent extends Vue {
@@ -106,15 +111,16 @@ export default class PlaylistComponent extends Vue {
 
   limit = 20;
 
+  isLoading: boolean = false;
+
   created() {
-    getPlayListCatlist().then(res => {
-      if (res.data.code == 200) {
+    getPlayListCatlist().then(
+      res => {
         this.categories = res.data.categories;
         this.sub = res.data.sub;
-      } else {
-        alert(`获取歌单分类失败： ${res.data}`);
-      }
-    });
+      },
+      error => {}
+    );
     this.updatePlayList();
   }
 
@@ -133,6 +139,7 @@ export default class PlaylistComponent extends Vue {
   }
 
   updatePlayList() {
+    this.isLoading = true;
     getPlayList(this.selected, this.orderType, this.offset).then(res => {
       if (res.data.code == 200) {
         this.total = res.data.total;
@@ -153,8 +160,10 @@ export default class PlaylistComponent extends Vue {
             creator: list.creator
           })
         );
+        this.isLoading = false;
       } else {
         alert(`获取歌单失败： ${res.data}`);
+        this.isLoading = false;
       }
     });
   }
@@ -243,4 +252,8 @@ export default class PlaylistComponent extends Vue {
 
 .song-cards
   margin-top: 2em
+.loading-spinner
+  width: 2em
+  height: 2em
+  margin: 2em auto
 </style>

@@ -70,7 +70,7 @@ export default {
     display: grid
     row-gap: 2em
     column-gap: 1em
-    grid-template-columns: repeat(auto-fit, 350px)
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))
     justify-content: space-around
   .pagination
     text-align: center

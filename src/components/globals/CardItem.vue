@@ -17,53 +17,19 @@
         <span>{{ formatPlayCount(card.playCount) }}</span>
       </div>
     </CardImage>
-    <router-link :to="`/${cardType}/${card.id}`" class="list__name">
-      {{ card.name }}
-    </router-link>
+    <router-link :to="`/${cardType}/${card.id}`" class="list__name">{{ card.name }}</router-link>
     <!-- creator -->
     <router-link v-if="card.creator" class="creator-name" :to="`/user/${card.creator.userId}`">
       {{ card.creator.nickname }}
     </router-link>
     <!-- 点击更多，弹出菜单 -->
-    <popup-menu :target="morePopupButton">
-      <more-list>
-        <more-item
-          @click.native="$store.dispatch('addListToList', { type: 'PLAYLIST', id: card.id })"
-        >
-          <DownloadIcon slot="icon" />
-          <span slot="txt" class="txt">添加到播放列表</span>
-        </more-item>
-        <more-item>
-          <DownloadIcon slot="icon" />
-          <span slot="txt" class="txt">收藏</span>
-        </more-item>
-        <!-- 下载-->
-        <more-item>
-          <DownloadIcon slot="icon" />
-          <span slot="txt" class="txt">下载</span>
-        </more-item>
-        <!-- 加入歌单 -->
-        <more-item spread="'right'">
-          <DownloadIcon slot="icon" />
-          <span slot="txt" class="txt">加入歌单</span>
-          <!-- hover时右侧扩展内容 -->
-          <more-list slot="spread-list">
-            <more-item>
-              <DownloadIcon slot="icon" />
-              <span slot="txt" class="txt">喜欢的音乐</span>
-            </more-item>
-          </more-list>
-        </more-item>
-      </more-list>
-    </popup-menu>
   </div>
 </template>
 <script lang="ts">
-import PopupMenu from "../PopupMenu.vue";
 import MoreItem from "../more-list/MoreItem.vue";
 import MoreList from "../more-list/MoreList.vue";
 import { mapMutations } from "vuex";
-import { getPlaylistDetail, getAlbumDetail } from "@/service";
+import { getPlaylistDetail, getAlbumDetail, subPlaylist } from "@/service";
 import DownloadIcon from "@/components/SVGIcons/DownloadIcon.vue";
 import PlayWithoutCircleIcon from "@/components/SVGIcons/PlayWithoutCircleIcon.vue";
 import CardImage from "./CardImage.vue";
@@ -75,7 +41,6 @@ const playlist = namespace("playlist");
 
 @Component({
   components: {
-    PopupMenu,
     MoreItem,
     MoreList,
     DownloadIcon,
@@ -104,6 +69,16 @@ export default class CardItem extends Vue {
 
   addFav(type: PlaylistType, id: number): void {
     // TODO
+    if (type == "playlist") {
+      subPlaylist(id, 1).then(
+        res => {
+          console.log("subscribe scuccess ", res);
+        },
+        error => {
+          console.log("subscrible failed ", error);
+        }
+      );
+    }
   }
 
   formatPlayCount(playCount: number): string {

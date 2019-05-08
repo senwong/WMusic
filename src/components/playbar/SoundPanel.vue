@@ -29,7 +29,7 @@
       <OptionsIcon />
     </SvgBtnWrapper>
 
-    <popup-menu :target="soundEffectButton">
+    <!-- <popup-menu :target="soundEffectButton">
       <select-list :data="soundEffects" @selected-change="effectChange">
         <div slot="title" class="sound-effect-title">
           <div class="sound-effect-set">
@@ -39,7 +39,7 @@
           <p class="sound-effect-desc">环境音效</p>
         </div>
       </select-list>
-    </popup-menu>
+    </popup-menu>-->
     <!-- 播放列表 -->
     <SvgBtnWrapper xlarge class="play-list" @click.native="toggleRightPlaylist">
       <MenuIcon />

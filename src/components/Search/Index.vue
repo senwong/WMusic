@@ -39,8 +39,8 @@
               />
             </a>
             <a :href="'/artist/' + artist.id" class="artis-name-search">
-              <span>{{ artist.name }}</span
-              ><span v-if="artist.trans">({{ artist.trans }})</span>
+              <span>{{ artist.name }}</span>
+              <span v-if="artist.trans">({{ artist.trans }})</span>
             </a>
           </li>
         </ul>
@@ -54,14 +54,10 @@
               <img :src="album.picUrl | convert2Https | clipImage(100, 100)" :alt="album.name" />
             </a>
             <div class="album-name-search">
-              <a :href="'/album/' + album.id">
-                {{ album.name }}
-              </a>
+              <a :href="'/album/' + album.id">{{ album.name }}</a>
             </div>
             <div class="album-artist-search">
-              <a :href="'/artist/' + album.artist.id">
-                {{ album.artist.name }}
-              </a>
+              <a :href="'/artist/' + album.artist.id">{{ album.artist.name }}</a>
             </div>
           </li>
         </ul>
@@ -92,16 +88,12 @@
               />
             </a>
             <div class="playlist-name-search">
-              <a :href="'/playlist/' + playlist.id">
-                {{ playlist.name }}
-              </a>
+              <a :href="'/playlist/' + playlist.id">{{ playlist.name }}</a>
             </div>
             <span class="playlist-count-search">{{ playlist.bookCount }}</span>
             <div class="playlist-user-search">
               <span>创建者：</span>
-              <a :href="'/user/' + playlist.creator.userId">
-                {{ playlist.creator.nickname }}
-              </a>
+              <a :href="'/user/' + playlist.creator.userId">{{ playlist.creator.nickname }}</a>
             </div>
           </li>
         </ul>
@@ -111,22 +103,19 @@
         <h3 class="fallback" v-if="searchLyrics.length == 0">没有与此相关的歌词</h3>
         <ul>
           <li v-for="lyric in searchLyrics" :key="lyric.id" class="lyric-item-search">
-            <a :href="'/song/' + lyric.id" class="lyric-name-search">
-              {{ lyric.name }}
-            </a>
+            <a :href="'/song/' + lyric.id" class="lyric-name-search">{{ lyric.name }}</a>
             <div class="lyric-artists-search">
               <a
                 v-for="ar in lyric.artists"
                 :key="ar.id"
                 :href="'/artist/' + ar.id"
                 class="lyric-artist-search"
+                >{{ ar.name }}</a
               >
-                {{ ar.name }}
-              </a>
             </div>
-            <a :href="'/album/' + lyric.album.id" class="lyric-album-search">
-              {{ lyric.album.name }}
-            </a>
+            <a :href="'/album/' + lyric.album.id" class="lyric-album-search">{{
+              lyric.album.name
+            }}</a>
             <div class="lyric-duration-search">{{ formatTime(lyric.duration) }}</div>
           </li>
         </ul>
@@ -169,7 +158,7 @@
 import { search } from "@/service";
 import { formatTime } from "@/utilitys";
 import CardItem from "./CardItem.vue";
-import SongList from "@/components/FindMusic/SongList.vue";
+import SongList from "@/components/globals/SongList.vue";
 import SearchBarWithRecommendations from "./SearchBarWithRecommendations.vue";
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { Track, Artist, Album, MvCard } from "@/types";

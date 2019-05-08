@@ -22,14 +22,16 @@
           <PausedIcon />
         </SvgBtnWrapper>
         <!-- 更多 -->
-        <SvgBtnWrapper
-          large
-          v-if="more"
-          class="control__item"
-          @click.native.stop.prevent="more.onClick"
-        >
-          <MoreIcon />
-        </SvgBtnWrapper>
+        <BtnWithPopupMenu class="control__item" v-if="more">
+          <template slot="btn">
+            <SvgBtnWrapper large @click.native.prevent="more.onClick">
+              <MoreIcon />
+            </SvgBtnWrapper>
+          </template>
+          <template slot="menu">
+            <div>more</div>
+          </template>
+        </BtnWithPopupMenu>
       </router-link>
       <ImageWithPlaceholder :src="src" :alt="alt" :ratio="ratio" />
     </WithHoverMask>
@@ -49,7 +51,7 @@ import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue"
 import WithHoverMask from "@/components/globals/WithHoverMask.vue";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
-
+import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
 import { ControlBtn } from "@/types";
 
 @Component({
@@ -59,7 +61,8 @@ import { ControlBtn } from "@/types";
     MoreIcon,
     ImageWithPlaceholder,
     WithHoverMask,
-    SvgBtnWrapper
+    SvgBtnWrapper,
+    BtnWithPopupMenu
   }
 })
 export default class CardImage extends Vue {

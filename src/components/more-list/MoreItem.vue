@@ -86,11 +86,14 @@ export default {
       width: 100%;
       height: 100%;
   .txt
-    white-space: nowrap;
+    white-space: nowrap
+    margin-left: 10px
 .spread-list
   display: none;
   position: absolute;
-  top: 0;
+  top: 50%;
+  left: calc(100% + 4px)
+  transform: translateY(-50%)
   &:hover
     display: block
 </style>

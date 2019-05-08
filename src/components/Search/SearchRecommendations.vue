@@ -10,7 +10,7 @@
 import { searchSuggest } from "@/service";
 import { formatTime, clipImage } from "@/utilitys";
 import CardItem from "./CardItem.vue";
-import SongList from "@/components/FindMusic/SongList.vue";
+import SongList from "@/components/globals/SongList.vue";
 
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Track, Artist, Album, MvCard, Playlist } from "@/types";

@@ -173,7 +173,7 @@ function getUserDetail(uid: number) {
  * @param {Number} uid 用户id
  */
 function getUserPlaylist(uid: number, offset: number = 0) {
-  return Api().get(`/user/playlist?uid=${uid}&offset=${offset}`);
+  return Api().get("/user/playlist", { params: { uid, offset } });
 }
 /**
  * 邮箱登录
@@ -287,6 +287,39 @@ function getMvSublist(offset: number = 0, limit: number = 25) {
 function getLoginStatus() {
   return Api().get("/login/status", { withCredentials: true });
 }
+/**
+ * 调用此接口 , 传入类型和歌单 id 可收藏歌单或者取消收藏歌单
+ * @param {number} playlistId id : 歌单 id
+ * @param {number} type : 类型,1: 收藏, 2: 取消收藏
+ */
+function subPlaylist(playlistId: number, type: 1 | 2) {
+  return Api().get("/playlist/subscribe", {
+    withCredentials: true,
+    params: { id: playlistId, t: type }
+  });
+}
+/**
+ * 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该歌单的所有评论 ( 不需要 登录 )
+ */
+function getPlaylistComments(id: number, offset: number = 0, limit: number = 20) {
+  const params = { id, offset, limit };
+  return Api().get("comment/playlist", { params });
+}
+/**
+ * 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该专辑的所有评论 ( 不需要 登录 )
+ */
+function getAlbumComments(id: number, offset: number = 0, limit: number = 20) {
+  const params = { id, offset, limit };
+  return Api().get("/comment/album", { params });
+}
+/**
+ * 调用此接口 , 传入歌单 id 可获取歌单的所有收藏者
+ */
+function getPlaylistSubers(id: number, offset: number = 0, limit: number = 30) {
+  const params = { id, offset, limit };
+  return Api().get("/playlist/subscribers", { params });
+}
+
 export {
   getBanner,
   getSongURL,
@@ -324,5 +357,9 @@ export {
   getAlbumSublist,
   getArtistSublist,
   getMvSublist,
-  getLoginStatus
+  getLoginStatus,
+  subPlaylist,
+  getPlaylistComments,
+  getAlbumComments,
+  getPlaylistSubers
 };

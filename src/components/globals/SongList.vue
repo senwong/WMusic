@@ -30,58 +30,61 @@
             <ArtistsWithComma
               :artists="track.artists"
               aTagClass="track-artist"
-              commaClass="track-dot"
+              commaClass="track__artist__comma"
             />
             <span class="track-dot">•</span>
-            <router-link :to="'/album/' + track.album.id" class="track-album">{{
-              track.album.name
-            }}</router-link>
+            <router-link :to="'/album/' + track.album.id" class="track-album">
+              {{ track.album.name }}
+            </router-link>
           </div>
         </div>
-        <div class="track-more" @mousedown="handleMoreMousedown(track.id, $event)">
-          <MoreIcon />
-        </div>
+        <BtnWithPopupMenu class="track-more">
+          <template slot="btn">
+            <SvgBtnWrapper middle>
+              <MoreIcon />
+            </SvgBtnWrapper>
+          </template>
+          <template slot="menu">
+            <more-list>
+              <more-item @click.native="handleAddToNext">
+                <DownloadIcon slot="icon" />
+                <span slot="txt" class="txt">下一首播放</span>
+              </more-item>
+              <more-item>
+                <DownloadIcon slot="icon" />
+                <span slot="txt" class="txt">添加到播放列表</span>
+              </more-item>
+              <hr class="fixed-hr" />
+              <more-item>
+                <DownloadIcon slot="icon" />
+                <span slot="txt" class="txt">收藏</span>
+              </more-item>
+              <more-item>
+                <DownloadIcon slot="icon" />
+                <span slot="txt" class="txt">下载</span>
+              </more-item>
+              <more-item>
+                <DownloadIcon slot="icon" />
+                <span slot="txt" class="txt">加入歌单</span>
+              </more-item>
+              <hr class="fixed-hr" />
+              <more-item>
+                <DownloadIcon slot="icon" />
+                <span slot="txt" class="txt">评论</span>
+              </more-item>
+              <more-item>
+                <DownloadIcon slot="icon" />
+                <span slot="txt" class="txt">分享</span>
+              </more-item>
+            </more-list>
+          </template>
+        </BtnWithPopupMenu>
         <div class="track-duration">{{ formatTime(track.duration) }}</div>
       </li>
     </ul>
-    <popup-menu :target="moreButton">
-      <more-list>
-        <more-item @click.native="handleAddToNext">
-          <DownloadIcon slot="icon" />
-          <span slot="txt" class="txt">下一首播放</span>
-        </more-item>
-        <more-item>
-          <DownloadIcon slot="icon" />
-          <span slot="txt" class="txt">添加到播放列表</span>
-        </more-item>
-        <hr class="fixed-hr" />
-        <more-item>
-          <DownloadIcon slot="icon" />
-          <span slot="txt" class="txt">收藏</span>
-        </more-item>
-        <more-item>
-          <DownloadIcon slot="icon" />
-          <span slot="txt" class="txt">下载</span>
-        </more-item>
-        <more-item>
-          <DownloadIcon slot="icon" />
-          <span slot="txt" class="txt">加入歌单</span>
-        </more-item>
-        <hr class="fixed-hr" />
-        <more-item>
-          <DownloadIcon slot="icon" />
-          <span slot="txt" class="txt">评论</span>
-        </more-item>
-        <more-item>
-          <DownloadIcon slot="icon" />
-          <span slot="txt" class="txt">分享</span>
-        </more-item>
-      </more-list>
-    </popup-menu>
   </div>
 </template>
 <script lang="ts">
-import PopupMenu from "@/components/PopupMenu.vue";
 import MoreItem from "@/components/more-list/MoreItem.vue";
 import MoreList from "@/components/more-list/MoreList.vue";
 import { formatTime } from "@/utilitys";
@@ -99,13 +102,13 @@ import { Track } from "@/types";
 import { Mutation, namespace, State, Getter } from "vuex-class";
 import PlayStatusBtn from "@/components/globals/PlayStatusBtn.vue";
 import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
+import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
 
 const playlist = namespace("playlist");
 const playbar = namespace("playbar");
 
 @Component({
   components: {
-    PopupMenu,
     MoreItem,
     MoreList,
     PausedIcon,
@@ -116,7 +119,8 @@ const playbar = namespace("playbar");
     MvIcon,
     ArtistsWithComma,
     PlayStatusBtn,
-    SvgBtnWrapper
+    SvgBtnWrapper,
+    BtnWithPopupMenu
   }
 })
 export default class SongList extends Vue {
@@ -165,11 +169,6 @@ export default class SongList extends Vue {
     track && this.addToNext(track);
   }
 
-  handleMoreMousedown(trackId: number, { target }: Event) {
-    this.moreButton = target;
-    this.selectedTrackId = trackId;
-  }
-
   handleScroll() {
     this.moreButton = null;
   }
@@ -189,8 +188,7 @@ export default class SongList extends Vue {
 .track
   display: flex
   flex-direction: row
-  height: 4.5em
-  padding-top: 0.7em
+  padding: 0.7em
   transition-property: background
   transition-duration: 250ms
   &.active
@@ -202,7 +200,7 @@ export default class SongList extends Vue {
   &.disabled
     color: #999
   &:hover
-    background-color: rgba(0,0,0,.2)
+    background-color: rgba(0,0,0,.1)
     .track-more
       opacity: 1
     .music-icon
@@ -211,7 +209,6 @@ export default class SongList extends Vue {
       display: block
 
 .track-icon
-  margin-left: 0.5em
   flex: 0 0 auto
   cursor: pointer
   .play-icon
@@ -219,6 +216,8 @@ export default class SongList extends Vue {
 .track-names
   margin-left: 1em
   flex: 1 1 auto
+
+// track name and mv icon
 .track-name-mvlink
   display: flex
   flex-direction: row
@@ -235,7 +234,9 @@ export default class SongList extends Vue {
   transition-duration: 250ms
   &:hover
     color: $primary
-
+// artists and album
+.track-ar-al
+  margin-top: 0.5em
 .track-artist
   opacity: 0.6
   transition-property: opacity border
@@ -247,9 +248,12 @@ export default class SongList extends Vue {
     opacity: 1
     border-color: rgba(0,0,0,0.8)
 
+.track__artist__comma
+  opacity: 0.6
+  padding: 0 0.25em
 .track-dot
   opacity: 0.6
-  margin: 0 0.25em
+  padding: 0 0.5em
 .track-album
   opacity: 0.6
   transition-property: opacity border
@@ -268,15 +272,13 @@ export default class SongList extends Vue {
     border-color: $primary
 
 .track-more
-  flex: 0 0 0
-  min-width: 50px
+  flex: 0 0 3em
   height: 1em
   opacity: 0
   cursor: pointer
 .track-duration
   flex: 0 0 0
   width: 4em
-  padding-right: 1em
 
 a
   text-decoration: none

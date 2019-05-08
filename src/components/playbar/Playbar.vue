@@ -324,7 +324,7 @@ export default class Playbar extends Vue {
   }
 }
 </script>
-<style lang="sass">
+<style lang="sass" scoped>
 @import "../config.sass"
 
 .playbar
@@ -345,7 +345,6 @@ export default class Playbar extends Vue {
 .playbar__item_middle
   position: absolute
   left: calc(50% - 100px)
-  width: 200px
   top: 0
   height: 100%
 .pause-panel
@@ -358,7 +357,8 @@ export default class Playbar extends Vue {
 .pause-song:active
   opacity: 0.3
 .prev-song, .pause-song, .next-song
-  margin: 0 0.5em
+  margin: 0 1em
+  flex: 0 0 auto
 
 // 进度条位置
 .progress-bar
