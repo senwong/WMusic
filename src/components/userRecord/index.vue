@@ -12,7 +12,6 @@ import { getRecord } from "@/service";
 import { mapState, mapMutations } from "vuex";
 import TabMenu from "@/components/globals/TabMenu.vue";
 import RecordItem from "./RecordItem.vue";
-
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Track, TrackQuality, Record, Artist, Album, convertTrack, TrackServer } from "@/types";
 import { Mutation, namespace } from "vuex-class";
@@ -24,6 +23,7 @@ enum DataType {
 }
 
 const playlist = namespace("playlist");
+const notification = namespace("notification");
 
 @Component({
   components: { TabMenu, RecordItem }
@@ -32,7 +32,8 @@ export default class UserRecord extends Vue {
   type: DataType = DataType.WeekData;
 
   records: Record[] | null = null;
-
+  @playlist.Mutation setTracks!: (tracks: Track[]) => void;
+  @notification.Mutation setMsg!: (msg: string) => void;
   get navTabList() {
     return [
       {
@@ -59,8 +60,6 @@ export default class UserRecord extends Vue {
     this.updateRecords();
   }
 
-  @playlist.Mutation setTracks!: (tracks: Track[]) => void;
-
   updateRecords() {
     const userId = Number(this.$route.params.id);
     if (!userId) return;
@@ -84,7 +83,7 @@ export default class UserRecord extends Vue {
         }
       },
       error => {
-        console.log("get record ", error);
+        this.setMsg(`获取用户播放记录错误！${error && error.msg ? error.msg : ""}`);
       }
     );
   }

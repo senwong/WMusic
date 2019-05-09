@@ -33,9 +33,9 @@
               commaClass="track__artist__comma"
             />
             <span class="track-dot">•</span>
-            <router-link :to="'/album/' + track.album.id" class="track-album">
-              {{ track.album.name }}
-            </router-link>
+            <router-link :to="'/album/' + track.album.id" class="track-album">{{
+              track.album.name
+            }}</router-link>
           </div>
         </div>
         <BtnWithPopupMenu class="track-more">
@@ -45,7 +45,7 @@
             </SvgBtnWrapper>
           </template>
           <template slot="menu">
-            <more-list>
+            <more-list class="track__more__menu">
               <more-item @click.native="handleAddToNext">
                 <DownloadIcon slot="icon" />
                 <span slot="txt" class="txt">下一首播放</span>
@@ -320,4 +320,6 @@ a
   margin-right: 0
   border: 1px solid $gray
   opacity: 0.7
+.track__more__menu
+  color: #333
 </style>

@@ -10,12 +10,12 @@
       <ul class="tab-menu" ref="tabMenu">
         <li
           class="tab-item"
-          v-for="type in Object.keys(searchTypes)"
-          :key="searchTypes[type]"
-          :class="{ active: currentSearchType == searchTypes[type] }"
-          @click="handleTabClick(searchTypes[type])"
+          v-for="t in Object.keys(searchTypes)"
+          :key="searchTypes[t]"
+          :class="{ active: currentSearchType == searchTypes[t] }"
+          @click="handleTabClick(searchTypes[t])"
         >
-          {{ type }}
+          {{ t }}
         </li>
       </ul>
     </div>
@@ -113,9 +113,9 @@
                 >{{ ar.name }}</a
               >
             </div>
-            <a :href="'/album/' + lyric.album.id" class="lyric-album-search">{{
-              lyric.album.name
-            }}</a>
+            <a :href="'/album/' + lyric.album.id" class="lyric-album-search">
+              {{ lyric.album.name }}
+            </a>
             <div class="lyric-duration-search">{{ formatTime(lyric.duration) }}</div>
           </li>
         </ul>
@@ -162,7 +162,9 @@ import SongList from "@/components/globals/SongList.vue";
 import SearchBarWithRecommendations from "./SearchBarWithRecommendations.vue";
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { Track, Artist, Album, MvCard } from "@/types";
+import { Mutation, namespace } from "vuex-class";
 
+const notification = namespace("notification");
 const SEARCH_OFFSET = 30;
 
 enum SearchType {
@@ -181,7 +183,7 @@ enum SearchType {
 export default class Search extends Vue {
   keyWords: string = "";
 
-  searchTypes: object = {
+  searchTypes: { [index: string]: SearchType } = {
     单曲: SearchType.Song,
     歌手: SearchType.Artist,
     专辑: SearchType.Album,
@@ -221,6 +223,8 @@ export default class Search extends Vue {
   currentLength: number = 0;
 
   formatTime = formatTime;
+
+  @notification.Mutation setMsg!: (msg: string) => void;
 
   getMvSubTitles(mv: MvCard) {
     return mv.artists.map(ar => ({
@@ -278,7 +282,9 @@ export default class Search extends Vue {
           this.count = result.userprofileCount;
         }
       },
-      error => alert(`get search data error ${error}`)
+      error => {
+        this.setMsg(`获取搜索结果错误${error && error.msg ? error.msg : ""}！`);
+      }
     );
   }
 

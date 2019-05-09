@@ -14,7 +14,7 @@
   |        | replys(foldable)         |
   +--------+--------------------------+
 
--->
+  -->
   <div class="comment__container">
     <!-- left avatar -->
     <router-link class="comment__avatar avatar" :to="'/user/' + comment.user.userId">
@@ -27,38 +27,41 @@
     <div class="comment__info">
       <!-- usename and datetime -->
       <div>
-        <router-link class="comment__username username" :to="'/user/' + comment.user.userId">
-          {{ comment.user.nickname }}
-        </router-link>
-        <span class="comment__datetime datetime" v-if="comment.time">
-          {{ formatDateToBefore(comment.time) }}
-        </span>
+        <router-link class="comment__username username" :to="'/user/' + comment.user.userId">{{
+          comment.user.nickname
+        }}</router-link>
+        <span class="comment__datetime datetime" v-if="comment.time">{{
+          formatDateToBefore(comment.time)
+        }}</span>
       </div>
       <!-- comment content -->
-      <div class="comment__content content">
-        {{ comment.content }}
-      </div>
+      <div class="comment__content content">{{ comment.content }}</div>
       <!-- actions: like and reply button -->
       <div class="comment__actions">
         <div class="liked__count">
           <span class="icon">
             <LikeIcon />
           </span>
-          <span class="count" v-if="comment.likedCount > 0">{{
-            formatCount(comment.likedCount)
-          }}</span>
-          <button class="reply" @click="isShowReplyEditor = true">回复</button>
+          <span class="count" v-if="comment.likedCount > 0">
+            {{ formatCount(comment.likedCount) }}
+          </span>
+          <button class="reply" @click="isShowReplyEditor = !isShowReplyEditor">回复</button>
+          <button class="reply" @click="deleteComment" v-if="deleteable">删除</button>
         </div>
       </div>
       <!-- reply editor -->
-      <CommentReplyEditor v-if="isShowReplyEditor" @hide="isShowReplyEditor = false" />
+      <CommentReplyEditor
+        v-if="isShowReplyEditor"
+        @hide="isShowReplyEditor = false"
+        :id="id"
+        :type="type"
+        @sentComment="$emit('sentComment')"
+      />
       <!-- view replys toggle button -->
       <div class="comment__view-replys" v-if="comment.beReplied && comment.beReplied.length">
         <button @click="handleViewReplys" class="view-replys__btn">
-          <span v-if="replysFolded"> 查看{{ formatCount(comment.beReplied.length) }}条回复 </span>
-          <span v-else>
-            隐藏回复
-          </span>
+          <span v-if="replysFolded">查看{{ formatCount(comment.beReplied.length) }}条回复</span>
+          <span v-else>隐藏回复</span>
           <span class="view-replys__icon" :class="{ rotate: !replysFolded }">
             <RightArrowIcon />
           </span>
@@ -77,14 +80,21 @@ import LikeIcon from "@/components/SVGIcons/LikeIcon.vue";
 import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon.vue";
 import CommentReplyEditor from "./CommentReplyEditor.vue";
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { Comment } from "@/types";
+import { Comment, CommentType } from "@/types";
+import { namespace, State } from "vuex-class";
+import { sentComment, deleteComment } from "@/service";
 
+const currentUser = namespace("currentUser");
+const notification = namespace("notification");
 @Component({
   components: { LikeIcon, RightArrowIcon, CommentReplyEditor }
 })
 export default class CommentItem extends Vue {
   @Prop() comment!: Comment;
-
+  // 资源id
+  @Prop(Number) id!: number;
+  // 资源类型
+  @Prop() type!: CommentType;
   replysFolded: boolean = true;
 
   isShowReplyEditor: boolean = false;
@@ -94,6 +104,26 @@ export default class CommentItem extends Vue {
   formatCount = formatCount;
 
   formatDateToBefore = formatDateToBefore;
+
+  @currentUser.State("userId") currentUserId!: number;
+  @notification.Mutation setMsg!: (msg: string) => void;
+
+  get deleteable(): boolean {
+    return (
+      typeof this.currentUserId !== "undefined" && this.comment.user.userId === this.currentUserId
+    );
+  }
+  deleteComment() {
+    deleteComment(this.id, this.type, this.comment.commentId).then(
+      res => {
+        this.setMsg("已删除评论！");
+        this.$emit("deleteComment", this.comment);
+      },
+      error => {
+        this.setMsg(`删除评论失败${error && error.msg ? error.msg : ""}！`);
+      }
+    );
+  }
 
   handleViewReplys() {
     this.replysFolded = !this.replysFolded;

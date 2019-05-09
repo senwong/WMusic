@@ -91,7 +91,7 @@ import { Mutation, namespace } from "vuex-class";
 import { Track } from "@/types";
 
 const playlist = namespace("playlist");
-
+const notification = namespace("notification");
 @Component({
   components: {
     PopupMenu,
@@ -115,6 +115,8 @@ export default class PlayList extends Vue {
   $refs!: {
     titleMore: Element;
   };
+
+  @notification.Mutation setMsg!: (msg: string) => void;
 
   toggleFav() {
     // TODO
@@ -165,7 +167,9 @@ export default class PlayList extends Vue {
         const songUrl = res.data.data[0].url;
         this.downloadSong(songUrl);
       },
-      error => alert(` get song url error ${error}`)
+      error => {
+        this.setMsg(`获取歌曲地址错误${error && error.msg ? error.msg : ""}！`);
+      }
     );
   }
 

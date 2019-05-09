@@ -19,9 +19,9 @@
     </CardImage>
     <router-link :to="`/${cardType}/${card.id}`" class="list__name">{{ card.name }}</router-link>
     <!-- creator -->
-    <router-link v-if="card.creator" class="creator-name" :to="`/user/${card.creator.userId}`">
-      {{ card.creator.nickname }}
-    </router-link>
+    <router-link v-if="card.creator" class="creator-name" :to="`/user/${card.creator.userId}`">{{
+      card.creator.nickname
+    }}</router-link>
     <!-- 点击更多，弹出菜单 -->
   </div>
 </template>
@@ -38,7 +38,7 @@ import { Mutation, namespace } from "vuex-class";
 import { Track, convertTrack, Playlist, PlaylistType } from "@/types";
 
 const playlist = namespace("playlist");
-
+const notification = namespace("notification");
 @Component({
   components: {
     MoreItem,
@@ -62,7 +62,7 @@ export default class CardItem extends Vue {
   @playlist.Mutation setTracks!: (tracks: Track[]) => void;
 
   @playlist.Mutation setCurrentSongId!: (id: number) => void;
-
+  @notification.Mutation setMsg!: (msg: string) => void;
   mounted() {
     this.morePopupButton = this.$refs.more;
   }
@@ -131,14 +131,15 @@ export default class CardItem extends Vue {
     tracksPromise.then(
       (tracks: Track[]): void => {
         if (tracks.every(track => track.status < 0)) {
-          // TODO 资源下架
+          // 资源下架
+          this.setMsg(`暂无可播放资源！`);
           return;
         }
         this.setTracks(tracks);
         this.setCurrentSongId(tracks[0].id);
       },
       error => {
-        // TODO
+        this.setMsg(`获取歌曲列表错误${error && error.msg ? error.msg : ""}！`);
       }
     );
   }

@@ -47,6 +47,7 @@ export default class SvgBtnWrapper extends Vue {
   z-index: 1
   border: none
   background: none
+  color: inherit
   &:focus
     outline: none
   &:hover
@@ -56,15 +57,14 @@ export default class SvgBtnWrapper extends Vue {
       opacity: 0.5
   &.primary
     color: $primary
-    svg
-      fill: $primary
+
   &.primary:hover
     color: #fff
-    svg
-      fill: #fff
     .background
       background: $primary
       opacity: 1
+  &[disabled]
+    color: #777
   &.large
     width: 1.5em
     height: 1.5em
@@ -88,7 +88,7 @@ export default class SvgBtnWrapper extends Vue {
   transform-origin: center
   transform: scale(0)
   opacity: 0
-  background: #e8e8e8
+  background: #bbb
   transition: all 250ms
   border-radius: 9999px
 </style>

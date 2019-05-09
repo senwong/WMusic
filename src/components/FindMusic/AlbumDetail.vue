@@ -56,6 +56,7 @@ enum ContentType {
   Desc
 }
 const playlist = namespace("playlist");
+const notification = namespace("notification");
 @Component({
   components: { SongList, Button, TabMenu, CommentList, ArtistsWithComma }
 })
@@ -70,6 +71,11 @@ export default class AlbumDetail extends Vue {
   CommentType = CommentType;
   ContentType = ContentType;
   contentType: ContentType = ContentType.Songs;
+
+  @playlist.Mutation setTracks!: (tracks: Track[]) => void;
+
+  @playlist.Mutation setCurrentSongId!: (id: number) => void;
+  @notification.Mutation setMsg!: (msg: string) => void;
   get tabList(): TabMenuItem[] {
     return [
       {
@@ -102,11 +108,6 @@ export default class AlbumDetail extends Vue {
     this.setTracks(this.songs);
     this.setCurrentSongId(this.songs[0].id);
   }
-
-  @playlist.Mutation setTracks!: (tracks: Track[]) => void;
-
-  @playlist.Mutation setCurrentSongId!: (id: number) => void;
-
   created() {
     const albumId = Number(this.$route.params.id);
     getAlbumDetail(albumId).then(
@@ -119,7 +120,9 @@ export default class AlbumDetail extends Vue {
         this.publishTime = res.data.album.publishTime;
         this.description = res.data.album.description;
       },
-      error => alert(`getAlbumDetail${error}`)
+      error => {
+        this.setMsg(`获取专辑信息错误${error && error.msg ? error.msg : ""}！`);
+      }
     );
   }
 }

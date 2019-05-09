@@ -2,7 +2,7 @@
 export interface Artist {
   id: number;
   name: string;
-  alias: string[];
+  alias?: string[];
   picUrl?: string;
 }
 
@@ -82,6 +82,7 @@ export interface Playlist {
 // export interface PlaylistDetail
 
 export interface Comment {
+  commentId: number;
   user: User;
   time: number;
   content: string;
@@ -89,9 +90,24 @@ export interface Comment {
   beReplied: Comment[];
 }
 // 0 : mv comment 1: song comment
+/**
+0: 歌曲
+
+1: mv
+
+2: 歌单
+
+3: 专辑
+
+4: 电台
+
+5: 视频
+
+6: 动态
+ */
 export enum CommentType {
-  MvComment,
   SongComment,
+  MvComment,
   PlaylistComment,
   AlbumComment
 }
@@ -131,4 +147,20 @@ export enum PlayMode {
   Loop,
   OneLoop,
   Shuffle
+}
+export interface Br {
+  [index: number]: string;
+}
+export interface Mv {
+  id: number;
+  name: string;
+  artists: Artist[];
+  cover: string;
+  playCount: number;
+  subCount: number;
+  shareCount: number;
+  likeCount: number;
+  commentCount: number;
+  duration: number;
+  brs: Br[];
 }

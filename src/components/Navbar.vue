@@ -22,45 +22,35 @@
         <div class="icon icon_m">
           <MusicIcon />
         </div>
-        <div class="nav__link_txt">
-          发现音乐
-        </div>
+        <div class="nav__link_txt">发现音乐</div>
       </router-link>
 
       <router-link to="/playlist" class="nav__link">
         <div class="icon icon_m">
           <MusicIcon />
         </div>
-        <div class="nav__link_txt">
-          歌单
-        </div>
+        <div class="nav__link_txt">歌单</div>
       </router-link>
 
       <router-link to="/toplist" class="nav__link">
         <div class="icon icon_m">
           <MusicIcon />
         </div>
-        <div class="nav__link_txt">
-          排行榜
-        </div>
+        <div class="nav__link_txt">排行榜</div>
       </router-link>
 
       <router-link to="/mv" class="nav__link">
         <div class="icon icon_m">
           <MusicIcon />
         </div>
-        <div class="nav__link_txt">
-          MV
-        </div>
+        <div class="nav__link_txt">MV</div>
       </router-link>
 
       <router-link to="/search" class="nav__link">
         <div class="icon icon_m">
           <MusicIcon />
         </div>
-        <div class="nav__link_txt">
-          搜索
-        </div>
+        <div class="nav__link_txt">搜索</div>
       </router-link>
     </section>
     <!-- 需要登录 -->
@@ -72,25 +62,19 @@
           <div class="icon icon_m">
             <MusicIcon />
           </div>
-          <div class="nav__link_txt">
-            最近播放
-          </div>
+          <div class="nav__link_txt">最近播放</div>
         </router-link>
         <router-link to="/sublist" class="nav__link">
           <div class="icon icon_m">
             <MusicIcon />
           </div>
-          <div class="nav__link_txt">
-            我的收藏
-          </div>
+          <div class="nav__link_txt">我的收藏</div>
         </router-link>
         <a href="#" class="nav__link">
           <div class="icon icon_m">
             <MusicIcon />
           </div>
-          <div class="nav__link_txt">
-            已购音乐
-          </div>
+          <div class="nav__link_txt">已购音乐</div>
         </a>
       </section>
       <!-- 我的歌单 -->
@@ -108,13 +92,14 @@
         </p>
         <!-- 内容list -->
         <div v-if="isShowMyList">
-          <router-link to="/likedsongs" class="nav__link">
+          <router-link
+            :to="{ path: 'likedsongs', params: { id: currentUserProfile.userId } }"
+            class="nav__link"
+          >
             <div class="icon icon_m">
               <MusicIcon />
             </div>
-            <div class="nav__link_txt">
-              喜欢的音乐
-            </div>
+            <div class="nav__link_txt">喜欢的音乐</div>
           </router-link>
         </div>
       </section>
@@ -137,25 +122,19 @@
             <div class="icon icon_m">
               <MusicIcon />
             </div>
-            <div class="nav__link_txt">
-              最近播放
-            </div>
+            <div class="nav__link_txt">最近播放</div>
           </a>
           <a href="#" class="nav__link">
             <div class="icon icon_m">
               <MusicIcon />
             </div>
-            <div class="nav__link_txt">
-              我的收藏
-            </div>
+            <div class="nav__link_txt">我的收藏</div>
           </a>
           <a href="#" class="nav__link">
             <div class="icon icon_m">
               <MusicIcon />
             </div>
-            <div class="nav__link_txt">
-              已购音乐
-            </div>
+            <div class="nav__link_txt">已购音乐</div>
           </a>
         </div>
       </section>

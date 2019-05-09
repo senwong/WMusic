@@ -74,6 +74,9 @@ import TabMenu from "@/components/globals/TabMenu.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Playlist, PlaylistCreator } from "@/types";
 import Spinner from "@/components/globals/Spinner.vue";
+import { Mutation, namespace } from "vuex-class";
+
+const notification = namespace("notification");
 
 interface SubCategory {
   category: number;
@@ -112,14 +115,16 @@ export default class PlaylistComponent extends Vue {
   limit = 20;
 
   isLoading: boolean = false;
-
+  @notification.Mutation setMsg!: (msg: string) => void;
   created() {
     getPlayListCatlist().then(
       res => {
         this.categories = res.data.categories;
         this.sub = res.data.sub;
       },
-      error => {}
+      error => {
+        this.setMsg(`获取歌单分类错误${error && error.msg ? error.msg : ""}！`);
+      }
     );
     this.updatePlayList();
   }

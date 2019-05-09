@@ -1,4 +1,5 @@
 import Api from "./Api";
+import { CommentType } from "@/types";
 /**
  * 获取轮播图图片
  */
@@ -61,14 +62,6 @@ function getAlbumDetail(albumId: number) {
   return Api().get(`/album?id=${albumId}`);
 }
 /**
- * 获取歌曲评论
- * @param {Number} songId 歌曲ID
- * @param {Number} offset 偏移数量
- */
-function getSongComment(songId: number, offset: number) {
-  return Api().get(`/comment/music?id=${songId}&limit=20&offset=${offset}`);
-}
-/**
  * 获取歌单分类
  */
 function getPlayListCatlist() {
@@ -108,13 +101,6 @@ function getPersonalizedMV() {
  */
 function getMvData(id: number) {
   return Api().get(`/mv/detail/?mvid=${id}`);
-}
-/**
- * 获取MV评论
- * @param {Number} id MV ID
- */
-function getMVComments(id: number, offset: number) {
-  return Api().get(`/comment/mv?id=${id}&limit=20&offset=${offset}`);
 }
 /**
  * 获取相似MV
@@ -166,7 +152,7 @@ function getSimiSongs(songId: number) {
  * @param {Number} uid 用户id
  */
 function getUserDetail(uid: number) {
-  return Api().get(`/user/detail?uid=${uid}`);
+  return Api().get("/user/detail", { params: { uid } });
 }
 /**
  * 获取用户的歌单
@@ -298,6 +284,29 @@ function subPlaylist(playlistId: number, type: 1 | 2) {
     params: { id: playlistId, t: type }
   });
 }
+
+/**
+ * 调用此接口 , 传入歌单 id 可获取歌单的所有收藏者
+ */
+function getPlaylistSubers(id: number, offset: number = 0, limit: number = 30) {
+  const params = { id, offset, limit };
+  return Api().get("/playlist/subscribers", { params });
+}
+/**
+ * 获取歌曲评论
+ * @param {Number} songId 歌曲ID
+ * @param {Number} offset 偏移数量
+ */
+function getSongComment(songId: number, offset: number) {
+  return Api().get(`/comment/music?id=${songId}&limit=20&offset=${offset}`);
+}
+/**
+ * 获取MV评论
+ * @param {Number} id MV ID
+ */
+function getMVComments(id: number, offset: number) {
+  return Api().get(`/comment/mv?id=${id}&limit=20&offset=${offset}`);
+}
 /**
  * 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该歌单的所有评论 ( 不需要 登录 )
  */
@@ -313,11 +322,24 @@ function getAlbumComments(id: number, offset: number = 0, limit: number = 20) {
   return Api().get("/comment/album", { params });
 }
 /**
- * 调用此接口 , 传入歌单 id 可获取歌单的所有收藏者
+ *  调用此接口,可发送评论评论
+ *  @param {Number} id 对应资源 id
+ *  @param {CommentType} type 资源类型 0: 歌曲，1: mv，2: 歌单，3: 专辑，4: 电台，5: 视频，6: 动态
+ *  @param {string} content 评论内容
  */
-function getPlaylistSubers(id: number, offset: number = 0, limit: number = 30) {
-  const params = { id, offset, limit };
-  return Api().get("/playlist/subscribers", { params });
+export function sentComment(id: number, type: CommentType, content: string) {
+  const params = { t: 1, id, type, content };
+  return Api().get("/comment", { withCredentials: true, params });
+}
+/**
+ *  调用此接口,可删除评论
+ *  @param {Number} id 对应资源 id
+ *  @param {CommentType} type 资源类型 0: 歌曲，1: mv，2: 歌单，3: 专辑，4: 电台，5: 视频，6: 动态
+ *  @param {number} commentId 1: 发送, 0: 删除
+ */
+export function deleteComment(id: number, type: CommentType, commentId: number) {
+  const params = { t: 0, id, type, commentId };
+  return Api().get("/comment", { withCredentials: true, params });
 }
 
 export {

@@ -11,7 +11,6 @@ import { searchSuggest } from "@/service";
 import { formatTime, clipImage } from "@/utilitys";
 import CardItem from "./CardItem.vue";
 import SongList from "@/components/globals/SongList.vue";
-
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Track, Artist, Album, MvCard, Playlist } from "@/types";
 import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
@@ -20,6 +19,9 @@ import Artists from "./ArtistsRecommendations.vue";
 import Albums from "./AlbumsRecommendations.vue";
 import Mvs from "./MvsRecommendations.vue";
 import Playlists from "./PlaylistsRecommendations.vue";
+import { Mutation, namespace } from "vuex-class";
+
+const notification = namespace("notification");
 
 @Component({
   components: {
@@ -43,6 +45,8 @@ export default class SearchRecommendations extends Vue {
   order: string[] | null = null;
 
   @Prop(String) keywords!: string;
+
+  @notification.Mutation setMsg!: (msg: string) => void;
 
   @Watch("keywords")
   onKeywordsChange(val: string) {
@@ -91,7 +95,9 @@ export default class SearchRecommendations extends Vue {
           }));
         this.order = order;
       },
-      error => alert(`get search suggest error ${error}`)
+      error => {
+        this.setMsg(`获取搜索建议结果错误${error && error.msg ? error.msg : ""}！`);
+      }
     );
   }
 

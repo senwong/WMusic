@@ -86,6 +86,7 @@ import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
 
 const playlist = namespace("playlist");
 const playbar = namespace("playbar");
+const notification = namespace("notification");
 
 @Component({
   components: {
@@ -130,6 +131,8 @@ export default class Playbar extends Vue {
   // }
   // return (this.currentSong.currentTime * 1000 / this.currentSong.duration).toFixed(2);
   // }
+  @notification.Mutation setMsg!: (msg: string) => void;
+
   get disabled(): boolean {
     return this.songUrl.length < 1 || this.isLoading;
   }
@@ -160,7 +163,9 @@ export default class Playbar extends Vue {
             this.nextSong();
           }
         },
-        error => alert(`get song url error ${error}`)
+        error => {
+          this.setMsg(`获取歌曲地址错误${error && error.msg ? error.msg : ""}！`);
+        }
       );
       getSongDetail(id).then(
         res => {
@@ -169,7 +174,9 @@ export default class Playbar extends Vue {
           this.artists = song.ar;
           this.album = song.al;
         },
-        error => alert(`get song detail error ${error}`)
+        error => {
+          this.setMsg(`获取歌曲数据错误${error && error.msg ? error.msg : ""}！`);
+        }
       );
     }
   }

@@ -10,7 +10,7 @@
           <span>
             <ArtistsWithComma :artists="artists" />
           </span>
-          <span> - {{ name }} </span>
+          <span>- {{ name }}</span>
         </p>
         <p class="space-between">
           <span>{{ formatCount(playCount) }}次播放</span>
@@ -42,65 +42,69 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 import { getMvData, getSimilarMV } from "@/service";
-import CommentList from "@/components/FindMusic/CommentList";
-import VideoPlayer from "@/components/MV/VideoPlayer";
+import CommentList from "@/components/FindMusic/CommentList.vue";
+import VideoPlayer from "@/components/MV/VideoPlayer.vue";
 import { formatCount, arrayJoin } from "@/utilitys";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Mutation, namespace } from "vuex-class";
+import { Artist, Mv } from "@/types";
 
-export default {
-  name: "MVPlayer",
-  components: { CommentList, VideoPlayer, ArtistsWithComma },
-  data() {
-    return {
-      id: "",
-      videoUrl: "",
-      name: "",
-      artists: [],
-      playCount: 0,
-      likeCount: 0,
-      shareCount: 0,
-      brs: null,
-      similarMVs: [],
-      isTheaterMode: false
-    };
-  },
+const notification = namespace("notification");
+
+@Component({
+  components: { CommentList, VideoPlayer, ArtistsWithComma }
+})
+export default class MVPlayer extends Vue {
+  id: number | null = null;
+  videoUrl: string = "";
+  name: string = "";
+  artists: Artist[] = [];
+  playCount: number = 0;
+  likeCount: number = 0;
+  shareCount: number = 0;
+  brs: { [index: number]: string }[] = [];
+  similarMVs: Mv[] = [];
+  isTheaterMode: boolean = false;
+
+  @notification.Mutation setMsg!: (msg: string) => void;
+
   created() {
     this.updateView();
-  },
-  methods: {
-    formatCount,
-    arrayJoin,
-    updateView() {
-      this.id = this.$route.params.id;
-      getMvData(this.id).then(
-        res => {
-          res = JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"));
-          const brsKeys = Object.keys(res.data.data.brs);
-          this.videoUrl = res.data.data.brs[brsKeys[brsKeys.length - 1]];
-          this.videoUrl = this.videoUrl.replace(/http:\/\//g, "https://");
-          this.name = res.data.data.name;
-          this.artists = res.data.data.artists;
-          this.playCount = res.data.data.playCount;
-          this.likeCount = res.data.data.likeCount;
-          this.shareCount = res.data.data.shareCount;
-          this.brs = res.data.data.brs;
-        },
-        error => alert(`getMvData error ${error}`)
-      );
-      getSimilarMV(this.id).then(res => {
-        res = JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"));
-        this.similarMVs = res.data.mvs;
-      });
-    }
-  },
-  watch: {
-    $route(val) {
-      this.updateView();
-    }
   }
-};
+
+  formatCount = formatCount;
+  arrayJoin = arrayJoin;
+  updateView() {
+    this.id = Number(this.$route.params.id);
+    getMvData(this.id).then(
+      res => {
+        const brsKeys = Object.keys(res.data.data.brs);
+        this.videoUrl = res.data.data.brs[brsKeys[brsKeys.length - 1]];
+        this.videoUrl = this.videoUrl.replace(/http:\/\//g, "https://");
+        this.name = res.data.data.name;
+        this.artists = res.data.data.artists;
+        this.playCount = res.data.data.playCount;
+        this.likeCount = res.data.data.likeCount;
+        this.shareCount = res.data.data.shareCount;
+        this.brs = res.data.data.brs;
+      },
+      error => {
+        this.setMsg(`获取视频数据错误${error && error.msg ? error.msg : ""}！`);
+      }
+    );
+    getSimilarMV(this.id).then(res => {
+      res = JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"));
+      this.similarMVs = res.data.mvs;
+    });
+  }
+  @Watch("$route")
+  onRouteChange() {
+    this.updateView();
+  }
+}
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass"

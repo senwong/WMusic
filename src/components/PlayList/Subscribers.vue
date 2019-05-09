@@ -13,7 +13,9 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import UserMediaCardGrid from "@/components/user/UserMediaCardGrid.vue";
 import { getPlaylistSubers } from "@/service";
 import { User } from "@/types";
+import { Mutation, namespace } from "vuex-class";
 
+const notification = namespace("notification");
 @Component({
   components: { UserMediaCardGrid }
 })
@@ -23,6 +25,7 @@ export default class Subscribers extends Vue {
   offset: number = 0;
   readonly limit: number = 20;
   hasMore: boolean = false;
+  @notification.Mutation setMsg!: (msg: string) => void;
   created() {
     this.updateData();
   }
@@ -33,7 +36,7 @@ export default class Subscribers extends Vue {
         this.hasMore = res.data.more;
       },
       error => {
-        // TODO
+        this.setMsg(`获取歌单订阅者错误${error && error.msg ? error.msg : ""}！`);
       }
     );
   }

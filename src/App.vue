@@ -14,6 +14,8 @@
         <ScrollToTopIcon />
       </button>
     </transition>
+    <!-- 通知 -->
+    <GlobalNotification />
   </div>
 </template>
 
@@ -22,6 +24,7 @@ import NavbarComponent from "./components/Navbar.vue";
 import PlaybarComponent from "./components/playbar/Playbar.vue";
 import PlayListComponent from "./components/PlayList.vue";
 import ScrollToTopIcon from "./components/SVGIcons/ScrollToTopIcon";
+import GlobalNotification from "@/components/globals/GlobalNotification.vue";
 
 export default {
   name: "app",
@@ -29,7 +32,8 @@ export default {
     NavbarComponent,
     PlaybarComponent,
     PlayListComponent,
-    ScrollToTopIcon
+    ScrollToTopIcon,
+    GlobalNotification
   },
   data() {
     return {

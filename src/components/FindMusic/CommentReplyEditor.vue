@@ -10,12 +10,18 @@
     <!-- first row -->
     <div class="comment-reply__avatar-input">
       <!-- avatar -->
-      <img src="" alt="" class="comment-reply__avatar" :class="{ large: isMain }" />
+      <img
+        :src="avatarUrl"
+        :alt="nickname"
+        class="comment-reply__avatar"
+        :class="{ large: isMain }"
+      />
       <div class="comment-reply__input__wrapper">
         <textarea
           type="text"
           class="comment-reply__input"
           placeholder="添加回复"
+          v-model.trim="content"
           @focus="handleFocus"
           @blur="isFocused = false"
           :autofocus="!isMain"
@@ -27,48 +33,92 @@
     <!-- second row -->
     <div class="comment-reply__actions" v-if="isShowActions">
       <button class="comment-reply__actions__btn secondary" @click="$emit('hide')">取消</button>
-      <button class="comment-reply__actions__btn primary" @click="handleReply">回复</button>
+      <button
+        class="comment-reply__actions__btn primary"
+        :disabled="replyDisabled"
+        @click="handleReply"
+      >
+        回复
+      </button>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      isFocused: false,
-      isShowActions: true
-    };
-  },
-  props: {
-    isMain: {
-      type: Boolean,
-      default: false
-    }
-  },
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { namespace, State } from "vuex-class";
+import { getUserDetail, sentComment } from "@/service";
+import { CommentType } from "@/types";
+
+const currentUser = namespace("currentUser");
+const notification = namespace("notification");
+@Component
+export default class CommentReplyEditor extends Vue {
+  @Prop({ default: false, type: Boolean }) isMain!: boolean;
+  // 资源id
+  @Prop(Number) id!: number;
+  // 资源类型
+  @Prop() type!: CommentType;
+
+  isFocused: boolean = false;
+  isShowActions: boolean = true;
+  avatarUrl: string = "";
+  nickname: string = "";
+  content: string = "";
+  @currentUser.State("userId") currentUserId!: number;
+  @notification.Mutation setMsg!: (msg: string) => void;
+
+  get replyDisabled(): boolean {
+    return (
+      typeof this.id == "undefined" || typeof this.type == "undefined" || this.content.length < 1
+    );
+  }
   created() {
+    this.updateUserData();
     if (this.isMain) {
       this.isShowActions = false;
     }
-  },
-  methods: {
-    handleReply() {
-      // TODO
-    },
-    handleFocus() {
-      this.isFocused = true;
-      if (!this.isShowActions) {
-        this.isShowActions = true;
+  }
+  updateUserData() {
+    if (!this.currentUserId) return;
+    getUserDetail(this.currentUserId).then(
+      res => {
+        this.avatarUrl = res.data.profile.avatarUrl;
+        this.nickname = res.data.profile.nickname;
+      },
+      error => {
+        const msg = "获取当前用户信息错误" + (error && error.msg ? error.msg + "！" : "！");
+        this.setMsg(msg);
       }
-    },
-    autoAdjustHeight({ target }) {
-      target.style.cssText = "height:auto; padding:0";
-      // for box-sizing other than "content-box" use:
-      // el.style.cssText = '-moz-box-sizing:content-box';
-      target.style.cssText = `height:${target.scrollHeight}px`;
+    );
+  }
+  handleReply() {
+    if (this.replyDisabled) return;
+    sentComment(this.id, this.type, this.content).then(
+      res => {
+        this.setMsg("评论成功！");
+        this.content = "";
+        this.$emit("sentComment", res.data.comment as Comment);
+      },
+      error => {
+        this.setMsg("评论失败！");
+        this.content = "";
+      }
+    );
+  }
+  handleFocus() {
+    this.isFocused = true;
+    if (!this.isShowActions) {
+      this.isShowActions = true;
     }
   }
-};
+  autoAdjustHeight({ target }: { target: HTMLElement }) {
+    target.style.cssText = "height:auto; padding:0";
+    // for box-sizing other than "content-box" use:
+    // el.style.cssText = '-moz-box-sizing:content-box';
+    target.style.cssText = `height:${target.scrollHeight}px`;
+  }
+}
 </script>
 
 <style lang="sass" scoped>
@@ -139,6 +189,8 @@ export default {
     background: white;
   &.primary
     color: #fff;
-    background: #aaa;
+    background: tomato;
     border-radius: 2px;
+  &[disabled]
+    opacity: 0.6
 </style>

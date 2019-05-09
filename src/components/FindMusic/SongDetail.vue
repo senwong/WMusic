@@ -44,7 +44,9 @@
               />
               <div class="mask-container">
                 <div class="mask"></div>
-                <div class="play" @click="play(song.id)"><play-svg></play-svg></div>
+                <div class="play" @click="play(song.id)">
+                  <play-svg></play-svg>
+                </div>
               </div>
             </div>
             <div class="info-container">
@@ -73,7 +75,7 @@ import { Artist, Album, Track, TrackQuality, CommentType, convertTrack } from "@
 import { Mutation, namespace } from "vuex-class";
 
 const playlist = namespace("playlist");
-
+const notification = namespace("notification");
 const OFEESETCOUNT = 20;
 @Component({
   components: { CommentList, RippleButton, PlaySvg }
@@ -100,7 +102,7 @@ export default class SongDetail extends Vue {
   album: Album | null = null;
 
   status: number = 0;
-
+  @notification.Mutation setMsg!: (msg: string) => void;
   created() {
     this.songId = Number(this.$route.params.id);
     // 获取歌曲信息
@@ -118,7 +120,9 @@ export default class SongDetail extends Vue {
           this.status = song.st;
         }
       },
-      error => {}
+      error => {
+        this.setMsg(`获取歌曲信息错误${error && error.msg ? error.msg : ""}！`);
+      }
     );
     // 获取相似歌曲
     getSimiSongs(this.songId).then(res => {

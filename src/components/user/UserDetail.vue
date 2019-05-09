@@ -11,7 +11,7 @@
     |               +------------------------------------------------------+
     |               | province city | age                                  |
     +---------------+------------------------------------------------------+
-    -->
+      -->
       <div class="profile-panel">
         <div class="avatar">
           <ImageWithPlaceholder
@@ -22,9 +22,7 @@
         </div>
         <div class="profile-detail">
           <div class="detail-row nickname-action">
-            <div class="nickname">
-              {{ profile.nickname }}
-            </div>
+            <div class="nickname">{{ profile.nickname }}</div>
             <div class="actions">
               <Button class="action-button" primary rounded v-if="!isSelf">关注</Button>
               <Button class="action-button" primary rounded v-if="!isSelf">发私信</Button>
@@ -72,89 +70,106 @@
               <span class="light-txt">{{ parsedAge }}</span>
             </div>
           </div>
-          <div class="social-network light-txt">
-            社交网络未绑定
-          </div>
+          <div class="social-network light-txt">社交网络未绑定</div>
         </div>
       </div>
       <UserPlaylist :userId="userId" :count="profile.playlistCount" />
     </div>
-    <ErrorLabel class="get-user-detail-faild" :show="isGetUserDetailFailed">
-      获取用户信息错误。
-    </ErrorLabel>
+    <ErrorLabel class="get-user-detail-faild" :show="isGetUserDetailFailed"
+      >获取用户信息错误。</ErrorLabel
+    >
   </div>
 </template>
-<script>
-import { getUserDetail, logout } from "@/service";
+<script lang="ts">
 import provinceCitys from "./provinceCitys.json";
-import UserPlaylist from "@/components/user/UserPlaylist";
-import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder";
+import { getUserDetail, logout } from "@/service";
+import UserPlaylist from "@/components/user/UserPlaylist.vue";
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
 import { mapState, mapMutations } from "vuex";
-import ErrorLabel from "@/components/globals/ErrorLabel";
-import Button from "@/components/globals/Button";
+import ErrorLabel from "@/components/globals/ErrorLabel.vue";
+import Button from "@/components/globals/Button.vue";
+import { Mutation, namespace } from "vuex-class";
+import { Vue, Component, Prop } from "vue-property-decorator";
 
-export default {
-  name: "UserDetail",
-  data() {
-    return {
-      userId: 0, // from router param
-      profile: null,
-      isGetUserDetailFailed: false
-    };
-  },
+interface Profile {
+  birthday: number;
+  avatarUrl: string;
+  nickname: string;
+  eventCount: number;
+  userId: number;
+  follows: number;
+  followeds: number;
+  signature: string;
+  playlistCount: number;
+  province: number;
+  city: number;
+}
+interface Destrict {
+  name: string;
+  code: number;
+  children?: Destrict[];
+}
+const currentUser = namespace("currentUser");
+const notification = namespace("notification");
+
+@Component({
   components: {
     UserPlaylist,
     ImageWithPlaceholder,
     ErrorLabel,
     Button
-  },
-  methods: {
-    handleLogout() {
-      logout().then(
-        res => {
-          // logout success
-          this.setCurrentUserId(undefined);
-          this.$router.push("/");
-          this.profile = null;
-        },
-        error => {
-          // logout faile
-          alert("log out fail", error);
-        }
+  }
+})
+export default class UserDetail extends Vue {
+  userId: number = 0; // from router param
+  profile: Profile | null = null;
+  isGetUserDetailFailed: boolean = false;
+
+  handleLogout() {
+    logout().then(
+      res => {
+        // logout success
+        this.setCurrentUserId(undefined);
+        this.$router.push("/");
+        this.profile = null;
+      },
+      error => {
+        // logout faile
+        this.setMsg(`推出登录错误${error && error.msg ? error.msg : ""}！`);
+      }
+    );
+  }
+  @currentUser.Mutation setCurrentUserId!: (id: number | undefined) => void;
+  @currentUser.State("userId") currentUserId!: number | undefined;
+  @notification.Mutation setMsg!: (msg: string) => void;
+
+  get parsedAge(): string {
+    if (!this.profile || !this.profile.birthday) return "";
+    if (this.profile.birthday >= Date.parse("Jan 1 2010")) return "10后";
+    if (this.profile.birthday >= Date.parse("Jan 1 2000")) return "00后";
+    if (this.profile.birthday >= Date.parse("Jan 1 1990")) return "90后";
+    if (this.profile.birthday >= Date.parse("Jan 1 1980")) return "80后";
+    if (this.profile.birthday >= Date.parse("Jan 1 1970")) return "70后";
+    if (this.profile.birthday >= Date.parse("Jan 1 1960")) return "60后";
+    return "其他";
+  }
+  get isSelf(): boolean {
+    return this.currentUserId == this.userId;
+  }
+  get province(): Destrict | undefined {
+    return provinceCitys.find(
+      (p: Destrict): boolean => this.profile !== null && p.code == this.profile.province
+    );
+  }
+  get city(): Destrict | undefined {
+    if (this.province && this.province.children) {
+      return this.province.children.find(
+        (c: Destrict): boolean => this.profile !== null && c.code == this.profile.city
       );
-    },
-    ...mapMutations("currentUser", ["setCurrentUserId"])
-  },
-  computed: {
-    parsedAge() {
-      if (!this.profile.birthday) return;
-      if (this.profile.birthday >= Date.parse("Jan 1 2010")) return "10后";
-      if (this.profile.birthday >= Date.parse("Jan 1 2000")) return "00后";
-      if (this.profile.birthday >= Date.parse("Jan 1 1990")) return "90后";
-      if (this.profile.birthday >= Date.parse("Jan 1 1980")) return "80后";
-      if (this.profile.birthday >= Date.parse("Jan 1 1970")) return "70后";
-      if (this.profile.birthday >= Date.parse("Jan 1 1960")) return "60后";
-      return "其他";
-    },
-    ...mapState("currentUser", {
-      currentUserId: state => state.userId
-    }),
-    isSelf() {
-      return this.currentUserId == this.userId;
-    },
-    province() {
-      if (this.profile && this.profile.province) {
-        return provinceCitys.find(p => p.code == this.profile.province);
-      }
-      return null;
-    },
-    city() {
-      if (this.province && this.province.children) {
-        return this.province.children.find(c => c.code == this.profile.city);
-      }
-      return null;
     }
-  },
+    return undefined;
+  }
+
   created() {
     this.userId = Number(this.$route.params.id);
     getUserDetail(this.userId).then(
@@ -162,7 +177,7 @@ export default {
         this.profile = res.data.profile;
         this.isGetUserDetailFailed = false;
         if (this.isSelf) {
-          this.setCurrentUser(res.data.profile);
+          this.setCurrentUserId(res.data.profile.userId);
         }
       },
       error => {
@@ -170,7 +185,7 @@ export default {
       }
     );
   }
-};
+}
 </script>
 <style lang="sass" scoped>
 // common style

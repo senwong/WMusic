@@ -1,11 +1,11 @@
 <template>
-  <div class="offical" v-if="content">
+  <div class="offical">
     <TabMenu :list="typeList" align-left />
     <div class="card">
       <div class="card__left">
         <ImageWithPlaceholder
-          :src="content.picUrl | convert2Https | clipImage(400, 400)"
-          :alt="content.title"
+          :src="content && content.picUrl | convert2Https | clipImage(400, 400)"
+          :alt="content && content.title"
           ratio="1:1"
         />
       </div>
@@ -14,19 +14,27 @@
           <Button class="track-head__play" rounded primary xsmall @click.native="playAll"
             >全部播放</Button
           >
-          <Button class="track-head__check" as="a" rounded xsmall :href="'/playlist/' + content.id"
+          <Button
+            v-if="content"
+            class="track-head__check"
+            as="a"
+            rounded
+            xsmall
+            :href="'/playlist/' + content.id"
             >查看全部</Button
           >
         </div>
-        <ul class="table-body">
+        <ul class="table-body" v-if="content && content.tracks.length > 0">
           <li class="track__item" v-for="(track, i) in content.tracks.slice(0, 5)" :key="track.id">
             <div class="track__rank__play">
               <span class="track__rank">0{{ i + 1 }}</span>
-              <span class="track__play" @click="play(track.id)"><PlayIcon /></span>
+              <span class="track__play" @click="play(track.id)">
+                <PlayIcon />
+              </span>
             </div>
-            <router-link class="track__name ellipsis" :to="'/song/' + track.id">{{
-              track.name
-            }}</router-link>
+            <router-link class="track__name ellipsis" :to="'/song/' + track.id">
+              {{ track.name }}
+            </router-link>
             <span class="track__artists">
               <ArtistsWithComma :artists="track.artists" aTagClass="track__artist" />
             </span>
@@ -94,6 +102,7 @@ export default class OfficialTopList extends Vue {
   ];
 
   selectedType: Type = Type.Hot;
+  content: OfficialConntent | null = null;
 
   get typeList(): TabMenuItem[] {
     return this.officialTabTitles.map(
@@ -105,8 +114,6 @@ export default class OfficialTopList extends Vue {
       })
     );
   }
-
-  content: OfficialConntent | null = null;
 
   updateOfficial() {
     getTopList(this.selectedType).then(res => {

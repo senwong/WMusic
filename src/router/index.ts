@@ -38,7 +38,7 @@ const router = new VueRouter({
     { path: "/search", component: SearchIndex },
     { path: "/login", component: LogIn },
     { path: "/record/:id", component: UserRecord },
-    { path: "/likedsongs", component: LikedSongs },
+    { path: "/likedsongs/:id", component: LikedSongs },
     { path: "/follows/:id", component: UserFollows },
     { path: "/followeds/:id", component: UserFolloweds },
     {

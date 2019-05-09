@@ -5,14 +5,30 @@
       <LoadingIcon />
     </div>
     <div class="comments" v-else>
-      <CommentReplyEditor isMain />
+      <CommentReplyEditor isMain :id="id" :type="type" @sentComment="handleSentComment" />
       <div v-if="hotComments.length">
         <h3>最热评论（{{ hotComments.length }}）</h3>
-        <CommentItem v-for="comment in hotComments" :key="comment.commentId" :comment="comment" />
+        <CommentItem
+          v-for="comment in hotComments"
+          :key="comment.commentId"
+          :comment="comment"
+          :id="id"
+          :type="type"
+          @sentComment="handleSentComment"
+          @deleteComment="handleDeleteComment"
+        />
       </div>
       <div v-if="comments.length">
         <h3>最新评论（{{ comments.length }}）</h3>
-        <CommentItem v-for="comment in comments" :key="comment.commentId" :comment="comment" />
+        <CommentItem
+          v-for="comment in comments"
+          :key="comment.commentId"
+          :comment="comment"
+          :id="id"
+          :type="type"
+          @sentComment="handleSentComment"
+          @deleteComment="handleDeleteComment"
+        />
       </div>
       <!-- loading animation when loading more comments -->
       <div class="loading-wrapper" v-if="isLoadingMore">
@@ -35,7 +51,9 @@ import { getSongComment, getMVComments, getPlaylistComments, getAlbumComments } 
 import LoadingIcon from "@/components/globals/Loading.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Comment, CommentType } from "@/types";
+import { Mutation, namespace } from "vuex-class";
 
+const notification = namespace("notification");
 @Component({
   components: { CommentItem, CommentReplyEditor, LoadingIcon }
 })
@@ -53,10 +71,12 @@ export default class CommentList extends Vue {
   isLoadingMore: boolean = false;
 
   total: number = 0;
+  offset: number = 0;
 
   @Prop() type!: CommentType;
 
   @Prop(Number) id!: number;
+  @notification.Mutation setMsg!: (msg: string) => void;
 
   created() {
     this.isLoadingFirst = true;
@@ -88,34 +108,52 @@ export default class CommentList extends Vue {
     return service;
   }
 
-  get commentsOffset() {
-    return this.comments.length;
-  }
-
   get isAllCommentsLoaded() {
     return this.comments.length >= this.total;
   }
-
+  handleSentComment(comment: Comment) {
+    this.comments.unshift(comment);
+  }
+  handleDeleteComment(comment: Comment) {
+    this.comments = this.comments.filter(
+      (c: Comment): boolean => c.commentId !== comment.commentId
+    );
+  }
   @Watch("isScrollBottom")
   onisScrollBottomChange(val: boolean) {
     if (val === true) {
       this.loadingMoreComments();
     }
   }
-
-  updateData(cb: () => {}) {
+  updateData(cb?: () => {}) {
     if (!this.serviceApi) {
       cb && cb();
       return;
     }
 
-    this.serviceApi(this.id, this.commentsOffset).then(
+    this.serviceApi(this.id, this.offset).then(
       ({ data: { hotComments, comments, more, moreHot, total } }) => {
         if (hotComments && hotComments.length > 0) {
-          this.hotComments = this.hotComments.concat(hotComments);
+          hotComments.forEach((c: Comment) => {
+            if (
+              this.hotComments.findIndex(
+                (oldc: Comment): boolean => oldc.commentId === c.commentId
+              ) < 0
+            ) {
+              this.hotComments.push(c);
+            }
+          });
         }
         if (comments && comments.length > 0) {
-          this.comments = this.comments.concat(comments);
+          comments.forEach((c: Comment) => {
+            if (
+              this.comments.findIndex((oldc: Comment): boolean => oldc.commentId === c.commentId) <
+              0
+            ) {
+              this.comments.push(c);
+            }
+          });
+          this.offset = this.comments.length;
         }
         this.more = more;
         this.moreHot = moreHot;
@@ -124,7 +162,7 @@ export default class CommentList extends Vue {
       },
       error => {
         cb && cb();
-        alert(`get comments error ${error}`);
+        this.setMsg(`获取评论错误${error && error.msg}！`);
       }
     );
   }

@@ -4,7 +4,6 @@
     <div class="info" v-if="!isError">
       <div class="cover-img">
         <ImageWithPlaceholder
-          v-if="coverImgUrl"
           :src="coverImgUrl | convert2Https | clipImage(400, 400)"
           :alt="name"
           ratio="1:1"
@@ -15,9 +14,9 @@
           <router-link class="creator-avatar" :to="'/user/' + creator.userId">
             <img :src="creator.avatarUrl | convert2Https" :alt="creator.nickname" />
           </router-link>
-          <router-link class="creator-name" :to="'/user/' + creator.userId">{{
-            creator.nickname
-          }}</router-link>
+          <router-link class="creator-name" :to="'/user/' + creator.userId">
+            {{ creator.nickname }}
+          </router-link>
           <span class="update-time">{{ updateTimeFormated }}创建</span>
         </div>
         <h3 class="name">{{ name }}</h3>
@@ -281,6 +280,10 @@ export default class PlaylistDetail extends Vue {
   flex: 0 0 200px
   border-radius: 15px
   margin-right: 20px
+.conver-img__skeleton
+  width: 100%
+  padding-bottom: 100%
+
 .desc
   min-width: 0
   flex: 1 1 auto

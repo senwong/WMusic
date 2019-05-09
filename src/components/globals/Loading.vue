@@ -1,8 +1,8 @@
 <template>
   <svg viewBox="0 0 300 150" width="100%" height="100%" stroke="currentColor" fill="currentColor">
-    <circle ref="left" cx="25%" cy="50%" r="10%" />
-    <circle ref="middle" cx="50%" cy="50%" r="10%" />
-    <circle ref="right" cx="75%" cy="50%" r="10%" />
+    <circle ref="left" cx="25%" cy="50%" r="10%"></circle>
+    <circle ref="middle" cx="50%" cy="50%" r="10%"></circle>
+    <circle ref="right" cx="75%" cy="50%" r="10%"></circle>
   </svg>
 </template>
 
@@ -24,7 +24,6 @@ export default {
     this.left = left;
     this.middle = middle;
     this.right = right;
-    console.log("right ", this.right);
     this.animationId = requestAnimationFrame(this.animate);
   },
   methods: {
