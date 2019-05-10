@@ -1,6 +1,6 @@
 <template>
   <div class="album-sublist">
-    <ul class="album-sublist__container">
+    <ul class="album-sublist__container" v-if="!isLoading">
       <ListItem
         v-for="album in albums"
         :key="album.id"
@@ -12,13 +12,14 @@
           <router-link :to="`/album/${album.id}`">{{ album.name }}</router-link>
         </template>
         <template v-slot:subtitle_1>
-          <ArtistsWithComma :artists="album.artists" aTagClass="" commaClass="" />
+          <ArtistsWithComma :artists="album.artists" aTagClass commaClass/>
         </template>
-        <template v-slot:subtitle_2>
-          {{ album.size }}首
-        </template>
+        <template v-slot:subtitle_2>{{ album.size }}首</template>
       </ListItem>
     </ul>
+    <div v-else>
+      <ListItemPlaceholder v-for="(_, idx) in new Array(15)" :key="idx"/>
+    </div>
     <ErrorLabel class="error-label" :show="isError">{{ errorMsg }}</ErrorLabel>
     <PrevNextPagination
       :offset="offset"
@@ -33,17 +34,19 @@
 import { getAlbumSublist } from "@/service";
 import ErrorLabel from "@/components/globals/ErrorLabel.vue";
 import ListItem from "./listitem.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import PrevNextPagination from "@/components/globals/PrevNextPagination.vue";
 import { Album } from "@/types";
 import { Vue, Component } from "vue-property-decorator";
+import ListItemPlaceholder from "./listitemPlaceholder.vue";
 
 @Component({
   components: {
     ErrorLabel,
     ListItem,
     ArtistsWithComma,
-    PrevNextPagination
+    PrevNextPagination,
+    ListItemPlaceholder
   }
 })
 export default class AlbumSubList extends Vue {
@@ -58,20 +61,25 @@ export default class AlbumSubList extends Vue {
   readonly limit: number = 25;
 
   hasMore: boolean = false;
+  isLoading: boolean = false;
 
   created() {
+    this.isLoading = true;
     this.updateData();
   }
 
   updateData(): void {
+    this.isLoading = true;
     getAlbumSublist(this.offset, this.limit).then(
       res => {
         this.albums = res.data.data;
+        this.isLoading = false;
       },
       error => {
         if (error.msg) {
           this.errorMsg = error.msg;
         }
+        this.isLoading = false;
       }
     );
   }
@@ -88,4 +96,5 @@ export default class AlbumSubList extends Vue {
   padding-bottom: 2em
 .error-label
   margin-top: 3em
+
 </style>

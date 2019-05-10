@@ -1,88 +1,88 @@
 <template>
-  <div v-if="tracks">
-    <ul class="tracks" @scroll="handleScroll">
-      <li
-        class="track"
-        v-for="track in tracks"
-        :key="track.id"
-        :class="{
-          active: track.id == currentSongId,
-          disabled: track.status < 0
-        }"
-      >
-        <div class="track-icon" @click="handlePlay(track.id)">
-          <SvgBtnWrapper middle class="music-icon">
-            <MusicIcon />
-          </SvgBtnWrapper>
-          <PlayStatusBtn primary middle class="play-icon" v-if="currentSongId === track.id" />
-          <SvgBtnWrapper middle class="play-icon" v-else>
-            <PausedIcon />
-          </SvgBtnWrapper>
+  <ul class="tracks" @scroll="handleScroll">
+    <li
+      class="track"
+      v-for="track in tracks"
+      :key="track.id"
+      :class="{
+      active: track.id == currentSongId,
+      disabled: track.status < 0
+    }"
+    >
+      <div class="track-icon" @click="handlePlay(track.id)">
+        <SvgBtnWrapper middle class="music-icon">
+          <MusicIcon/>
+        </SvgBtnWrapper>
+        <PlayStatusBtn primary middle class="play-icon" v-if="currentSongId === track.id"/>
+        <SvgBtnWrapper middle class="play-icon" v-else>
+          <PausedIcon/>
+        </SvgBtnWrapper>
+      </div>
+      <div class="track-names">
+        <div class="track-name-mvlink">
+          <router-link :to="`/song/${track.id}`" class="track-name">{{ track.name }}</router-link>
+          <router-link v-if="track.mv" :to="'/mvplay/' + track.mv" class="track-mvlink">
+            <MvIcon/>
+          </router-link>
         </div>
-        <div class="track-names">
-          <div class="track-name-mvlink">
-            <router-link :to="`/song/${track.id}`" class="track-name">{{ track.name }}</router-link>
-            <router-link v-if="track.mv" :to="'/mvplay/' + track.mv" class="track-mvlink">
-              <MvIcon />
-            </router-link>
-          </div>
-          <div class="track-ar-al">
-            <ArtistsWithComma
-              :artists="track.artists"
-              aTagClass="track-artist"
-              commaClass="track__artist__comma"
-            />
-            <span class="track-dot">•</span>
-            <router-link :to="'/album/' + track.album.id" class="track-album">{{
-              track.album.name
-            }}</router-link>
-          </div>
+        <div class="track-ar-al">
+          <ArtistsWithComma
+            :artists="track.artists"
+            aTagClass="track-artist"
+            commaClass="track__artist__comma"
+          />
+          <span class="track-dot">•</span>
+          <router-link :to="'/album/' + track.album.id" class="track-album">
+            {{
+            track.album.name
+            }}
+          </router-link>
         </div>
-        <BtnWithPopupMenu class="track-more">
-          <template slot="btn">
-            <SvgBtnWrapper middle>
-              <MoreIcon />
-            </SvgBtnWrapper>
-          </template>
-          <template slot="menu">
-            <more-list class="track__more__menu">
-              <more-item @click.native="handleAddToNext">
-                <DownloadIcon slot="icon" />
-                <span slot="txt" class="txt">下一首播放</span>
-              </more-item>
-              <more-item>
-                <DownloadIcon slot="icon" />
-                <span slot="txt" class="txt">添加到播放列表</span>
-              </more-item>
-              <hr class="fixed-hr" />
-              <more-item>
-                <DownloadIcon slot="icon" />
-                <span slot="txt" class="txt">收藏</span>
-              </more-item>
-              <more-item>
-                <DownloadIcon slot="icon" />
-                <span slot="txt" class="txt">下载</span>
-              </more-item>
-              <more-item>
-                <DownloadIcon slot="icon" />
-                <span slot="txt" class="txt">加入歌单</span>
-              </more-item>
-              <hr class="fixed-hr" />
-              <more-item>
-                <DownloadIcon slot="icon" />
-                <span slot="txt" class="txt">评论</span>
-              </more-item>
-              <more-item>
-                <DownloadIcon slot="icon" />
-                <span slot="txt" class="txt">分享</span>
-              </more-item>
-            </more-list>
-          </template>
-        </BtnWithPopupMenu>
-        <div class="track-duration">{{ formatTime(track.duration) }}</div>
-      </li>
-    </ul>
-  </div>
+      </div>
+      <BtnWithPopupMenu class="track-more">
+        <template slot="btn">
+          <SvgBtnWrapper middle>
+            <MoreIcon/>
+          </SvgBtnWrapper>
+        </template>
+        <template slot="menu">
+          <more-list class="track__more__menu">
+            <more-item @click.native="handleAddToNext">
+              <DownloadIcon slot="icon"/>
+              <span slot="txt" class="txt">下一首播放</span>
+            </more-item>
+            <more-item>
+              <DownloadIcon slot="icon"/>
+              <span slot="txt" class="txt">添加到播放列表</span>
+            </more-item>
+            <hr class="fixed-hr">
+            <more-item>
+              <DownloadIcon slot="icon"/>
+              <span slot="txt" class="txt">收藏</span>
+            </more-item>
+            <more-item>
+              <DownloadIcon slot="icon"/>
+              <span slot="txt" class="txt">下载</span>
+            </more-item>
+            <more-item>
+              <DownloadIcon slot="icon"/>
+              <span slot="txt" class="txt">加入歌单</span>
+            </more-item>
+            <hr class="fixed-hr">
+            <more-item>
+              <DownloadIcon slot="icon"/>
+              <span slot="txt" class="txt">评论</span>
+            </more-item>
+            <more-item>
+              <DownloadIcon slot="icon"/>
+              <span slot="txt" class="txt">分享</span>
+            </more-item>
+          </more-list>
+        </template>
+      </BtnWithPopupMenu>
+      <div class="track-duration">{{ formatTime(track.duration) }}</div>
+    </li>
+  </ul>
 </template>
 <script lang="ts">
 import MoreItem from "@/components/more-list/MoreItem.vue";
@@ -96,7 +96,7 @@ import MoreIcon from "@/components/SVGIcons/MoreIcon.vue";
 import DownloadIcon from "@/components/SVGIcons/DownloadIcon.vue";
 import MusicIcon from "@/components/SVGIcons/MusicIcon.vue";
 import MvIcon from "@/components/SVGIcons/MvIcon.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Track } from "@/types";
 import { Mutation, namespace, State, Getter } from "vuex-class";
@@ -322,4 +322,5 @@ a
   opacity: 0.7
 .track__more__menu
   color: #333
+
 </style>

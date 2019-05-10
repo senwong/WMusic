@@ -1,15 +1,16 @@
 <template>
   <div class="img-placeholder-container">
-    <div class="img-wrapper angled-gradient" :style="{ paddingBottom }">
+    <Placeholder class="img-wrapper" :style="{ paddingBottom }">
       <FadeTransition>
         <img v-if="showImg" :src="src" :alt="alt" />
       </FadeTransition>
-    </div>
+    </Placeholder>
   </div>
 </template>
 
 <script>
 import FadeTransition from "./FadeTransition";
+import Placeholder from "@/components/globals/Placeholder.vue";
 
 export default {
   data() {
@@ -29,7 +30,7 @@ export default {
       return `${(height / width) * 100}%`;
     }
   },
-  components: { FadeTransition },
+  components: { FadeTransition, Placeholder },
   created() {
     this.downloadImage();
   },

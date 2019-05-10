@@ -1,17 +1,21 @@
 <template>
-  <transition name="fade">
+  <transition name="fade" :appear="appear">
     <slot></slot>
   </transition>
 </template>
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({});
+import { Vue, Component, Prop } from "vue-property-decorator";
+
+export default class FadeTransition extends Vue {
+  @Prop({ type: Boolean, default: false, required: false })
+  appear: boolean = false;
+}
 </script>
 
 <style lang="sass" scoped>
 .fade-enter-active, .fade-leave-active
-  transition: opacity .5s;
+  transition: opacity .5s
 
 .fade-enter, .fade-leave-to
-  opacity: 0;
+  opacity: 0
 </style>

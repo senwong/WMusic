@@ -8,9 +8,7 @@
         :alt="content.name"
         ratio="1:1"
       />
-      <div class="list__name">
-        {{ content.name }}
-      </div>
+      <div class="list__name">{{ content.name }}</div>
     </div>
     <router-link :to="'/playlist/' + content.id" class="song__list">
       <div v-for="(track, i) in tracks" :key="track.id" class="track-list">
@@ -18,7 +16,7 @@
         <span class="track-order">{{ i + 1 }}</span>
         <span class="track-name">{{ track.name }}</span>
         <div class="track-artists">
-          <ArtistsWithComma aTagClass="track-artist" :artists="track.artists" />
+          <ArtistsWithComma aTagClass="track-artist" :artists="track.artists"/>
         </div>
       </div>
     </router-link>
@@ -28,7 +26,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import CardImage from "@/components/globals/CardImage.vue";
 import { PlaylistType, Track, Artist } from "@/types";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import { getTopList } from "@/service";
 
 export interface DomesticTopList {
@@ -54,11 +52,13 @@ export default class MediaItem extends Vue {
   created() {
     getTopList(this.typeId).then(res => {
       const p = res.data.playlist;
-      const tracks = p.tracks.map((t: { id: number; name: string; ar: Artist[] }) => ({
-        id: t.id,
-        name: t.name,
-        artists: t.ar
-      }));
+      const tracks = p.tracks.map(
+        (t: { id: number; name: string; ar: Artist[] }) => ({
+          id: t.id,
+          name: t.name,
+          artists: t.ar
+        })
+      );
       this.content = {
         id: p.id,
         name: p.name,

@@ -12,18 +12,14 @@
       <div class="desc">
         <div class="creator" v-if="creator">
           <router-link class="creator-avatar" :to="'/user/' + creator.userId">
-            <img :src="creator.avatarUrl | convert2Https" :alt="creator.nickname" />
+            <img :src="creator.avatarUrl | convert2Https" :alt="creator.nickname">
           </router-link>
-          <router-link class="creator-name" :to="'/user/' + creator.userId">
-            {{ creator.nickname }}
-          </router-link>
+          <router-link class="creator-name" :to="'/user/' + creator.userId">{{ creator.nickname }}</router-link>
           <span class="update-time">{{ updateTimeFormated }}创建</span>
         </div>
         <h3 class="name">{{ name }}</h3>
         <div>
-          <Button class="btn-control" rounded primary @click.native="handlePlayAll"
-            >全部播放</Button
-          >
+          <Button class="btn-control" rounded primary @click.native="handlePlayAll">全部播放</Button>
           <Button class="btn-control" rounded>收藏</Button>
           <Button class="btn-control" rounded>全部下载</Button>
           <Button class="btn-control" rounded>more</Button>
@@ -57,20 +53,25 @@
             @click.native="handleDescSpread"
             :class="{ down: descSpread }"
           >
-            <ChevronBottomIcon />
+            <ChevronBottomIcon/>
           </SvgBtnWrapper>
         </div>
       </div>
     </div>
-    <TabMenu align-left :list="tabList" />
+    <TabMenu align-left :list="tabList"/>
     <!-- playlist tracks -->
-    <SongList v-if="contentType == ContentType.Tracks" :tracks="tracks" :id="playlistId" />
+    <SongList
+      v-if="contentType == ContentType.Tracks && !isLoading"
+      :tracks="tracks"
+      :id="playlistId"
+    />
+    <SongListPlaceholder :count="20" v-if="contentType == ContentType.Tracks && isLoading"/>
     <CommentList
       v-if="contentType == ContentType.Comments"
       :type="CommentType.PlaylistComment"
       :id="id"
     />
-    <Subscribers v-if="contentType == ContentType.Subers" :id="id" />
+    <Subscribers v-if="contentType == ContentType.Subers" :id="id"/>
     <!-- error label -->
     <ErrorLabel :show="isError">{{ errorMsg }}</ErrorLabel>
   </div>
@@ -100,6 +101,7 @@ import TabMenu from "@/components/globals/TabMenu.vue";
 import CommentList from "@/components/FindMusic/CommentList.vue";
 import Subscribers from "./Subscribers.vue";
 import { formatCount } from "@/utilitys";
+import SongListPlaceholder from "@/components/globals/SongListPlaceholder.vue";
 
 enum ContentType {
   Tracks,
@@ -117,7 +119,8 @@ const playlist = namespace("playlist");
     SvgBtnWrapper,
     TabMenu,
     CommentList,
-    Subscribers
+    Subscribers,
+    SongListPlaceholder
   }
 })
 export default class PlaylistDetail extends Vue {
@@ -155,6 +158,9 @@ export default class PlaylistDetail extends Vue {
   errorMsg: string = "获取用户详情错误";
 
   contentType: ContentType = ContentType.Tracks;
+
+  isLoading: boolean = false;
+
   get tabList(): TabMenuItem[] {
     return [
       {
@@ -214,7 +220,8 @@ export default class PlaylistDetail extends Vue {
     // });
   }
 
-  created() {
+  udpateData() {
+    this.isLoading = true;
     this.playlistId = Number(this.$route.params.id);
     getPlaylistDetail(this.playlistId).then(
       res => {
@@ -243,14 +250,20 @@ export default class PlaylistDetail extends Vue {
         this.description = description;
         this.subscribedCount = subscribedCount;
         this.tracks = res.data.playlist.tracks.map(convertTrack);
+        this.isLoading = false;
       },
       error => {
         if (error && error.msg) {
           this.errorMsg = error.msg;
         }
         this.isError = true;
+        this.isLoading = false;
       }
     );
+  }
+
+  created() {
+    this.udpateData();
   }
 
   @playlist.Mutation setTracks!: (tracks: Track[]) => void;

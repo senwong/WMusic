@@ -2,24 +2,28 @@
   <li class="record-item__container">
     <!-- music icon and play icon -->
     <span class="record-item__icon" @click="handlePlay">
-      <MusicIcon class="record-item__music-icon" />
-      <PausedIcon class="record-item__paused-icon" />
+      <MusicIcon class="record-item__music-icon"/>
+      <PausedIcon class="record-item__paused-icon"/>
     </span>
     <!-- track name, artists and album -->
     <div class="record-item__track-info" v-if="song">
-      <router-link class="track-info__track-name" :to="`/song/${song.id}`">{{
+      <router-link class="track-info__track-name" :to="`/song/${song.id}`">
+        {{
         song.name
-      }}</router-link>
+        }}
+      </router-link>
       <div class="track-info__artist-album">
         <ArtistsWithComma
           :artists="song.artists"
           commaClass="artist-album__comma"
           aTagClass="artist-album__artist"
         />
-        <span class="artist-album__dot"> . </span>
-        <router-link class="artist-album__album" :to="`/album/${song.album.id}`">{{
+        <span class="artist-album__dot">.</span>
+        <router-link class="artist-album__album" :to="`/album/${song.album.id}`">
+          {{
           song.album.name
-        }}</router-link>
+          }}
+        </router-link>
       </div>
     </div>
     <!-- play count score  -->
@@ -33,7 +37,7 @@
 <script lang="ts">
 import MusicIcon from "@/components/SVGIcons/MusicIcon.vue";
 import PausedIcon from "@/components/SVGIcons/PausedIcon.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import { mapMutations } from "vuex";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Record } from "@/types";

@@ -4,6 +4,7 @@
     "module": "esnext",
     "strict": true,
     "jsx": "react",
+    "jsxFactory": "h",
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
@@ -16,7 +17,9 @@
       "webpack-env"
     ],
     "paths": {
-      "*": ["types/*"],
+      "*": [
+        "types/*"
+      ],
       "@/*": [
         "src/*"
       ]

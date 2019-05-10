@@ -9,14 +9,16 @@
       radius
     />
     <router-link :to="`/${cardType}/${card.id}`" class="list__name">
-      <span>{{ card.name }}</span
-      ><span> - </span><ArtistsWithComma :artists="card.artists" />
+      <div class="card__name">{{ card.name }}</div>
     </router-link>
+    <div class="artist__names">
+      <ArtistsWithComma :artists="card.artists" aTagClass="artist__name"/>
+    </div>
   </div>
 </template>
 <script lang="ts">
 import CardImage from "@/components/globals/CardImage.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import { MvCard } from "@/types";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
@@ -46,7 +48,7 @@ export default class CardItem extends Vue {
   user-select: none;
 
 .list__name
-  margin: 8px 0;
+  margin: 8px 0 0;
   text-decoration: none;
   color: inherit;
   font-weight: bolder;
@@ -65,4 +67,14 @@ export default class CardItem extends Vue {
   display: inline-block;
   border-radius: 0.2em;
   font-size: 12px;
+.card__name
+  overflow: hidden
+  white-space: nowrap
+  text-overflow: ellipsis
+.artist__names
+  display: flex
+  color: #333
+.artist__name
+  &:hover
+    text-decoration: underline
 </style>

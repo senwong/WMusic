@@ -55,10 +55,7 @@
             }
           ]"
         />
-        <div class="loading-spinner" v-if="isLoading">
-          <Spinner />
-        </div>
-        <SongCards v-else :cardLists="playlists" cardType="playlist" class="song-cards" />
+        <SongCards :cardLists="playlists" cardType="playlist" class="song-cards" />
         <Pagination :total="pageTotal" @change="handlePageChange" />
       </div>
     </div>
@@ -73,7 +70,6 @@ import Pagination from "@/components/globals/Pagination.vue";
 import TabMenu from "@/components/globals/TabMenu.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Playlist, PlaylistCreator } from "@/types";
-import Spinner from "@/components/globals/Spinner.vue";
 import { Mutation, namespace } from "vuex-class";
 
 const notification = namespace("notification");
@@ -89,8 +85,7 @@ interface SubCategory {
     ChevronTopIcon,
     ChevronBottomIcon,
     Pagination,
-    TabMenu,
-    Spinner
+    TabMenu
   }
 })
 export default class PlaylistComponent extends Vue {
@@ -114,7 +109,6 @@ export default class PlaylistComponent extends Vue {
 
   limit = 20;
 
-  isLoading: boolean = false;
   @notification.Mutation setMsg!: (msg: string) => void;
   created() {
     getPlayListCatlist().then(
@@ -144,7 +138,6 @@ export default class PlaylistComponent extends Vue {
   }
 
   updatePlayList() {
-    this.isLoading = true;
     getPlayList(this.selected, this.orderType, this.offset).then(res => {
       if (res.data.code == 200) {
         this.total = res.data.total;
@@ -165,10 +158,8 @@ export default class PlaylistComponent extends Vue {
             creator: list.creator
           })
         );
-        this.isLoading = false;
       } else {
         alert(`获取歌单失败： ${res.data}`);
-        this.isLoading = false;
       }
     });
   }

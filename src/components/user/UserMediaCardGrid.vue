@@ -1,18 +1,22 @@
 <template>
   <div class="user-media-card-grid" v-if="users">
-    <div class="user-media-card-grid__container">
-      <UserMediaCard v-for="user in users" :key="user.userId" :user="user" />
+    <div class="user-media-card-grid__container" v-if="users.length > 0">
+      <UserMediaCard v-for="user in users" :key="user.userId" :user="user"/>
+    </div>
+    <div class="user-media-card-grid__container" v-else>
+      <Placeholder class="placeholder" v-for="(_, idx) in new Array(20)" :key="idx"/>
     </div>
     <div class="pagination">
-      <Button class="pagination__back-btn" :disabled="backBtnDisabled" @click.native="handleBack"
-        >上一页</Button
-      >
+      <Button
+        class="pagination__back-btn"
+        :disabled="backBtnDisabled"
+        @click.native="handleBack"
+      >上一页</Button>
       <Button
         class="pagination__forward-btn"
         :disabled="forwardBtnDisabled"
         @click.native="handleForward"
-        >下一页</Button
-      >
+      >下一页</Button>
     </div>
   </div>
 </template>
@@ -20,6 +24,7 @@
 <script>
 import UserMediaCard from "./UserMediaCard";
 import Button from "@/components/globals/Button";
+import Placeholder from "@/components/globals/Placeholder.vue";
 
 export default {
   props: {
@@ -40,7 +45,7 @@ export default {
       type: Number
     }
   },
-  components: { UserMediaCard, Button },
+  components: { UserMediaCard, Button, Placeholder },
   computed: {
     backBtnDisabled() {
       return this.offset <= 0;
@@ -77,4 +82,6 @@ export default {
     margin-top: 2em
     .pagination__back-btn
       margin-right: 2em
+.placeholder
+  height: 4.125em
 </style>

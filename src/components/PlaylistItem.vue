@@ -14,27 +14,25 @@
     >
       <!-- 靠左显示 -->
       <div class="album-img">
-        <img :src="track.album.picUrl | convert2Https | clipImage(80, 80)" :alt="track.name" />
+        <img :src="track.album.picUrl | convert2Https | clipImage(80, 80)" :alt="track.name">
       </div>
       <div class="name-songer">
         <div class="name">{{ track.name }}</div>
         <div class="songer">
-          <ArtistsWithComma :artists="track.artists" aTagClass="" commaClass="" />
+          <ArtistsWithComma :artists="track.artists" aTagClass commaClass/>
         </div>
       </div>
       <!-- 靠右显示 -->
-      <div class="duration">
-        {{ formatTime(track.duration) }}
-      </div>
+      <div class="duration">{{ formatTime(track.duration) }}</div>
       <!-- hover时才显示收藏和更多 -->
       <div class="fav-more">
         <!-- 收藏  TODO  -->
         <button class="button_icon fav" :class="{ 'is-fav': false }">
-          <FavIcon />
+          <FavIcon/>
         </button>
         <!-- 更多 popMenuSongId = track.id -->
         <button class="button_icon song-more" @click="$emit('handleMoreClick', track.id)">
-          <MoreIcon />
+          <MoreIcon/>
         </button>
       </div>
     </div>
@@ -45,7 +43,7 @@ import { Motion } from "vue-motion";
 import { formatTime } from "@/utilitys";
 import FavIcon from "@/components/SVGIcons/FavIcon.vue";
 import MoreIcon from "@/components/SVGIcons/MoreIcon.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Track } from "@/types";
 

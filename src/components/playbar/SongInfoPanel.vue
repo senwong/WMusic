@@ -1,10 +1,10 @@
 <template>
   <div class="song-info-panel">
     <div v-if="isLoading" class="loading-spinner">
-      <Spinner />
+      <Spinner/>
     </div>
     <div class="album-img">
-      <img v-if="albumImg" :src="albumImg | convert2Https | clipImage(192, 192)" :alt="name" />
+      <img v-if="albumImg" :src="albumImg | convert2Https | clipImage(192, 192)" :alt="name">
       <div v-else class="img-placeholder"></div>
       <div class="img-mask">
         <button
@@ -12,7 +12,7 @@
           @click="$emit('toggle-song-player')"
           :class="{ invert: !isShowSongPlayer }"
         >
-          <SlideUpIcon />
+          <SlideUpIcon/>
         </button>
       </div>
     </div>
@@ -35,7 +35,7 @@
       </template>
       <!-- 点击音质，弹出选择菜单 -->
       <template slot="menu">
-        <select-list :data="qualitys" @selected-change="selectedChange" />
+        <select-list :data="qualitys" @selected-change="selectedChange"/>
       </template>
     </btn-with-popup-menu>
 
@@ -47,40 +47,40 @@
       :class="{ 'is-faver': isFaver }"
       :disabled="disabled"
     >
-      <FavIcon />
+      <FavIcon/>
     </SvgBtnWrapper>
     <!-- 三点 更多选项 -->
     <btn-with-popup-menu class="more" :disabled="disabled">
       <template slot="btn">
         <SvgBtnWrapper xlarge :disabled="disabled">
-          <MoreIcon />
+          <MoreIcon/>
         </SvgBtnWrapper>
       </template>
       <template slot="menu">
         <more-list>
           <more-item>
-            <DownloadIcon slot="icon" />
+            <DownloadIcon slot="icon"/>
             <span slot="txt" class="txt">漫游相似歌曲</span>
           </more-item>
           <more-item>
-            <DownloadIcon slot="icon" />
+            <DownloadIcon slot="icon"/>
             <span slot="txt" class="txt">下载</span>
           </more-item>
           <!-- 添加到歌单 hover时右侧扩展 -->
           <more-item spread="'right'">
-            <DownloadIcon slot="icon" />
+            <DownloadIcon slot="icon"/>
             <span slot="txt" class="txt">添加到歌单</span>
             <!-- hover时右侧扩展内容 -->
             <more-list slot="spread-list">
               <more-item>
-                <DownloadIcon slot="icon" />
+                <DownloadIcon slot="icon"/>
                 <span slot="txt" class="txt">喜欢的音乐</span>
               </more-item>
             </more-list>
           </more-item>
           <!-- 评论分享 -->
           <more-item>
-            <DownloadIcon slot="icon" />
+            <DownloadIcon slot="icon"/>
             <span slot="txt" class="txt">评论分享</span>
           </more-item>
         </more-list>
@@ -100,7 +100,7 @@ import SlideUpIcon from "@/components/SVGIcons/SlideUpIcon.vue";
 import DownloadIcon from "@/components/SVGIcons/DownloadIcon.vue";
 import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
 import Spinner from "@/components/globals/Spinner.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
 import { getUserPlaylist } from "@/service";
 import { Vue, Component, Prop } from "vue-property-decorator";

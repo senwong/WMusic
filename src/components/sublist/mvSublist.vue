@@ -1,7 +1,14 @@
 <template>
   <div class="mv-sublist">
-    <div class="mv-sublist__container">
-      <CardItem v-for="mv in mvs" :key="mv.id" :card="mv" cardType="mvplay" />
+    <div class="mv-sublist__container" v-if="!isLoading">
+      <CardItem v-for="mv in mvs" :key="mv.id" :card="mv" cardType="mvplay"/>
+    </div>
+    <div class="mv-sublist__container" v-else>
+      <div v-for="(_, idx) in new Array(20)" :key="idx" class="placeholder__wrapper">
+        <Placeholder class="placeholder__cover"/>
+        <Placeholder class="placeholder__title"/>
+        <Placeholder class="placeholder__subtitle"/>
+      </div>
     </div>
     <ErrorLabel :show="isError">{{ errorMsg }}</ErrorLabel>
     <PrevNextPagination
@@ -20,6 +27,7 @@ import ErrorLabel from "@/components/globals/ErrorLabel.vue";
 import PrevNextPagination from "@/components/globals/PrevNextPagination.vue";
 import { Vue, Component } from "vue-property-decorator";
 import { MvCard } from "@/types";
+import Placeholder from "@/components/globals/Placeholder.vue";
 
 interface MvFromServer {
   vid: number;
@@ -32,7 +40,8 @@ interface MvFromServer {
   components: {
     CardItem,
     ErrorLabel,
-    PrevNextPagination
+    PrevNextPagination,
+    Placeholder
   }
 })
 export default class MvSubList extends Vue {
@@ -47,12 +56,13 @@ export default class MvSubList extends Vue {
   offset: number = 0;
 
   readonly limit: number = 25;
-
+  isLoading: boolean = false;
   created() {
     this.updateData();
   }
 
   updateData() {
+    this.isLoading = true;
     getMvSublist(this.offset, this.limit).then(
       res => {
         this.mvs = res.data.data.map(
@@ -67,12 +77,14 @@ export default class MvSubList extends Vue {
           })
         );
         this.hasMore = res.data.hasMore;
+        this.isLoading = false;
       },
       error => {
         this.isError = true;
         if (error.msg) {
           this.errorMsg = error.msg;
         }
+        this.isLoading = false;
       }
     );
   }
@@ -92,4 +104,14 @@ export default class MvSubList extends Vue {
   gap: 2em
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))
   padding: 0 2em
+.placeholder__cover
+  padding-bottom: 56.25%
+  border-radius: 15px
+.placeholder__title
+  margin: 8px 0
+  height: 1.25em
+  width: 80%
+.placeholder__subtitle
+  height: 1em
+  width: 30%
 </style>

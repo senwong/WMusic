@@ -1,10 +1,7 @@
 <template>
   <div>
     <h1>推荐歌单</h1>
-    <SongCards v-if="!isLoading" :cardLists="songList" cardType="playlist" />
-    <div v-else class="loading-spinner">
-      <LoadingSpinner />
-    </div>
+    <SongCards :cardLists="songList" cardType="playlist" />
     <ErrorLabel :show="showError">{{ errorMsg }}</ErrorLabel>
   </div>
 </template>

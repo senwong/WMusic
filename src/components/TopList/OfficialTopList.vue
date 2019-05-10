@@ -1,6 +1,6 @@
 <template>
   <div class="offical">
-    <TabMenu :list="typeList" align-left />
+    <TabMenu :list="typeList" align-left/>
     <div class="card">
       <div class="card__left">
         <ImageWithPlaceholder
@@ -11,9 +11,7 @@
       </div>
       <div class="card__right">
         <div class="track-head">
-          <Button class="track-head__play" rounded primary xsmall @click.native="playAll"
-            >全部播放</Button
-          >
+          <Button class="track-head__play" rounded primary xsmall @click.native="playAll">全部播放</Button>
           <Button
             v-if="content"
             class="track-head__check"
@@ -21,22 +19,23 @@
             rounded
             xsmall
             :href="'/playlist/' + content.id"
-            >查看全部</Button
-          >
+          >查看全部</Button>
         </div>
         <ul class="table-body" v-if="content && content.tracks.length > 0">
-          <li class="track__item" v-for="(track, i) in content.tracks.slice(0, 5)" :key="track.id">
+          <li class="track__item" v-for="(track, i) in content.tracks" :key="track.id">
             <div class="track__rank__play">
               <span class="track__rank">0{{ i + 1 }}</span>
               <span class="track__play" @click="play(track.id)">
-                <PlayIcon />
+                <PlayIcon/>
               </span>
             </div>
             <router-link class="track__name ellipsis" :to="'/song/' + track.id">
-              {{ track.name }}
+              {{
+              track.name
+              }}
             </router-link>
             <span class="track__artists">
-              <ArtistsWithComma :artists="track.artists" aTagClass="track__artist" />
+              <ArtistsWithComma :artists="track.artists" aTagClass="track__artist"/>
             </span>
           </li>
         </ul>
@@ -47,14 +46,21 @@
 <script lang="ts">
 import { getTopList } from "@/service";
 import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import TabMenu from "@/components/globals/TabMenu.vue";
 import { DomesticTopList } from "./MediaItem.vue";
 import Button from "@/components/globals/Button.vue";
 import { Mutation, namespace } from "vuex-class";
 import PlayIcon from "@/components/SVGIcons/PlayIcon.vue";
 
-import { PlaylistType, Track, Album, TabMenuItem, Artist, convertTrack } from "@/types";
+import {
+  PlaylistType,
+  Track,
+  Album,
+  TabMenuItem,
+  Artist,
+  convertTrack
+} from "@/types";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 
 const playlist = namespace("playlist");
@@ -119,7 +125,7 @@ export default class OfficialTopList extends Vue {
     getTopList(this.selectedType).then(res => {
       const p = res.data.playlist;
 
-      const tracks: Track[] = p.tracks.map(convertTrack);
+      const tracks: Track[] = p.tracks.map(convertTrack).slice(0, 5);
       this.content = {
         id: p.id,
         title: p.name,

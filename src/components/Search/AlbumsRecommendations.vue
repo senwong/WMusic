@@ -4,9 +4,7 @@
     <ul>
       <li v-for="album in albums" :key="album.id">
         <RouterLink class="item" :to="'/album/' + album.id">
-          <span class="item-title">
-            {{ album.name }}
-          </span>
+          <span class="item-title">{{ album.name }}</span>
         </RouterLink>
       </li>
     </ul>
@@ -16,7 +14,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Album } from "@/types";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 
 @Component({
   components: { ArtistsWithComma }
