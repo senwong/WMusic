@@ -12,16 +12,18 @@
     >
       <div v-if="card.playCount" class="play-count" slot="rightTop">
         <span class="play-count__icon">
-          <PlayWithoutCircleIcon />
+          <PlayWithoutCircleIcon/>
         </span>
         <span>{{ formatPlayCount(card.playCount) }}</span>
       </div>
     </CardImage>
     <router-link :to="`/${cardType}/${card.id}`" class="list__name">{{ card.name }}</router-link>
     <!-- creator -->
-    <router-link v-if="card.creator" class="creator-name" :to="`/user/${card.creator.userId}`">{{
+    <router-link v-if="card.creator" class="creator-name" :to="`/user/${card.creator.userId}`">
+      {{
       card.creator.nickname
-    }}</router-link>
+      }}
+    </router-link>
     <!-- 点击更多，弹出菜单 -->
   </div>
 </template>
@@ -49,23 +51,14 @@ const notification = namespace("notification");
   }
 })
 export default class CardItem extends Vue {
-  morePopupButton: HTMLElement | null = null;
-
   @Prop() readonly card!: Playlist;
 
   @Prop() readonly cardType!: PlaylistType;
-
-  $refs!: {
-    more: HTMLElement;
-  };
 
   @playlist.Mutation setTracks!: (tracks: Track[]) => void;
 
   @playlist.Mutation setCurrentSongId!: (id: number) => void;
   @notification.Mutation setMsg!: (msg: string) => void;
-  mounted() {
-    this.morePopupButton = this.$refs.more;
-  }
 
   addFav(type: PlaylistType, id: number): void {
     // TODO

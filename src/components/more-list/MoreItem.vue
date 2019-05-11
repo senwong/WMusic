@@ -11,7 +11,7 @@
         </div>
         <!-- 靠右显示 -->
         <div class="item__right">
-          <RightArrowIcon v-show="!!spread" />
+          <RightArrowIcon v-show="!!spread"/>
         </div>
       </div>
     </div>
@@ -34,7 +34,7 @@ export default {
   components: { RightArrowIcon },
   mounted() {
     this.$nextTick(() => {
-      const property = this.spread && this.spread.slice(1, -1);
+      const property = this.spread;
       property === "right" && (this.styleObj = { left: "100%" });
       property === "left" && (this.styleObj = { right: "100%" });
     });
@@ -92,8 +92,9 @@ export default {
   display: none;
   position: absolute;
   top: 50%;
-  left: calc(100% + 4px)
   transform: translateY(-50%)
+  max-height: 20em
+  overflow: scroll
   &:hover
     display: block
 </style>

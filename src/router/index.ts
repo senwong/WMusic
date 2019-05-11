@@ -19,6 +19,7 @@ import UserFolloweds from "@/components/user/UserFolloweds.vue";
 import UserEdit from "@/components/user/UserEdit.vue";
 import Sublist from "@/components/sublist/index.vue";
 import auth from "@/auth";
+import NotFound from "@/components/NotFound.vue"
 
 const router = new VueRouter({
   mode: "history",
@@ -50,7 +51,8 @@ const router = new VueRouter({
       path: "/sublist",
       component: Sublist,
       meta: { requiresAuth: true }
-    }
+    },
+    { path: "*", component: NotFound}
   ]
 });
 

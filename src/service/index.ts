@@ -342,6 +342,11 @@ export function deleteComment(id: number, type: CommentType, commentId: number) 
   return Api().get("/comment", { withCredentials: true, params });
 }
 
+export function addToPlaylist(playlistId: number, trackId: number | number[]) {
+  const trackIds = typeof trackId === 'number' ? [trackId] : trackId;
+  const params = {op: 'add', pid: playlistId, tracks: trackIds.join(',')};
+  return Api().get("/playlist/tracks", { withCredentials: true, params });
+}
 export {
   getBanner,
   getSongURL,

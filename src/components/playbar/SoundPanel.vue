@@ -2,11 +2,11 @@
   <div class="sound-panel">
     <!-- 打开/关闭音量 -->
     <SvgBtnWrapper xlarge class="mute-volume" @click.native="toggleVolume" :disabled="disabled">
-      <VolumeIcon v-if="isVolume" />
-      <VolumeMuteIcon v-if="!isVolume" />
+      <VolumeIcon v-if="isVolume"/>
+      <VolumeMuteIcon v-if="!isVolume"/>
     </SvgBtnWrapper>
     <!-- 调节音量大小 -->
-    <RangeInput v-model="volume" :min="MINVOLUME" :max="MAXVOLUME" />
+    <RangeInput v-model="volume" :min="MINVOLUME" :max="MAXVOLUME"/>
     <!-- <input class="volume__setter" v-model="volume" type="range" :min="MINVOLUME" :max="MAXVOLUME"> -->
     <!-- 播放循环模式 -->
     <SvgBtnWrapper
@@ -15,9 +15,9 @@
       @click.native="$emit('changeMode')"
       :disabled="disabled"
     >
-      <LoopIcon v-if="currentMode === PlayMode.Loop" />
-      <OneLoopIcon v-if="currentMode === PlayMode.OneLoop" />
-      <ShuffleIcon v-if="currentMode === PlayMode.Shuffle" />
+      <LoopIcon v-if="currentMode === PlayMode.Loop"/>
+      <OneLoopIcon v-if="currentMode === PlayMode.OneLoop"/>
+      <ShuffleIcon v-if="currentMode === PlayMode.Shuffle"/>
     </SvgBtnWrapper>
     <!-- 音效调节 -->
     <SvgBtnWrapper
@@ -26,7 +26,7 @@
       :class="{ 'sound-effect-active': isEffect }"
       :disabled="disabled"
     >
-      <OptionsIcon />
+      <OptionsIcon/>
     </SvgBtnWrapper>
 
     <!-- <popup-menu :target="soundEffectButton">
@@ -42,7 +42,7 @@
     </popup-menu>-->
     <!-- 播放列表 -->
     <SvgBtnWrapper xlarge class="play-list" @click.native="toggleRightPlaylist">
-      <MenuIcon />
+      <MenuIcon/>
     </SvgBtnWrapper>
   </div>
 </template>
@@ -62,6 +62,8 @@ import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { State, Getter, namespace } from "vuex-class";
 import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
 import RangeInput from "@/components/globals/RangeInput.vue";
+
+const playlist = namespace("playlist");
 
 @Component({
   components: {
@@ -113,6 +115,11 @@ export default class SoundPanel extends Vue {
 
   @Prop() disabled!: boolean;
 
+  @playlist.Mutation("setVisibility") setPlaylistVisibility!: (
+    v: boolean
+  ) => void;
+  @playlist.State("isVisible") isPlaylistVisible!: boolean;
+
   toggleVolume() {
     if (this.volume > this.MINVOLUME) {
       this.oldVolume = this.volume;
@@ -133,7 +140,7 @@ export default class SoundPanel extends Vue {
   }
 
   toggleRightPlaylist() {
-    this.$store.commit("toggleRightPlaylist");
+    this.setPlaylistVisibility(!this.isPlaylistVisible);
   }
 
   @Watch("volume")

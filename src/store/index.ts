@@ -23,14 +23,10 @@ export default new Vuex.Store({
   },
   state: {
     isScrollBottom: false,
-    rightPlaylistVisible: false
   },
   mutations: {
     changeScroll(state, isScrollBottom) {
       state.isScrollBottom = isScrollBottom;
     },
-    toggleRightPlaylist(state) {
-      state.rightPlaylistVisible = !state.rightPlaylistVisible;
-    }
   }
 });

@@ -3,11 +3,13 @@ import { Track } from "@/types";
 interface PlaylistState {
   currentSongId: number | undefined;
   tracks: Track[];
+  isVisible: boolean;
 }
 
 const state: PlaylistState = {
   currentSongId: undefined,
-  tracks: []
+  tracks: [],
+  isVisible: false,
 };
 const getters = {
   trackCount: (state: PlaylistState) => state.tracks.length,
@@ -70,6 +72,9 @@ const mutations = {
       front.push(track);
       state.tracks = front.concat(rear);
     }
+  },
+  setVisibility(state: State, playload: boolean) {
+    state.isVisible = playload;
   }
 };
 

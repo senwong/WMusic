@@ -24,7 +24,7 @@
           <Button class="btn-control" rounded>全部下载</Button>
           <Button class="btn-control" rounded>more</Button>
         </div>
-        <div class="tags__wrapper" v-if="tags.length > 0">
+        <div class="tags__wrapper" v-if="tags && tags.length > 0">
           标签：
           <span>{{ tags.join(" / ") }}</span>
         </div>
@@ -39,7 +39,7 @@
             <span>{{ formatCount(playCount) }}</span>
           </span>
         </div>
-        <div class="desc__wrapper" v-if="description.length > 0">
+        <div class="desc__wrapper" v-if="description && description.length > 0">
           <span class="desc__label">简介：</span>
           <span
             class="desc__content"

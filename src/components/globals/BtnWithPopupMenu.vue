@@ -1,10 +1,10 @@
 <template>
   <div>
     <div ref="btn">
-      <slot name="btn" />
+      <slot name="btn"/>
     </div>
-    <div class="popup-menu" v-if="showPopup" :style="styleObj" ref="popupMenu">
-      <slot name="menu" />
+    <div class="popup-menu" v-show="canPopup && showPopup" :style="styleObj" ref="popupMenu">
+      <slot name="menu"/>
     </div>
   </div>
 </template>
@@ -35,6 +35,7 @@ import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
 })
 export default class BtnWithPopupMenu extends Vue {
   @Prop(Boolean) disabled!: boolean;
+  @Prop({ default: true, type: Boolean }) canPopup!: boolean;
   showPopup: boolean = false;
   styleObj: { top: string; bottom: string; right: string; left: string } = {
     top: "",
@@ -46,9 +47,20 @@ export default class BtnWithPopupMenu extends Vue {
     btn: Element;
     popupMenu: Element;
   };
+  @Watch("canPopup")
+  onChange(val: boolean) {
+    this.showPopup = false;
+  }
   calcPosition() {
     if (!this.$refs.btn) return;
-    const { top, left, bottom, right, width, height } = this.$refs.btn.getBoundingClientRect();
+    const {
+      top,
+      left,
+      bottom,
+      right,
+      width,
+      height
+    } = this.$refs.btn.getBoundingClientRect();
     const viewportHeight = document.documentElement.clientHeight;
     const viewportWidth = document.documentElement.clientWidth;
 
@@ -86,7 +98,10 @@ export default class BtnWithPopupMenu extends Vue {
       if (!this.disabled) {
         this.showPopup = !this.showPopup;
       }
-    } else if (!this.withIn(target, this.$refs.btn) && !this.withIn(target, this.$refs.popupMenu)) {
+    } else if (
+      !this.withIn(target, this.$refs.btn) &&
+      !this.withIn(target, this.$refs.popupMenu)
+    ) {
       this.showPopup = false;
     }
   }
