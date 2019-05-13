@@ -1,27 +1,27 @@
 <template>
   <div class="page-container">
-    <navbar-component class="container__aside scrollbar-invisible"/>
+    <navbar-component class="container__aside scrollbar-invisible" />
     <main class="container__main">
-      <router-view :key="$route.path"/>
+      <router-view :key="$route.path" />
     </main>
-    <playbar-component class="container__footer"/>
+    <playbar-component class="container__footer" />
     <!-- 右边弹出菜单 -->
     <transition name="slide-fade">
-      <play-list-component v-if="isVisible" class="right-menu"/>
+      <play-list-component v-if="isVisible" class="right-menu" />
     </transition>
 
     <!-- 滚动页面返回顶部按钮 -->
     <transition name="fade">
       <button v-if="isScrolled" @click="scrollToTop" class="button_icon large back-top">
-        <ScrollToTopIcon/>
+        <ScrollToTopIcon />
       </button>
     </transition>
     <!-- 通知 -->
-    <GlobalNotification/>
+    <GlobalNotification />
   </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import NavbarComponent from "@/components/Navbar.vue";
 import PlaybarComponent from "@/components/playbar/Playbar.vue";
 import PlayListComponent from "@/components/PlayList.vue";
@@ -62,26 +62,6 @@ export default class App extends Vue {
       }
     }
     window.requestAnimationFrame(s);
-  }
-  mounted() {
-    // this.rightMenu = this.$el.querySelector(".right-menu");
-    // this.$el.querySelector(".container__main").addEventListener("scroll", e => {
-    //   console.log("scroll");
-    //   const isScrollBottom = e.target.scrollTop + e.target.offsetHeight === e.target.scrollHeight;
-    //   if (isScrollBottom !== this.$store.state.isScrollBottom) {
-    //     this.$store.commit("changeScroll", isScrollBottom);
-    //   }
-    //   this.isScrolled = e.target.scrollTop > 0;
-    // });
-    // document.addEventListener("scroll", e => {
-    //   const isScrollBottom =
-    //     document.scrollingElement.scrollTop + document.scrollingElement.clientHeight ===
-    //     document.scrollingElement.scrollHeight;
-    //   if (isScrollBottom !== this.$store.state.isScrollBottom) {
-    //     this.$store.commit("changeScroll", isScrollBottom);
-    //   }
-    //   this.isScrolled = document.scrollingElement.scrollTop > 0;
-    // });
   }
 }
 </script>

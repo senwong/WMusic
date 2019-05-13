@@ -11,7 +11,7 @@
         </div>
         <!-- 靠右显示 -->
         <div class="item__right">
-          <RightArrowIcon v-show="!!spread"/>
+          <RightArrowIcon v-show="!!spread" />
         </div>
       </div>
     </div>

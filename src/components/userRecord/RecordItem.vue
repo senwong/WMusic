@@ -2,15 +2,13 @@
   <li class="record-item__container">
     <!-- music icon and play icon -->
     <span class="record-item__icon" @click="handlePlay">
-      <MusicIcon class="record-item__music-icon"/>
-      <PausedIcon class="record-item__paused-icon"/>
+      <MusicIcon class="record-item__music-icon" />
+      <PausedIcon class="record-item__paused-icon" />
     </span>
     <!-- track name, artists and album -->
     <div class="record-item__track-info" v-if="song">
       <router-link class="track-info__track-name" :to="`/song/${song.id}`">
-        {{
-        song.name
-        }}
+        {{ song.name }}
       </router-link>
       <div class="track-info__artist-album">
         <ArtistsWithComma
@@ -20,9 +18,7 @@
         />
         <span class="artist-album__dot">.</span>
         <router-link class="artist-album__album" :to="`/album/${song.album.id}`">
-          {{
-          song.album.name
-          }}
+          {{ song.album.name }}
         </router-link>
       </div>
     </div>

@@ -12,13 +12,15 @@
           <router-link :to="`/album/${album.id}`">{{ album.name }}</router-link>
         </template>
         <template v-slot:subtitle_1>
-          <ArtistsWithComma :artists="album.artists" aTagClass commaClass/>
+          <ArtistsWithComma :artists="album.artists" aTagClass commaClass />
         </template>
-        <template v-slot:subtitle_2>{{ album.size }}首</template>
+        <template v-slot:subtitle_2
+          >{{ album.size }}首</template
+        >
       </ListItem>
     </ul>
     <div v-else>
-      <ListItemPlaceholder v-for="(_, idx) in new Array(15)" :key="idx"/>
+      <ListItemPlaceholder v-for="(_, idx) in new Array(15)" :key="idx" />
     </div>
     <ErrorLabel class="error-label" :show="isError">{{ errorMsg }}</ErrorLabel>
     <PrevNextPagination
@@ -96,5 +98,4 @@ export default class AlbumSubList extends Vue {
   padding-bottom: 2em
 .error-label
   margin-top: 3em
-
 </style>

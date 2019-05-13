@@ -12,7 +12,7 @@
     >
       <div v-if="card.playCount" class="play-count" slot="rightTop">
         <span class="play-count__icon">
-          <PlayWithoutCircleIcon/>
+          <PlayWithoutCircleIcon />
         </span>
         <span>{{ formatPlayCount(card.playCount) }}</span>
       </div>
@@ -20,9 +20,7 @@
     <router-link :to="`/${cardType}/${card.id}`" class="list__name">{{ card.name }}</router-link>
     <!-- creator -->
     <router-link v-if="card.creator" class="creator-name" :to="`/user/${card.creator.userId}`">
-      {{
-      card.creator.nickname
-      }}
+      {{ card.creator.nickname }}
     </router-link>
     <!-- 点击更多，弹出菜单 -->
   </div>

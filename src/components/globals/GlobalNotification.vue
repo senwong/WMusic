@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="global-notification">
     <FadeTransition>
       <div class="global-notification__wrapper" v-if="isVisible">{{ msg }}</div>
     </FadeTransition>

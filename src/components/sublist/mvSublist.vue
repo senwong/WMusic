@@ -1,13 +1,13 @@
 <template>
   <div class="mv-sublist">
     <div class="mv-sublist__container" v-if="!isLoading">
-      <CardItem v-for="mv in mvs" :key="mv.id" :card="mv" cardType="mvplay"/>
+      <CardItem v-for="mv in mvs" :key="mv.id" :card="mv" cardType="mvplay" />
     </div>
     <div class="mv-sublist__container" v-else>
       <div v-for="(_, idx) in new Array(20)" :key="idx" class="placeholder__wrapper">
-        <Placeholder class="placeholder__cover"/>
-        <Placeholder class="placeholder__title"/>
-        <Placeholder class="placeholder__subtitle"/>
+        <Placeholder class="placeholder__cover" />
+        <Placeholder class="placeholder__title" />
+        <Placeholder class="placeholder__subtitle" />
       </div>
     </div>
     <ErrorLabel :show="isError">{{ errorMsg }}</ErrorLabel>

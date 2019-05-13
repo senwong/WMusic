@@ -17,10 +17,9 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import CardItem from "./CardItem.vue";
 import { Playlist, PlaylistType } from "@/types";
 import Placeholder from "@/components/globals/Placeholder.vue";
-import FadeTransition from "@/components/globals/FadeTransition.vue";
 
 @Component({
-  components: { CardItem, Placeholder, FadeTransition }
+  components: { CardItem, Placeholder }
 })
 export default class SongCards extends Vue {
   @Prop() readonly cardType!: PlaylistType;

@@ -2,10 +2,13 @@
   <div class="main-wrapper">
     <div class="mvplay-container" :class="{ 'theater-mode': isTheaterMode }">
       <div class="video-contaner">
-        <video-player :brs="brs" @toggle-theater-mode="isTheaterMode = !isTheaterMode"></video-player>
+        <video-player
+          :brs="brs"
+          @toggle-theater-mode="isTheaterMode = !isTheaterMode"
+        ></video-player>
         <p class="name">
           <span>
-            <ArtistsWithComma :artists="artists"/>
+            <ArtistsWithComma :artists="artists" />
           </span>
           <span>- {{ name }}</span>
         </p>
@@ -15,7 +18,7 @@
         </p>
       </div>
       <!-- comments -->
-      <comment-list class="comments-wrapper" type="0" :id="this.id"/>
+      <comment-list class="comments-wrapper" type="0" :id="this.id" />
       <!-- similar mvs -->
       <div class="similar-mv">
         <h3>相似MV</h3>
@@ -29,7 +32,7 @@
             class="left__item"
             :src="simiMV.cover | convert2Https | clipImage(336, 188)"
             :alt="simiMV.name"
-          >
+          />
           <div class="right__item">
             <div class="txt_main">{{ simiMV.name }}</div>
             <div class="txt_sub">{{ simiMV.artistName }}</div>

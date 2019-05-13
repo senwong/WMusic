@@ -2,7 +2,7 @@
   <!-- search recommendations -->
   <section class="search__recommendations">
     <section v-for="(value, idx) in order" :key="idx">
-      <component v-bind:is="upperCaseFirst(value)" v-bind="$data"/>
+      <component v-bind:is="upperCaseFirst(value)" v-bind="$data" />
     </section>
   </section>
 </template>
@@ -82,32 +82,21 @@ export default class SearchRecommendations extends Vue {
     }
     searchSuggest(keywords).then(
       res => {
-        const {
-          songs,
-          artists,
-          albums,
-          mvs,
-          playlists,
-          order
-        } = res.data.result;
+        const { songs, artists, albums, mvs, playlists, order } = res.data.result;
         this.songs = songs;
         this.artists = artists;
         this.albums = albums;
         this.mvs = mvs;
         this.playlists =
           playlists &&
-          playlists.map(
-            (p: { id: number; name: string; coverImgUrl: string }) => ({
-              ...p,
-              picUrl: p.coverImgUrl
-            })
-          );
+          playlists.map((p: { id: number; name: string; coverImgUrl: string }) => ({
+            ...p,
+            picUrl: p.coverImgUrl
+          }));
         this.order = order;
       },
       error => {
-        this.setMsg(
-          `获取搜索建议结果错误${error && error.msg ? error.msg : ""}！`
-        );
+        this.setMsg(`获取搜索建议结果错误${error && error.msg ? error.msg : ""}！`);
       }
     );
   }

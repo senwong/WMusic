@@ -1,21 +1,21 @@
 <template>
   <div>
     <div class="placeholder__wrapper" v-for="(_, idx) in new Array(count)" :key="idx">
-      <Placeholder class="placeholder__icon"/>
+      <Placeholder class="placeholder__icon" />
       <div class="placeholder__info">
-        <Placeholder class="placeholder__title"/>
+        <Placeholder class="placeholder__title" />
         <div class="placeholder__artist__album">
-          <Placeholder class="placeholder__artist"/>
+          <Placeholder class="placeholder__artist" />
           <span class="placeholder__dot">•</span>
-          <Placeholder class="placeholder__album"/>
+          <Placeholder class="placeholder__album" />
         </div>
       </div>
-      <Placeholder class="placeholder__duration"/>
+      <Placeholder class="placeholder__duration" />
     </div>
   </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Placeholder from "@/components/globals/Placeholder.vue";
 
@@ -27,7 +27,7 @@ export default class SongListPlaceholder extends Vue {
 }
 </script>
 
-<style lang='sass' scoped>
+<style lang="sass" scoped>
 .placeholder__wrapper
   display: flex
   flex-direction: row

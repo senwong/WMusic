@@ -3,7 +3,7 @@
     <div>
       <div class="media" v-if="album">
         <div class="media__left" v-if="album">
-          <img :src="album.picUrl | convert2Https" :alt="album.name">
+          <img :src="album.picUrl | convert2Https" :alt="album.name" />
         </div>
         <div class="media__right">
           <div class="media__heading">{{ album.name }}</div>
@@ -15,7 +15,7 @@
           </div>
           <div class="album__artists">
             歌手：
-            <ArtistsWithComma :artists="artists" aTagClass="album_artist"/>
+            <ArtistsWithComma :artists="artists" aTagClass="album_artist" />
           </div>
           <div class="album__date">
             时间：
@@ -23,8 +23,8 @@
           </div>
         </div>
       </div>
-      <TabMenu :list="tabList" align-left/>
-      <SongList v-if="contentType == ContentType.Songs" :tracks="songs"/>
+      <TabMenu :list="tabList" align-left />
+      <SongList v-if="contentType == ContentType.Songs" :tracks="songs" />
       <CommentList
         v-if="contentType == ContentType.Comments"
         :type="CommentType.AlbumComment"
@@ -42,14 +42,7 @@ import { getAlbumDetail } from "@/service";
 import SongList from "@/components/globals/SongList.vue";
 import { mapMutations } from "vuex";
 import { Vue, Component } from "vue-property-decorator";
-import {
-  Track,
-  Album,
-  convertTrack,
-  TabMenuItem,
-  CommentType,
-  Artist
-} from "@/types";
+import { Track, Album, convertTrack, TabMenuItem, CommentType, Artist } from "@/types";
 import { Mutation, namespace } from "vuex-class";
 import Button from "@/components/globals/Button.vue";
 import TabMenu from "@/components/globals/TabMenu.vue";

@@ -6,7 +6,7 @@
         <RouterLink class="item" :to="'/song/' + song.id">
           <span class="item-title">
             {{ song.name }} -&nbsp;
-            <ArtistsWithComma :artists="song.artists" class="artists"/>
+            <ArtistsWithComma :artists="song.artists" class="artists" />
           </span>
         </RouterLink>
       </li>

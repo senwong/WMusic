@@ -8,12 +8,12 @@
   >
     <!-- 靠左显示 -->
     <div class="album-img">
-      <img :src="track.album.picUrl | convert2Https | clipImage(80, 80)" :alt="track.name">
+      <img :src="track.album.picUrl | convert2Https | clipImage(80, 80)" :alt="track.name" />
     </div>
     <div class="name-songer">
       <div class="name">{{ track.name }}</div>
       <div class="songer">
-        <ArtistsWithComma :artists="track.artists" aTagClass commaClass/>
+        <ArtistsWithComma :artists="track.artists" aTagClass commaClass />
       </div>
     </div>
     <!-- 靠右显示 -->
@@ -22,35 +22,35 @@
     <div class="fav-more">
       <!-- 收藏  TODO  -->
       <SvgBtnWrapper middle class="fav" :class="{ 'is-fav': false }">
-        <FavIcon/>
+        <FavIcon />
       </SvgBtnWrapper>
       <!-- more button -->
       <BtnWithPopupMenu :canPopup="canPopupMenu">
         <template slot="btn">
           <SvgBtnWrapper middle>
-            <MoreIcon/>
+            <MoreIcon />
           </SvgBtnWrapper>
         </template>
         <template slot="menu">
           <more-list class="more-popup-menu">
             <more-item @click.native="handlePlay">
-              <DownloadIcon slot="icon"/>
+              <DownloadIcon slot="icon" />
               <span slot="txt" class="txt">播放</span>
             </more-item>
             <more-item>
-              <DownloadIcon slot="icon"/>
+              <DownloadIcon slot="icon" />
               <span slot="txt" class="txt">漫游相似歌曲</span>
             </more-item>
             <more-item @click.native="handleDownload">
-              <DownloadIcon slot="icon"/>
+              <DownloadIcon slot="icon" />
               <span slot="txt" class="txt">下载</span>
             </more-item>
             <more-item @click.native="handleRemove">
-              <DownloadIcon slot="icon"/>
+              <DownloadIcon slot="icon" />
               <span slot="txt" class="txt">从列表中删除</span>
             </more-item>
             <more-item spread="left">
-              <DownloadIcon slot="icon"/>
+              <DownloadIcon slot="icon" />
               <span slot="txt" class="txt">添加到歌单</span>
               <!-- hover时右侧扩展内容 -->
               <more-list slot="spread-list">
@@ -59,17 +59,17 @@
                   :key="p.id"
                   @click.native="addToPlaylist(p.id)"
                 >
-                  <DownloadIcon slot="icon"/>
-                  <span slot="txt" class="txt">{{p.name}}</span>
+                  <DownloadIcon slot="icon" />
+                  <span slot="txt" class="txt">{{ p.name }}</span>
                 </more-item>
               </more-list>
             </more-item>
             <more-item @click.native="handleComment">
-              <DownloadIcon slot="icon"/>
+              <DownloadIcon slot="icon" />
               <span slot="txt" class="txt">评论</span>
             </more-item>
             <more-item>
-              <DownloadIcon slot="icon"/>
+              <DownloadIcon slot="icon" />
               <span slot="txt" class="txt">分享</span>
             </more-item>
           </more-list>
@@ -91,11 +91,7 @@ import MoreItem from "./more-list/MoreItem.vue";
 import MoreList from "./more-list/MoreList.vue";
 import DownloadIcon from "./SVGIcons/DownloadIcon.vue";
 import { State, namespace } from "vuex-class";
-import {
-  getSongURL,
-  getUserPlaylist,
-  addToPlaylist as addToPlaylistService
-} from "@/service";
+import { getSongURL, getUserPlaylist, addToPlaylist as addToPlaylistService } from "@/service";
 
 const notification = namespace("notification");
 const playlist = namespace("playlist");
@@ -136,9 +132,7 @@ export default class PlaylistItem extends Vue {
     this.setCurrentSongId(this.track.id);
   }
   handleRemove() {
-    this.setTracks(
-      this.tracks.slice().filter((t: Track) => t.id !== this.track.id)
-    );
+    this.setTracks(this.tracks.slice().filter((t: Track) => t.id !== this.track.id));
   }
   handleComment() {
     this.$router.push(`/song/${this.track.id}`);
@@ -167,9 +161,7 @@ export default class PlaylistItem extends Vue {
         this.downloadSong(songUrl);
       },
       error => {
-        this.setMsg(
-          `获取下载歌曲地址错误${error && error.msg ? error.msg : ""}！`
-        );
+        this.setMsg(`获取下载歌曲地址错误${error && error.msg ? error.msg : ""}！`);
       }
     );
   }

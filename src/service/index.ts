@@ -343,8 +343,8 @@ export function deleteComment(id: number, type: CommentType, commentId: number) 
 }
 
 export function addToPlaylist(playlistId: number, trackId: number | number[]) {
-  const trackIds = typeof trackId === 'number' ? [trackId] : trackId;
-  const params = {op: 'add', pid: playlistId, tracks: trackIds.join(',')};
+  const trackIds = typeof trackId === "number" ? [trackId] : trackId;
+  const params = { op: "add", pid: playlistId, tracks: trackIds.join(",") };
   return Api().get("/playlist/tracks", { withCredentials: true, params });
 }
 export {

@@ -22,11 +22,11 @@ export default new Vuex.Store({
     notification
   },
   state: {
-    isScrollBottom: false,
+    isScrollBottom: false
   },
   mutations: {
     changeScroll(state, isScrollBottom) {
       state.isScrollBottom = isScrollBottom;
-    },
+    }
   }
 });

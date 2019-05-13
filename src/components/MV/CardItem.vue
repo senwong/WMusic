@@ -12,7 +12,7 @@
       <div class="card__name">{{ card.name }}</div>
     </router-link>
     <div class="artist__names">
-      <ArtistsWithComma :artists="card.artists" aTagClass="artist__name"/>
+      <ArtistsWithComma :artists="card.artists" aTagClass="artist__name" />
     </div>
   </div>
 </template>

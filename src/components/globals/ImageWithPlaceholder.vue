@@ -2,14 +2,14 @@
   <div class="img-placeholder-container">
     <Placeholder class="img-wrapper" :style="{ paddingBottom }">
       <FadeTransition>
-        <img v-if="showImg" :src="src" :alt="alt" />
+        <img v-show="showImg" :src="src" :alt="alt" />
       </FadeTransition>
     </Placeholder>
   </div>
 </template>
 
 <script>
-import FadeTransition from "./FadeTransition";
+import FadeTransition from "@/components/globals/FadeTransition.vue";
 import Placeholder from "@/components/globals/Placeholder.vue";
 
 export default {

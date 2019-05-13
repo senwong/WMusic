@@ -16,7 +16,7 @@
         <span class="track-order">{{ i + 1 }}</span>
         <span class="track-name">{{ track.name }}</span>
         <div class="track-artists">
-          <ArtistsWithComma aTagClass="track-artist" :artists="track.artists"/>
+          <ArtistsWithComma aTagClass="track-artist" :artists="track.artists" />
         </div>
       </div>
     </router-link>
@@ -52,13 +52,11 @@ export default class MediaItem extends Vue {
   created() {
     getTopList(this.typeId).then(res => {
       const p = res.data.playlist;
-      const tracks = p.tracks.map(
-        (t: { id: number; name: string; ar: Artist[] }) => ({
-          id: t.id,
-          name: t.name,
-          artists: t.ar
-        })
-      );
+      const tracks = p.tracks.map((t: { id: number; name: string; ar: Artist[] }) => ({
+        id: t.id,
+        name: t.name,
+        artists: t.ar
+      }));
       this.content = {
         id: p.id,
         name: p.name,

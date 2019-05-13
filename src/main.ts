@@ -5,10 +5,6 @@ import App from "./App.vue";
 import router from "./router/index";
 
 import store from "./store/index";
-// global registoration CommentItem to recursive it
-import CommentItem from "./components/FindMusic/CommentItem.vue";
-
-Vue.component("CommentItem", CommentItem);
 
 Vue.config.productionTip = false;
 

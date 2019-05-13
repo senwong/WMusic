@@ -1,13 +1,13 @@
 <template>
   <div class="placeholder__wrapper">
-    <Placeholder class="placeholder__cover"/>
-    <Placeholder class="placeholder__title"/>
-    <Placeholder class="placeholder__subtitle"/>
-    <Placeholder class="placeholder__subtitle2"/>
+    <Placeholder class="placeholder__cover" />
+    <Placeholder class="placeholder__title" />
+    <Placeholder class="placeholder__subtitle" />
+    <Placeholder class="placeholder__subtitle2" />
   </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import Placeholder from "@/components/globals/Placeholder.vue";
 @Component({

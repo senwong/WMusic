@@ -1,6 +1,10 @@
 <template>
   <div class="container main-wrapper" @scroll="handleScroll">
-    <SearchBarWithRecommendations v-model="keyWords" @enter="handleInputEnter" placeholder="搜索。。。"/>
+    <SearchBarWithRecommendations
+      v-model="keyWords"
+      @enter="handleInputEnter"
+      placeholder="搜索。。。"
+    />
     <!-- search type tabs -->
     <div class="tab-menu-wrapper">
       <ul class="tab-menu" ref="tabMenu">
@@ -10,7 +14,9 @@
           :key="searchTypes[t]"
           :class="{ active: currentSearchType == searchTypes[t] }"
           @click="handleTabClick(searchTypes[t])"
-        >{{ t }}</li>
+        >
+          {{ t }}
+        </li>
       </ul>
     </div>
 
@@ -19,7 +25,7 @@
       <!-- 搜索单曲 -->
       <div v-if="currentSearchType == 1">
         <h3 class="fallback" v-if="searchSongs.length == 0">没有与此相关的单曲</h3>
-        <SongList :tracks="searchSongs" v-else/>
+        <SongList :tracks="searchSongs" v-else />
       </div>
       <!-- 搜索歌手 -->
       <div v-else-if="currentSearchType == 100">
@@ -30,7 +36,7 @@
               <img
                 :src="(artist.picUrl || artist.img1v1Url) | convert2Https | clipImage(100, 100)"
                 :alt="artist.name"
-              >
+              />
             </a>
             <a :href="'/artist/' + artist.id" class="artis-name-search">
               <span>{{ artist.name }}</span>
@@ -45,7 +51,7 @@
         <ul>
           <li v-for="album in searchAlbums" :key="album.key" class="album-item-search">
             <a :href="'/album/' + album.id" class="album-pic-search">
-              <img :src="album.picUrl | convert2Https | clipImage(100, 100)" :alt="album.name">
+              <img :src="album.picUrl | convert2Https | clipImage(100, 100)" :alt="album.name" />
             </a>
             <div class="album-name-search">
               <a :href="'/album/' + album.id">{{ album.name }}</a>
@@ -79,7 +85,7 @@
               <img
                 :src="playlist.coverImgUrl | convert2Https | clipImage(200, 200)"
                 :alt="playlist.name"
-              >
+              />
             </a>
             <div class="playlist-name-search">
               <a :href="'/playlist/' + playlist.id">{{ playlist.name }}</a>
@@ -104,9 +110,12 @@
                 :key="ar.id"
                 :href="'/artist/' + ar.id"
                 class="lyric-artist-search"
-              >{{ ar.name }}</a>
+                >{{ ar.name }}</a
+              >
             </div>
-            <a :href="'/album/' + lyric.album.id" class="lyric-album-search">{{ lyric.album.name }}</a>
+            <a :href="'/album/' + lyric.album.id" class="lyric-album-search">{{
+              lyric.album.name
+            }}</a>
             <div class="lyric-duration-search">{{ formatTime(lyric.duration) }}</div>
           </li>
         </ul>
@@ -131,7 +140,7 @@
         <ul>
           <li v-for="user in searchUsers" :key="user.id" class="user-item-search">
             <router-link :to="'/user/' + user.id" class="user-pic-search">
-              <img :src="user.avatarUrl | convert2Https | clipImage(200, 200)" :alt="user.name">
+              <img :src="user.avatarUrl | convert2Https | clipImage(200, 200)" :alt="user.name" />
             </router-link>
             <router-link :to="'/user/' + user.id" class="user-name-search">
               <span>{{ user.nickname }}</span>

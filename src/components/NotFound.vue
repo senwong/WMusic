@@ -2,7 +2,7 @@
   <div class="not-found">404 Not Found</div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { Vue } from "vue-property-decorator";
 export default class NotFound extends Vue {}
 </script>

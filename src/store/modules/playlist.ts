@@ -9,7 +9,7 @@ interface PlaylistState {
 const state: PlaylistState = {
   currentSongId: undefined,
   tracks: [],
-  isVisible: false,
+  isVisible: false
 };
 const getters = {
   trackCount: (state: PlaylistState) => state.tracks.length,
@@ -73,7 +73,7 @@ const mutations = {
       state.tracks = front.concat(rear);
     }
   },
-  setVisibility(state: State, playload: boolean) {
+  setVisibility(state: PlaylistState, playload: boolean) {
     state.isVisible = playload;
   }
 };

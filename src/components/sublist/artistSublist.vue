@@ -12,12 +12,16 @@
           {{ artist.name }}
           <span v-if="artist.alias.length > 0">({{ artist.alias.join(",") }})</span>
         </template>
-        <template v-slot:subtitle_1>专辑：{{ artist.albumSize }}</template>
-        <template v-slot:subtitle_2>MV: {{ artist.mvSize }}</template>
+        <template v-slot:subtitle_1
+          >专辑：{{ artist.albumSize }}</template
+        >
+        <template v-slot:subtitle_2
+          >MV: {{ artist.mvSize }}</template
+        >
       </ListItem>
     </ul>
     <div v-else>
-      <ListItemPlaceholder v-for="(_, idx) in new Array(15)" :key="idx"/>
+      <ListItemPlaceholder v-for="(_, idx) in new Array(15)" :key="idx" />
     </div>
     <ErrorLabel class="error-label" :show="isError">{{ errorMsg }}</ErrorLabel>
     <PrevNextPagination
