@@ -1,70 +1,71 @@
 import Api from "./Api";
 import { CommentType } from "@/types";
+import { isUndef } from "@/utilitys";
 /**
  * 获取轮播图图片
  */
-function getBanner() {
+export function getBanner() {
   return Api().get("banner");
 }
 /**
  * 获取歌曲的播放地址
  * @param {Number} songId 歌曲ID
  */
-function getSongURL(songId: number) {
+export function getSongURL(songId: number) {
   return Api().get(`song/url?id=${songId}`);
 }
 /**
  * 获取歌曲信息
  * @param {Number} songId 歌曲ID
  */
-function getSongDetail(songId: number) {
+export function getSongDetail(songId: number) {
   return Api().get(`/song/detail?ids=${songId}`);
 }
 /**
  * 获取推荐歌单
  */
-function getRecommendSongList() {
+export function getRecommendSongList() {
   return Api().get("/personalized");
 }
 /**
  * 获取歌单详情
  * @param {Number} playlistId 歌单ID
  */
-function getPlaylistDetail(playlistId: number) {
+export function getPlaylistDetail(playlistId: number) {
   return Api().get(`/playlist/detail?id=${playlistId}`);
 }
 /**
  * 获取歌手描述
  * @param {Number} artistId 歌手ID
  */
-function getArtistDesc(artistId: number) {
+export function getArtistDesc(artistId: number) {
   return Api().get(`/artist/desc?id=${artistId}`);
 }
 /**
  * 获取歌手信息
  * @param {Number} artistId 歌手ID
  */
-function getArtistInfo(artistId: number) {
+export function getArtistInfo(artistId: number) {
   return Api().get(`/artists?id=${artistId}`);
 }
 /**
  * 获取歌手的专辑
  * @param {Number} artistId 歌手ID
  */
-function getArtistAlbums(artistId: number) {
+export function getArtistAlbums(artistId: number) {
   return Api().get(`/artist/album?id=${artistId}`);
 }
 /**
  * 获取专辑详情
  * @param {Number} albumId 专辑ID
  */
-function getAlbumDetail(albumId: number) {
+export function getAlbumDetail(albumId: number) {
   return Api().get(`/album?id=${albumId}`);
 }
 /**
  * 获取歌单分类
  */
-function getPlayListCatlist() {
+export function getPlayListCatlist() {
   return Api().get("/playlist/catlist");
 }
 /**
@@ -73,54 +74,54 @@ function getPlayListCatlist() {
  * @param {String} order 歌单类型：hot|new
  * @param {Number} offset 偏移数量
  */
-function getPlayList(cat: string = "全部", order: "hot" | "new" = "hot", offset: number = 0) {
+export function getPlayList(cat: string = "全部", order: "hot" | "new" = "hot", offset: number = 0) {
   return Api().get(`/top/playlist?limit=20&cat=${cat}&order=${order}&offset=${offset}`);
 }
 /**
  * 获取排行榜
  * @param {Number} idx 排行榜类型
  */
-function getTopList(idx: number) {
+export function getTopList(idx: number) {
   return Api().get(`/top/list?idx=${idx}`);
 }
 /**
  * 获取最新MV
  */
-function getNewMV() {
+export function getNewMV() {
   return Api().get("/mv/first?limit=6");
 }
 /**
  * 获取推荐MV
  */
-function getPersonalizedMV() {
+export function getPersonalizedMV() {
   return Api().get("/personalized/mv?limit=6");
 }
 /**
  * 获取MV数据
  * @param {Number} id MV ID
  */
-function getMvData(id: number) {
+export function getMvData(id: number) {
   return Api().get(`/mv/detail/?mvid=${id}`);
 }
 /**
  * 获取相似MV
  * @param {Number} id MV ID
  */
-function getSimilarMV(id: number) {
+export function getSimilarMV(id: number) {
   return Api().get(`/simi/mv?mvid=${id}`);
 }
 /**
  * 获取MV排行榜
  * @param {Number} limit 偏移数量
  */
-function getMVrank(limit: number = 10) {
+export function getMVrank(limit: number = 10) {
   return Api().get(`top/mv?limit=${limit}`);
 }
 /**
  * 获取歌词
  * @param {Number} id 歌曲ID
  */
-function getLyrics(id: number) {
+export function getLyrics(id: number) {
   return Api().get(`/lyric?id=${id}`);
 }
 /**
@@ -130,35 +131,36 @@ function getLyrics(id: number) {
  * @param {Number} limit 返回数量
  * @param {Number} offset 偏移数量
  */
-function search(keywords: string, type: number = 1, offset: number = 0, limit: number = 30) {
+export function search(keywords: string, type: number = 1, offset: number = 0, limit: number = 30) {
   return Api().get(`/search?keywords=${keywords}&type=${type}&limit=${limit}&offset=${offset}`);
 }
 /**
  * 搜索建议
  * @param {String} keywords 关键字
  */
-function searchSuggest(keywords: string) {
+export function searchSuggest(keywords: string) {
   return Api().get(`/search/suggest?keywords=${keywords}`);
 }
 /**
  * 获取相似歌曲
  * @param {Number} songId
  */
-function getSimiSongs(songId: number) {
+export function getSimiSongs(songId: number) {
   return Api().get(`/simi/song?id=${songId}`);
 }
 /**
  * 获取用户详情
  * @param {Number} uid 用户id
  */
-function getUserDetail(uid: number) {
+export function getUserDetail(uid: number) {
   return Api().get("/user/detail", { params: { uid } });
 }
 /**
  * 获取用户的歌单
  * @param {Number} uid 用户id
  */
-function getUserPlaylist(uid: number, offset: number = 0) {
+export function getUserPlaylist(uid: number, offset: number = 0) {
+  if ( isUndef(uid)) { return Promise.reject('uid为空')}
   return Api().get("/user/playlist", { params: { uid, offset } });
 }
 /**
@@ -166,7 +168,7 @@ function getUserPlaylist(uid: number, offset: number = 0) {
  * @param {String} email 邮箱地址
  * @param {String} password 密码
  */
-function loginEmail(email: string, password: string) {
+export function loginEmail(email: string, password: string) {
   return Api().get(`/login?email=${email}&password=${password}`, { withCredentials: true });
 }
 /**
@@ -175,12 +177,12 @@ function loginEmail(email: string, password: string) {
  * @param {String} password 密码
  * @param {Number} countrycode 国家码
  */
-function loginPhone(phone: string, password: string, countrycode: number) {
-  let url = `/login/cellphone?phone=${phone}&password=${password}`;
-  url += typeof countrycode === "undefined" ? "" : `&countrycode=${countrycode}`;
-  return Api().get(url, { withCredentials: true });
+export function loginPhone(phone: string, password: string, countrycode: number) {
+  if (isUndef(phone) || isUndef(password) || isUndef(countrycode)) return Promise.reject();
+  const params = {phone, password, countrycode};
+  return Api().get('/login/cellphone', { withCredentials: true, params });
 }
-function logout() {
+export function logout() {
   return Api().get("/logout");
 }
 /**
@@ -188,16 +190,15 @@ function logout() {
  * @param {Number} uid 用户 id
  * @param {Number} type type=1 时只返回 weekData, type=0 时返回 allData
  */
-function getRecord(uid: number, type: 0 | 1) {
-  let url = `/user/record?uid=${uid}`;
-  url += typeof type === "undefined" ? "" : `&type=${type}`;
-  return Api().get(url, { withCredentials: true });
+export function getRecord(uid: number, type: 0 | 1) {
+  if (isUndef(uid)) return Promise.reject();
+  return Api().get('/user/record', { withCredentials: true, params: {uid, type} });
 }
 /**
  * 调用此接口 , 传入用户 id, 可获取已喜欢音乐id列表(id数组)
  * @param {Number} uid 用户 id
  */
-function getLikelist(uid: number) {
+export function getLikelist(uid: number) {
   return Api().get(`/likelist?uid=${uid}`, { withCredentials: true });
 }
 /**
@@ -206,7 +207,7 @@ function getLikelist(uid: number) {
  * @param {Number} limit 返回数量 , 默认为 30
  * @param {Number} offset 偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
  */
-function getUserFollows(uid: number, offset: number, limit: number) {
+export function getUserFollows(uid: number, offset: number, limit: number) {
   return Api().get(`/user/follows?uid=${uid}&offset=${offset}&limit=${limit}`);
 }
 /**
@@ -215,13 +216,13 @@ function getUserFollows(uid: number, offset: number, limit: number) {
  * @param {Number} limit 返回数量 , 默认为 30
  * @param {Number} offset 偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
  */
-function getUserFolloweds(uid: number, offset: number, limit: number) {
+export function getUserFolloweds(uid: number, offset: number, limit: number) {
   return Api().get(`/user/followeds?uid=${uid}&offset=${offset}&limit=${limit}`);
 }
 /**
  * 登陆后调用此接口 , 传入相关信息,可以更新用户信息
  */
-function userUpdate(
+export function userUpdate(
   nickname: string,
   signature: string,
   gender: 0 | 1 | 2,
@@ -245,7 +246,7 @@ function userUpdate(
  * @param {Number} offset 偏移数量 , 用于分页 , 如 :( 页数 -1)*25, 其中 25 为 limit 的值 , 默认 为 0
  * @param {Number} limit 取出数量 , 默认为 25
  */
-function getAlbumSublist(offset = 0, limit = 25) {
+export function getAlbumSublist(offset = 0, limit = 25) {
   const params = { offset, limit };
   return Api().get("/album/sublist", { params, withCredentials: true });
 }
@@ -254,7 +255,7 @@ function getAlbumSublist(offset = 0, limit = 25) {
  * @param {Number} offset 偏移数量 , 用于分页 , 如 :( 页数 -1)*25, 其中 25 为 limit 的值 , 默认 为 0
  * @param {Number} limit 取出数量 , 默认为 25
  */
-function getArtistSublist(offset = 0, limit = 25) {
+export function getArtistSublist(offset = 0, limit = 25) {
   const params = { offset, limit };
   return Api().get("/artist/sublist", { params, withCredentials: true });
 }
@@ -263,14 +264,14 @@ function getArtistSublist(offset = 0, limit = 25) {
  * @param {Number} offset 偏移数量 , 用于分页 , 如 :( 页数 -1)*25, 其中 25 为 limit 的值 , 默认 为 0
  * @param {Number} limit 取出数量 , 默认为 25
  */
-function getMvSublist(offset: number = 0, limit: number = 25) {
+export function getMvSublist(offset: number = 0, limit: number = 25) {
   const params = { offset, limit };
   return Api().get("/mv/sublist", { params, withCredentials: true });
 }
 /**
  * 调用此接口,可获取登录状态
  */
-function getLoginStatus() {
+export function getLoginStatus() {
   return Api().get("/login/status", { withCredentials: true });
 }
 /**
@@ -278,7 +279,7 @@ function getLoginStatus() {
  * @param {number} playlistId id : 歌单 id
  * @param {number} type : 类型,1: 收藏, 2: 取消收藏
  */
-function subPlaylist(playlistId: number, type: 1 | 2) {
+export function subPlaylist(playlistId: number, type: 1 | 2) {
   return Api().get("/playlist/subscribe", {
     withCredentials: true,
     params: { id: playlistId, t: type }
@@ -288,7 +289,7 @@ function subPlaylist(playlistId: number, type: 1 | 2) {
 /**
  * 调用此接口 , 传入歌单 id 可获取歌单的所有收藏者
  */
-function getPlaylistSubers(id: number, offset: number = 0, limit: number = 30) {
+export function getPlaylistSubers(id: number, offset: number = 0, limit: number = 30) {
   const params = { id, offset, limit };
   return Api().get("/playlist/subscribers", { params });
 }
@@ -297,27 +298,27 @@ function getPlaylistSubers(id: number, offset: number = 0, limit: number = 30) {
  * @param {Number} songId 歌曲ID
  * @param {Number} offset 偏移数量
  */
-function getSongComment(songId: number, offset: number) {
+export function getSongComment(songId: number, offset: number) {
   return Api().get(`/comment/music?id=${songId}&limit=20&offset=${offset}`);
 }
 /**
  * 获取MV评论
  * @param {Number} id MV ID
  */
-function getMVComments(id: number, offset: number) {
+export function getMVComments(id: number, offset: number) {
   return Api().get(`/comment/mv?id=${id}&limit=20&offset=${offset}`);
 }
 /**
  * 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该歌单的所有评论 ( 不需要 登录 )
  */
-function getPlaylistComments(id: number, offset: number = 0, limit: number = 20) {
+export function getPlaylistComments(id: number, offset: number = 0, limit: number = 20) {
   const params = { id, offset, limit };
   return Api().get("comment/playlist", { params });
 }
 /**
  * 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该专辑的所有评论 ( 不需要 登录 )
  */
-function getAlbumComments(id: number, offset: number = 0, limit: number = 20) {
+export function getAlbumComments(id: number, offset: number = 0, limit: number = 20) {
   const params = { id, offset, limit };
   return Api().get("/comment/album", { params });
 }
@@ -347,46 +348,3 @@ export function addToPlaylist(playlistId: number, trackId: number | number[]) {
   const params = { op: "add", pid: playlistId, tracks: trackIds.join(",") };
   return Api().get("/playlist/tracks", { withCredentials: true, params });
 }
-export {
-  getBanner,
-  getSongURL,
-  getSongDetail,
-  getRecommendSongList,
-  getPlaylistDetail,
-  getArtistDesc,
-  getArtistInfo,
-  getArtistAlbums,
-  getAlbumDetail,
-  getSongComment,
-  getPlayListCatlist,
-  getPlayList,
-  getTopList,
-  getNewMV,
-  getPersonalizedMV,
-  getMvData,
-  getMVComments,
-  getSimilarMV,
-  getMVrank,
-  getLyrics,
-  search,
-  searchSuggest,
-  getSimiSongs,
-  getUserDetail,
-  getUserPlaylist,
-  loginEmail,
-  loginPhone,
-  logout,
-  getRecord,
-  getLikelist,
-  getUserFollows,
-  getUserFolloweds,
-  userUpdate,
-  getAlbumSublist,
-  getArtistSublist,
-  getMvSublist,
-  getLoginStatus,
-  subPlaylist,
-  getPlaylistComments,
-  getAlbumComments,
-  getPlaylistSubers
-};

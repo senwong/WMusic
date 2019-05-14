@@ -15,7 +15,7 @@
         :alt="nickname"
         class="comment-reply__avatar"
         :class="{ large: isMain }"
-      />
+      >
       <div class="comment-reply__input__wrapper">
         <textarea
           type="text"
@@ -27,7 +27,7 @@
           :autofocus="!isMain"
           @keydown="autoAdjustHeight"
         />
-        <div class="comment-reply__input__fake-bot-border" :class="{ show: isFocused }" />
+        <div class="comment-reply__input__fake-bot-border" :class="{ show: isFocused }"/>
       </div>
     </div>
     <!-- second row -->
@@ -37,9 +37,7 @@
         class="comment-reply__actions__btn primary"
         :disabled="replyDisabled"
         @click="handleReply"
-      >
-        回复
-      </button>
+      >回复</button>
     </div>
   </div>
 </template>
@@ -49,6 +47,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 import { getUserDetail, sentComment } from "@/service";
 import { CommentType } from "@/types";
+import { isUndef } from "@/utilitys";
 
 const currentUser = namespace("currentUser");
 const notification = namespace("notification");
@@ -69,9 +68,7 @@ export default class CommentReplyEditor extends Vue {
   @notification.Mutation setMsg!: (msg: string) => void;
 
   get replyDisabled(): boolean {
-    return (
-      typeof this.id == "undefined" || typeof this.type == "undefined" || this.content.length < 1
-    );
+    return isUndef(this.id) || isUndef(this.type) || this.content.length < 1;
   }
   created() {
     this.updateUserData();
@@ -87,7 +84,9 @@ export default class CommentReplyEditor extends Vue {
         this.nickname = res.data.profile.nickname;
       },
       error => {
-        const msg = "获取当前用户信息错误" + (error && error.msg ? error.msg + "！" : "！");
+        const msg =
+          "获取当前用户信息错误" +
+          (error && error.msg ? error.msg + "！" : "！");
         this.setMsg(msg);
       }
     );

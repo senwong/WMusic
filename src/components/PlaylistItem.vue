@@ -7,8 +7,14 @@
     @mouseenter="handleMouseEnter"
   >
     <!-- 靠左显示 -->
-    <div class="album-img">
-      <img :src="track.album.picUrl | convert2Https | clipImage(80, 80)" :alt="track.name" />
+    <div class="album-img__wrapper">
+      <ImageWithPlaceholder
+        class="album-img"
+        ratio="1:1"
+        :alt="track.name"
+        :src="track.album.picUrl | convert2Https | clipImage(80, 80)"
+      />
+      <PlayStatusBtn middle class="play-icon" :trackId="track.id" />
     </div>
     <div class="name-songer">
       <div class="name">{{ track.name }}</div>
@@ -33,45 +39,23 @@
         </template>
         <template slot="menu">
           <more-list class="more-popup-menu">
-            <more-item @click.native="handlePlay">
-              <DownloadIcon slot="icon" />
-              <span slot="txt" class="txt">播放</span>
-            </more-item>
+            <PlayTrack :track="track" />
             <more-item>
               <DownloadIcon slot="icon" />
               <span slot="txt" class="txt">漫游相似歌曲</span>
             </more-item>
-            <more-item @click.native="handleDownload">
-              <DownloadIcon slot="icon" />
-              <span slot="txt" class="txt">下载</span>
-            </more-item>
+            <!-- 下载 -->
+            <DownloadTrack :track="track" />
             <more-item @click.native="handleRemove">
               <DownloadIcon slot="icon" />
               <span slot="txt" class="txt">从列表中删除</span>
             </more-item>
-            <more-item spread="left">
-              <DownloadIcon slot="icon" />
-              <span slot="txt" class="txt">添加到歌单</span>
-              <!-- hover时右侧扩展内容 -->
-              <more-list slot="spread-list">
-                <more-item
-                  v-for="p in userPlaylists"
-                  :key="p.id"
-                  @click.native="addToPlaylist(p.id)"
-                >
-                  <DownloadIcon slot="icon" />
-                  <span slot="txt" class="txt">{{ p.name }}</span>
-                </more-item>
-              </more-list>
-            </more-item>
-            <more-item @click.native="handleComment">
-              <DownloadIcon slot="icon" />
-              <span slot="txt" class="txt">评论</span>
-            </more-item>
-            <more-item>
-              <DownloadIcon slot="icon" />
-              <span slot="txt" class="txt">分享</span>
-            </more-item>
+            <!-- 添加到歌单 -->
+            <AddToUserPlaylist :track="track" />
+            <!-- 评论 -->
+            <CommentTrack :track="track" />
+            <!-- 分享 -->
+            <ShareTrack :track="track" />
           </more-list>
         </template>
       </BtnWithPopupMenu>
@@ -79,19 +63,26 @@
   </div>
 </template>
 <script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { State, namespace } from "vuex-class";
+import { Track } from "@/types";
+import { getSongURL } from "@/service";
 import { formatTime } from "@/utilitys";
 import FavIcon from "@/components/SVGIcons/FavIcon.vue";
 import MoreIcon from "@/components/SVGIcons/MoreIcon.vue";
 import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { Track, Artist, Playlist } from "@/types";
 import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
 import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
 import MoreItem from "./more-list/MoreItem.vue";
 import MoreList from "./more-list/MoreList.vue";
 import DownloadIcon from "./SVGIcons/DownloadIcon.vue";
-import { State, namespace } from "vuex-class";
-import { getSongURL, getUserPlaylist, addToPlaylist as addToPlaylistService } from "@/service";
+import DownloadTrack from "@/components/more-list/DownloadTrack.vue";
+import CommentTrack from "@/components/more-list/CommentTrack.vue";
+import ShareTrack from "@/components/more-list/ShareTrack.vue";
+import AddToUserPlaylist from "@/components/more-list/AddToUserPlaylist.vue";
+import PlayTrack from "@/components/more-list/PlayTrack.vue";
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
+import PlayStatusBtn from "@/components/globals/PlayStatusBtn.vue";
 
 const notification = namespace("notification");
 const playlist = namespace("playlist");
@@ -105,22 +96,23 @@ const currentUser = namespace("currentUser");
     SvgBtnWrapper,
     MoreItem,
     MoreList,
-    DownloadIcon
+    DownloadIcon,
+    DownloadTrack,
+    CommentTrack,
+    ShareTrack,
+    AddToUserPlaylist,
+    PlayTrack,
+    ImageWithPlaceholder,
+    PlayStatusBtn
   }
 })
 export default class PlaylistItem extends Vue {
   canPopupMenu: boolean = false;
   @Prop() track!: Track;
-  isLoading: boolean = false;
-  userPlaylists: Playlist[] = [];
-
-  @notification.Mutation setMsg!: (msg: string) => void;
 
   @playlist.State currentSongId!: number;
   @playlist.State tracks!: Track[];
-  @playlist.Mutation setCurrentSongId!: (id: number) => void;
   @playlist.Mutation setTracks!: (tracks: Track[]) => void;
-  @currentUser.State("userId") currentUserId!: number;
   formatTime = formatTime;
   handleMouseLeave() {
     this.canPopupMenu = false;
@@ -128,66 +120,8 @@ export default class PlaylistItem extends Vue {
   handleMouseEnter() {
     this.canPopupMenu = true;
   }
-  handlePlay() {
-    this.setCurrentSongId(this.track.id);
-  }
   handleRemove() {
     this.setTracks(this.tracks.slice().filter((t: Track) => t.id !== this.track.id));
-  }
-  handleComment() {
-    this.$router.push(`/song/${this.track.id}`);
-  }
-  downloadSong(url: string) {
-    fetch(url).then(res =>
-      res.blob().then(blob => {
-        const a = document.createElement("a");
-        const url = window.URL.createObjectURL(blob);
-        const filename = `${this.track.name}-${this.track.artists
-          .map((ar: Artist) => ar.name)
-          .join(",")}.mp3`;
-        a.href = url;
-        a.download = filename;
-        a.click();
-        window.URL.revokeObjectURL(url);
-        this.isLoading = false;
-      })
-    );
-  }
-  handleDownload() {
-    this.isLoading = true;
-    getSongURL(this.track.id).then(
-      res => {
-        const songUrl = res.data.data[0].url;
-        this.downloadSong(songUrl);
-      },
-      error => {
-        this.setMsg(`获取下载歌曲地址错误${error && error.msg ? error.msg : ""}！`);
-      }
-    );
-  }
-  updateUserPlaylists() {
-    getUserPlaylist(this.currentUserId).then(
-      res => {
-        this.userPlaylists = res.data.playlist;
-      },
-      error => {
-        this.setMsg(`获取用户歌单错误${error && error.msg ? error.msg : ""}！`);
-      }
-    );
-  }
-  addToPlaylist(playlistId: number) {
-    console.log("playlistId", playlistId, this.track.id);
-    addToPlaylistService(playlistId, this.track.id).then(
-      res => {
-        this.setMsg(`添加到歌单成功！`);
-      },
-      error => {
-        this.setMsg(`添加到歌单错误${error && error.msg ? error.msg : ""}！`);
-      }
-    );
-  }
-  created() {
-    this.updateUserPlaylists();
   }
 }
 </script>
@@ -206,13 +140,26 @@ export default class PlaylistItem extends Vue {
 .container:not(.not-play):hover
   background-color: $whitegray3
 // 专辑封面
-.album-img
+.album-img__wrapper
   flex: 0 0 40px
   height: 40px
-  img
-    width: 100%
+  border-radius: 4px
+  overflow: hidden
+  position: relative
+  .play-icon
+    display: none
+    position: absolute
+    top: 0
+    left: 0
     height: 100%
-    border-radius: 4px
+    width: 100%
+.container:not(.active):hover
+  .play-icon
+    display: flex
+.container.active
+  .play-icon
+    display: flex
+
 .name-songer
   flex: 1 1 auto
   display: flex

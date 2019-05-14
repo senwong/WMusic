@@ -1,22 +1,22 @@
 <template>
-  <div class="list-wrapper right-menu">
+  <div class="list-wrapper right-menu" ref="menu">
     <!-- 顶部标题 -->
     <div class="list__title">
       <span class="title__txt">播放列表</span>
       <BtnWithPopupMenu>
         <template slot="btn">
           <SvgBtnWrapper large>
-            <MoreIcon />
+            <MoreIcon/>
           </SvgBtnWrapper>
         </template>
         <template slot="menu">
           <more-list>
             <more-item>
-              <DownloadIcon slot="icon" />
+              <DownloadIcon slot="icon"/>
               <span slot="txt" class="txt">清空列表</span>
             </more-item>
             <more-item>
-              <DownloadIcon slot="icon" />
+              <DownloadIcon slot="icon"/>
               <span slot="txt" class="txt">下载全部</span>
             </more-item>
           </more-list>
@@ -27,7 +27,7 @@
     <p class="list__count">共{{ tracks ? tracks.length : 0 }}首歌</p>
     <ul class="play-list scrollbar-invisible">
       <!-- 单个歌曲信息 -->
-      <PlaylistItem v-for="track in tracks" :key="track.id" :track="track" />
+      <PlaylistItem v-for="track in tracks" :key="track.id" :track="track"/>
     </ul>
     <!-- 加载中。。。动画 -->
     <loading v-if="isLoading"></loading>
@@ -47,6 +47,7 @@ import { Mutation, namespace } from "vuex-class";
 import { Track } from "@/types";
 import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
 import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
+import { withIn } from "@/utilitys";
 
 const playlist = namespace("playlist");
 const notification = namespace("notification");
@@ -63,20 +64,38 @@ const notification = namespace("notification");
     SvgBtnWrapper
   }
 })
-export default class PlayList extends Vue {
-  listControlButton: EventTarget | null = null;
-
+export default class Playlist extends Vue {
   isLoading: boolean = false;
 
-  popMenuSongId: number | null = null;
-
   @notification.Mutation setMsg!: (msg: string) => void;
+  @playlist.Mutation setVisibility!: (b: boolean) => void;
 
   @playlist.State tracks!: Track[];
+
+  $refs!: {
+    menu: HTMLElement;
+  };
+  handleBodyClick(e: UIEvent) {
+    const target = e.target as HTMLElement;
+    if (!target && !this.$refs.menu) {
+      return;
+    }
+    if (!withIn(target, this.$refs.menu)) {
+      this.setVisibility(false);
+    }
+  }
+  mounted() {
+    document.body.addEventListener("click", this.handleBodyClick);
+  }
+  beforeDestroy() {
+    document.body.removeEventListener("click", this.handleBodyClick);
+  }
 }
 </script>
 <style lang="sass" scoped>
 @import "config.sass"
+@import '../style/colors.sass'
+
 .right-menu
   position: fixed
   top: 0
@@ -91,6 +110,8 @@ export default class PlayList extends Vue {
   background-color: white
   display: flex
   flex-direction: column
+  &.active
+    color: $primary
 .play-list
   overflow-y: scroll
   overflow-x: hidden

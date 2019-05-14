@@ -2,7 +2,7 @@
  * 把毫秒数转换成 分钟：秒，秒数2位补齐
  * @param {Number} time 毫秒
  */
-function formatTime(time: number): string {
+export function formatTime(time: number): string {
   time /= 1000;
   const minute = Math.floor(time / 60);
   const second = Math.floor(time - minute * 60);
@@ -12,7 +12,7 @@ function formatTime(time: number): string {
  * 把毫秒数转换成 年-月-日
  * @param {Number} milliseconds 代表日期的毫秒数
  */
-function formatDate(milliseconds: number): string {
+export function formatDate(milliseconds: number): string {
   const date = new Date(milliseconds);
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 }
@@ -20,14 +20,14 @@ function formatDate(milliseconds: number): string {
  * 把毫秒数转换成 年-月-日 小时：分钟
  * @param {Number} milliseconds 代表日期的毫秒数
  */
-function formatDay(milliseconds: number): string {
+export function formatDay(milliseconds: number): string {
   const date = new Date(milliseconds);
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
 }
 /**
  * 优化过的resize事件
  */
-function optimizedResize() {
+export function optimizedResize() {
   const throttle = function(type: string, name: string, obj: EventTarget): void {
     obj = obj || window;
     let running = false;
@@ -55,7 +55,7 @@ function optimizedResize() {
  * @param {*} addOptions
  * @param {*} removeOptions
  */
-function addEventListenerOnce(
+export function addEventListenerOnce(
   target: HTMLElement,
   type: string,
   listener: () => any,
@@ -67,14 +67,14 @@ function addEventListenerOnce(
     listener.apply(null);
   });
 }
-function clipImage(imgUrl: string, width: number, height: number): string {
+export function clipImage(imgUrl: string, width: number, height: number): string {
   return `${imgUrl}?param=${width}y${height}`;
 }
 /**
  * format count to 万， 百万， 千万， 亿， 十亿
  * @param {Number} number The number to format
  */
-function formatCount(number: number): string {
+export function formatCount(number: number): string {
   const n = Number(number);
   if (n < Math.pow(10, 4)) {
     return String(n);
@@ -111,7 +111,7 @@ function formatCount(number: number): string {
  * else, x年以前
  * @param {Number} milliseconds milliseconds presents date time since January 1, 1970 00:00:00 UTC
  */
-function formatDateToBefore(milliseconds: number): string {
+export function formatDateToBefore(milliseconds: number): string {
   const now = Date.now();
   const delta = now - milliseconds;
   if (delta < 0) {
@@ -136,7 +136,7 @@ function formatDateToBefore(milliseconds: number): string {
 /**
  *  arrayJoin([a, b, c, d, e], x), return [a, x, b, x, c, x, d, x, e]
  */
-function arrayJoin(array: any[], obj: any) {
+export function arrayJoin(array: any[], obj: any) {
   if (array.length == 0) return array;
   const ret = [array[0]];
   for (let i = 1; i < array.length; i++) {
@@ -145,14 +145,34 @@ function arrayJoin(array: any[], obj: any) {
   }
   return ret;
 }
-export {
-  formatTime,
-  formatDate,
-  formatDay,
-  optimizedResize,
-  addEventListenerOnce,
-  clipImage,
-  formatCount,
-  formatDateToBefore,
-  arrayJoin
-};
+/**
+ * download file
+ * @param{String} url, file url
+ * @param{String} filename, filename
+ */
+export function downloadFile(url: string, filename: string): Promise {
+  return new Promise((resolve, reject) => {
+    fetch(url).then(
+      res =>
+        res.blob().then(
+          blob => {
+            const a = document.createElement("a");
+            const url = window.URL.createObjectURL(blob);
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            resolve();
+          },
+          error => reject(error)
+        ),
+      error => reject(error)
+    );
+  });
+}
+export function withIn(item: Element, container: Element) {
+  return container === item || (container && container.contains(item));
+}
+export function isUndef(val: any) {
+  return typeof val === 'undefined' || val === null;
+}

@@ -18,8 +18,8 @@
     <div class="play-container" @click="handleScreenClick">
       <div class="fadeout-wrapper" ref="fadeoutWrapper">
         <div class="icon-wrapper">
-          <PausedIcon v-if="paused" />
-          <PlayingIcon v-else />
+          <PausedIcon v-if="paused"/>
+          <PlayingIcon v-else/>
         </div>
       </div>
     </div>
@@ -46,7 +46,7 @@
       </div>
       <div class="controls">
         <div class="left">
-          <play-pause-button @click.native="togglePlay" :paused="paused" />
+          <play-pause-button @click.native="togglePlay" :paused="paused"/>
           <div class="volume">
             <volume-button @click.native="toggleMute" :volume="volume"></volume-button>
             <input
@@ -58,11 +58,11 @@
               type="range"
               min="0"
               max="100"
-            />
+            >
           </div>
-          <div class="duration">
-            {{ formatTime(currentTime * 1000) }}/{{ formatTime(duration * 1000) }}
-          </div>
+          <div
+            class="duration"
+          >{{ formatTime(currentTime * 1000) }}/{{ formatTime(duration * 1000) }}</div>
         </div>
         <div class="right">
           <!-- 设置按钮 -->
@@ -71,9 +71,9 @@
             ref="setting"
             @click="isShowSettingsPannel = !isShowSettingsPannel"
           >
-            <SettingsIcon class="settings-icon" :class="{ rotate: isShowSettingsPannel }" />
+            <SettingsIcon class="settings-icon" :class="{ rotate: isShowSettingsPannel }"/>
             <div class="hd-sign" v-if="currentQuality && currentQuality >= 20">
-              <HDIcon />
+              <HDIcon/>
             </div>
           </button>
           <!-- 设置弹出菜单 -->
@@ -82,14 +82,14 @@
           </popup-menu>
           <!-- 开启/关闭宽屏 -->
           <button class="button_icon large controll__icon" @click="toggleTheaterMode">
-            <WideScreenIcon />
+            <WideScreenIcon/>
           </button>
           <!-- 开启/关闭全屏 -->
           <button
             class="button_icon large controll__icon fullscreen-icon"
             @click="toggleFullScreen"
           >
-            <FullScreenIcon />
+            <FullScreenIcon/>
           </button>
         </div>
       </div>
@@ -97,13 +97,13 @@
     <!-- 结束视频时 -->
     <div class="video-ended-mask" v-if="ended">
       <button class="button_icon large" @click="handleReplay">
-        <ReplayIcon />
+        <ReplayIcon/>
       </button>
     </div>
     <!-- loading animation -->
     <div class="loading-container" v-if="isLoading">
       <div class="loading__icon">
-        <Loading />
+        <Loading/>
       </div>
     </div>
   </div>
@@ -114,7 +114,7 @@ import VolumeButton from "./VolumeButton";
 import PopupMenu from "@/components/PopupMenu";
 import SettingContainer from "@/components/MV/SettingContainer";
 import axios from "axios";
-import { formatTime, optimizedResize } from "@/utilitys";
+import { formatTime, optimizedResize, isUndef } from "@/utilitys";
 import WideScreenIcon from "@/components/SVGIcons/WideScreenIcon";
 import FullScreenIcon from "@/components/SVGIcons/FullScreenIcon";
 import ReplayIcon from "@/components/SVGIcons/ReplayIcon";
@@ -175,12 +175,16 @@ export default {
     },
     playProgressStyle() {
       return {
-        transform: `scaleX(${this.duration == 0 ? 0 : this.currentTime / this.duration})`
+        transform: `scaleX(${
+          this.duration == 0 ? 0 : this.currentTime / this.duration
+        })`
       };
     },
     bufferProgressStyle() {
       return {
-        transform: `scaleX(${this.duration == 0 ? 0 : this.bufferedEnd / this.duration})`
+        transform: `scaleX(${
+          this.duration == 0 ? 0 : this.bufferedEnd / this.duration
+        })`
       };
     },
     /**
@@ -222,7 +226,7 @@ export default {
       }
     },
     setQuality(newQuality) {
-      if (typeof newQuality === "undefined" || typeof this.$refs.video === "undefined") return;
+      if (isUndef(newQuality) || isUndef(this.$refs.video)) return;
       this.currentQuality = newQuality;
       const { paused } = this.$refs.video;
       this.$refs.video.currentTime = this.currentTime;
@@ -249,7 +253,17 @@ export default {
       video.src = videoPath;
       function percentDrawer(percent) {
         video.addEventListener("seeked", () => {
-          ctx.drawImage(video, 0, 0, videoWidth, videoHeight, 0, 0, canvas.width, canvas.height);
+          ctx.drawImage(
+            video,
+            0,
+            0,
+            videoWidth,
+            videoHeight,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
         });
         if (!duration) {
           getMetadata(() => {
@@ -271,7 +285,8 @@ export default {
       function handleMouseMove() {
         this.isThumbnailMoving = false;
         const progressBarRect = this.$refs.progressBar.getBoundingClientRect();
-        const percentTime = (e.clientX - progressBarRect.left) / progressBarRect.width;
+        const percentTime =
+          (e.clientX - progressBarRect.left) / progressBarRect.width;
         this.thumbnailPercent = percentTime;
         this.thumbnailDrawer && this.thumbnailDrawer(percentTime);
       }
@@ -366,7 +381,10 @@ export default {
     setVideoDemension() {
       const computedStyle = getComputedStyle(this.$refs.video.parentElement);
       this.$refs.video.style.width = computedStyle.width;
-      this.$refs.video.style.height = `${(parseInt(computedStyle.width.replace("px", "")) * 9) /
+      this.$refs.video.style.height = `${(parseInt(
+        computedStyle.width.replace("px", "")
+      ) *
+        9) /
         16}px`;
     },
     handleEnded() {
@@ -413,10 +431,14 @@ export default {
       this.$refs.video && (this.$refs.video.volume = val / 100);
     },
     brs(val) {
-      this.currentQuality = this.qualitys.length == 0 ? null : Math.max(...this.qualitys);
+      this.currentQuality =
+        this.qualitys.length == 0 ? null : Math.max(...this.qualitys);
     },
     currentQuality(quality) {
-      this.thumbnailDrawer = this.createDrawer(this.brs[quality], this.$refs.canvas);
+      this.thumbnailDrawer = this.createDrawer(
+        this.brs[quality],
+        this.$refs.canvas
+      );
     },
     thumbnailPercent(val) {
       this.setThumbnailLeft(val);

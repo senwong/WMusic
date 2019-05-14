@@ -7,7 +7,7 @@
     <playbar-component class="container__footer" />
     <!-- 右边弹出菜单 -->
     <transition name="slide-fade">
-      <play-list-component v-if="isVisible" class="right-menu" />
+      <play-list-component v-show="isVisible" class="right-menu" />
     </transition>
 
     <!-- 滚动页面返回顶部按钮 -->
@@ -24,7 +24,7 @@
 <script lang="ts">
 import NavbarComponent from "@/components/Navbar.vue";
 import PlaybarComponent from "@/components/playbar/Playbar.vue";
-import PlayListComponent from "@/components/PlayList.vue";
+import PlayListComponent from "@/components/Playlist.vue";
 import ScrollToTopIcon from "@/components/SVGIcons/ScrollToTopIcon.vue";
 import GlobalNotification from "@/components/globals/GlobalNotification.vue";
 import { Vue, Component } from "vue-property-decorator";
@@ -124,14 +124,14 @@ export default class App extends Vue {
   transition: right 0.2s linear
   z-index: 3
 .slide-fade-enter-active
-  transition: all .3s ease
+  transition: all .25s ease
 
 .slide-fade-leave-active
-  transition: all .3s ease
+  transition: all .25s ease
 
 .slide-fade-enter, .slide-fade-leave-to
   transform: translateX(300px)
-  opacity: 0
+
 
 .right-menu_show
   right: 0px

@@ -23,6 +23,7 @@ import MoreList from "@/components/more-list/MoreList.vue";
 import DownloadIcon from "@/components/SVGIcons/DownloadIcon.vue";
 import MoreIcon from "@/components/SVGIcons/MoreIcon.vue";
 import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
+import { withIn } from "@/utilitys";
 
 @Component({
   components: {
@@ -75,25 +76,38 @@ export default class BtnWithPopupMenu extends Vue {
       this.styleObj.top = topSpace + height + "px";
     }
   }
-  withIn(item: Element, container: Element) {
-    return container === item || (container && container.contains(item));
-  }
   handleBtnClick(): void {
     // this.showPopup = !this.showPopup;
   }
   handleBodyClick(e: Event) {
     e.preventDefault();
+
     const target = e.target as HTMLElement;
     if (!e.target) {
       return;
     }
-    if (this.withIn(target, this.$refs.btn)) {
+    if (withIn(target, this.$refs.btn)) {
       if (!this.disabled) {
         this.showPopup = !this.showPopup;
       }
-    } else if (!this.withIn(target, this.$refs.btn) && !this.withIn(target, this.$refs.popupMenu)) {
+    } else {
       this.showPopup = false;
     }
+    return;
+    // const target = e.target as HTMLElement;
+    // if (!e.target) {
+    //   return;
+    // }
+    // if (this.withIn(target, this.$refs.btn)) {
+    //   if (!this.disabled) {
+    //     this.showPopup = !this.showPopup;
+    //   }
+    // } else if (
+    //   !this.withIn(target, this.$refs.btn) &&
+    //   !this.withIn(target, this.$refs.popupMenu)
+    // ) {
+    //   this.showPopup = false;
+    // }
   }
   handleBodyScroll(): void {
     this.showPopup = false;

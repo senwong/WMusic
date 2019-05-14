@@ -137,7 +137,8 @@ export default class SoundPanel extends Vue {
     this.isEffect = id > 1;
   }
 
-  toggleRightPlaylist() {
+  toggleRightPlaylist(e: Event) {
+    e.stopPropagation();
     this.setPlaylistVisibility(!this.isPlaylistVisible);
   }
 

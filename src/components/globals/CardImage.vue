@@ -9,7 +9,7 @@
           class="control__item"
           @click.native.stop.prevent="fav.onClick"
         >
-          <FavIcon />
+          <FavIcon/>
         </SvgBtnWrapper>
         <!-- 播放 -->
         <SvgBtnWrapper
@@ -19,21 +19,26 @@
           class="control__item"
           @click.native.stop.prevent="play.onClick"
         >
-          <PausedIcon />
+          <PausedIcon/>
         </SvgBtnWrapper>
         <!-- 更多 -->
         <BtnWithPopupMenu class="control__item" v-if="more">
           <template slot="btn">
             <SvgBtnWrapper large @click.native.prevent="more.onClick">
-              <MoreIcon />
+              <MoreIcon/>
             </SvgBtnWrapper>
           </template>
           <template slot="menu">
-            <div>more</div>
+            <MoreList class="more__popup-menu">
+              <MoreItem>
+                <DownloadIcon slot="icon"/>
+                <span slot="txt" class="txt">加入歌单</span>
+              </MoreItem>
+            </MoreList>
           </template>
         </BtnWithPopupMenu>
       </router-link>
-      <ImageWithPlaceholder :src="src" :alt="alt" :ratio="ratio" />
+      <ImageWithPlaceholder :src="src" :alt="alt" :ratio="ratio"/>
     </WithHoverMask>
     <div class="left-top" v-if="$slots.leftTop">
       <slot name="leftTop"></slot>
@@ -53,6 +58,9 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
 import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
 import { ControlBtn } from "@/types";
+import MoreList from "@/components/more-list/MoreList.vue";
+import MoreItem from "@/components/more-list/MoreItem.vue";
+import DownloadIcon from "@/components/SVGIcons/DownloadIcon.vue";
 
 @Component({
   components: {
@@ -62,7 +70,10 @@ import { ControlBtn } from "@/types";
     ImageWithPlaceholder,
     WithHoverMask,
     SvgBtnWrapper,
-    BtnWithPopupMenu
+    BtnWithPopupMenu,
+    MoreList,
+    MoreItem,
+    DownloadIcon
   }
 })
 export default class CardImage extends Vue {
@@ -128,4 +139,6 @@ export default class CardImage extends Vue {
   left: 0
 .right-top
   right: 0
+.more__popup-menu
+  color: #333
 </style>
