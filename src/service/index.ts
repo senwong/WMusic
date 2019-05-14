@@ -74,7 +74,11 @@ export function getPlayListCatlist() {
  * @param {String} order 歌单类型：hot|new
  * @param {Number} offset 偏移数量
  */
-export function getPlayList(cat: string = "全部", order: "hot" | "new" = "hot", offset: number = 0) {
+export function getPlayList(
+  cat: string = "全部",
+  order: "hot" | "new" = "hot",
+  offset: number = 0
+) {
   return Api().get(`/top/playlist?limit=20&cat=${cat}&order=${order}&offset=${offset}`);
 }
 /**
@@ -160,7 +164,9 @@ export function getUserDetail(uid: number) {
  * @param {Number} uid 用户id
  */
 export function getUserPlaylist(uid: number, offset: number = 0) {
-  if ( isUndef(uid)) { return Promise.reject('uid为空')}
+  if (isUndef(uid)) {
+    return Promise.reject("uid为空");
+  }
   return Api().get("/user/playlist", { params: { uid, offset } });
 }
 /**
@@ -179,8 +185,8 @@ export function loginEmail(email: string, password: string) {
  */
 export function loginPhone(phone: string, password: string, countrycode: number) {
   if (isUndef(phone) || isUndef(password) || isUndef(countrycode)) return Promise.reject();
-  const params = {phone, password, countrycode};
-  return Api().get('/login/cellphone', { withCredentials: true, params });
+  const params = { phone, password, countrycode };
+  return Api().get("/login/cellphone", { withCredentials: true, params });
 }
 export function logout() {
   return Api().get("/logout");
@@ -192,7 +198,7 @@ export function logout() {
  */
 export function getRecord(uid: number, type: 0 | 1) {
   if (isUndef(uid)) return Promise.reject();
-  return Api().get('/user/record', { withCredentials: true, params: {uid, type} });
+  return Api().get("/user/record", { withCredentials: true, params: { uid, type } });
 }
 /**
  * 调用此接口 , 传入用户 id, 可获取已喜欢音乐id列表(id数组)

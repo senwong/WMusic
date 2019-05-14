@@ -6,17 +6,17 @@
       <BtnWithPopupMenu>
         <template slot="btn">
           <SvgBtnWrapper large>
-            <MoreIcon/>
+            <MoreIcon />
           </SvgBtnWrapper>
         </template>
         <template slot="menu">
           <more-list>
             <more-item>
-              <DownloadIcon slot="icon"/>
+              <DownloadIcon slot="icon" />
               <span slot="txt" class="txt">清空列表</span>
             </more-item>
             <more-item>
-              <DownloadIcon slot="icon"/>
+              <DownloadIcon slot="icon" />
               <span slot="txt" class="txt">下载全部</span>
             </more-item>
           </more-list>
@@ -27,7 +27,7 @@
     <p class="list__count">共{{ tracks ? tracks.length : 0 }}首歌</p>
     <ul class="play-list scrollbar-invisible">
       <!-- 单个歌曲信息 -->
-      <PlaylistItem v-for="track in tracks" :key="track.id" :track="track"/>
+      <PlaylistItem v-for="track in tracks" :key="track.id" :track="track" />
     </ul>
     <!-- 加载中。。。动画 -->
     <loading v-if="isLoading"></loading>

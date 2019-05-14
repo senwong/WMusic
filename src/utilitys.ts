@@ -174,5 +174,5 @@ export function withIn(item: Element, container: Element) {
   return container === item || (container && container.contains(item));
 }
 export function isUndef(val: any) {
-  return typeof val === 'undefined' || val === null;
+  return typeof val === "undefined" || val === null;
 }

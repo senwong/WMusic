@@ -1,11 +1,11 @@
 <template>
   <more-item spread="left">
-    <DownloadIcon slot="icon"/>
+    <DownloadIcon slot="icon" />
     <span slot="txt" class="txt">添加到歌单</span>
     <!-- hover时右侧扩展内容 -->
     <more-list slot="spread-list">
       <more-item v-for="p in userPlaylists" :key="p.id" @click.native="handleClick">
-        <DownloadIcon slot="icon"/>
+        <DownloadIcon slot="icon" />
         <span slot="txt" class="txt">{{ p.name }}</span>
       </more-item>
     </more-list>

@@ -12,18 +12,18 @@
       <div class="desc">
         <div class="creator" v-if="creator">
           <router-link class="creator-avatar" :to="'/user/' + creator.userId">
-            <img :src="creator.avatarUrl | convert2Https" :alt="creator.nickname">
+            <img :src="creator.avatarUrl | convert2Https" :alt="creator.nickname" />
           </router-link>
           <router-link class="creator-name" :to="'/user/' + creator.userId">
-            {{
-            creator.nickname
-            }}
+            {{ creator.nickname }}
           </router-link>
           <span class="update-time">{{ updateTimeFormated }}创建</span>
         </div>
         <h3 class="name">{{ name }}</h3>
         <div>
-          <Button class="btn-control" rounded primary @click.native="handlePlayAll">全部播放</Button>
+          <Button class="btn-control" rounded primary @click.native="handlePlayAll"
+            >全部播放</Button
+          >
           <Button class="btn-control" rounded>收藏</Button>
           <Button class="btn-control" rounded>全部下载</Button>
           <Button class="btn-control" rounded>more</Button>
@@ -54,25 +54,25 @@
             @click.native="handleDescSpread"
             :class="{ down: descSpread }"
           >
-            <ChevronBottomIcon/>
+            <ChevronBottomIcon />
           </SvgBtnWrapper>
         </div>
       </div>
     </div>
-    <TabMenu align-left :list="tabList"/>
+    <TabMenu align-left :list="tabList" />
     <!-- playlist tracks -->
     <SongList
       v-if="contentType == ContentType.Tracks && !isLoading"
       :tracks="tracks"
       :id="playlistId"
     />
-    <SongListPlaceholder :count="20" v-if="contentType == ContentType.Tracks && isLoading"/>
+    <SongListPlaceholder :count="20" v-if="contentType == ContentType.Tracks && isLoading" />
     <CommentList
       v-if="contentType == ContentType.Comments"
       :type="CommentType.PlaylistComment"
       :id="id"
     />
-    <Subscribers v-if="contentType == ContentType.Subers" :id="id"/>
+    <Subscribers v-if="contentType == ContentType.Subers" :id="id" />
     <!-- error label -->
     <ErrorLabel :show="isError">{{ errorMsg }}</ErrorLabel>
   </div>
