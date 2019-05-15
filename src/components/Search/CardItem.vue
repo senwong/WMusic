@@ -15,6 +15,7 @@
       <router-link
         class="sub-title"
         v-for="subTitle in subTitles"
+        :to="link"
         :key="subTitle.id"
         :href="subLinks[subTitle.id]"
         >{{ subTitle.txt }}</router-link

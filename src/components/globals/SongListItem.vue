@@ -116,7 +116,7 @@ const notification = namespace("notification");
     AddToNext
   }
 })
-export default class SongList extends Vue {
+export default class SongListItem extends Vue {
   @Prop() track!: Track;
 
   selectedTrackId: number | null = null;

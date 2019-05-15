@@ -137,7 +137,7 @@ export function formatDateToBefore(milliseconds: number): string {
  *  arrayJoin([a, b, c, d, e], x), return [a, x, b, x, c, x, d, x, e]
  */
 export function arrayJoin(array: any[], obj: any) {
-  if (array.length == 0) return array;
+  if (!array || array.length == 0) return [];
   const ret = [array[0]];
   for (let i = 1; i < array.length; i++) {
     ret.push(obj);

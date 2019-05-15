@@ -38,12 +38,11 @@ import PopupMenu from "./PopupMenu.vue";
 import MoreItem from "./more-list/MoreItem.vue";
 import MoreList from "./more-list/MoreList.vue";
 import Loading from "@/components/Loading.vue";
-import { mapState, mapMutations } from "vuex";
 import PlaylistItem from "./PlaylistItem.vue";
 import MoreIcon from "./SVGIcons/MoreIcon.vue";
 import DownloadIcon from "./SVGIcons/DownloadIcon.vue";
 import { Vue, Component } from "vue-property-decorator";
-import { Mutation, namespace } from "vuex-class";
+import { Mutation, namespace, State } from "vuex-class";
 import { Track } from "@/types";
 import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
 import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
@@ -68,6 +67,7 @@ export default class Playlist extends Vue {
   isLoading: boolean = false;
 
   @notification.Mutation setMsg!: (msg: string) => void;
+  @playlist.State isVisible!: boolean;
   @playlist.Mutation setVisibility!: (b: boolean) => void;
 
   @playlist.State tracks!: Track[];
@@ -76,6 +76,9 @@ export default class Playlist extends Vue {
     menu: HTMLElement;
   };
   handleBodyClick(e: UIEvent) {
+    if (!this.isVisible) {
+      return;
+    }
     const target = e.target as HTMLElement;
     if (!target && !this.$refs.menu) {
       return;
@@ -106,7 +109,6 @@ export default class Playlist extends Vue {
   z-index: 3
   box-shadow: 0 0 42px 3px rgba(0, 0, 0, .2)
 .list-wrapper
-  height: 100%
   background-color: white
   display: flex
   flex-direction: column

@@ -23,107 +23,104 @@
     <!-- search result -->
     <div>
       <!-- 搜索单曲 -->
-      <div v-if="currentSearchType == 1">
+      <div v-if="currentSearchType == SearchType.Song">
         <h3 class="fallback" v-if="searchSongs.length == 0">没有与此相关的单曲</h3>
         <SongList :tracks="searchSongs" v-else />
       </div>
       <!-- 搜索歌手 -->
-      <div v-else-if="currentSearchType == 100">
+      <div v-else-if="currentSearchType == SearchType.Artist">
         <h3 class="fallback" v-if="searchArtists.length == 0">没有与此相关的歌手</h3>
         <ul>
           <li v-for="artist in searchArtists" :key="artist.key" class="artist-item-search">
-            <a :href="'/artist/' + artist.id" class="artist-pic-search">
+            <router-link :to="'/artist/' + artist.id" class="artist-pic-search">
               <img
                 :src="(artist.picUrl || artist.img1v1Url) | convert2Https | clipImage(100, 100)"
                 :alt="artist.name"
               />
-            </a>
-            <a :href="'/artist/' + artist.id" class="artis-name-search">
+            </router-link>
+            <router-link :to="'/artist/' + artist.id" class="artis-name-search">
               <span>{{ artist.name }}</span>
               <span v-if="artist.trans">({{ artist.trans }})</span>
-            </a>
+            </router-link>
           </li>
         </ul>
       </div>
       <!-- 搜索专辑 -->
-      <div v-else-if="currentSearchType == 10">
+      <div v-else-if="currentSearchType == SearchType.Album">
         <h3 class="fallback" v-if="searchAlbums.length == 0">没有与此相关的专辑</h3>
         <ul>
           <li v-for="album in searchAlbums" :key="album.key" class="album-item-search">
-            <a :href="'/album/' + album.id" class="album-pic-search">
+            <router-link :to="'/album/' + album.id" class="album-pic-search">
               <img :src="album.picUrl | convert2Https | clipImage(100, 100)" :alt="album.name" />
-            </a>
+            </router-link>
             <div class="album-name-search">
-              <a :href="'/album/' + album.id">{{ album.name }}</a>
+              <router-link :to="'/album/' + album.id">{{ album.name }}</router-link>
             </div>
             <div class="album-artist-search">
-              <a :href="'/artist/' + album.artist.id">{{ album.artist.name }}</a>
+              <router-link :to="'/artist/' + album.artist.id">{{ album.artist.name }}</router-link>
             </div>
           </li>
         </ul>
       </div>
       <!-- 搜索MV -->
-      <div v-else-if="currentSearchType == 1004">
+      <div v-else-if="currentSearchType == SearchType.Mv">
         <h3 class="fallback" v-if="searchMvs.length == 0">没有与此相关的MV</h3>
-        <card-item
-          v-for="mv in searchMvs"
-          :key="mv.id"
-          :link="'/mvplay/' + mv.id"
-          :picUrl="mv.cover | clipImage(640, 360)"
-          :title="mv.name"
-          :subTitles="getMvSubTitles(mv)"
-          :subLinks="getMvSubLinks(mv)"
-          shape="rectangle"
-        ></card-item>
+        <div class="mv-result__wrapper">
+          <card-item v-for="mv in searchMvs" :key="mv.id" :card="mv" cardType="mvplay"></card-item>
+        </div>
       </div>
       <!-- 搜索歌单 -->
-      <div v-else-if="currentSearchType == 1000">
+      <div v-else-if="currentSearchType == SearchType.Playlist">
         <h3 class="fallback" v-if="searchPlaylists.length == 0">没有与此相关的歌单</h3>
         <ul>
           <li v-for="playlist in searchPlaylists" :key="playlist.key" class="playlist-item-search">
-            <a :href="'/playlist/' + playlist.id" class="playlist-pic-search">
+            <router-link :to="'/playlist/' + playlist.id" class="playlist-pic-search">
               <img
                 :src="playlist.coverImgUrl | convert2Https | clipImage(200, 200)"
                 :alt="playlist.name"
               />
-            </a>
+            </router-link>
             <div class="playlist-name-search">
-              <a :href="'/playlist/' + playlist.id">{{ playlist.name }}</a>
+              <router-link :to="'/playlist/' + playlist.id">{{ playlist.name }}</router-link>
             </div>
             <span class="playlist-count-search">{{ playlist.bookCount }}</span>
             <div class="playlist-user-search">
               <span>创建者：</span>
-              <a :href="'/user/' + playlist.creator.userId">{{ playlist.creator.nickname }}</a>
+              <router-link :to="'/user/' + playlist.creator.userId">{{
+                playlist.creator.nickname
+              }}</router-link>
             </div>
           </li>
         </ul>
       </div>
       <!-- 搜索歌词 -->
-      <div v-else-if="1006">
-        <h3 class="fallback" v-if="searchLyrics.length == 0">没有与此相关的歌词</h3>
+      <div v-else-if="currentSearchType === SearchType.Lyric">
+        <h3 class="fallback" v-if="searchLyrics && searchLyrics.length == 0">没有与此相关的歌词</h3>
         <ul>
           <li v-for="lyric in searchLyrics" :key="lyric.id" class="lyric-item-search">
-            <a :href="'/song/' + lyric.id" class="lyric-name-search">{{ lyric.name }}</a>
+            <router-link :to="'/song/' + lyric.id" class="lyric-name-search">{{
+              lyric.name
+            }}</router-link>
             <div class="lyric-artists-search">
-              <a
+              <router-link
                 v-for="ar in lyric.artists"
                 :key="ar.id"
-                :href="'/artist/' + ar.id"
+                :to="'/artist/' + ar.id"
                 class="lyric-artist-search"
-                >{{ ar.name }}</a
+                >{{ ar.name }}</router-link
               >
             </div>
-            <a :href="'/album/' + lyric.album.id" class="lyric-album-search">{{
+            <router-link :to="'/album/' + lyric.album.id" class="lyric-album-search">{{
               lyric.album.name
-            }}</a>
+            }}</router-link>
             <div class="lyric-duration-search">{{ formatTime(lyric.duration) }}</div>
           </li>
         </ul>
       </div>
       <!-- 搜索主播电台 -->
-      <div v-else-if="1009">
+      <div v-else-if="currentSearchType === SearchType.Radio">
         <h3 class="fallback" v-if="searchDjRadios.length == 0">没有与此相关的电台</h3>
-        <card-item
+        <RadioCardItem
           v-for="djRadio in searchDjRadios"
           :key="djRadio.id"
           :link="'/djradio/' + djRadio.id"
@@ -132,10 +129,10 @@
           :subTitles="getDjSubTitles(djRadio)"
           :subLinks="getDjSubLinks(djRadio)"
           shape="square"
-        ></card-item>
+        ></RadioCardItem>
       </div>
       <!-- 搜索用户 -->
-      <div v-else-if="1002">
+      <div v-else-if="currentSearchType === SearchType.User">
         <h3 class="fallback" v-if="searchUsers.length == 0">没有与此相关的用户</h3>
         <ul>
           <li v-for="user in searchUsers" :key="user.id" class="user-item-search">
@@ -157,12 +154,13 @@
 <script lang="ts">
 import { search } from "@/service";
 import { formatTime } from "@/utilitys";
-import CardItem from "./CardItem.vue";
 import SongList from "@/components/globals/SongList.vue";
 import SearchBarWithRecommendations from "./SearchBarWithRecommendations.vue";
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { Track, Artist, Album, MvCard } from "@/types";
 import { Mutation, namespace } from "vuex-class";
+import CardItem from "@/components/MV/CardItem.vue";
+import RadioCardItem from "./CardItem.vue";
 
 const notification = namespace("notification");
 const SEARCH_OFFSET = 30;
@@ -178,7 +176,7 @@ enum SearchType {
   User = 1002
 }
 @Component({
-  components: { CardItem, SongList, SearchBarWithRecommendations }
+  components: { CardItem, SongList, SearchBarWithRecommendations, RadioCardItem }
 })
 export default class Search extends Vue {
   keyWords: string = "";
@@ -196,7 +194,7 @@ export default class Search extends Vue {
 
   // number referring to type, default 1
   currentSearchType: SearchType = SearchType.Song;
-
+  SearchType = SearchType;
   // search result
   searchSongs: Track[] = [];
 
@@ -250,15 +248,8 @@ export default class Search extends Vue {
           JSON.stringify(res.data.result).replace(/http:\/\//g, "https://")
         );
         if (searchType == SearchType.Song && result.songs) {
-          const songs = result.songs.map((song: Track) => ({
-            id: song.id,
-            name: song.name,
-            ar: song.artists,
-            dt: song.duration,
-            al: song.album
-          }));
           this.count = result.songCount;
-          this.searchSongs = songs;
+          this.searchSongs = result.songs;
         } else if (searchType == SearchType.Artist) {
           this.searchArtists = result.artists;
           this.count = result.artistCount;
@@ -266,7 +257,12 @@ export default class Search extends Vue {
           this.searchAlbums = result.albums;
           this.count = result.albumCount;
         } else if (searchType == SearchType.Mv) {
-          this.searchMvs = result.mvs;
+          this.searchMvs = result.mvs.map((mv: any) => ({
+            id: mv.id,
+            name: mv.name,
+            cover: mv.cover,
+            artists: mv.artists
+          }));
           this.count = result.mvCount;
         } else if (searchType == SearchType.Playlist) {
           this.searchPlaylists = result.playlists;
@@ -527,4 +523,12 @@ a
   text-align: center;
   padding-top: 2em;
   color: rgb(110, 110, 110);
+
+.mv-result__wrapper
+  margin-top: 2em
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 2em;
+  flex-wrap: wrap
+  justify-content: space-between;
 </style>

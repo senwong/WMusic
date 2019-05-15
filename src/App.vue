@@ -113,29 +113,19 @@ export default class App extends Vue {
   background-color: $whitegray2
   z-index: 9
   font-size: 16px
-// 右边弹出菜单
-.right-menu
-  position: fixed
-  top: 0
-  height: calc(100% - #{$footerHeight})
-  overflow: hidden
-  width: 300px
-  right: 0
-  transition: right 0.2s linear
-  z-index: 3
+
 .slide-fade-enter-active
-  transition: all .25s ease
+  transition: all 250ms ease
 
 .slide-fade-leave-active
-  transition: all .25s ease
+  transition: all 250ms ease
 
 .slide-fade-enter, .slide-fade-leave-to
   transform: translateX(300px)
-
-
-.right-menu_show
-  right: 0px
-  box-shadow: -8px 0px 11px -4px rgba(0,0,0,0.75)
+  box-shadow: 0 0 0px 0px rgba(0, 0, 0, 0)
+.slide-fade-enter-to, .slide-fade-leave
+  transform: translateX(0px)
+  box-shadow: 0 0 42px 3px rgba(0, 0, 0, .2)
 
 .back-top
   position: fixed

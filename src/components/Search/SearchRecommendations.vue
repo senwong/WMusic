@@ -2,7 +2,7 @@
   <!-- search recommendations -->
   <section class="search__recommendations">
     <section v-for="(value, idx) in order" :key="idx">
-      <component v-bind:is="upperCaseFirst(value)" v-bind="$data" />
+      <component v-bind:is="upperCaseFirst(value)" v-bind:[value]="$data[value]" />
     </section>
   </section>
 </template>
@@ -43,7 +43,7 @@ export default class SearchRecommendations extends Vue {
   playlists: Playlist[] | null = null;
 
   order: string[] | null = null;
-
+  formatTime = formatTime;
   @Prop(String) keywords!: string;
 
   @notification.Mutation setMsg!: (msg: string) => void;
@@ -52,8 +52,6 @@ export default class SearchRecommendations extends Vue {
   onKeywordsChange(val: string) {
     this.searchSuggest(val);
   }
-
-  formatTime = formatTime;
 
   getMvSubTitles(mv: MvCard) {
     return mv.artists.map(ar => ({

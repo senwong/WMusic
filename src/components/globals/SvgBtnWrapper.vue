@@ -44,7 +44,6 @@ export default class SvgBtnWrapper extends Vue {
   box-sizing: content-box
   width: 1em
   height: 1em
-  z-index: 1
   border: none
   background: none
   color: inherit

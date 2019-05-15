@@ -84,4 +84,6 @@ export default {
 .slide-up-enter, .slide-up-leave-to
   transform: translateY(-100px);
   opacity: 0;
+  box-shadow: 0 0px 0px 0px rgba(0, 0, 0, 0)
+  border-color: rgba(0, 0, 0, 0)
 </style>
