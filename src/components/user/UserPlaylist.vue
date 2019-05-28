@@ -107,7 +107,7 @@ export default {
 .list-container
   display: grid
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr))
-  gap: 2em
+  grid-gap: 2em
   flex-wrap: wrap
   justify-content: flex-start
   padding: 2em

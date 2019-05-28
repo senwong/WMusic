@@ -149,7 +149,7 @@ export default class ArtistDetail extends Vue {
 
 .artist-detail__albums
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr))
-  gap: 2em
+  grid-gap: 2em
   flex-wrap: wrap
   justify-content: space-between
   padding: 1em 0

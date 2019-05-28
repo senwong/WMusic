@@ -113,7 +113,7 @@ export default class TopList extends Vue {
 .domestic-top-list
   display: grid
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr))
-  gap: 2em
+  grid-gap: 2em
   flex-wrap: wrap
   justify-content: space-between
   margin-top: 2em
@@ -121,7 +121,7 @@ export default class TopList extends Vue {
 .international-top-list
   display: grid
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr))
-  gap: 2em
+  grid-gap: 2em
   flex-wrap: wrap
   justify-content: space-between
   margin-top: 2em

@@ -150,7 +150,7 @@ export function arrayJoin(array: any[], obj: any) {
  * @param{String} url, file url
  * @param{String} filename, filename
  */
-export function downloadFile(url: string, filename: string): Promise {
+export function downloadFile(url: string, filename: string): Promise<void> {
   return new Promise((resolve, reject) => {
     fetch(url).then(
       res =>

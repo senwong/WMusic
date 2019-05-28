@@ -112,9 +112,9 @@ export default class CardImage extends Vue {
   &.radius
     overflow: hidden
     border-radius: 15px
+    transform: translate3d(0, 0, 0);
 
 .item-controlls
-  display: block
   width: 100%
   height: 100%
   display: flex

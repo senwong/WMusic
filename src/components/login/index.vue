@@ -28,10 +28,29 @@
       large
       placeholder="邮箱地址"
       v-model="email"
+      @change="handleEmailChange"
       @focus.native="handleEmailFocus"
+      :verify="verifyEmail"
+      @enter="handleLogin"
     />
     <!-- 使用手机登录 -->
-    <PhoneInput class="input-email" v-if="type == 'phone'" v-model="phone" />
+    <div class="phone-input" v-if="type == 'phone'">
+      <SelectInput
+        class="phone-input__country-code"
+        :options="phoneOptions"
+        v-model="phoneCountryCode"
+        :optionToTitle="optionToTitle"
+      />
+      <Input
+        class="phone-input__phone-number"
+        type="text"
+        large
+        placeholder="手机号码"
+        v-model="phoneNumber"
+        @enter="handleLogin"
+        @focus.native="handleEmailFocus"
+      />
+    </div>
     <!-- 密码 -->
     <Input
       class="input-password"
@@ -39,6 +58,7 @@
       large
       placeholder="密码"
       v-model="password"
+      @enter="handleLogin"
       @focus.native="handlePasswordFocus"
     />
     <div class="login-failed" :class="{ 'login-failed_show': isLoginFailed }">
@@ -53,109 +73,172 @@
   </div>
 </template>
 
-<script>
-import Button from "@/components/globals/Button";
-import Input from "@/components/globals/Input";
-import { loginEmail, loginPhone } from "@/service";
-import { mapMutations } from "vuex";
-import PhoneInput from "./PhoneInput";
+<script lang="ts">
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { Mutation, namespace } from "vuex-class";
 
-export default {
-  name: "Login",
-  data() {
-    return {
-      email: "",
-      password: "",
-      isLoginFailed: false,
-      type: "email",
-      phone: {
-        countryCode: 86,
-        number: null
-      }
-    };
-  },
-  components: { Button, Input, PhoneInput },
-  methods: {
-    handleLogin() {
-      const responsePromise =
-        this.type == "email"
-          ? loginEmail(this.email, this.password)
-          : loginPhone(this.phone.number, this.password, this.phone.countryCode);
-      this.handleLoginResponsePromsie(responsePromise);
-    },
-    handleEmailFocus() {
-      this.emptyErrorsHint();
-    },
-    handlePasswordFocus() {
-      this.emptyErrorsHint();
-    },
-    emptyInput() {
-      this.email = "";
-      this.password = "";
-    },
-    emptyErrorsHint() {
-      this.isLoginFailed = false;
-    },
-    handleLoginResponsePromsie(responsePromise) {
-      responsePromise.then(
-        res => {
-          console.log("response ", res);
-          this.setCurrentUserId(res.data.profile.userId);
-          this.$router.push("/");
-        },
-        error => {
-          this.isLoginFailed = true;
-        }
-      );
-    },
-    switchToEmail() {
-      this.type = "email";
-      this.emptyErrorsHint();
-    },
-    switchToPhone() {
-      this.type = "phone";
-      this.emptyErrorsHint();
-    },
-    ...mapMutations("currentUser", ["setCurrentUserId"])
-  }
+import Button from "@/components/globals/Button.vue";
+import Input from "@/components/globals/Input.vue";
+import { loginEmail, loginPhone } from "@/service";
+import SelectInput from "@/components/globals/SelectInput.vue";
+import CountryPhoneCodes from "./CountryPhoneCodes.json";
+import { Option } from "@/types";
+
+type Phone = {
+  countryCode: number;
+  number: number;
 };
+const emailRE = /^\w+[\w-.]*\w+@\w+\.\w+$/;
+
+const currentUser = namespace("currentUser");
+
+@Component({
+  components: { Button, Input, SelectInput }
+})
+export default class Login extends Vue {
+  email: string = "";
+  password: string = "";
+  isLoginFailed: boolean = false;
+  type: string = "email";
+  phoneCountryCode: Option | null = null;
+  phoneNumber: number | null = null;
+
+  get phoneOptions(): Option[] {
+    return CountryPhoneCodes.map((pc, idx) => ({
+      id: idx,
+      title: `+${pc.phoneCode}(${pc.countryName})`,
+      value: pc.phoneCode
+    }));
+  }
+  @currentUser.Mutation setCurrentUserId!: (id: number) => void;
+  handleLogin() {
+    if (this.type === "phone") {
+      if (
+        !this.verifyPhoneLogin(
+          this.phoneNumber,
+          this.password,
+          this.phoneCountryCode && this.phoneCountryCode.value
+        )
+      ) {
+        return;
+      }
+    }
+    if (this.type === "email") {
+      if (!this.verifyEmailLogin(this.email, this.password)) {
+        return;
+      }
+    }
+    if (this.phoneNumber === null || this.phoneCountryCode === null) {
+      return;
+    }
+    const responsePromise =
+      this.type == "email"
+        ? loginEmail(this.email, this.password)
+        : loginPhone(this.phoneNumber, this.password, this.phoneCountryCode.value);
+    this.handleLoginResponsePromsie(responsePromise);
+  }
+  verifyPhoneLogin(
+    phoneNumber: number | null,
+    password: string,
+    phoneCountryCode: number | null
+  ): boolean {
+    return phoneNumber !== null && password.length > 0 && phoneCountryCode !== null;
+  }
+  verifyEmailLogin(email: string, password: string): boolean {
+    if (email === undefined || password === undefined) return false;
+    return this.verifyEmail(email) && password.length > 0;
+  }
+  handleEmailFocus() {
+    this.emptyErrorsHint();
+  }
+  handleEmailChange(e: Event) {
+    this.verifyEmail((e.target as HTMLInputElement).value);
+  }
+  handlePasswordFocus() {
+    this.emptyErrorsHint();
+  }
+  emptyInput() {
+    this.email = "";
+    this.password = "";
+  }
+  emptyErrorsHint() {
+    this.isLoginFailed = false;
+  }
+  handleLoginResponsePromsie(responsePromise: Promise<any>) {
+    responsePromise.then(
+      res => {
+        this.setCurrentUserId(res.data.profile.userId);
+        this.$router.push("/");
+      },
+      error => {
+        this.isLoginFailed = true;
+      }
+    );
+  }
+  switchToEmail() {
+    this.type = "email";
+    this.emptyErrorsHint();
+  }
+  switchToPhone() {
+    this.type = "phone";
+    this.emptyErrorsHint();
+  }
+
+  verifyEmail(email: string) {
+    if (email.length < 1) return false;
+    return emailRE.test(email);
+  }
+  optionToTitle(opt: Option): string {
+    return `+${opt.value}`;
+  }
+}
 </script>
 
 <style lang="sass" scoped>
 .page__container
-  width: 500px;
-  margin: 20vh auto;
+  width: 500px
+  margin: 20vh auto
 .login-type__container
-  display: flex;
-  flex-direction: row;
-  justify-content: stretch;
+  display: flex
+  flex-direction: row
+  justify-content: stretch
 .login-type__email
-  flex: 1 1 auto;
-  margin-right: 60px;
+  flex: 1 1 auto
+  margin-right: 60px
 .login-type__phone
-  flex: 1 1 auto;
+  flex: 1 1 auto
 
 .input-email, .input-password
-  margin-top: 20px;
+  margin-top: 1em
 
 .login-failed
-  font-size: 14px;
-  color: red;
-  text-align: center;
-  margin-top: 30px;
-  opacity: 0;
-  transition: all 250ms;
+  font-size: 14px
+  color: red
+  text-align: center
+  margin-top: 30px
+  opacity: 0
+  transition: all 250ms
   &.login-failed_show
-    opacity: 1;
+    opacity: 1
 .login-btn
-  margin-top: 10px;
-
+  margin-top: 10px
+.phone-input
+  margin-top: 1em
+  display: flex
+  flex-direction: row
+  justify-content: flex-start
+  align-items: center
+.phone-input__country-code
+  flex: 0 0 auto
+.phone-input__phone-number
+  flex: 1 1 auto
+  margin-left: 1em
 
 .signup__container
-  margin-top: 100px;
-  text-align: center;
+  margin-top: 100px
+  text-align: center
 .signup__title
-  margin-bottom: 6px;
-  font-size: 14px;
-  color: #777;
+  margin-bottom: 6px
+  font-size: 14px
+  color: #777
 </style>

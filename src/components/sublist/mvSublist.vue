@@ -101,7 +101,7 @@ export default class MvSubList extends Vue {
   padding-bottom: 2em
 .mv-sublist__container
   display: grid
-  gap: 2em
+  grid-gap: 2em
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))
   padding: 0 2em
 .placeholder__cover

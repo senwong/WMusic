@@ -47,7 +47,10 @@ export default class Mv extends Vue {
     getMVrank().then(res => {
       if (res.data.code == 200) {
         this.updateTime = res.data.updateTime;
-        this.MVrankList = res.data.data.map((rank: Rank, i: number) => ({ rank: i, ...rank }));
+        this.MVrankList = res.data.data.map((rank: Rank, i: number) => ({
+          rank: i,
+          ...rank
+        }));
       } else {
         alert(`获取MV排行榜数据错误${res.data}`);
       }
@@ -76,7 +79,7 @@ a
 .card-container
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-  gap: 2em;
+  grid-gap: 2em;
   flex-wrap: wrap
   justify-content: space-between;
 
@@ -85,7 +88,7 @@ a
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
   grid-auto-rows: 150px;
-  gap: 2em;
+  grid-gap: 2em;
   flex-wrap: wrap
   justify-content: space-between;
 .button-bg-right

@@ -183,7 +183,7 @@ export function loginEmail(email: string, password: string) {
  * @param {String} password 密码
  * @param {Number} countrycode 国家码
  */
-export function loginPhone(phone: string, password: string, countrycode: number) {
+export function loginPhone(phone: number, password: string, countrycode: number) {
   if (isUndef(phone) || isUndef(password) || isUndef(countrycode)) return Promise.reject();
   const params = { phone, password, countrycode };
   return Api().get("/login/cellphone", { withCredentials: true, params });

@@ -1,11 +1,16 @@
 <template>
-  <div class="angled-gradient">
+  <div :class="{ 'angled-gradient': abled }">
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
-export default {};
+import { Vue, Component, Prop } from "vue-property-decorator";
+
+@Component
+export default class Placeholder extends Vue {
+  @Prop({ default: true }) readonly abled!: boolean;
+}
 </script>
 
 <style lang="sass" scoped>

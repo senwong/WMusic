@@ -47,6 +47,7 @@ export default class SvgBtnWrapper extends Vue {
   border: none
   background: none
   color: inherit
+  transform: translate3d(0, 0, 0)
   &:focus
     outline: none
   &:hover

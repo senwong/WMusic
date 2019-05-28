@@ -14,7 +14,7 @@ export default {};
 <style lang="sass" scoped>
 .with-hover-mask-container
   width: 100%;
-  height: 100;
+  height: 100%;
   position: relative;
   display: flex;
 
@@ -22,9 +22,9 @@ export default {};
   opacity: 1;
 
 .mask-wrapper
+  opacity: 0;
   transition-property: opacity;
   transition-duration: 250ms;
-  opacity: 0;
   position: absolute;
   width: 100%;
   height: 100%;

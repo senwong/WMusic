@@ -32,7 +32,10 @@ export default class RankList extends Vue {
       if (res.data.code == 200) {
         console.log(res.data);
         this.updateTime = res.data.updateTime;
-        this.MVrankList = res.data.data.map((r: Rank, i: number) => ({ rank: i, ...r }));
+        this.MVrankList = res.data.data.map((r: Rank, i: number) => ({
+          rank: i,
+          ...r
+        }));
       } else {
         console.warn(`获取MV排行榜数据错误${res.data}`);
       }
@@ -57,7 +60,7 @@ export default class RankList extends Vue {
 .card-container
   display: grid
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr))
-  gap: 2em
+  grid-gap: 2em
   flex-wrap: wrap
   justify-content: space-between
 
@@ -65,7 +68,7 @@ export default class RankList extends Vue {
   display: grid
   grid-template-columns: repeat(auto-fill, minmax(500px, 1fr))
   grid-auto-rows: 150px
-  gap: 2em
+  grid-gap: 2em
   flex-wrap: wrap
   justify-content: space-between
 </style>

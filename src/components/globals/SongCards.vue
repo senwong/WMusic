@@ -31,7 +31,7 @@ export default class SongCards extends Vue {
 .lists
   display: grid
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr))
-  gap: 2em
+  grid-gap: 2em
   flex-wrap: wrap
   justify-content: space-between
 

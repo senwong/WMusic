@@ -147,12 +147,13 @@ import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon.vue";
 import Button from "@/components/globals/Button.vue";
 import auth from "@/auth";
 import { mapMutations } from "vuex";
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { Mutation, namespace } from "vuex-class";
 import { User } from "@/types";
+import { getUserDetail } from "@/service";
 
 const currentUser = namespace("currentUser");
-
+const notification = namespace("notification");
 @Component({
   components: { MusicIcon, RightArrowIcon, Button }
 })
@@ -164,8 +165,9 @@ export default class Navbar extends Vue {
   isLoggedin: boolean = false;
 
   currentUserProfile: User | null = null;
-
+  @currentUser.State("userId") currentUserId!: number | undefined;
   @currentUser.Mutation setCurrentUserId!: (id: number) => void;
+  @notification.Mutation setMsg!: (msg: string) => void;
 
   toggleMyList() {
     this.isShowMyList = !this.isShowMyList;
@@ -175,26 +177,33 @@ export default class Navbar extends Vue {
     this.isShowMyFavr = !this.isShowMyFavr;
   }
 
-  updateLoginStatus() {
-    auth.loggedIn().then(
-      (res: any): void => {
+  @Watch("currentUserId")
+  onCurrentUserIdChanged(val: number | undefined) {
+    if (val === undefined) {
+      this.isLoggedin = false;
+      return;
+    }
+    getUserDetail(val).then(
+      res => {
+        this.currentUserProfile = {
+          userId: res.data.profile.userId,
+          avatarUrl: res.data.profile.avatarUrl,
+          nickname: res.data.profile.nickname
+        };
         this.isLoggedin = true;
-        this.currentUserProfile = res;
-        this.setCurrentUserId(res.userId);
       },
-      () => {
+      error => {
+        const msg = "获取当前用户信息错误" + (error && error.msg ? error.msg + "！" : "！");
+        this.setMsg(msg);
         this.isLoggedin = false;
       }
     );
   }
 
-  created() {
-    this.updateLoginStatus();
-  }
-
-  mounted() {
-    const navLinks = Array.from(this.$el.querySelectorAll(".nav__link"));
-  }
+  // created() {
+  //   console.log('call created hook!');
+  //   this.updateLoginStatus();
+  // }
 }
 </script>
 <style lang="sass">

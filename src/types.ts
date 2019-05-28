@@ -164,3 +164,8 @@ export interface Mv {
   duration: number;
   brs: Br[];
 }
+export interface Option {
+  id: number;
+  title: string;
+  value: any;
+}

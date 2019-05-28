@@ -24,12 +24,16 @@
     <div>
       <!-- 搜索单曲 -->
       <div v-if="currentSearchType == SearchType.Song">
-        <h3 class="fallback" v-if="searchSongs.length == 0">没有与此相关的单曲</h3>
+        <h3 class="fallback" v-if="searchSongs.length == 0">
+          没有与此相关的单曲
+        </h3>
         <SongList :tracks="searchSongs" v-else />
       </div>
       <!-- 搜索歌手 -->
       <div v-else-if="currentSearchType == SearchType.Artist">
-        <h3 class="fallback" v-if="searchArtists.length == 0">没有与此相关的歌手</h3>
+        <h3 class="fallback" v-if="searchArtists.length == 0">
+          没有与此相关的歌手
+        </h3>
         <ul>
           <li v-for="artist in searchArtists" :key="artist.key" class="artist-item-search">
             <router-link :to="'/artist/' + artist.id" class="artist-pic-search">
@@ -47,7 +51,9 @@
       </div>
       <!-- 搜索专辑 -->
       <div v-else-if="currentSearchType == SearchType.Album">
-        <h3 class="fallback" v-if="searchAlbums.length == 0">没有与此相关的专辑</h3>
+        <h3 class="fallback" v-if="searchAlbums.length == 0">
+          没有与此相关的专辑
+        </h3>
         <ul>
           <li v-for="album in searchAlbums" :key="album.key" class="album-item-search">
             <router-link :to="'/album/' + album.id" class="album-pic-search">
@@ -71,7 +77,9 @@
       </div>
       <!-- 搜索歌单 -->
       <div v-else-if="currentSearchType == SearchType.Playlist">
-        <h3 class="fallback" v-if="searchPlaylists.length == 0">没有与此相关的歌单</h3>
+        <h3 class="fallback" v-if="searchPlaylists.length == 0">
+          没有与此相关的歌单
+        </h3>
         <ul>
           <li v-for="playlist in searchPlaylists" :key="playlist.key" class="playlist-item-search">
             <router-link :to="'/playlist/' + playlist.id" class="playlist-pic-search">
@@ -95,7 +103,9 @@
       </div>
       <!-- 搜索歌词 -->
       <div v-else-if="currentSearchType === SearchType.Lyric">
-        <h3 class="fallback" v-if="searchLyrics && searchLyrics.length == 0">没有与此相关的歌词</h3>
+        <h3 class="fallback" v-if="searchLyrics && searchLyrics.length == 0">
+          没有与此相关的歌词
+        </h3>
         <ul>
           <li v-for="lyric in searchLyrics" :key="lyric.id" class="lyric-item-search">
             <router-link :to="'/song/' + lyric.id" class="lyric-name-search">{{
@@ -113,13 +123,17 @@
             <router-link :to="'/album/' + lyric.album.id" class="lyric-album-search">{{
               lyric.album.name
             }}</router-link>
-            <div class="lyric-duration-search">{{ formatTime(lyric.duration) }}</div>
+            <div class="lyric-duration-search">
+              {{ formatTime(lyric.duration) }}
+            </div>
           </li>
         </ul>
       </div>
       <!-- 搜索主播电台 -->
       <div v-else-if="currentSearchType === SearchType.Radio">
-        <h3 class="fallback" v-if="searchDjRadios.length == 0">没有与此相关的电台</h3>
+        <h3 class="fallback" v-if="searchDjRadios.length == 0">
+          没有与此相关的电台
+        </h3>
         <RadioCardItem
           v-for="djRadio in searchDjRadios"
           :key="djRadio.id"
@@ -133,7 +147,9 @@
       </div>
       <!-- 搜索用户 -->
       <div v-else-if="currentSearchType === SearchType.User">
-        <h3 class="fallback" v-if="searchUsers.length == 0">没有与此相关的用户</h3>
+        <h3 class="fallback" v-if="searchUsers.length == 0">
+          没有与此相关的用户
+        </h3>
         <ul>
           <li v-for="user in searchUsers" :key="user.id" class="user-item-search">
             <router-link :to="'/user/' + user.id" class="user-pic-search">
@@ -148,7 +164,9 @@
         </ul>
       </div>
     </div>
-    <h2 v-show="currentSearchType !== null && isLoadMore" class="loading">Loading...</h2>
+    <h2 v-show="currentSearchType !== null && isLoadMore" class="loading">
+      Loading...
+    </h2>
   </div>
 </template>
 <script lang="ts">
@@ -176,7 +194,12 @@ enum SearchType {
   User = 1002
 }
 @Component({
-  components: { CardItem, SongList, SearchBarWithRecommendations, RadioCardItem }
+  components: {
+    CardItem,
+    SongList,
+    SearchBarWithRecommendations,
+    RadioCardItem
+  }
 })
 export default class Search extends Vue {
   keyWords: string = "";
@@ -528,7 +551,7 @@ a
   margin-top: 2em
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-  gap: 2em;
+  grid-gap: 2em;
   flex-wrap: wrap
   justify-content: space-between;
 </style>
