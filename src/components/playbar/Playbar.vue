@@ -11,6 +11,7 @@
         @ended="nextSong"
         @canplaythrough="handleCanPlayThrough"
         @waiting="handleWaiting"
+        @timeupdate="handleTimeupdate"
       />
       <!-- 左边区域 开始-->
       <song-info-panel
@@ -63,7 +64,13 @@
       </div>
     </div>
     <transition name="slide-up">
-      <song-player v-if="isShowSongPlayer"></song-player>
+      <song-player
+        v-show="isShowSongPlayer"
+        :currentTime="currentTime"
+        :name="name"
+        :album="album"
+        :artists="artists"
+      />
     </transition>
   </div>
 </template>
@@ -123,7 +130,7 @@ export default class Playbar extends Vue {
   duration: number = 0;
 
   isLoading: boolean = false;
-
+  currentTime: number = 0; // unit second
   // get progressPercent():  {
   // TODO
   // if(!this.currentSong.currentTime || !this.currentSong.duration) {
@@ -328,6 +335,9 @@ export default class Playbar extends Vue {
 
   handleWaiting() {
     this.isLoading = true;
+  }
+  handleTimeupdate(event: Event) {
+    this.currentTime = (event.target as HTMLAudioElement).currentTime;
   }
 }
 </script>

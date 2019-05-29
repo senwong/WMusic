@@ -7,13 +7,15 @@
       <img v-if="albumImg" :src="albumImg | convert2Https | clipImage(192, 192)" :alt="name" />
       <div v-else class="img-placeholder"></div>
       <div class="img-mask">
-        <button
-          class="button_icon large button_center-center"
-          @click="$emit('toggle-song-player')"
+        <SvgBtnWrapper
+          xlarge
+          class="button_center-center"
           :class="{ invert: !isShowSongPlayer }"
+          @click.native="$emit('toggle-song-player')"
+          :disabled="disabled"
         >
           <SlideUpIcon />
-        </button>
+        </SvgBtnWrapper>
       </div>
     </div>
     <div class="name-songer">
@@ -31,7 +33,9 @@
     <!-- 选择音质 -->
     <btn-with-popup-menu class="quality-btn__wrapper" :disabled="disabled">
       <template slot="btn">
-        <button class="quality button" :disabled="disabled">{{ currentQuality }}</button>
+        <button class="quality button" :disabled="disabled">
+          {{ currentQuality }}
+        </button>
       </template>
       <!-- 点击音质，弹出选择菜单 -->
       <template slot="menu">
@@ -236,6 +240,7 @@ export default class SongInfoPanel extends Vue {
   flex-shrink: 0
   flex-grow: 0
   margin-left: 1em
+
 .faver.is-faver
   color: $orange
   & svg

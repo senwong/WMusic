@@ -1,19 +1,14 @@
 <template>
   <div class="contaienr">
     <div class="img-wrapper">
-      <img :src="currentSong.imgUrl | convert2Https" :alt="currentSong.name" />
+      <ImageWithPlaceholder :alt="name" :src="album && album.picUrl | convert2Https" ratio="1:1" />
     </div>
     <div class="info">
-      <div class="name">{{ currentSong.name }}</div>
+      <div class="name">{{ name }}</div>
       <div class="artist-album">
-        <span
-          >歌手：
-          <router-link v-for="ar in currentSong.artists" :key="ar.id" :to="'/artist/' + ar.id">
-            {{ ar.name }}
-          </router-link>
-        </span>
-        <span
-          >专辑：<a href="#">{{ msg }}</a></span
+        <ArtistsWithComma :artists="artists" />
+        <span v-if="album"
+          >专辑：<router-link :to="`/album/:${album.id}`">{{ album.name }}</router-link></span
         >
       </div>
       <div class="lyrics">
@@ -24,9 +19,8 @@
           :class="{
             select:
               index + 1 < timeFormatedLyrics.length
-                ? currentSong.currentTime >= lyricline.time &&
-                  currentSong.currentTime < timeFormatedLyrics[index + 1].time
-                : currentSong.currentTime >= lyricline.time
+                ? currentTime >= lyricline.time && currentTime < timeFormatedLyrics[index + 1].time
+                : currentTime >= lyricline.time
           }"
         >
           {{ lyricline.lyric }}
@@ -35,108 +29,115 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { namespace, State } from "vuex-class";
 import { getLyrics } from "@/service";
+import { Album, Artist } from "@/types";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma";
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
 
-export default {
-  name: "SongPlayer",
-  data() {
-    return {
-      msg: "hello world",
-      lyrics: {},
-      timeFormatedLyrics: [],
-      currentLyricIndex: 0
-    };
-  },
-  computed: {
-    currentSong() {
-      return this.$store.state.playList.getCurrentSong();
+const lineRE = /\[(\d+):(\d+)\.(\d+)\](.+)/;
+const playlist = namespace("playlist");
+
+@Component({
+  components: { ArtistsWithComma, ImageWithPlaceholder }
+})
+export default class SongPlayer extends Vue {
+  msg: string = "hello world";
+  lyrics: any = {};
+  timeFormatedLyrics: any = [];
+  currentLyricIndex: number = 0;
+
+  @playlist.State currentSongId!: number;
+  @Prop(Number) readonly currentTime!: number;
+  @Prop(String) readonly name!: string;
+  @Prop() readonly album!: Album;
+  @Prop() readonly artists!: Artist[];
+
+  updateLyrics() {
+    if (!this.currentSongId) {
+      return;
     }
-  },
-  created() {
-    console.log("cur ", this.currentSong.id);
-    getLyrics(this.currentSong.id).then(res => {
+    getLyrics(this.currentSongId).then(res => {
       console.log("res: ", res);
       const lyrics = res.data.lrc.lyric.split("\n");
-      lyrics.forEach((line, i) => {
-        let key = line.match(/\[.+\]/g);
-        if (key && key.length > 0) {
-          key = key[0];
-          const timeReg = /\[([0-9]+):([0-9]+)\.([0-9]+)\]/g;
-          const res = timeReg.exec(key);
-          if (res) {
-            const minutes = parseInt(res[1]);
-            const seconds = parseInt(res[2]);
-            const milliseconds = parseInt(res[3]);
-            const lyricObj = {};
-            this.$set(lyricObj, "time", minutes * 60 + seconds + milliseconds / 1000);
-            this.$set(lyricObj, "lyric", line.replace(key, ""));
-            this.$set(lyricObj, "selected", false);
-            this.timeFormatedLyrics.push(lyricObj);
-          }
+      lyrics.forEach((line: string, i: number) => {
+        const lineData = line.match(lineRE);
+        if (lineData) {
+          const minutes = parseInt(lineData[1]);
+          const seconds = parseInt(lineData[2]);
+          const milliseconds = parseInt(lineData[3]);
+          const text = lineData[4];
+          const lyricObj = {};
+          this.$set(lyricObj, "time", minutes * 60 + seconds + milliseconds / 1000);
+          this.$set(lyricObj, "lyric", text);
+          this.$set(lyricObj, "selected", false);
+          this.timeFormatedLyrics.push(lyricObj);
         }
       });
     });
-  },
-  watch: {
-    "currentSong.currentTime": {
-      handler(val) {
-        if (this.currentLyricIndex < this.timeFormatedLyrics.length - 1) {
-          if (
-            this.currentSong.currentTime >= this.timeFormatedLyrics[this.currentLyricIndex + 1].time
-          ) {
-            this.currentLyricIndex++;
-          }
-        }
-      },
-      deep: true
-    },
-    currentLyricIndex(val) {
-      this.$el
-        .querySelector(`.lyric-line:nth-of-type(${val + 1})`)
-        .scrollIntoView({ block: "center" });
+  }
+  created() {
+    this.updateLyrics();
+  }
+  @Watch("currentTime")
+  onCurrentTimeChange(val: number) {
+    if (this.currentLyricIndex < this.timeFormatedLyrics.length - 1) {
+      if (this.currentTime >= this.timeFormatedLyrics[this.currentLyricIndex + 1].time) {
+        this.currentLyricIndex++;
+      }
     }
   }
-};
+  @Watch("currentLyricIndex")
+  onCurrentLyricIndexChange(val: number) {
+    if (this.$el) {
+      const lyricLineEle = this.$el.querySelector(`.lyric-line:nth-of-type(${val + 1})`);
+      if (lyricLineEle) {
+        lyricLineEle.scrollIntoView({ block: "center" });
+      }
+    }
+  }
+}
 </script>
 <style lang="sass" scoped>
-@import "@/components/config.sass";
+@import "@/components/config.sass"
 
 .contaienr
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: calc(100% - #{$footerHeight});
-  background-color: $whitegray;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  height: calc(100% - #{$footerHeight})
+  background-color: $whitegray
+  display: flex
+  justify-content: center
+  align-items: center
 .img-wrapper
-  width: 30em;
-  height: 30em;
-  margin-right: 2em;
+  width: 30em
+  height: 30em
+  margin-right: 2em
   img
-    width: 100%;
-    height: 100%;
+    width: 100%
+    height: 100%
 .info
-  display: flex;
-  flex-direction: column;
-  height: 30em;
-  flex: 0 0 30em;
-  overflow: hidden;
+  display: flex
+  flex-direction: column
+  height: 30em
+  flex: 0 0 30em
+  overflow: hidden
 .name
-  font-size: 200%;
-  font-weight: bolder;
-  margin-bottom: 0.6em;
+  font-size: 200%
+  font-weight: bolder
+  margin-bottom: 0.6em
 .artist-album
-  margin-bottom: 0.6em;
+  margin-bottom: 0.6em
 .lyrics
-  overflow-y: scroll;
-  margin-right: -1em;
+  overflow-y: scroll
+  margin-right: -1em
 .lyric-line
-  font-size: 100%;
-  height: 1em;
+  font-size: 100%
+  height: 1em
   &.select
-    color: $orange;
+    color: $orange
 </style>
