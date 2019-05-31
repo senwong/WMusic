@@ -73,7 +73,9 @@ export default {
   },
   computed: {
     curQuality() {
-      return this.currentQuality ? this.currentQuality : this.qualitys[this.qualitys.length - 1];
+      return this.currentQuality
+        ? this.currentQuality
+        : this.qualitys[this.qualitys.length - 1];
     }
   }
 };

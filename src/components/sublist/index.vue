@@ -22,7 +22,11 @@ enum ContentType {
 const contentTypes = ["专辑", "歌手", "MV"];
 
 type SubListComponentName = "AlbumSublist" | "ArtistSublist" | "MvSublist";
-const typeComponents: SubListComponentName[] = ["AlbumSublist", "ArtistSublist", "MvSublist"];
+const typeComponents: SubListComponentName[] = [
+  "AlbumSublist",
+  "ArtistSublist",
+  "MvSublist"
+];
 @Component({
   components: {
     TabMenu,

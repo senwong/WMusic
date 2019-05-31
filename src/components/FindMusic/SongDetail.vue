@@ -3,7 +3,10 @@
     <!-- 歌曲信息 -->
     <div class="song-info">
       <div class="album-img" v-if="album">
-        <img :src="album.picUrl | convert2Https | clipImage(400, 400)" :alt="name" />
+        <img
+          :src="album.picUrl | convert2Https | clipImage(400, 400)"
+          :alt="name"
+        />
       </div>
       <div class="song-desc">
         <div class="song-name">{{ name }}</div>
@@ -31,7 +34,11 @@
     <!-- 歌曲评论和标签-->
     <div class="comment__tag">
       <!-- 歌曲评论 -->
-      <CommentList class="comments" :type="currentCommentType" :id="Number(songId)" />
+      <CommentList
+        class="comments"
+        :type="currentCommentType"
+        :id="Number(songId)"
+      />
       <!-- 标签 -->
       <div class="tags">
         <h1>相似歌曲</h1>
@@ -50,7 +57,9 @@
               </div>
             </div>
             <div class="info-container">
-              <router-link class="name" :to="'/song/' + song.id">{{ song.name }}</router-link>
+              <router-link class="name" :to="'/song/' + song.id">{{
+                song.name
+              }}</router-link>
               <router-link
                 class="artists"
                 :to="'/artist/' + song.id"
@@ -71,7 +80,14 @@ import CommentList from "./CommentList.vue";
 import RippleButton from "@/components/globals/RippleButton.vue";
 import PlaySvg from "@/components/globals/PlaySvg.vue";
 import { Vue, Component } from "vue-property-decorator";
-import { Artist, Album, Track, TrackQuality, CommentType, convertTrack } from "@/types";
+import {
+  Artist,
+  Album,
+  Track,
+  TrackQuality,
+  CommentType,
+  convertTrack
+} from "@/types";
 import { Mutation, namespace } from "vuex-class";
 
 const playlist = namespace("playlist");

@@ -6,7 +6,7 @@
         block
         rounded
         large
-        :primary="type == 'email'"
+        :primary="isEmail"
         @click.native="switchToEmail"
         >邮箱登录</Button
       >
@@ -15,14 +15,14 @@
         block
         rounded
         large
-        :primary="type == 'phone'"
+        :primary="isPhone"
         @click.native="switchToPhone"
         >手机登录</Button
       >
     </div>
     <!-- 使用邮箱登录 -->
     <Input
-      v-if="type == 'email'"
+      v-if="isEmail"
       class="input-email"
       type="text"
       large
@@ -34,7 +34,7 @@
       @enter="handleLogin"
     />
     <!-- 使用手机登录 -->
-    <div class="phone-input" v-if="type == 'phone'">
+    <div class="phone-input" v-if="isPhone">
       <SelectInput
         class="phone-input__country-code"
         :options="phoneOptions"
@@ -64,7 +64,9 @@
     <div class="login-failed" :class="{ 'login-failed_show': isLoginFailed }">
       登录错误，请重试。
     </div>
-    <Button class="login-btn" block primary large @click.native="handleLogin">登录</Button>
+    <Button class="login-btn" block primary large @click.native="handleLogin"
+      >登录</Button
+    >
 
     <div class="signup__container">
       <div class="signup__title">没有账号</div>
@@ -76,7 +78,6 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Mutation, namespace } from "vuex-class";
-
 import Button from "@/components/globals/Button.vue";
 import Input from "@/components/globals/Input.vue";
 import { loginEmail, loginPhone } from "@/service";
@@ -84,6 +85,10 @@ import SelectInput from "@/components/globals/SelectInput.vue";
 import CountryPhoneCodes from "./CountryPhoneCodes.json";
 import { Option } from "@/types";
 
+enum LoginType {
+  Email,
+  Phone
+}
 type Phone = {
   countryCode: number;
   number: number;
@@ -99,7 +104,7 @@ export default class Login extends Vue {
   email: string = "";
   password: string = "";
   isLoginFailed: boolean = false;
-  type: string = "email";
+  type: LoginType = LoginType.Email;
   phoneCountryCode: Option | null = null;
   phoneNumber: number | null = null;
 
@@ -110,9 +115,15 @@ export default class Login extends Vue {
       value: pc.phoneCode
     }));
   }
+  get isPhone(): boolean {
+    return this.type === LoginType.Phone;
+  }
+  get isEmail(): boolean {
+    return this.type === LoginType.Email;
+  }
   @currentUser.Mutation setCurrentUserId!: (id: number) => void;
   handleLogin() {
-    if (this.type === "phone") {
+    if (this.isPhone) {
       if (
         !this.verifyPhoneLogin(
           this.phoneNumber,
@@ -123,7 +134,7 @@ export default class Login extends Vue {
         return;
       }
     }
-    if (this.type === "email") {
+    if (this.isEmail) {
       if (!this.verifyEmailLogin(this.email, this.password)) {
         return;
       }
@@ -131,10 +142,13 @@ export default class Login extends Vue {
     if (this.phoneNumber === null || this.phoneCountryCode === null) {
       return;
     }
-    const responsePromise =
-      this.type == "email"
-        ? loginEmail(this.email, this.password)
-        : loginPhone(this.phoneNumber, this.password, this.phoneCountryCode.value);
+    const responsePromise = this.isEmail
+      ? loginEmail(this.email, this.password)
+      : loginPhone(
+          this.phoneNumber,
+          this.password,
+          this.phoneCountryCode.value
+        );
     this.handleLoginResponsePromsie(responsePromise);
   }
   verifyPhoneLogin(
@@ -142,7 +156,9 @@ export default class Login extends Vue {
     password: string,
     phoneCountryCode: number | null
   ): boolean {
-    return phoneNumber !== null && password.length > 0 && phoneCountryCode !== null;
+    return (
+      phoneNumber !== null && password.length > 0 && phoneCountryCode !== null
+    );
   }
   verifyEmailLogin(email: string, password: string): boolean {
     if (email === undefined || password === undefined) return false;
@@ -176,11 +192,11 @@ export default class Login extends Vue {
     );
   }
   switchToEmail() {
-    this.type = "email";
+    this.type = LoginType.Email;
     this.emptyErrorsHint();
   }
   switchToPhone() {
-    this.type = "phone";
+    this.type = LoginType.Phone;
     this.emptyErrorsHint();
   }
 

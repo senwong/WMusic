@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div class="placeholder__wrapper" v-for="(_, idx) in new Array(count)" :key="idx">
+    <div
+      class="placeholder__wrapper"
+      v-for="(_, idx) in new Array(count)"
+      :key="idx"
+    >
       <Placeholder class="placeholder__icon" />
       <div class="placeholder__info">
         <Placeholder class="placeholder__title" />

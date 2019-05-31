@@ -28,7 +28,11 @@ export function formatDay(milliseconds: number): string {
  * 优化过的resize事件
  */
 export function optimizedResize() {
-  const throttle = function(type: string, name: string, obj: EventTarget): void {
+  const throttle = function(
+    type: string,
+    name: string,
+    obj: EventTarget
+  ): void {
     obj = obj || window;
     let running = false;
     const func = function() {
@@ -67,7 +71,11 @@ export function addEventListenerOnce(
     listener.apply(null);
   });
 }
-export function clipImage(imgUrl: string, width: number, height: number): string {
+export function clipImage(
+  imgUrl: string,
+  width: number,
+  height: number
+): string {
   return `${imgUrl}?param=${width}y${height}`;
 }
 /**
@@ -125,7 +133,15 @@ export function formatDateToBefore(milliseconds: number): string {
   const oneYear = oneMonth * 12;
 
   const map = [oneYear, oneMonth, oneDay, oneHour, oneMin, oneSecond];
-  const a = ["年以前", "个月以前", "天以前", "小时以前", "分钟以前", "秒钟以前", "刚刚"];
+  const a = [
+    "年以前",
+    "个月以前",
+    "天以前",
+    "小时以前",
+    "分钟以前",
+    "秒钟以前",
+    "刚刚"
+  ];
   for (let i = 0; i < map.length; i++) {
     if (delta >= map[i]) {
       return Math.round(delta / map[i]) + a[i];

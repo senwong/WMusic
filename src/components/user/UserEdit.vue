@@ -7,7 +7,8 @@
     </label>
     <label class="user-edit__row edit-signature">
       <span class="user-edit__label edit-signature__label">介绍：</span>
-      <textarea class="edit-signature__textarea" v-model="signatureTemp"> </textarea>
+      <textarea class="edit-signature__textarea" v-model="signatureTemp">
+      </textarea>
     </label>
     <div class="user-edit__row">
       <span class="user-edit__label">性别：</span>
@@ -27,18 +28,40 @@
     <div class="user-edit__row">
       <span class="user-edit__label">生日：</span>
       <!-- year select -->
-      <Select class="user-edit__year" v-model="yearTemp" :options="yearOptions" />
+      <Select
+        class="user-edit__year"
+        v-model="yearTemp"
+        :options="yearOptions"
+      />
       <!-- month select -->
-      <Select class="user-edit__month" v-model="monthTemp" :options="monthOptions" />
+      <Select
+        class="user-edit__month"
+        v-model="monthTemp"
+        :options="monthOptions"
+      />
       <!-- date select -->
-      <Select class="user-edit__date" v-model="dateTemp" :options="dateOptions" />
+      <Select
+        class="user-edit__date"
+        v-model="dateTemp"
+        :options="dateOptions"
+      />
     </div>
     <div class="user-edit__row">
       <span class="user-edit__label">省市：</span>
       <!-- province select -->
-      <Select class="user-edit__province" top v-model="provinceTemp" :options="provinceOptions" />
+      <Select
+        class="user-edit__province"
+        top
+        v-model="provinceTemp"
+        :options="provinceOptions"
+      />
       <!-- city select -->
-      <Select class="user-edit__city" top v-model="cityTemp" :options="cityOptions" />
+      <Select
+        class="user-edit__city"
+        top
+        v-model="cityTemp"
+        :options="cityOptions"
+      />
     </div>
     <div class="user-edit__save-canel-btn">
       <Button
@@ -48,10 +71,16 @@
         :disabled="isNotChange || isSaving"
         >保存</Button
       >
-      <Button class="user-edit__cancel-btn" @click.native="handleCancel">取消</Button>
+      <Button class="user-edit__cancel-btn" @click.native="handleCancel"
+        >取消</Button
+      >
     </div>
-    <ErrorLabel class="user-edit__save-error" :show="isSaveError">{{ errorMsg }}</ErrorLabel>
-    <ErrorLabel class="user-edit__save-success" :show="isSaveSuccess">{{ successMsg }}</ErrorLabel>
+    <ErrorLabel class="user-edit__save-error" :show="isSaveError">{{
+      errorMsg
+    }}</ErrorLabel>
+    <ErrorLabel class="user-edit__save-success" :show="isSaveSuccess">{{
+      successMsg
+    }}</ErrorLabel>
   </div>
 </template>
 
@@ -79,7 +108,11 @@ export default {
       dateTemp: null,
       yearOptions: [],
       monthOptions: [],
-      provinceOptions: provinceCitys.map(p => ({ key: p.code, value: p.code, title: p.name })),
+      provinceOptions: provinceCitys.map(p => ({
+        key: p.code,
+        value: p.code,
+        title: p.name
+      })),
       // erro
       isSaveError: false,
       errorMsg: "保存错误",
@@ -115,7 +148,14 @@ export default {
     },
     isNotChange() {
       if (!this.currentUser) return true;
-      const { nickname, signature, gender, birthday, province, city } = this.currentUser;
+      const {
+        nickname,
+        signature,
+        gender,
+        birthday,
+        province,
+        city
+      } = this.currentUser;
       const d = new Date(birthday);
       return (
         this.nicknameTemp == nickname &&
@@ -181,7 +221,14 @@ export default {
     },
     mapCurrentUserToTemp() {
       if (!this.currentUser) return;
-      const { nickname, signature, gender, birthday, province, city } = this.currentUser;
+      const {
+        nickname,
+        signature,
+        gender,
+        birthday,
+        province,
+        city
+      } = this.currentUser;
       (this.nicknameTemp = nickname),
         (this.signatureTemp = signature),
         (this.genderTemp = gender),

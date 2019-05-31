@@ -36,7 +36,9 @@ export default class Subscribers extends Vue {
         this.hasMore = res.data.more;
       },
       error => {
-        this.setMsg(`获取歌单订阅者错误${error && error.msg ? error.msg : ""}！`);
+        this.setMsg(
+          `获取歌单订阅者错误${error && error.msg ? error.msg : ""}！`
+        );
       }
     );
   }

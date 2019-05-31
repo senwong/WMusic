@@ -11,7 +11,12 @@
       </div>
       <div class="card__right">
         <div class="track-head">
-          <Button class="track-head__play" rounded primary xsmall @click.native="playAll"
+          <Button
+            class="track-head__play"
+            rounded
+            primary
+            xsmall
+            @click.native="playAll"
             >全部播放</Button
           >
           <Button
@@ -25,7 +30,11 @@
           >
         </div>
         <ul class="table-body" v-if="content && content.tracks.length > 0">
-          <li class="track__item" v-for="(track, i) in content.tracks" :key="track.id">
+          <li
+            class="track__item"
+            v-for="(track, i) in content.tracks"
+            :key="track.id"
+          >
             <div class="track__rank__play">
               <span class="track__rank">0{{ i + 1 }}</span>
               <span class="track__play" @click="play(track.id)">
@@ -36,7 +45,10 @@
               {{ track.name }}
             </router-link>
             <span class="track__artists">
-              <ArtistsWithComma :artists="track.artists" aTagClass="track__artist" />
+              <ArtistsWithComma
+                :artists="track.artists"
+                aTagClass="track__artist"
+              />
             </span>
           </li>
         </ul>
@@ -54,7 +66,14 @@ import Button from "@/components/globals/Button.vue";
 import { Mutation, namespace } from "vuex-class";
 import PlayIcon from "@/components/SVGIcons/PlayIcon.vue";
 
-import { PlaylistType, Track, Album, TabMenuItem, Artist, convertTrack } from "@/types";
+import {
+  PlaylistType,
+  Track,
+  Album,
+  TabMenuItem,
+  Artist,
+  convertTrack
+} from "@/types";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 
 const playlist = namespace("playlist");

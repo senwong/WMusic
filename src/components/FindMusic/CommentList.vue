@@ -5,7 +5,12 @@
       <LoadingIcon />
     </div>
     <div class="comments" v-else>
-      <CommentReplyEditor isMain :id="id" :type="type" @sentComment="handleSentComment" />
+      <CommentReplyEditor
+        isMain
+        :id="id"
+        :type="type"
+        @sentComment="handleSentComment"
+      />
       <div v-if="hotComments.length">
         <h3>最热评论（{{ hotComments.length }}）</h3>
         <CommentItem
@@ -36,7 +41,9 @@
       </div>
       <!-- loaded all comments Sign board -->
       <div class="loaded-all-comments-sign-bard" v-if="isAllCommentsLoaded">
-        <span class="loaded-all-comments-sign-bard__title">已加载完所有评论</span>
+        <span class="loaded-all-comments-sign-bard__title"
+          >已加载完所有评论</span
+        >
       </div>
     </div>
   </div>
@@ -47,7 +54,12 @@ import LikeIcon from "@/components/SVGIcons/LikeIcon.vue";
 import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon.vue";
 import CommentItem from "./CommentItem.vue";
 import CommentReplyEditor from "./CommentReplyEditor.vue";
-import { getSongComment, getMVComments, getPlaylistComments, getAlbumComments } from "@/service";
+import {
+  getSongComment,
+  getMVComments,
+  getPlaylistComments,
+  getAlbumComments
+} from "@/service";
 import LoadingIcon from "@/components/globals/Loading.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Comment, CommentType } from "@/types";
@@ -147,8 +159,9 @@ export default class CommentList extends Vue {
         if (comments && comments.length > 0) {
           comments.forEach((c: Comment) => {
             if (
-              this.comments.findIndex((oldc: Comment): boolean => oldc.commentId === c.commentId) <
-              0
+              this.comments.findIndex(
+                (oldc: Comment): boolean => oldc.commentId === c.commentId
+              ) < 0
             ) {
               this.comments.push(c);
             }

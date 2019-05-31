@@ -17,9 +17,15 @@
         <span>{{ formatPlayCount(card.playCount) }}</span>
       </div>
     </CardImage>
-    <router-link :to="`/${cardType}/${card.id}`" class="list__name">{{ card.name }}</router-link>
+    <router-link :to="`/${cardType}/${card.id}`" class="list__name">{{
+      card.name
+    }}</router-link>
     <!-- creator -->
-    <router-link v-if="card.creator" class="creator-name" :to="`/user/${card.creator.userId}`">
+    <router-link
+      v-if="card.creator"
+      class="creator-name"
+      :to="`/user/${card.creator.userId}`"
+    >
       {{ card.creator.nickname }}
     </router-link>
     <!-- 点击更多，弹出菜单 -->

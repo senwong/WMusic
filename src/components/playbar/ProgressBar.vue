@@ -3,7 +3,10 @@
     <div class="bar">
       <div
         class="bg"
-        :style="{ transform: `translateX(${bgAccTranslateX}px)`, left: `${-bgTotalWidth}px` }"
+        :style="{
+          transform: `translateX(${bgAccTranslateX}px)`,
+          left: `${-bgTotalWidth}px`
+        }"
       />
     </div>
     <div

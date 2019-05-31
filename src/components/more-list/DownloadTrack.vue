@@ -48,7 +48,9 @@ export default class Download extends Vue {
       },
       error => {
         this.isLoading = false;
-        this.setMsg(`获取下载歌曲地址错误${error && error.msg ? error.msg : ""}！`);
+        this.setMsg(
+          `获取下载歌曲地址错误${error && error.msg ? error.msg : ""}！`
+        );
       }
     );
   }

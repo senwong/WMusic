@@ -8,7 +8,13 @@
         <div class="media__right">
           <div class="media__heading">{{ album.name }}</div>
           <div class="album__actions">
-            <Button rounded primary @click.native="playAll" class="button-controll">播放</Button>
+            <Button
+              rounded
+              primary
+              @click.native="playAll"
+              class="button-controll"
+              >播放</Button
+            >
             <Button rounded class="button-controll">收藏</Button>
             <Button rounded class="button-controll">歌词</Button>
             <Button rounded class="button-controll">more</Button>
@@ -42,7 +48,14 @@ import { getAlbumDetail } from "@/service";
 import SongList from "@/components/globals/SongList.vue";
 import { mapMutations } from "vuex";
 import { Vue, Component } from "vue-property-decorator";
-import { Track, Album, convertTrack, TabMenuItem, CommentType, Artist } from "@/types";
+import {
+  Track,
+  Album,
+  convertTrack,
+  TabMenuItem,
+  CommentType,
+  Artist
+} from "@/types";
 import { Mutation, namespace } from "vuex-class";
 import Button from "@/components/globals/Button.vue";
 import TabMenu from "@/components/globals/TabMenu.vue";

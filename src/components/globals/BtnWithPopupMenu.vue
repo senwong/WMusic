@@ -3,7 +3,12 @@
     <div ref="btn">
       <slot name="btn" />
     </div>
-    <div class="popup-menu" v-show="canPopup && showPopup" :style="styleObj" ref="popupMenu">
+    <div
+      class="popup-menu"
+      v-show="canPopup && showPopup"
+      :style="styleObj"
+      ref="popupMenu"
+    >
       <slot name="menu" />
     </div>
   </div>
@@ -54,7 +59,14 @@ export default class BtnWithPopupMenu extends Vue {
   }
   calcPosition() {
     if (!this.$refs.btn) return;
-    const { top, left, bottom, right, width, height } = this.$refs.btn.getBoundingClientRect();
+    const {
+      top,
+      left,
+      bottom,
+      right,
+      width,
+      height
+    } = this.$refs.btn.getBoundingClientRect();
     const viewportHeight = document.documentElement.clientHeight;
     const viewportWidth = document.documentElement.clientWidth;
 

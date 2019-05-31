@@ -16,8 +16,14 @@
     </div>
     <div class="track-names">
       <div class="track-name-mvlink">
-        <router-link :to="`/song/${track.id}`" class="track-name">{{ track.name }}</router-link>
-        <router-link v-if="track.mv" :to="'/mvplay/' + track.mv" class="track-mvlink">
+        <router-link :to="`/song/${track.id}`" class="track-name">{{
+          track.name
+        }}</router-link>
+        <router-link
+          v-if="track.mv"
+          :to="'/mvplay/' + track.mv"
+          class="track-mvlink"
+        >
           <MvIcon />
         </router-link>
       </div>

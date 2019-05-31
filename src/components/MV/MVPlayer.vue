@@ -14,7 +14,10 @@
         </p>
         <p class="space-between">
           <span>{{ formatCount(playCount) }}次播放</span>
-          <span>{{ formatCount(likeCount) }}喜欢 {{ formatCount(shareCount) }}分享</span>
+          <span
+            >{{ formatCount(likeCount) }}喜欢
+            {{ formatCount(shareCount) }}分享</span
+          >
         </p>
       </div>
       <!-- comments -->

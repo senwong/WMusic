@@ -5,7 +5,12 @@
       <span class="text-gray">{{ formatDate(updateTime) }}更新</span>
     </div>
     <div class="rank-container">
-      <RankItem v-for="(media, i) in MVrankList" :key="media.id" :rank-item="media" :index="i" />
+      <RankItem
+        v-for="(media, i) in MVrankList"
+        :key="media.id"
+        :rank-item="media"
+        :index="i"
+      />
     </div>
   </div>
 </template>

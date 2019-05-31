@@ -1,7 +1,12 @@
 <template>
   <div class="sound-panel">
     <!-- 打开/关闭音量 -->
-    <SvgBtnWrapper xlarge class="mute-volume" @click.native="toggleVolume" :disabled="disabled">
+    <SvgBtnWrapper
+      xlarge
+      class="mute-volume"
+      @click.native="toggleVolume"
+      :disabled="disabled"
+    >
       <VolumeIcon v-if="isVolume" />
       <VolumeMuteIcon v-if="!isVolume" />
     </SvgBtnWrapper>
@@ -115,7 +120,9 @@ export default class SoundPanel extends Vue {
 
   @Prop() disabled!: boolean;
 
-  @playlist.Mutation("setVisibility") setPlaylistVisibility!: (v: boolean) => void;
+  @playlist.Mutation("setVisibility") setPlaylistVisibility!: (
+    v: boolean
+  ) => void;
   @playlist.State("isVisible") isPlaylistVisible!: boolean;
 
   toggleVolume() {

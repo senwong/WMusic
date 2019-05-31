@@ -49,7 +49,9 @@ export default {
       );
     },
     isPageSpread(pageIdx) {
-      return pageIdx == this.currentPageIdx + 3 || pageIdx == this.currentPageIdx - 3;
+      return (
+        pageIdx == this.currentPageIdx + 3 || pageIdx == this.currentPageIdx - 3
+      );
     },
     handleClick({ pageIdx }) {
       this.currentPageIdx = pageIdx;

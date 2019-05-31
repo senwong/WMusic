@@ -51,7 +51,9 @@ const mutations = {
       return;
     }
     const trackIdx = state.tracks.findIndex((t: Track) => t.id == track.id);
-    const currentSongIdx = state.tracks.findIndex((t: Track) => t.id === state.currentSongId);
+    const currentSongIdx = state.tracks.findIndex(
+      (t: Track) => t.id === state.currentSongId
+    );
     if (trackIdx > -1) {
       if (state.currentSongId != track.id) {
         if (currentSongIdx == state.tracks.length - 1) {

@@ -10,7 +10,10 @@
   -->
   <div class="user-media-card__container" v-if="user">
     <router-link class="user-media-card__avatar" :to="`/user/${user.userId}`">
-      <Avatar :name="user.nickname" :imgSrc="user.avatarUrl | clipImage(70, 70)" />
+      <Avatar
+        :name="user.nickname"
+        :imgSrc="user.avatarUrl | clipImage(70, 70)"
+      />
     </router-link>
     <!-- user info -->
     <div class="user-media-card__user-info">
@@ -19,9 +22,14 @@
         {{ user.nickname }}
       </router-link>
       <!-- signature -->
-      <div class="user-info__signature" v-if="user.signature.length > 0">{{ user.signature }}</div>
+      <div class="user-info__signature" v-if="user.signature.length > 0">
+        {{ user.signature }}
+      </div>
       <!-- playlist count and followeds -->
-      <div class="user-info__playlist-followeds" v-if="user.playlistCount && user.followeds">
+      <div
+        class="user-info__playlist-followeds"
+        v-if="user.playlistCount && user.followeds"
+      >
         <span class="user-info__playlist">歌单：{{ user.playlistCount }}</span>
         <span>&nbsp;|&nbsp;</span>
         <span class="user-info__followeds">粉丝：{{ user.followeds }}</span>

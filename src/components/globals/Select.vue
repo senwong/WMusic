@@ -1,7 +1,11 @@
 <template>
   <div>
     <div class="select-container">
-      <div class="select__element" @click="handleClick" :class="{ focused: showOptions }">
+      <div
+        class="select__element"
+        @click="handleClick"
+        :class="{ focused: showOptions }"
+      >
         <span class="select__element__title">{{ title }}</span>
         <span class="select__element__icon" :class="{ rotated: showOptions }">
           <ChevronBottomIcon />
@@ -9,7 +13,11 @@
       </div>
       <div class="options__position">
         <transition name="slide-fade">
-          <div class="options__container" :class="{ 'is-top': top }" v-show="showOptions">
+          <div
+            class="options__container"
+            :class="{ 'is-top': top }"
+            v-show="showOptions"
+          >
             <div
               class="options__item"
               v-for="opt in options"

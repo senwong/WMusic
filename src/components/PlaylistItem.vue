@@ -121,7 +121,9 @@ export default class PlaylistItem extends Vue {
     this.canPopupMenu = true;
   }
   handleRemove() {
-    this.setTracks(this.tracks.slice().filter((t: Track) => t.id !== this.track.id));
+    this.setTracks(
+      this.tracks.slice().filter((t: Track) => t.id !== this.track.id)
+    );
   }
 }
 </script>

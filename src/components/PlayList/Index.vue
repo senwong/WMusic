@@ -8,7 +8,11 @@
           <ChevronBottomIcon class="category__title__icon" v-show="showMenu" />
         </span>
       </div>
-      <transition name="move" @after-enter="afterEnter" @before-leave="beforeLeave">
+      <transition
+        name="move"
+        @after-enter="afterEnter"
+        @before-leave="beforeLeave"
+      >
         <div class="category__list-wrapper" v-show="showMenu">
           <div class="category__list-container">
             <div class="category__list">
@@ -20,7 +24,10 @@
               >
             </div>
             <hr />
-            <div v-for="categoryKey in Object.keys(categories)" :key="categoryKey">
+            <div
+              v-for="categoryKey in Object.keys(categories)"
+              :key="categoryKey"
+            >
               <h3>{{ categories[categoryKey] }}</h3>
               <div class="category__list">
                 <span
@@ -55,7 +62,11 @@
             }
           ]"
         />
-        <SongCards :cardLists="playlists" cardType="playlist" class="song-cards" />
+        <SongCards
+          :cardLists="playlists"
+          cardType="playlist"
+          class="song-cards"
+        />
         <Pagination :total="pageTotal" @change="handlePageChange" />
       </div>
     </div>

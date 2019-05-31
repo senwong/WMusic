@@ -10,7 +10,11 @@
       class="search-bar"
     />
     <transition name="slide-up">
-      <SearchRecommendations v-show="showRecommendations" class="srh-recmd" :keywords="value" />
+      <SearchRecommendations
+        v-show="showRecommendations"
+        class="srh-recmd"
+        :keywords="value"
+      />
     </transition>
   </div>
 </template>
@@ -49,7 +53,12 @@ export default {
     },
     handleClick({ target }) {
       if (!this.$refs.container) return;
-      if (!(target == this.$refs.container || this.$refs.container.contains(target))) {
+      if (
+        !(
+          target == this.$refs.container ||
+          this.$refs.container.contains(target)
+        )
+      ) {
         this.showRecommendations = false;
       }
     }

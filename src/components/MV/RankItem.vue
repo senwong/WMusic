@@ -1,12 +1,22 @@
 <template>
   <div class="rank-item">
     <div class="rank-title">
-      <span class="rank-index text-gray">{{ formatIndex(rankItem.rank + 1) }}</span>
-      <UnderscoreIcon class="text-gray rank_icon" v-if="rankItem.rank + 1 == rankItem.lastRank" />
-      <ArrowTopIcon class="rank_icon" v-else-if="rankItem.rank + 1 < rankItem.lastRank" />
+      <span class="rank-index text-gray">{{
+        formatIndex(rankItem.rank + 1)
+      }}</span>
+      <UnderscoreIcon
+        class="text-gray rank_icon"
+        v-if="rankItem.rank + 1 == rankItem.lastRank"
+      />
+      <ArrowTopIcon
+        class="rank_icon"
+        v-else-if="rankItem.rank + 1 < rankItem.lastRank"
+      />
       <ArrowBottomIcon
         class="rank_icon"
-        v-else-if="rankItem.rank + 1 > rankItem.lastRank && rankItem.lastRank <= 10"
+        v-else-if="
+          rankItem.rank + 1 > rankItem.lastRank && rankItem.lastRank <= 10
+        "
       />
       <span v-else class="rank-index_new">new</span>
     </div>

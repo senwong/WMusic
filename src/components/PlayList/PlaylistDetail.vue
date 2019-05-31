@@ -12,7 +12,10 @@
       <div class="desc">
         <div class="creator" v-if="creator">
           <router-link class="creator-avatar" :to="'/user/' + creator.userId">
-            <img :src="creator.avatarUrl | convert2Https" :alt="creator.nickname" />
+            <img
+              :src="creator.avatarUrl | convert2Https"
+              :alt="creator.nickname"
+            />
           </router-link>
           <router-link class="creator-name" :to="'/user/' + creator.userId">
             {{ creator.nickname }}
@@ -21,7 +24,11 @@
         </div>
         <h3 class="name">{{ name }}</h3>
         <div>
-          <Button class="btn-control" rounded primary @click.native="handlePlayAll"
+          <Button
+            class="btn-control"
+            rounded
+            primary
+            @click.native="handlePlayAll"
             >全部播放</Button
           >
           <Button class="btn-control" rounded>收藏</Button>
@@ -32,7 +39,10 @@
           标签：
           <span>{{ tags.join(" / ") }}</span>
         </div>
-        <div class="count__wrapper" v-if="!isUndef(trackCount) && !isUndef(playCount)">
+        <div
+          class="count__wrapper"
+          v-if="!isUndef(trackCount) && !isUndef(playCount)"
+        >
           歌曲数：
           <span>{{ formatCount(trackCount) }}</span>
           <span class="playcount">
@@ -66,7 +76,10 @@
       :tracks="tracks"
       :id="playlistId"
     />
-    <SongListPlaceholder :count="20" v-if="contentType == ContentType.Tracks && isLoading" />
+    <SongListPlaceholder
+      :count="20"
+      v-if="contentType == ContentType.Tracks && isLoading"
+    />
     <CommentList
       v-if="contentType == ContentType.Comments"
       :type="CommentType.PlaylistComment"

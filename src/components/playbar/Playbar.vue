@@ -28,7 +28,12 @@
       <!-- 中间区域 开始-->
       <div class="playbar__item_middle pause-panel">
         <!-- 上一曲按钮 -->
-        <SvgBtnWrapper xlarge class="prev-song" @click.native="prevSong" :disabled="disabled">
+        <SvgBtnWrapper
+          xlarge
+          class="prev-song"
+          @click.native="prevSong"
+          :disabled="disabled"
+        >
           <PrevSongIcon />
         </SvgBtnWrapper>
         <!-- 播放/暂停按钮 -->
@@ -43,7 +48,12 @@
           <PlayingIcon v-else />
         </SvgBtnWrapper>
         <!-- 下一曲按钮 -->
-        <SvgBtnWrapper xlarge class="next-song" @click.native="nextSong" :disabled="disabled">
+        <SvgBtnWrapper
+          xlarge
+          class="next-song"
+          @click.native="nextSong"
+          :disabled="disabled"
+        >
           <NextSongIcon />
         </SvgBtnWrapper>
       </div>
@@ -60,7 +70,11 @@
       <!-- 右边区域 结束-->
       <div class="progress-bar">
         <!-- TODO -->
-        <ProgressBar :totalTime="duration" :isPlaying="!paused" @jumpTo="handleJumpTo" />
+        <ProgressBar
+          :totalTime="duration"
+          :isPlaying="!paused"
+          @jumpTo="handleJumpTo"
+        />
       </div>
     </div>
     <transition name="slide-up">
@@ -155,37 +169,44 @@ export default class Playbar extends Vue {
   @playlist.Mutation setCurrentSongId!: (id: number) => void;
 
   @playbar.Mutation setPaused!: (paused: boolean) => void;
+
   @playbar.Mutation setAudio!: (audio: HTMLAudioElement) => void;
 
   @Watch("currentSongId")
   onCurrentSongIdChange(id: number) {
-    if (id) {
-      this.isLoading = true;
-      getSongURL(id).then(
-        res => {
-          const newSongUrl = res.data.data[0].url;
-          if (newSongUrl) {
-            this.songUrl = newSongUrl;
-          } else {
-            this.nextSong();
-          }
-        },
-        error => {
-          this.setMsg(`获取歌曲地址错误${error && error.msg ? error.msg : ""}！`);
-        }
-      );
-      getSongDetail(id).then(
-        res => {
-          const song = res.data.songs[0];
-          this.name = song.name;
-          this.artists = song.ar;
-          this.album = song.al;
-        },
-        error => {
-          this.setMsg(`获取歌曲数据错误${error && error.msg ? error.msg : ""}！`);
-        }
-      );
+    if (id === undefined) {
+      return;
     }
+    this.isLoading = true;
+    getSongURL(id).then(
+      res => {
+        const newSongUrl =
+          res &&
+          res.data &&
+          res.data.data &&
+          res.data.data[0] &&
+          res.data.data[0].url;
+        if (newSongUrl) {
+          this.songUrl = newSongUrl;
+        } else {
+          this.nextSong();
+        }
+      },
+      error => {
+        this.setMsg(`获取歌曲地址错误${error && error.msg ? error.msg : ""}！`);
+      }
+    );
+    getSongDetail(id).then(
+      res => {
+        const song = res.data.songs[0];
+        this.name = song.name;
+        this.artists = song.ar;
+        this.album = song.al;
+      },
+      error => {
+        this.setMsg(`获取歌曲数据错误${error && error.msg ? error.msg : ""}！`);
+      }
+    );
   }
 
   @Watch("volume")
@@ -279,7 +300,8 @@ export default class Playbar extends Vue {
     switch (this.currentMode) {
       case PlayMode.Loop: {
         const currentIdx = this.trackIds.indexOf(this.currentSongId);
-        const newIdx = (currentIdx - 1 + this.trackIds.length) % this.trackIds.length;
+        const newIdx =
+          (currentIdx - 1 + this.trackIds.length) % this.trackIds.length;
         this.setCurrentSongId(this.trackIds[newIdx]);
         break;
       }
@@ -302,7 +324,8 @@ export default class Playbar extends Vue {
     switch (this.currentMode) {
       case PlayMode.Loop: {
         const currentIdx = this.trackIds.indexOf(this.currentSongId);
-        const newIdx = (currentIdx + 1 + this.trackIds.length) % this.trackIds.length;
+        const newIdx =
+          (currentIdx + 1 + this.trackIds.length) % this.trackIds.length;
         this.setCurrentSongId(this.trackIds[newIdx]);
         break;
       }

@@ -24,9 +24,17 @@
           <div class="detail-row nickname-action">
             <div class="nickname">{{ profile.nickname }}</div>
             <div class="actions">
-              <Button class="action-button" primary rounded v-if="!isSelf">关注</Button>
-              <Button class="action-button" primary rounded v-if="!isSelf">发私信</Button>
-              <Button class="action-button" rounded v-if="isSelf" @click.native="handleLogout"
+              <Button class="action-button" primary rounded v-if="!isSelf"
+                >关注</Button
+              >
+              <Button class="action-button" primary rounded v-if="!isSelf"
+                >发私信</Button
+              >
+              <Button
+                class="action-button"
+                rounded
+                v-if="isSelf"
+                @click.native="handleLogout"
                 >退出</Button
               >
               <Button
@@ -158,13 +166,15 @@ export default class UserDetail extends Vue {
   }
   get province(): Destrict | undefined {
     return provinceCitys.find(
-      (p: Destrict): boolean => this.profile !== null && p.code == this.profile.province
+      (p: Destrict): boolean =>
+        this.profile !== null && p.code == this.profile.province
     );
   }
   get city(): Destrict | undefined {
     if (this.province && this.province.children) {
       return this.province.children.find(
-        (c: Destrict): boolean => this.profile !== null && c.code == this.profile.city
+        (c: Destrict): boolean =>
+          this.profile !== null && c.code == this.profile.city
       );
     }
     return undefined;

@@ -8,7 +8,13 @@
         <div class="media__right">
           <div class="media__heading">{{ name }}</div>
           <div>
-            <Button rounded primary class="button-controll" @click="handlePlayAll">播放</Button>
+            <Button
+              rounded
+              primary
+              class="button-controll"
+              @click="handlePlayAll"
+              >播放</Button
+            >
             <Button rounded class="button-controll">收藏</Button>
             <Button rounded class="button-controll">歌词</Button>
             <Button rounded class="button-controll">more</Button>
@@ -17,7 +23,11 @@
       </div>
       <p class="brief-desc">{{ briefDesc }}</p>
       <TabMenu align-left :list="tabs" />
-      <song-list :tracks="tracks" class="tab__content tab__1" v-if="showSongs" />
+      <song-list
+        :tracks="tracks"
+        class="tab__content tab__1"
+        v-if="showSongs"
+      />
       <SongCards
         class="artist-detail__albums"
         :cardLists="hotAlbums"

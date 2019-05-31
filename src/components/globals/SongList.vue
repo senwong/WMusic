@@ -1,6 +1,11 @@
 <template>
   <ul class="tracks">
-    <SongListItem v-for="track in tracks" :key="track.id" :track="track" @play="handlePlay" />
+    <SongListItem
+      v-for="track in tracks"
+      :key="track.id"
+      :track="track"
+      @play="handlePlay"
+    />
   </ul>
 </template>
 <script lang="ts">

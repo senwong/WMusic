@@ -2,7 +2,11 @@
   <div>
     <div class="wrapper">
       <div class="fill-lower-wrapper">
-        <div class="fill-lower" ref="fillLower" :style="{ transform: `translateX(${percent})` }" />
+        <div
+          class="fill-lower"
+          ref="fillLower"
+          :style="{ transform: `translateX(${percent})` }"
+        />
       </div>
       <input type="range" :min="min" :max="max" step="0.1" v-model="value" />
     </div>

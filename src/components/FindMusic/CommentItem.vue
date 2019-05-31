@@ -17,7 +17,10 @@
   -->
   <div class="comment__container">
     <!-- left avatar -->
-    <router-link class="comment__avatar avatar" :to="'/user/' + comment.user.userId">
+    <router-link
+      class="comment__avatar avatar"
+      :to="'/user/' + comment.user.userId"
+    >
       <img
         :src="comment.user.avatarUrl | convert2Https | clipImage(100, 100)"
         :alt="comment.user.nickname"
@@ -27,7 +30,10 @@
     <div class="comment__info">
       <!-- usename and datetime -->
       <div>
-        <router-link class="comment__username username" :to="'/user/' + comment.user.userId">
+        <router-link
+          class="comment__username username"
+          :to="'/user/' + comment.user.userId"
+        >
           {{ comment.user.nickname }}
         </router-link>
         <span class="comment__datetime datetime" v-if="comment.time">
@@ -45,8 +51,12 @@
           <span class="count" v-if="comment.likedCount > 0">{{
             formatCount(comment.likedCount)
           }}</span>
-          <button class="reply" @click="isShowReplyEditor = !isShowReplyEditor">回复</button>
-          <button class="reply" @click="deleteComment" v-if="deleteable">删除</button>
+          <button class="reply" @click="isShowReplyEditor = !isShowReplyEditor">
+            回复
+          </button>
+          <button class="reply" @click="deleteComment" v-if="deleteable">
+            删除
+          </button>
         </div>
       </div>
       <!-- reply editor -->
@@ -58,9 +68,14 @@
         @sentComment="$emit('sentComment')"
       />
       <!-- view replys toggle button -->
-      <div class="comment__view-replys" v-if="comment.beReplied && comment.beReplied.length">
+      <div
+        class="comment__view-replys"
+        v-if="comment.beReplied && comment.beReplied.length"
+      >
         <button @click="handleViewReplys" class="view-replys__btn">
-          <span v-if="replysFolded">查看{{ formatCount(comment.beReplied.length) }}条回复</span>
+          <span v-if="replysFolded"
+            >查看{{ formatCount(comment.beReplied.length) }}条回复</span
+          >
           <span v-else>隐藏回复</span>
           <span class="view-replys__icon" :class="{ rotate: !replysFolded }">
             <RightArrowIcon />
@@ -69,13 +84,22 @@
       </div>
       <!-- replys -->
       <div class="view-replys__comment-list" v-if="!replysFolded">
-        <CommentItem v-for="c in comment.beReplied" :key="c.beRepliedCommentId" :comment="c" />
+        <CommentItem
+          v-for="c in comment.beReplied"
+          :key="c.beRepliedCommentId"
+          :comment="c"
+        />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { formatDay, formatCount, formatDateToBefore, isUndef } from "@/utilitys";
+import {
+  formatDay,
+  formatCount,
+  formatDateToBefore,
+  isUndef
+} from "@/utilitys";
 import LikeIcon from "@/components/SVGIcons/LikeIcon.vue";
 import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon.vue";
 import CommentReplyEditor from "./CommentReplyEditor.vue";
@@ -109,7 +133,10 @@ export default class CommentItem extends Vue {
   @notification.Mutation setMsg!: (msg: string) => void;
 
   get deleteable(): boolean {
-    return !isUndef(this.currentUserId) && this.comment.user.userId === this.currentUserId;
+    return (
+      !isUndef(this.currentUserId) &&
+      this.comment.user.userId === this.currentUserId
+    );
   }
   deleteComment() {
     deleteComment(this.id, this.type, this.comment.commentId).then(

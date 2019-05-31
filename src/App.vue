@@ -12,7 +12,11 @@
 
     <!-- 滚动页面返回顶部按钮 -->
     <transition name="fade">
-      <button v-if="isScrolled" @click="scrollToTop" class="button_icon large back-top">
+      <button
+        v-if="isScrolled"
+        @click="scrollToTop"
+        class="button_icon large back-top"
+      >
         <ScrollToTopIcon />
       </button>
     </transition>

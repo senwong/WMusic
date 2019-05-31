@@ -1,14 +1,20 @@
 <template>
   <div class="contaienr">
     <div class="img-wrapper">
-      <ImageWithPlaceholder :alt="name" :src="album && album.picUrl | convert2Https" ratio="1:1" />
+      <ImageWithPlaceholder
+        :alt="name"
+        :src="album && album.picUrl | convert2Https"
+        ratio="1:1"
+      />
     </div>
     <div class="info">
       <div class="name">{{ name }}</div>
       <div class="artist-album">
         <ArtistsWithComma :artists="artists" />
         <span v-if="album"
-          >专辑：<router-link :to="`/album/:${album.id}`">{{ album.name }}</router-link></span
+          >专辑：<router-link :to="`/album/:${album.id}`">{{
+            album.name
+          }}</router-link></span
         >
       </div>
       <div class="lyrics">
@@ -19,7 +25,8 @@
           :class="{
             select:
               index + 1 < timeFormatedLyrics.length
-                ? currentTime >= lyricline.time && currentTime < timeFormatedLyrics[index + 1].time
+                ? currentTime >= lyricline.time &&
+                  currentTime < timeFormatedLyrics[index + 1].time
                 : currentTime >= lyricline.time
           }"
         >
@@ -70,7 +77,11 @@ export default class SongPlayer extends Vue {
           const milliseconds = parseInt(lineData[3]);
           const text = lineData[4];
           const lyricObj = {};
-          this.$set(lyricObj, "time", minutes * 60 + seconds + milliseconds / 1000);
+          this.$set(
+            lyricObj,
+            "time",
+            minutes * 60 + seconds + milliseconds / 1000
+          );
           this.$set(lyricObj, "lyric", text);
           this.$set(lyricObj, "selected", false);
           this.timeFormatedLyrics.push(lyricObj);
@@ -84,7 +95,10 @@ export default class SongPlayer extends Vue {
   @Watch("currentTime")
   onCurrentTimeChange(val: number) {
     if (this.currentLyricIndex < this.timeFormatedLyrics.length - 1) {
-      if (this.currentTime >= this.timeFormatedLyrics[this.currentLyricIndex + 1].time) {
+      if (
+        this.currentTime >=
+        this.timeFormatedLyrics[this.currentLyricIndex + 1].time
+      ) {
         this.currentLyricIndex++;
       }
     }
@@ -92,7 +106,9 @@ export default class SongPlayer extends Vue {
   @Watch("currentLyricIndex")
   onCurrentLyricIndexChange(val: number) {
     if (this.$el) {
-      const lyricLineEle = this.$el.querySelector(`.lyric-line:nth-of-type(${val + 1})`);
+      const lyricLineEle = this.$el.querySelector(
+        `.lyric-line:nth-of-type(${val + 1})`
+      );
       if (lyricLineEle) {
         lyricLineEle.scrollIntoView({ block: "center" });
       }

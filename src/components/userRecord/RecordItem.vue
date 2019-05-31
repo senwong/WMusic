@@ -17,14 +17,20 @@
           aTagClass="artist-album__artist"
         />
         <span class="artist-album__dot">.</span>
-        <router-link class="artist-album__album" :to="`/album/${song.album.id}`">
+        <router-link
+          class="artist-album__album"
+          :to="`/album/${song.album.id}`"
+        >
           {{ song.album.name }}
         </router-link>
       </div>
     </div>
     <!-- play count score  -->
     <div class="play-core__wrapper">
-      <div class="play-core__score" :style="{ width: record.score + '%' }"></div>
+      <div
+        class="play-core__score"
+        :style="{ width: record.score + '%' }"
+      ></div>
     </div>
     <div class="play-count__count">{{ record.playCount }}次</div>
   </li>

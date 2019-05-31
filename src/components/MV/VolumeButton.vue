@@ -1,6 +1,12 @@
 <template>
   <button class="button js-button">
-    <svg height="100%" version="1.1" viewBox="0 0 36 36" width="100%" fill="white">
+    <svg
+      height="100%"
+      version="1.1"
+      viewBox="0 0 36 36"
+      width="100%"
+      fill="white"
+    >
       <use class="ytp-svg-shadow" xlink:href="#full-volume-icon"></use>
       <defs>
         <clipPath id="slash-clip">
@@ -20,7 +26,10 @@
             clip-path="url(#slash-clip)"
           />
           <path class="slash" d="M 9,9 l 0,0 -1.27,1.27 0,0 1.5,-1.5 Z" />
-          <path class="clip" d="M0,0 V36 H36 V0 H0 Z M 9.5,9 l 0,0 -1.8,1.8 0,0 1.5,-1.5 Z" />
+          <path
+            class="clip"
+            d="M0,0 V36 H36 V0 H0 Z M 9.5,9 l 0,0 -1.8,1.8 0,0 1.5,-1.5 Z"
+          />
         </g>
         <g id="half-volume-icon" data-state="half">
           <path
@@ -32,7 +41,10 @@
             clip-path="url(#slash-clip)"
           />
           <path class="slash" d="M 9,9 l 0,0 -1.27,1.27 0,0 1.5,-1.5 Z" />
-          <path class="clip" d="M0,0 V36 H36 V0 H0 Z M 9.5,9 l 0,0 -1.8,1.8 0,0 1.5,-1.5 Z" />
+          <path
+            class="clip"
+            d="M0,0 V36 H36 V0 H0 Z M 9.5,9 l 0,0 -1.8,1.8 0,0 1.5,-1.5 Z"
+          />
         </g>
         <g id="zero-volume-icon" data-state="zero">
           <path
@@ -111,8 +123,12 @@ export default {
     },
 
     setInitialState() {
-      const initialIconRef = this.element.querySelector("use").getAttribute("xlink:href");
-      const stateName = this.element.querySelector(initialIconRef).getAttribute("data-state");
+      const initialIconRef = this.element
+        .querySelector("use")
+        .getAttribute("xlink:href");
+      const stateName = this.element
+        .querySelector(initialIconRef)
+        .getAttribute("data-state");
       this.setState(stateName);
     },
 

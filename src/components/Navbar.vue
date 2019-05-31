@@ -2,17 +2,24 @@
   <div class="nav__bar">
     <!-- Log in and Sign in -->
     <div v-if="isLoggedin">
-      <router-link class="current-user" :to="`/user/${currentUserProfile.userId}`">
+      <router-link
+        class="current-user"
+        :to="`/user/${currentUserProfile.userId}`"
+      >
         <img
           class="current-user__avatar"
           :src="currentUserProfile.avatarUrl"
           :alt="currentUserProfile.nickname"
         />
-        <span class="current-user__nickname">{{ currentUserProfile.nickname }}</span>
+        <span class="current-user__nickname">{{
+          currentUserProfile.nickname
+        }}</span>
       </router-link>
     </div>
     <p class="login-signup__wrapper" v-else>
-      <Button as="a" href="/login" primary class="login-signup__login">登录</Button>
+      <Button as="a" href="/login" primary class="login-signup__login"
+        >登录</Button
+      >
       <Button as="a" href="/signup">注册</Button>
     </p>
     <!-- 音乐库 -->
@@ -58,7 +65,10 @@
       <!-- 我的音乐 -->
       <section class="nav__card">
         <p class="nav__card__title">我的音乐</p>
-        <router-link :to="`/record/${currentUserProfile.userId}`" class="nav__link">
+        <router-link
+          :to="`/record/${currentUserProfile.userId}`"
+          class="nav__link"
+        >
           <div class="icon icon_m">
             <MusicIcon />
           </div>
@@ -93,7 +103,10 @@
         <!-- 内容list -->
         <div v-if="isShowMyList">
           <router-link
-            :to="{ path: 'likedsongs', params: { id: currentUserProfile.userId } }"
+            :to="{
+              path: 'likedsongs',
+              params: { id: currentUserProfile.userId }
+            }"
             class="nav__link"
           >
             <div class="icon icon_m">
@@ -193,7 +206,9 @@ export default class Navbar extends Vue {
         this.isLoggedin = true;
       },
       error => {
-        const msg = "获取当前用户信息错误" + (error && error.msg ? error.msg + "！" : "！");
+        const msg =
+          "获取当前用户信息错误" +
+          (error && error.msg ? error.msg + "！" : "！");
         this.setMsg(msg);
         this.isLoggedin = false;
       }

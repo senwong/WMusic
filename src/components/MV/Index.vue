@@ -3,7 +3,12 @@
     <div class="container">
       <h1>最新MV</h1>
       <div class="card-container">
-        <CardItem v-for="mv in newMVList" :key="mv.id" :card="mv" cardType="mvplay" />
+        <CardItem
+          v-for="mv in newMVList"
+          :key="mv.id"
+          :card="mv"
+          cardType="mvplay"
+        />
       </div>
       <div class="title">
         <span class="text-h1">MV排行榜</span>
@@ -11,7 +16,11 @@
         <router-link to="/mv/rank" class="button-bg-right">更多</router-link>
       </div>
       <div class="rank-container">
-        <RankItem v-for="media in MVrankList" :key="media.id" :rank-item="media" />
+        <RankItem
+          v-for="media in MVrankList"
+          :key="media.id"
+          :rank-item="media"
+        />
       </div>
     </div>
   </div>

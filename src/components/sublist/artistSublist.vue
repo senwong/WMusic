@@ -10,7 +10,9 @@
       >
         <template v-slot:title>
           {{ artist.name }}
-          <span v-if="artist.alias.length > 0">({{ artist.alias.join(",") }})</span>
+          <span v-if="artist.alias.length > 0"
+            >({{ artist.alias.join(",") }})</span
+          >
         </template>
         <template v-slot:subtitle_1
           >专辑：{{ artist.albumSize }}</template

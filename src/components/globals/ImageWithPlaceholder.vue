@@ -1,6 +1,10 @@
 <template>
   <div class="img-placeholder-container">
-    <Placeholder class="img-wrapper" :abled="!showImg" :style="{ paddingBottom }">
+    <Placeholder
+      class="img-wrapper"
+      :abled="!showImg"
+      :style="{ paddingBottom }"
+    >
       <FadeTransition>
         <img v-show="showImg" :src="src" :alt="alt" />
       </FadeTransition>

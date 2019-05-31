@@ -2,7 +2,12 @@
   <div>
     <TabMenu align-left :list="navTabList" />
     <ul class="record-list__container">
-      <RecordItem v-for="r in records" :key="r.song.id" :record="r" @play="handlePlay" />
+      <RecordItem
+        v-for="r in records"
+        :key="r.song.id"
+        :record="r"
+        @play="handlePlay"
+      />
     </ul>
   </div>
 </template>
@@ -13,7 +18,15 @@ import { mapState, mapMutations } from "vuex";
 import TabMenu from "@/components/globals/TabMenu.vue";
 import RecordItem from "./RecordItem.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { Track, TrackQuality, Record, Artist, Album, convertTrack, TrackServer } from "@/types";
+import {
+  Track,
+  TrackQuality,
+  Record,
+  Artist,
+  Album,
+  convertTrack,
+  TrackServer
+} from "@/types";
 import { Mutation, namespace } from "vuex-class";
 
 // 0 时返回 allData, 1 时只返回 weekData
@@ -74,7 +87,11 @@ export default class UserRecord extends Vue {
         }
         if (data) {
           this.records = data.map(
-            (r: { song: TrackServer; playCount: number; score: number }): Record => ({
+            (r: {
+              song: TrackServer;
+              playCount: number;
+              score: number;
+            }): Record => ({
               playCount: r.playCount,
               score: r.score,
               song: convertTrack(r.song)
@@ -83,7 +100,9 @@ export default class UserRecord extends Vue {
         }
       },
       error => {
-        this.setMsg(`获取用户播放记录错误！${error && error.msg ? error.msg : ""}`);
+        this.setMsg(
+          `获取用户播放记录错误！${error && error.msg ? error.msg : ""}`
+        );
       }
     );
   }

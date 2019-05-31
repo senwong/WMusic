@@ -1,6 +1,11 @@
 <template>
   <div class="carousle-container">
-    <Motion v-if="images.length > 0" :values="styleProps" tag="div" ref="container">
+    <Motion
+      v-if="images.length > 0"
+      :values="styleProps"
+      tag="div"
+      ref="container"
+    >
       <template slot-scope="_styleProps">
         <a
           class="img-wrapper"
@@ -8,14 +13,19 @@
           :key="idx"
           ref="items"
           :style="{
-            transform: `translateX(${style.translateX}px) scale(${style.scale})`,
+            transform: `translateX(${style.translateX}px) scale(${
+              style.scale
+            })`,
             transformOrigin: transformOrigins[idx],
             zIndex: zIndexs[idx],
             opacity: opacitys[idx]
           }"
           :href="images[idx].url | convert2Https"
         >
-          <ImageWithPlaceholder :src="images[idx].src | convert2Https" ratio="27:10" />
+          <ImageWithPlaceholder
+            :src="images[idx].src | convert2Https"
+            ratio="27:10"
+          />
         </a>
       </template>
     </Motion>
@@ -83,14 +93,17 @@ interface PositionedTransformValuesCalor {
   right: TransformValuesCalor;
 }
 
-function getTransformValues(containerWidth: number): PositionedTransformValuesCalor {
+function getTransformValues(
+  containerWidth: number
+): PositionedTransformValuesCalor {
   return {
     left: {
       getTranslateX: () => 0,
       scale: 0.85
     },
     middle: {
-      getTranslateX: (itemWidth: number): number => (containerWidth - itemWidth) / 2,
+      getTranslateX: (itemWidth: number): number =>
+        (containerWidth - itemWidth) / 2,
       scale: 1
     },
     right: {
@@ -185,7 +198,8 @@ export default class CarouselPanel extends Vue {
 
       const { getTranslateX, scale } = transformValues[p.toString()];
       const { items } = this.$refs;
-      const itemWidth = items && items[idx] ? this.$refs.items[idx].clientWidth : 540;
+      const itemWidth =
+        items && items[idx] ? this.$refs.items[idx].clientWidth : 540;
       return {
         translateX: getTranslateX(itemWidth),
         scale
@@ -230,7 +244,9 @@ export default class CarouselPanel extends Vue {
       if (rightIdx < 2 && rightIdx > -1) {
         return 1;
       }
-      console.log(`getOpacity(): index ${idx} are neither in prevStack nor in nextStack`);
+      console.log(
+        `getOpacity(): index ${idx} are neither in prevStack nor in nextStack`
+      );
       return 0;
     });
   }

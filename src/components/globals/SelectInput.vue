@@ -1,6 +1,10 @@
 <template>
   <div class="select-container">
-    <div class="select" :class="{ active: isSpread }" @click="handleSelectClick">
+    <div
+      class="select"
+      :class="{ active: isSpread }"
+      @click="handleSelectClick"
+    >
       {{ selectTitle }}
     </div>
     <div class="option-list-wrapper">
@@ -20,15 +24,18 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Model } from "vue-property-decorator";
+
 import { Option } from "@/types";
 
 @Component
 export default class SelectInput extends Vue {
   isSpread: boolean = false;
-  // selected: Option | null = null;
+
   @Prop() readonly options!: Option[];
   @Prop() initOption!: Option;
   @Prop(Function) optionToTitle!: (opt: Option) => string;
+  @Model("change") readonly selected!: Option;
+
   get selectTitle() {
     return this.selected && this.selected.title
       ? this.optionToTitle(this.selected)
@@ -36,10 +43,11 @@ export default class SelectInput extends Vue {
       ? this.optionToTitle(this.initOption)
       : "请选择";
   }
-  @Model("change", { type: Option }) selected!: Option;
+
   handleSelectClick() {
     this.isSpread = !this.isSpread;
   }
+
   handleOptionClick(option: Option) {
     this.isSpread = !this.isSpread;
     this.$emit("change", option);

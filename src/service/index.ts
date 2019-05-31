@@ -79,7 +79,9 @@ export function getPlayList(
   order: "hot" | "new" = "hot",
   offset: number = 0
 ) {
-  return Api().get(`/top/playlist?limit=20&cat=${cat}&order=${order}&offset=${offset}`);
+  return Api().get(
+    `/top/playlist?limit=20&cat=${cat}&order=${order}&offset=${offset}`
+  );
 }
 /**
  * 获取排行榜
@@ -135,8 +137,15 @@ export function getLyrics(id: number) {
  * @param {Number} limit 返回数量
  * @param {Number} offset 偏移数量
  */
-export function search(keywords: string, type: number = 1, offset: number = 0, limit: number = 30) {
-  return Api().get(`/search?keywords=${keywords}&type=${type}&limit=${limit}&offset=${offset}`);
+export function search(
+  keywords: string,
+  type: number = 1,
+  offset: number = 0,
+  limit: number = 30
+) {
+  return Api().get(
+    `/search?keywords=${keywords}&type=${type}&limit=${limit}&offset=${offset}`
+  );
 }
 /**
  * 搜索建议
@@ -175,7 +184,9 @@ export function getUserPlaylist(uid: number, offset: number = 0) {
  * @param {String} password 密码
  */
 export function loginEmail(email: string, password: string) {
-  return Api().get(`/login?email=${email}&password=${password}`, { withCredentials: true });
+  return Api().get(`/login?email=${email}&password=${password}`, {
+    withCredentials: true
+  });
 }
 /**
  * 手机登录
@@ -183,8 +194,13 @@ export function loginEmail(email: string, password: string) {
  * @param {String} password 密码
  * @param {Number} countrycode 国家码
  */
-export function loginPhone(phone: number, password: string, countrycode: number) {
-  if (isUndef(phone) || isUndef(password) || isUndef(countrycode)) return Promise.reject();
+export function loginPhone(
+  phone: number,
+  password: string,
+  countrycode: number
+) {
+  if (isUndef(phone) || isUndef(password) || isUndef(countrycode))
+    return Promise.reject();
   const params = { phone, password, countrycode };
   return Api().get("/login/cellphone", { withCredentials: true, params });
 }
@@ -198,7 +214,10 @@ export function logout() {
  */
 export function getRecord(uid: number, type: 0 | 1) {
   if (isUndef(uid)) return Promise.reject();
-  return Api().get("/user/record", { withCredentials: true, params: { uid, type } });
+  return Api().get("/user/record", {
+    withCredentials: true,
+    params: { uid, type }
+  });
 }
 /**
  * 调用此接口 , 传入用户 id, 可获取已喜欢音乐id列表(id数组)
@@ -223,7 +242,9 @@ export function getUserFollows(uid: number, offset: number, limit: number) {
  * @param {Number} offset 偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
  */
 export function getUserFolloweds(uid: number, offset: number, limit: number) {
-  return Api().get(`/user/followeds?uid=${uid}&offset=${offset}&limit=${limit}`);
+  return Api().get(
+    `/user/followeds?uid=${uid}&offset=${offset}&limit=${limit}`
+  );
 }
 /**
  * 登陆后调用此接口 , 传入相关信息,可以更新用户信息
@@ -295,7 +316,11 @@ export function subPlaylist(playlistId: number, type: 1 | 2) {
 /**
  * 调用此接口 , 传入歌单 id 可获取歌单的所有收藏者
  */
-export function getPlaylistSubers(id: number, offset: number = 0, limit: number = 30) {
+export function getPlaylistSubers(
+  id: number,
+  offset: number = 0,
+  limit: number = 30
+) {
   const params = { id, offset, limit };
   return Api().get("/playlist/subscribers", { params });
 }
@@ -317,14 +342,22 @@ export function getMVComments(id: number, offset: number) {
 /**
  * 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该歌单的所有评论 ( 不需要 登录 )
  */
-export function getPlaylistComments(id: number, offset: number = 0, limit: number = 20) {
+export function getPlaylistComments(
+  id: number,
+  offset: number = 0,
+  limit: number = 20
+) {
   const params = { id, offset, limit };
   return Api().get("comment/playlist", { params });
 }
 /**
  * 调用此接口 , 传入音乐 id 和 limit 参数 , 可获得该专辑的所有评论 ( 不需要 登录 )
  */
-export function getAlbumComments(id: number, offset: number = 0, limit: number = 20) {
+export function getAlbumComments(
+  id: number,
+  offset: number = 0,
+  limit: number = 20
+) {
   const params = { id, offset, limit };
   return Api().get("/comment/album", { params });
 }
@@ -344,7 +377,11 @@ export function sentComment(id: number, type: CommentType, content: string) {
  *  @param {CommentType} type 资源类型 0: 歌曲，1: mv，2: 歌单，3: 专辑，4: 电台，5: 视频，6: 动态
  *  @param {number} commentId 1: 发送, 0: 删除
  */
-export function deleteComment(id: number, type: CommentType, commentId: number) {
+export function deleteComment(
+  id: number,
+  type: CommentType,
+  commentId: number
+) {
   const params = { t: 0, id, type, commentId };
   return Api().get("/comment", { withCredentials: true, params });
 }

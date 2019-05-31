@@ -3,12 +3,20 @@
     <div class="container">
       <OfficialTopList />
       <div class="domestic-top-list">
-        <MediaItem v-for="typeId in domesticTypeIds" :key="typeId" :typeId="typeId" />
+        <MediaItem
+          v-for="typeId in domesticTypeIds"
+          :key="typeId"
+          :typeId="typeId"
+        />
       </div>
       <div class="international-top-list__wrapper">
         <h3>全球媒体榜</h3>
         <div class="international-top-list">
-          <CardItem v-for="typeId in internationalTypeIds" :key="typeId" :typeId="typeId" />
+          <CardItem
+            v-for="typeId in internationalTypeIds"
+            :key="typeId"
+            :typeId="typeId"
+          />
         </div>
       </div>
     </div>
@@ -96,7 +104,25 @@ interface OfficialConntent {
 export default class TopList extends Vue {
   domesticTypeIds: number[] = [3, 4, 7, 9, 14, 15, 17, 18, 19, 22, 23];
 
-  internationalTypeIds: number[] = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+  internationalTypeIds: number[] = [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ];
 }
 </script>
 <style lang="sass" scoped>

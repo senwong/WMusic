@@ -12,7 +12,11 @@
       v-on:keyup.enter="$emit('enter')"
       :placeholder="placeholder"
     />
-    <div class="clear-icon" v-show="value && value.length > 0" @click="handleClear">
+    <div
+      class="clear-icon"
+      v-show="value && value.length > 0"
+      @click="handleClear"
+    >
       <ClearIcon />
     </div>
   </div>

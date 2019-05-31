@@ -1,10 +1,19 @@
 <template>
   <div>
     <div class="lists" v-if="cardLists.length > 0" key="cards">
-      <CardItem v-for="card in cardLists" :key="card.id" :card="card" :cardType="cardType" />
+      <CardItem
+        v-for="card in cardLists"
+        :key="card.id"
+        :card="card"
+        :cardType="cardType"
+      />
     </div>
     <div class="lists" v-else key="placeholder">
-      <div class="placeholder__wrapper" v-for="(_, idx) in new Array(15).fill(true)" :key="idx">
+      <div
+        class="placeholder__wrapper"
+        v-for="(_, idx) in new Array(15).fill(true)"
+        :key="idx"
+      >
         <Placeholder class="placeholder__img"></Placeholder>
         <Placeholder class="placeholder__title"></Placeholder>
         <Placeholder class="placeholder__subtitle"></Placeholder>

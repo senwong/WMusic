@@ -27,12 +27,20 @@
           :autofocus="!isMain"
           @keydown="autoAdjustHeight"
         />
-        <div class="comment-reply__input__fake-bot-border" :class="{ show: isFocused }" />
+        <div
+          class="comment-reply__input__fake-bot-border"
+          :class="{ show: isFocused }"
+        />
       </div>
     </div>
     <!-- second row -->
     <div class="comment-reply__actions" v-if="isShowActions">
-      <button class="comment-reply__actions__btn secondary" @click="$emit('hide')">取消</button>
+      <button
+        class="comment-reply__actions__btn secondary"
+        @click="$emit('hide')"
+      >
+        取消
+      </button>
       <button
         class="comment-reply__actions__btn primary"
         :disabled="replyDisabled"
@@ -86,7 +94,9 @@ export default class CommentReplyEditor extends Vue {
         this.nickname = res.data.profile.nickname;
       },
       error => {
-        const msg = "获取当前用户信息错误" + (error && error.msg ? error.msg + "！" : "！");
+        const msg =
+          "获取当前用户信息错误" +
+          (error && error.msg ? error.msg + "！" : "！");
         this.setMsg(msg);
       }
     );
