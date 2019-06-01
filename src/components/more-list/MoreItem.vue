@@ -48,7 +48,6 @@ export default {
   border-radius: inherit;
 .more-item
   position: relative;
-  background-color: $whitegray2;
   // padding: 6px;
   overflow: visible;
   border-radius: inherit;

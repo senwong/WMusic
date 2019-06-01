@@ -129,6 +129,8 @@ export default class PlaylistItem extends Vue {
 </script>
 <style lang="sass" scoped>
 @import "config.sass"
+@import "@/style/theme.sass"
+
 // 单个歌曲样式
 .container
   display: flex
@@ -138,9 +140,11 @@ export default class PlaylistItem extends Vue {
   &.active
     color: $orange
 .container:nth-of-type(2n+1)
-  background-color: $whitegray
+  @include themify($themes)
+    background-color: themed('secondary-background-color')
 .container:not(.not-play):hover
-  background-color: $whitegray3
+  @include themify($themes)
+    background-color: themed('secondary-background-color-hover')
 // 专辑封面
 .album-img__wrapper
   flex: 0 0 40px
@@ -186,12 +190,12 @@ export default class PlaylistItem extends Vue {
     color: $orange
 .duration
   flex: 0 0 auto
-  color: $gray
   font-size: 12px
+
+
 // hover时显示更多和收藏
 .fav-more
   display: none
-  color: $gray
   flex: 0 0 50px
   .fav
     margin-right: 10px
@@ -204,6 +208,5 @@ export default class PlaylistItem extends Vue {
     display: none
   .fav-more
     display: flex
-.more-popup-menu
-  color: #333
+
 </style>

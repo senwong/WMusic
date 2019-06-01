@@ -375,7 +375,6 @@ export default class Playbar extends Vue {
   position: relative
   height: 100%
   z-index: 1
-  background-color: $whitegray
   min-width: 1000px
 .playbar__item_left
   max-width: calc(50% - 100px)

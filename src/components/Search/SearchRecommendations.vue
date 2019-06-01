@@ -45,7 +45,8 @@ export default class SearchRecommendations extends Vue {
   mvs: MvCard[] | null = null;
   playlists: Playlist[] | null = null;
 
-  order: string[] | null = null;
+  order: string[] = [];
+  
   formatTime = formatTime;
   @Prop(String) keywords!: string;
 
@@ -120,8 +121,9 @@ export default class SearchRecommendations extends Vue {
 </script>
 
 <style lang="sass" scoped>
+@import "@/style/theme.sass"
+
 .search__recommendations
-  background-color: rgb(255, 255, 255)
   min-height: 300px
   max-height: 600px
   overflow: scroll
@@ -129,7 +131,10 @@ export default class SearchRecommendations extends Vue {
   border-bottom-left-radius: 8px
   border-bottom-right-radius: 8px
   box-sizing: border-box
-  border: 1px solid rgba(0, 0, 0, 0.2)
+  border: 1px solid
   border-top: none
-  box-shadow: 0 8px 6px 3px rgba(0, 0, 0, 0.2)
+  @include themify($themes)
+    background-color: themed('background-color')
+    border-color: themed('border-color')
+    box-shadow: 0 8px 6px 3px themed('box-shadow-color')
 </style>

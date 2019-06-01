@@ -87,8 +87,14 @@ export interface Comment {
   time: number;
   content: string;
   likedCount: number;
-  beReplied: Comment[];
+  beReplied: RepliedComment[];
 }
+interface RepliedComment {
+  beRepliedCommentId: number
+  content: string
+  user: User
+}
+
 // 0 : mv comment 1: song comment
 /**
 0: 歌曲
@@ -120,7 +126,7 @@ export interface Rank {
   cover: string;
   name: string;
   artistName: string;
-  birefDesc: string;
+  briefDesc: string;
   rank: number;
   lastRank: number;
 }
@@ -168,4 +174,7 @@ export interface Option {
   id: number;
   title: string;
   value: any;
+}
+export enum Theme {
+  Light, Dark
 }

@@ -69,6 +69,8 @@ export default class Mv extends Vue {
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass"
+@import "@/style/theme.sass"
+
 a
   text-decoration: none;
   color: inherit;
@@ -80,8 +82,8 @@ a
   padding-bottom: 4px;
   align-items: flex-end;
 .text-gray
-  color: #000;
-  opacity: 0.3;
+  @include themify($themes)
+    color: themed('secondary-text-color')
 .text-h1
   font-size: 28px;
   padding-right: 10px;

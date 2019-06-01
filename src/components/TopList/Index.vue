@@ -25,7 +25,7 @@
 <script lang="ts">
 import { getTopList } from "@/service";
 import CardItem from "@/components/TopList/CardItem.vue";
-import MediaItem, { DomesticTopList } from "@/components/TopList/MediaItem.vue";
+import MediaItem from "@/components/TopList/MediaItem.vue";
 import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
 import { PlaylistType, Track, TabMenuItem, Artist } from "@/types";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";

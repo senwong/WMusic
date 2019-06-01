@@ -125,7 +125,7 @@ export default class SongPlayer extends Vue {
   left: 0
   right: 0
   height: calc(100% - #{$footerHeight})
-  background-color: $whitegray
+  background-color: inherit
   display: flex
   justify-content: center
   align-items: center

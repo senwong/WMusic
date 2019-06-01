@@ -14,15 +14,16 @@ export default class Placeholder extends Vue {
 </script>
 
 <style lang="sass" scoped>
+@import "../../style/theme.sass"
+
 .angled-gradient
-  background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 37%, #f2f2f2 63%)
-  animation: loading 1.4s ease infinite
-  background-size: 400% 100%
-
-@keyframes loading
-  0%
-    background-position: 0% 50%
-
-  100%
-    background-position: 100% 50%
+  @include themify($themes)
+    background: linear-gradient(90deg, themed('placeholder-background-color') 25%, themed('placeholder-background-color-gradient') 37%, themed('placeholder-background-color') 63%)
+    animation: loading 1.4s ease infinite
+    background-size: 400% 100%
+    @keyframes loading
+      0%
+        background-position: 0% 50%
+      100%
+        background-position: 100% 50%
 </style>

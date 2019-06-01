@@ -33,11 +33,13 @@
                 <span
                   class="category__item"
                   :class="{ active: selected == c.name }"
-                  v-for="(c, i) in sub.filter(c => c.category == categoryKey)"
+                  v-for="(c, i) in sub.filter(
+                    c => String(c.category) == categoryKey
+                  )"
                   :key="i"
                   @click="selectCat(c.name)"
-                  >{{ c.name }}</span
-                >
+                  >{{ c.name }}
+                </span>
               </div>
               <hr />
             </div>
@@ -204,6 +206,7 @@ export default class PlaylistComponent extends Vue {
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass"
+@import "@/style/theme.sass"
 
 .category__selected
   position: relative
@@ -211,7 +214,8 @@ export default class PlaylistComponent extends Vue {
   font-size: 20px
   padding: 2em 0 1em
   margin-top: -1em
-  background-color: white
+  @include themify($themes)
+    background-color: themed('background-color')
 .category__title
   margin-right: 0.5em
 .category__toggle__btn
@@ -224,7 +228,6 @@ export default class PlaylistComponent extends Vue {
 .category__list-wrapper
   position: relative
 .category__list-container
-  background-color: white
   z-index: 1
 .category__sub
   display: none
@@ -236,11 +239,16 @@ export default class PlaylistComponent extends Vue {
   margin: 1em 2em 1em 0
   padding: 0.5em 1em
   border-radius: 1.5em
-  background-color: $whitegray2
   cursor: pointer
-  &.active
-    color: white
-    background-color: $orange
+  transition: all 250ms
+  @include themify($themes)
+    background-color: themed('background-color')
+    &:hover
+      background-color: themed('background-color-hover')
+    &.active
+      color: themed('primary-text-color')
+      background-color: themed('primary-background-color')
+
 @keyframes move-down
   0%
     top: -1200px

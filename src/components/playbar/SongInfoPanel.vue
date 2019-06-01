@@ -238,8 +238,11 @@ export default class SongInfoPanel extends Vue {
   border-radius: 2px
   white-space: nowrap
   cursor: pointer
+  color: inherit
+  background-color: inherit
   &:active, &:focus
     outline: none
+
 .faver, .more
   flex-shrink: 0
   flex-grow: 0

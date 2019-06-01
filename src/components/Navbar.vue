@@ -4,15 +4,15 @@
     <div v-if="isLoggedin">
       <router-link
         class="current-user"
-        :to="`/user/${currentUserProfile.userId}`"
+        :to="`/user/${currentUserProfile && currentUserProfile.userId}`"
       >
         <img
           class="current-user__avatar"
-          :src="currentUserProfile.avatarUrl"
-          :alt="currentUserProfile.nickname"
+          :src="currentUserProfile && currentUserProfile.avatarUrl"
+          :alt="currentUserProfile && currentUserProfile.nickname"
         />
         <span class="current-user__nickname">{{
-          currentUserProfile.nickname
+          currentUserProfile && currentUserProfile.nickname
         }}</span>
       </router-link>
     </div>
@@ -25,35 +25,35 @@
     <!-- 音乐库 -->
     <section class="nav__card">
       <p class="nav__card__title">音乐库</p>
-      <router-link to="/" class="nav__link">
+      <router-link to="/" class="nav__link" active-class="primary" exact>
         <div class="icon icon_m">
           <MusicIcon />
         </div>
         <div class="nav__link_txt">发现音乐</div>
       </router-link>
 
-      <router-link to="/playlist" class="nav__link">
+      <router-link to="/playlist" class="nav__link" active-class="primary">
         <div class="icon icon_m">
           <MusicIcon />
         </div>
         <div class="nav__link_txt">歌单</div>
       </router-link>
 
-      <router-link to="/toplist" class="nav__link">
+      <router-link to="/toplist" class="nav__link" active-class="primary">
         <div class="icon icon_m">
           <MusicIcon />
         </div>
         <div class="nav__link_txt">排行榜</div>
       </router-link>
 
-      <router-link to="/mv" class="nav__link">
+      <router-link to="/mv" class="nav__link" active-class="primary">
         <div class="icon icon_m">
           <MusicIcon />
         </div>
         <div class="nav__link_txt">MV</div>
       </router-link>
 
-      <router-link to="/search" class="nav__link">
+      <router-link to="/search" class="nav__link" active-class="primary">
         <div class="icon icon_m">
           <MusicIcon />
         </div>
@@ -66,8 +66,9 @@
       <section class="nav__card">
         <p class="nav__card__title">我的音乐</p>
         <router-link
-          :to="`/record/${currentUserProfile.userId}`"
+          :to="`/record/${currentUserProfile && currentUserProfile.userId}`"
           class="nav__link"
+          active-class="primary"
         >
           <div class="icon icon_m">
             <MusicIcon />
@@ -105,7 +106,7 @@
           <router-link
             :to="{
               path: 'likedsongs',
-              params: { id: currentUserProfile.userId }
+              params: { id: currentUserProfile && currentUserProfile.userId }
             }"
             class="nav__link"
           >
@@ -152,6 +153,13 @@
         </div>
       </section>
     </section>
+
+    <!-- change theme -->
+    <section>
+      <button class="nav__link" @click="handleChangeTheme">
+        切换主题
+      </button>
+    </section>
   </div>
 </template>
 <script lang="ts">
@@ -160,13 +168,14 @@ import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon.vue";
 import Button from "@/components/globals/Button.vue";
 import auth from "@/auth";
 import { mapMutations } from "vuex";
-import { Vue, Component, Watch } from "vue-property-decorator";
+import { Vue, Component, Watch, Inject } from "vue-property-decorator";
 import { Mutation, namespace } from "vuex-class";
-import { User } from "@/types";
+import { User, Theme } from "@/types";
 import { getUserDetail } from "@/service";
 
 const currentUser = namespace("currentUser");
 const notification = namespace("notification");
+const theme = namespace("theme");
 @Component({
   components: { MusicIcon, RightArrowIcon, Button }
 })
@@ -178,9 +187,13 @@ export default class Navbar extends Vue {
   isLoggedin: boolean = false;
 
   currentUserProfile: User | null = null;
+
   @currentUser.State("userId") currentUserId!: number | undefined;
   @currentUser.Mutation setCurrentUserId!: (id: number) => void;
   @notification.Mutation setMsg!: (msg: string) => void;
+
+  @theme.State("value") theme!: Theme;
+  @theme.Mutation("toggle") toggleTheme!: () => void;
 
   toggleMyList() {
     this.isShowMyList = !this.isShowMyList;
@@ -215,6 +228,10 @@ export default class Navbar extends Vue {
     );
   }
 
+  handleChangeTheme() {
+    this.toggleTheme();
+  }
+
   // created() {
   //   console.log('call created hook!');
   //   this.updateLoginStatus();
@@ -222,85 +239,89 @@ export default class Navbar extends Vue {
 }
 </script>
 <style lang="sass">
-@import "config.sass";
+@import "config.sass"
+@import "../style/theme.sass"
 
 .nav__bar
-  padding: 20px 10px;
+  padding: 20px 10px
 .nav__card
-  margin-bottom: 20px;
+  margin-bottom: 20px
 .nav__card__title
-  font-size: 12px;
-  color: $gray;
+  font-size: 12px
+  color: $gray
 .nav__link
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: black;
-  padding: 5px;
-  border-radius: 2px;
-  margin-bottom: 5px;
+  display: flex
+  align-items: center
+  text-decoration: none
+  padding: 5px
+  border-radius: 2px
+  margin-bottom: 5px
   transition: all 250ms
-  &:hover
-    background: #ddd
-  &.router-link-exact-active
-    background-color: $orange;
-    color: white;
+  @include themify($themes)
+    &:hover
+      background-color: themed('background-color-hover')
+    &.primary
+      color: themed('primary-text-color')
+      background-color: themed("primary-background-color")
+    &.primary:hover
+      background-color: themed("primary-background-color-hover")
+
 
 .nav__link.active
-  background-color: $orange;
-  color: white;
+  background-color: $orange
+  color: white
 .nav__link__icon
-  width: 30px;
-  height: 30px;
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 5px;
+  width: 30px
+  height: 30px
+  display: inline-block
+  vertical-align: middle
+  margin-right: 5px
 
 .nav__link_txt
-  margin-left: 5px;
-  font-size: 13px;
+  margin-left: 5px
+  font-size: 13px
 .icon
-  display: inline-block;
+  display: inline-block
   img
-    width: 100%;
-    height: 100%;
+    width: 100%
+    height: 100%
 .icon_s
-  width: 12px;
-  height: 12px;
+  width: 12px
+  height: 12px
 .icon_m
-  width: 25px;
-  height: 25px;
+  width: 25px
+  height: 25px
 .title__item_right
-  float: right;
+  float: right
 .arrow_up
-  transform: rotate(90deg);
+  transform: rotate(90deg)
 
 .login-signup__wrapper
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+  display: flex
+  flex-direction: row
+  justify-content: center
 .login-signup__login
-  margin-right: 0.5em;
+  margin-right: 0.5em
 
 .current-user
-  font-size: 16px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  border-radius: 9999px;
-  cursor: pointer;
-  transition: all 250ms;
-  padding: 0.2em 0.8em 0.2em 0.2em;
-  width: fit-content;
+  font-size: 16px
+  display: flex
+  flex-direction: row
+  justify-content: flex-start
+  align-items: center
+  border-radius: 9999px
+  cursor: pointer
+  transition: all 250ms
+  padding: 0.2em 0.8em 0.2em 0.2em
+  width: fit-content
   &:hover
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.2)
 .current-user__avatar
-  width: 2em;
-  height: 2em;
-  border-radius: 9999px;
-  margin-right: 0.6em;
+  width: 2em
+  height: 2em
+  border-radius: 9999px
+  margin-right: 0.6em
 .current-user__nickname
-  font-weight: bolder;
-  flex: 0 0 auto;
+  font-weight: bolder
+  flex: 0 0 auto
 </style>

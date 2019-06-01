@@ -20,8 +20,8 @@
           track.name
         }}</router-link>
         <router-link
-          v-if="track.mv"
-          :to="'/mvplay/' + track.mv"
+          v-if="track.mvId"
+          :to="'/mvplay/' + track.mvId"
           class="track-mvlink"
         >
           <MvIcon />
@@ -157,6 +157,8 @@ export default class SongListItem extends Vue {
 <style lang="sass" scoped>
 @import '../config.sass'
 @import '../../style/colors.sass'
+@import "../../style/theme.sass"
+
 .tracks
   padding: 20px 0 0
 .head
@@ -180,7 +182,8 @@ export default class SongListItem extends Vue {
   &.disabled
     color: #999
   &:not(.active):hover
-    background-color: rgba(0,0,0,.1)
+    @include themify($themes)
+      background-color: themed("background-color-hover")
     .track-more
       opacity: 1
     .music-icon
@@ -226,7 +229,8 @@ export default class SongListItem extends Vue {
   user-select: none
   &:hover
     opacity: 1
-    border-color: rgba(0,0,0,0.8)
+    @include themify($themes)
+      border-color: themed("text-color")
 
 .track__artist__comma
   opacity: 0.6
@@ -243,7 +247,8 @@ export default class SongListItem extends Vue {
   user-select: none
   &:hover
     opacity: 1
-    border-color: rgba(0,0,0,0.8)
+    @include themify($themes)
+      border-color: themed("text-color")
 // if currentSongId == track.id, artist and album border-bottom color $primary
 .track.active
   .track-artist:hover

@@ -57,29 +57,31 @@ export default class Button extends Vue {
 
 <style lang="sass" scoped>
 @import '../../style/colors.sass'
+@import '../../style/theme.sass'
 
 .btn
   font-size: 16px
   padding: 0.3em 1em
-  border: 1px solid #777
+  border: 1px solid
   box-sizing: border-box
   cursor: pointer
   background: transparent
   border-radius: 0.1em
   transition: all 250ms
-  &:hover
-    color: #000
-    border-color: #000
   &:focus, &:active
     outline: none
-  &.btn-primary
-    border-color: $primary
-    transition: all 250ms
+  @include themify($themes)
+    color: themed("text-color")
+    border-color: themed('button-border-color')
     &:hover
-      background: $primary
-      color: white
-  &.btn-secondary
-    border-color: $secondary
+      background-color: themed('button-background-color-hover')
+    &.btn-primary
+      border-color: themed('primary-button-border-color')
+    &.btn-primary:hover
+      color: themed('primary-button-text-color-hover')
+      background: themed('primary-button-background-color-hover')
+    &.btn-secondary
+      border-color: themed('secondary-button-broder-color')
   &.btn-rounded
     border-radius: 9999px
   &.btn-block
@@ -93,6 +95,7 @@ export default class Button extends Vue {
     font-size: 12px
   &[disabled]
     opacity: 0.5
+    cursor: not-allowed
   &.btn-noborder
     border: none
   &.btn-svg_large

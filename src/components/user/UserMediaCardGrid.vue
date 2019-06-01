@@ -27,50 +27,37 @@
   </div>
 </template>
 
-<script>
-import UserMediaCard from "./UserMediaCard";
-import Button from "@/components/globals/Button";
+<script lang='ts'>
+import UserMediaCard from "./UserMediaCard.vue";
+import Button from "@/components/globals/Button.vue";
 import Placeholder from "@/components/globals/Placeholder.vue";
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { User } from '@/types';
 
-export default {
-  props: {
-    users: {
-      required: true,
-      type: Array
-    },
-    more: {
-      required: true,
-      type: Boolean
-    },
-    offset: {
-      required: true,
-      type: Number
-    },
-    limit: {
-      required: true,
-      type: Number
-    }
-  },
-  components: { UserMediaCard, Button, Placeholder },
-  computed: {
-    backBtnDisabled() {
-      return this.offset <= 0;
-    },
-    forwardBtnDisabled() {
-      return !this.more;
-    }
-  },
-  methods: {
-    handleBack() {
-      if (this.offset <= 0) return;
-      this.$emit("offsetChange", Math.max(0, this.offset - this.limit));
-    },
-    handleForward() {
-      if (!this.more) return;
-      this.$emit("offsetChange", this.offset + this.limit);
-    }
+@Component({
+  components: { UserMediaCard, Button, Placeholder}
+})
+export default class UserMediaCardGrid extends Vue {
+  @Prop() users!: User[]; 
+  @Prop(Boolean) more!: boolean;
+  @Prop(Number) offset!: number;
+  @Prop(Number) limit!: number;
+
+  get backBtnDisabled(): boolean {
+    return this.offset <= 0;
   }
-};
+  get forwardBtnDisabled(): boolean {
+    return !this.more;
+  }
+  handleBack() {
+    if (this.offset <= 0) return;
+    this.$emit("offsetChange", Math.max(0, this.offset - this.limit));
+  }
+  handleForward() {
+    if (!this.more) return;
+    this.$emit("offsetChange", this.offset + this.limit);
+  }
+}
 </script>
 
 <style lang="sass" scoped>

@@ -142,7 +142,11 @@ export default class BtnWithPopupMenu extends Vue {
 </script>
 
 <style lang="sass" scoped>
+@import "@/style/theme.sass"
+
 .popup-menu
+  @include themify($themes)
+    background-color: themed('background-color')
   position: fixed
   z-index: 99
 </style>

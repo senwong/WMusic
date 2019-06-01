@@ -56,6 +56,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import "../../style/theme.sass"
+
 .user-media-card__container
   width: 100%
   box-sizing: border-box
@@ -63,10 +65,12 @@ export default {
   flex-direction: row
   justify-content: flex-start
   align-items: flex-start
-  border: 1px solid #eee
+  border: 1px solid
   padding: 1em
   border-radius: 0.25em
-  background: rgba(250, 250, 250, 1)
+  @include themify($themes)
+    border-color: themed('border-color')
+    background: themed('background-color')
 .user-media-card__avatar
 .user-media-card__user-info
   margin-left: 1em

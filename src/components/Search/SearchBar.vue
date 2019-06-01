@@ -49,12 +49,12 @@ export default {
 };
 </script>
 <style lang="sass" scoped>
-@import "../config.sass";
+@import "../config.sass"
+@import "@/style/theme.sass"
 
 .search-container
   padding: 0 1em;
   border-radius: 17.5px;
-  background-color: $whitegray5;
   display: flex;
   flex-directon: row;
   width: 100%;
@@ -65,11 +65,14 @@ export default {
   border-bottom: none;
   transition-property: background border;
   transition-duration: 250ms;
+  @include themify($themes)
+    color: themed('text-color')
+    background-color: themed('secondary-background-color')
   &.spread
     border-bottom-left-radius: 0
     border-bottom-right-radius: 0
-    border-color: rgba(0, 0, 0, 0.2);
-    background-color: #eeeeee;
+    @include themify($themes)
+      border-color: themed('secondary-border-color')
 .search-icon, .clear-icon
   height: 1.2em;
   width: 1.2em;
@@ -77,6 +80,7 @@ export default {
   padding: 0.5em;
   margin: -0.5em;
   cursor: pointer;
+  color: inherit
 .search-icon
   margin-right: 0;
 
@@ -87,6 +91,7 @@ export default {
   margin: 0;
   background: transparent;
   font-size: 14px;
+  color: inherit
   &:focus
     outline: none;
 </style>

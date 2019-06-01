@@ -46,7 +46,6 @@ export default {
   align-items: stretch;
   border: 1px solid $gray;
   border-radius: 6px;
-  background-color: $whitegray2;
   padding: 4px;
 .option-item
   display: flex;

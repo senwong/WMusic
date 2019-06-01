@@ -55,51 +55,55 @@ export default class TabMenu extends Vue {
 </script>
 
 <style lang="sass" scoped>
+@import '../../style/theme.sass'
+
 .tab-menu-wrapper
-  border-top: 1px solid rgb(224, 224, 224);
-  border-bottom: 1px solid rgb(224, 224, 224);
-  margin-top: 1em;
+  border-top: 1px solid #666
+  border-bottom: 1px solid #666
+  margin-top: 1em
 .tab-menu
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: flex
+  flex-direction: row
+  justify-content: space-between
   &.space-between
-    justify-content: space-between;
+    justify-content: space-between
   &.flex-start
-    justify-content: flex-start;
+    justify-content: flex-start
 
 .tab-item
-  position: relative;
-  flex: 0 0 auto;
-  display: inline-block;
-  padding: 0.7em 0.7em;
-  min-width: 0;
-  overflow: hidden;
-  text-align: center;
-  border-bottom: none;
-  color: rgb(110, 110, 110);
-  transition: color 200ms cubic-bezier(0.165, 0.84, 0.44, 1) 0s;
-  cursor: pointer;
-  overflow: visible;
-  &.active
-    color: rgb(0, 0, 0);
-    &::after
-      transform: scaleX(1);
-  &:hover
-    color: rgb(0, 0, 0);
-    &::after
-      transform: scaleX(1);
+  position: relative
+  flex: 0 0 auto
+  display: inline-block
+  padding: 0.7em 0.7em
+  min-width: 0
+  overflow: hidden
+  text-align: center
+  border-bottom: none
+  color: rgb(110, 110, 110)
+  transition: color 200ms cubic-bezier(0.165, 0.84, 0.44, 1) 0s
+  cursor: pointer
+  overflow: visible
+  @include themify($themes)
+    &:hover
+      color: themed("text-color")
+    &.active
+      color: themed("text-color")
+      &::after
+        transform: scaleX(1)
+  &:hover::after
+      transform: scaleX(1)
   &::after
-    content: "";
-    height: 2px;
-    width: 100%;
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    background: rgb(0, 0, 0);
-    transition: transform 400ms cubic-bezier(0.165, 0.84, 0.44, 1) 0s;
-    transform-origin: left center;
-    transform: scaleX(0);
+    content: ""
+    height: 2px
+    width: 100%
+    position: absolute
+    left: 0
+    bottom: -1px
+    @include themify($themes)
+      background: themed('text-color')
+    transition: transform 400ms cubic-bezier(0.165, 0.84, 0.44, 1) 0s
+    transform-origin: left center
+    transform: scaleX(0)
 .margin-right
-  margin-right: 2em;
+  margin-right: 2em
 </style>

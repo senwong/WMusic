@@ -9,14 +9,16 @@ export default {
 };
 </script>
 <style lang="sass" scoped>
-@import "../config.sass";
+@import "../config.sass"
+@import "@/style/theme.sass"
+
 .more-list
-  display: flex;
-  flex-direction: column;
-  // align-items: center;
-  padding: 4px;
-  border: 1px solid $whitegray5;
-  border-radius: 6px;
-  background-color: $whitegray2;
-  box-shadow: 0px 0px 6px 0px rgba(160, 160, 160, 0.6);
+  display: flex
+  flex-direction: column
+  padding: 4px
+  border-radius: 6px
+  box-shadow: 0px 0px 6px 0px rgba(160, 160, 160, 0.6)
+  border: 1px solid
+  @include themify($themes)
+    border-color: themed('border-color')
 </style>

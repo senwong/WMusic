@@ -12,6 +12,7 @@ import playlist from "./modules/playlist";
 import currentUser from "./modules/currentUser";
 import playbar from "./modules/playbar";
 import notification from "./modules/notification";
+import theme from './modules/theme';
 
 Vue.use(Vuex);
 export default new Vuex.Store({
@@ -19,7 +20,8 @@ export default new Vuex.Store({
     playlist,
     currentUser,
     playbar,
-    notification
+    notification,
+    theme,
   },
   state: {
     isScrollBottom: false

@@ -65,9 +65,11 @@ export default class RankItem extends Vue {
 }
 </script>
 <style lang="sass" scoped>
+@import "@/style/theme.sass"
+
 .text-gray
-  color: #000;
-  opacity: 0.3;
+  @include themify($themes)
+    color: themed('secondary-text-color')
 .rank-item
   display: flex;
   overflow: hidden;

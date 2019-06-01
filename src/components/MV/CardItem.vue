@@ -41,40 +41,45 @@ export default class CardItem extends Vue {
 }
 </script>
 <style lang="sass" scoped>
+@import "@/style/theme.sass"
+
 .list-item
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  user-select: none;
+  display: flex
+  flex-direction: column
+  position: relative
+  user-select: none
 
 .list__name
-  margin: 8px 0 0;
-  text-decoration: none;
-  color: inherit;
-  font-weight: bolder;
-  font-size: 14px;
+  margin: 8px 0 0
+  text-decoration: none
+  color: inherit
+  font-weight: bolder
+  font-size: 14px
   &:hover
-    text-decoration: underline;
+    text-decoration: underline
 .play-count
-  display: flex;
-  align-items: center;
-  position: absolute;
-  right: 0.7em;
-  top: 0.5em;
-  padding: 0 0.2em;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: inline-block;
-  border-radius: 0.2em;
-  font-size: 12px;
+  display: flex
+  align-items: center
+  position: absolute
+  right: 0.7em
+  top: 0.5em
+  padding: 0 0.2em
+  color: white
+  background-color: rgba(0, 0, 0, 0.5)
+  display: inline-block
+  border-radius: 0.2em
+  font-size: 12px
 .card__name
   overflow: hidden
   white-space: nowrap
   text-overflow: ellipsis
 .artist__names
   display: flex
-  color: #333
+  @include themify($themes)
+    color: themed('secondary-text-color')
 .artist__name
   &:hover
+    @include themify($themes)
+      color: themed('secondary-text-color-hover')
     text-decoration: underline
 </style>

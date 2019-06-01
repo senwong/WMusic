@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container">
+  <div class="page-container" :class="themeClass">
     <navbar-component class="container__aside scrollbar-invisible" />
     <main class="container__main">
       <router-view :key="$route.path" />
@@ -31,10 +31,12 @@ import PlaybarComponent from "@/components/playbar/Playbar.vue";
 import PlayListComponent from "@/components/Playlist.vue";
 import ScrollToTopIcon from "@/components/SVGIcons/ScrollToTopIcon.vue";
 import GlobalNotification from "@/components/globals/GlobalNotification.vue";
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Provide, Watch } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
+import { Theme } from "@/types";
 
 const playlist = namespace("playlist");
+const theme = namespace("theme");
 @Component({
   components: {
     NavbarComponent,
@@ -46,11 +48,22 @@ const playlist = namespace("playlist");
 })
 export default class App extends Vue {
   @playlist.State isVisible!: boolean;
-  isScrolled: boolean = false;
-  toggleRightMenu() {
-    // this.rightMenu && this.rightMenu.classList.toggle("right-menu_show")
-    // this.rightPlayListVisible = !this.rightPlayListVisible;
+
+  @theme.State("value") theme!: Theme;
+
+  get themeClass(): string {
+    switch (this.theme) {
+      case Theme.Light:
+        return "theme-light";
+      case Theme.Dark:
+        return "theme-dark";
+      default:
+        return "";
+    }
   }
+
+  isScrolled: boolean = false;
+
   scrollToTop() {
     if (!this.$el) return;
     const el = document.scrollingElement;
@@ -78,6 +91,7 @@ export default class App extends Vue {
 
 <style lang="sass" scoped>
 @import "components/config.sass"
+@import "style/theme.sass"
 
 #app
   font-family: 'Avenir', Helvetica, Arial, sans-serif
@@ -90,6 +104,14 @@ export default class App extends Vue {
   height: 100%
   position: relative
   overflow: hidden
+
+.container__aside,
+.container__main,
+.container__footer,
+.right-menu
+  @include themify($themes)
+    color: themed('text-color')
+    background-color: themed('background-color')
 // 侧边栏样式
 .container__aside
   background-color: $whitegray2

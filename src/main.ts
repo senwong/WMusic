@@ -17,7 +17,7 @@ Vue.filter("convert2Https", (imgUrl: string) => {
   if (!imgUrl || imgUrl.length < 1) return;
   return imgUrl.replace(/http:\/\//g, "https://");
 });
-console.log("instance store");
+
 new Vue({
   router,
   store,

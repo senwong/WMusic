@@ -51,12 +51,23 @@
           <span class="count" v-if="comment.likedCount > 0">{{
             formatCount(comment.likedCount)
           }}</span>
-          <button class="reply" @click="isShowReplyEditor = !isShowReplyEditor">
+          <Button
+            small
+            noborder
+            class="comment__actions__reply"
+            @click.native="isShowReplyEditor = !isShowReplyEditor"
+          >
             回复
-          </button>
-          <button class="reply" @click="deleteComment" v-if="deleteable">
+          </Button>
+          <Button
+            small
+            noborder
+            class="comment__actions__delete"
+            @click.native="deleteComment"
+            v-if="deleteable"
+          >
             删除
-          </button>
+          </Button>
         </div>
       </div>
       <!-- reply editor -->
@@ -72,7 +83,7 @@
         class="comment__view-replys"
         v-if="comment.beReplied && comment.beReplied.length"
       >
-        <button @click="handleViewReplys" class="view-replys__btn">
+        <Button @click.native="handleViewReplys" small noborder>
           <span v-if="replysFolded"
             >查看{{ formatCount(comment.beReplied.length) }}条回复</span
           >
@@ -80,7 +91,7 @@
           <span class="view-replys__icon" :class="{ rotate: !replysFolded }">
             <RightArrowIcon />
           </span>
-        </button>
+        </Button>
       </div>
       <!-- replys -->
       <div class="view-replys__comment-list" v-if="!replysFolded">
@@ -107,11 +118,12 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { Comment, CommentType } from "@/types";
 import { namespace, State } from "vuex-class";
 import { sentComment, deleteComment } from "@/service";
+import Button from "@/components/globals/Button.vue";
 
 const currentUser = namespace("currentUser");
 const notification = namespace("notification");
 @Component({
-  components: { LikeIcon, RightArrowIcon, CommentReplyEditor }
+  components: { LikeIcon, RightArrowIcon, CommentReplyEditor, Button }
 })
 export default class CommentItem extends Vue {
   @Prop() comment!: Comment;
@@ -186,7 +198,10 @@ a
   margin-top: 8px
 .comment__actions
   margin-top: 8px
-
+.comment__actions__reply
+  margin-left: 0.5em
+.comment__actions__delete
+  margin-left: 0.5em
 
 .avatar
   display: block
@@ -222,31 +237,8 @@ a
       color: #333
   .count
     white-space: nowrap
-  .reply
-    display: inline-block
-    cursor: pointer
-    border: none
-    font-size: 14px
-    border-radius: 2px
-    padding: 4px 8px
-    color: #999
-    &:focus, &:active
-      outline: none
-    &:active
-      background-color: #eee
-    &:hover
-      color: #222
-
-.view-replys__btn
-  display: inline-block
-  cursor: pointer
-  border: none
-  font-size: 14px
-  border-radius: 2px
-  padding: 4px 8px 4px 0
-  font-weight: bolder
-  &:focus, &:active
-    outline: none
+.comment__view-replys
+  margin-top: 0.5em
 
 .view-replys__icon
   width: 1em

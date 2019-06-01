@@ -35,19 +35,17 @@
     </div>
     <!-- second row -->
     <div class="comment-reply__actions" v-if="isShowActions">
-      <button
-        class="comment-reply__actions__btn secondary"
-        @click="$emit('hide')"
-      >
+      <Button @click.native="$emit('hide')">
         取消
-      </button>
-      <button
-        class="comment-reply__actions__btn primary"
+      </Button>
+      <Button
+        primary
+        class="comment-reply__actions__reply"
         :disabled="replyDisabled"
-        @click="handleReply"
+        @click.native="handleReply"
       >
         回复
-      </button>
+      </Button>
     </div>
   </div>
 </template>
@@ -58,10 +56,13 @@ import { namespace, State } from "vuex-class";
 import { getUserDetail, sentComment } from "@/service";
 import { CommentType } from "@/types";
 import { isUndef } from "@/utilitys";
+import Button from "@/components/globals/Button.vue";
 
 const currentUser = namespace("currentUser");
 const notification = namespace("notification");
-@Component
+@Component({
+  components: { Button }
+})
 export default class CommentReplyEditor extends Vue {
   @Prop({ default: false, type: Boolean }) isMain!: boolean;
   // 资源id
@@ -131,75 +132,64 @@ export default class CommentReplyEditor extends Vue {
 </script>
 
 <style lang="sass" scoped>
+@import "../../style/theme.sass"
+
 .comment-reply__container
-  padding-top: 0.5em;
+  padding-top: 0.5em
 .comment-reply__avatar-input
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
+  display: flex
+  flex-direction: row
+  justify-content: flex-start
+  align-items: flex-start
 .comment-reply__avatar
-  flex: 0 0 1.5em;
-  height: 1.5em;
-  border-radius: 9999px;
-  margin-right: 0.5em;
-  display: inline-block;
-  background: #eee;
+  flex: 0 0 1.5em
+  height: 1.5em
+  border-radius: 9999px
+  margin-right: 0.5em
+  display: inline-block
+  background: #eee
   &.large
-    flex: 0 0 2.5em;
-    height: 2.5em;
+    flex: 0 0 2.5em
+    height: 2.5em
 
 .comment-reply__input__wrapper
-  flex: 1 1 auto;
-  display: inline-block;
-  position: relative;
-  border-bottom: 1px solid #eee;
-  box-sizing: border-box;
+  flex: 1 1 auto
+  display: inline-block
+  position: relative
+  border-bottom: 1px solid #eee
+  box-sizing: border-box
 .comment-reply__input
-  padding: 0;
-  display: block;
-  height: 100%;
-  width: 100%;
-  border: none;
-  font-size: 14px;
-  resize: none;
+  padding: 0
+  display: block
+  height: 100%
+  width: 100%
+  border: none
+  font-size: 14px
+  resize: none
   &:focus
-    outline: none;
+    outline: none
+  @include themify($themes)
+    color: themed('text-color')
+    background-color: themed("background-color")
 .comment-reply__input__fake-bot-border
-  height: 2px;
-  transition: all 250ms;
-  background-color: #666;
-  tranform-origin: center;
-  transform: scaleX(0);
-  position: absolute;
+  height: 2px
+  transition: all 250ms
+  @include themify($themes)
+    background-color: themed('text-color')
+  tranform-origin: center
+  transform: scaleX(0)
+  position: absolute
   bottom: -1px
-  left: 0;
-  width: 100%;
+  left: 0
+  width: 100%
   &.show
-    transform: scaleX(1);
+    transform: scaleX(1)
 
 .comment-reply__actions
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  padding-top: 0.5em;
-.comment-reply__actions__btn
-  padding: 4px 9px;
-  font-size: 16px;
-  line-height: 20px;
-  border: none;
-  margin-left: 0.6em;
-  cursor: pointer;
-  font-weight: bolder;
-  &:focus, &:active
-    outline: none;
-  &.secondary
-    color: #777;
-    background: white;
-  &.primary
-    color: #fff;
-    background: tomato;
-    border-radius: 2px;
-  &[disabled]
-    opacity: 0.6
+  display: flex
+  flex-direction: row
+  justify-content: flex-end
+  padding-top: 0.5em
+.comment-reply__actions__reply
+  margin-left: 0.6em
 </style>

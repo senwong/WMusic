@@ -79,14 +79,17 @@ export default class MediaItem extends Vue {
 </script>
 <style lang="sass" scoped>
 @import '../../style/colors.sass'
+@import "@/style/theme.sass"
 
 .list-item
   display: flex
   flex-direction: row
   position: relative
-  background-color: #eee
-  border: 1px solid #e8e8e8
+  border: 1px solid
   box-sizing: border-box
+  @include themify($themes)
+    background-color: themed("secondary-background-color")
+    border-color: themed('secondary-border-color')
 .list__cover
   // height: 120px
   flex: 0 0 120px
@@ -97,8 +100,8 @@ export default class MediaItem extends Vue {
   top: -0.3em
   left: -0.3em
   width: 100%
-  background-color: rgba(0, 0, 0, 0.6)
-  color: white
+  @include themify($themes)
+    background-color: themed("secondary-background-color")
   white-space: nowrap
   overflow: hidden
   text-overflow: ellipsis
@@ -124,9 +127,7 @@ export default class MediaItem extends Vue {
 .track-name
   margin-right: 0.8em
 .track-order, .track-artists
-   color: black
 .track-name
-  color: $black
   font-weight: bolder
 .track-order, .track-name, .track-artists
   font-size: 14px

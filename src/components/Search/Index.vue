@@ -6,19 +6,7 @@
       placeholder="搜索。。。"
     />
     <!-- search type tabs -->
-    <div class="tab-menu-wrapper">
-      <ul class="tab-menu" ref="tabMenu">
-        <li
-          class="tab-item"
-          v-for="t in Object.keys(searchTypes)"
-          :key="searchTypes[t]"
-          :class="{ active: currentSearchType == searchTypes[t] }"
-          @click="handleTabClick(searchTypes[t])"
-        >
-          {{ t }}
-        </li>
-      </ul>
-    </div>
+    <TabMenu :list="tabMenuList" />
 
     <!-- search result -->
     <div>
@@ -37,13 +25,13 @@
         <ul>
           <li
             v-for="artist in searchArtists"
-            :key="artist.key"
+            :key="artist.id"
             class="artist-item-search"
           >
             <router-link :to="'/artist/' + artist.id" class="artist-pic-search">
               <img
                 :src="
-                  (artist.picUrl || artist.img1v1Url)
+                  (artist.picUrl || artist.picUrl)
                     | convert2Https
                     | clipImage(100, 100)
                 "
@@ -52,7 +40,6 @@
             </router-link>
             <router-link :to="'/artist/' + artist.id" class="artis-name-search">
               <span>{{ artist.name }}</span>
-              <span v-if="artist.trans">({{ artist.trans }})</span>
             </router-link>
           </li>
         </ul>
@@ -65,7 +52,7 @@
         <ul>
           <li
             v-for="album in searchAlbums"
-            :key="album.key"
+            :key="album.id"
             class="album-item-search"
           >
             <router-link :to="'/album/' + album.id" class="album-pic-search">
@@ -107,7 +94,7 @@
         <ul>
           <li
             v-for="playlist in searchPlaylists"
-            :key="playlist.key"
+            :key="playlist.id"
             class="playlist-item-search"
           >
             <router-link
@@ -223,10 +210,11 @@ import { formatTime } from "@/utilitys";
 import SongList from "@/components/globals/SongList.vue";
 import SearchBarWithRecommendations from "./SearchBarWithRecommendations.vue";
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { Track, Artist, Album, MvCard } from "@/types";
+import { Track, Artist, Album, MvCard, TabMenuItem } from "@/types";
 import { Mutation, namespace } from "vuex-class";
 import CardItem from "@/components/MV/CardItem.vue";
 import RadioCardItem from "./CardItem.vue";
+import TabMenu from "@/components/globals/TabMenu.vue";
 
 const notification = namespace("notification");
 const SEARCH_OFFSET = 30;
@@ -241,27 +229,38 @@ enum SearchType {
   Radio = 1009,
   User = 1002
 }
+const searchTypes: { [index: string]: SearchType } = {
+  单曲: SearchType.Song,
+  歌手: SearchType.Artist,
+  专辑: SearchType.Album,
+  MV: SearchType.Mv,
+  歌单: SearchType.Playlist,
+  歌词: SearchType.Lyric,
+  主播电台: SearchType.Radio,
+  用户: SearchType.User
+};
 @Component({
   components: {
     CardItem,
     SongList,
     SearchBarWithRecommendations,
-    RadioCardItem
+    RadioCardItem,
+    TabMenu
   }
 })
 export default class Search extends Vue {
   keyWords: string = "";
 
-  searchTypes: { [index: string]: SearchType } = {
-    单曲: SearchType.Song,
-    歌手: SearchType.Artist,
-    专辑: SearchType.Album,
-    MV: SearchType.Mv,
-    歌单: SearchType.Playlist,
-    歌词: SearchType.Lyric,
-    主播电台: SearchType.Radio,
-    用户: SearchType.User
-  };
+  get tabMenuList(): TabMenuItem[] {
+    return Object.keys(searchTypes).map(
+      (title: string, idx: number): TabMenuItem => ({
+        key: idx,
+        title: title,
+        isActive: this.currentSearchType == searchTypes[title],
+        onClick: () => this.handleTabClick(searchTypes[title])
+      })
+    );
+  }
 
   // number referring to type, default 1
   currentSearchType: SearchType = SearchType.Song;
@@ -390,6 +389,7 @@ export default class Search extends Vue {
 </script>
 <style lang="sass" scoped>
 @import "@/components/config.sass"
+@import "@/style/theme.sass"
 
 ul
   padding: 0;
@@ -401,48 +401,6 @@ a
   position: relative;
   padding-bottom: 2em;
   min-height: 100%;
-
-.tab-menu-wrapper
-  border-top: 1px solid rgb(224, 224, 224);
-  border-bottom: 1px solid rgb(224, 224, 224);
-  margin-top: 1em;
-.tab-menu
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-
-.tab-item
-  position: relative;
-  flex: 0 0 auto;
-  display: inline-block;
-  padding: 0.7em 0.7em;
-  min-width: 0;
-  overflow: hidden;
-  text-align: center;
-  border-bottom: none;
-  color: rgb(110, 110, 110);
-  transition: color 200ms cubic-bezier(0.165, 0.84, 0.44, 1) 0s;
-  cursor: pointer;
-  overflow: visible;
-  &.active
-    color: rgb(0, 0, 0);
-    &::after
-      transform: scaleX(1);
-  &:hover
-    color: rgb(0, 0, 0);
-    &::after
-      transform: scaleX(1);
-  &::after
-    content: "";
-    height: 2px;
-    width: 100%;
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    background: rgb(0, 0, 0);
-    transition: transform 400ms cubic-bezier(0.165, 0.84, 0.44, 1) 0s;
-    transform-origin: left center;
-    transform: scaleX(0);
 
 .search-type,
 .search-result-item
@@ -548,10 +506,11 @@ a
   margin-left: -2em;
   padding: 0.5em 0 0.5em 2em;
   transition: background 0.2s;
-  &:nth-of-type(2n)
-    background: $whitegray3-5;
-  &:hover
-    background: $gray2;
+  @include themify($themes)
+    &:nth-of-type(2n)
+      background: themed('secondary-background-color')
+    &:hover
+      background: themed('secondary-background-color-hover')
 .artist-pic-search,
 .album-pic-search,
 .playlist-pic-search,

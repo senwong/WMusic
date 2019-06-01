@@ -181,11 +181,13 @@ export default class OfficialTopList extends Vue {
 <style lang="sass" scoped>
 @import "@/components/config.sass"
 @import '@/style/colors.sass'
+@import '@/style/theme.sass'
 
 .offical
-  background-color: #e8e8e8
   margin: 0 -2em
   padding: 2em
+  @include themify($themes)
+    background-color: themed('secondary-background-color')
 
 .card
   display: flex
@@ -230,7 +232,9 @@ export default class OfficialTopList extends Vue {
 .track__item
   transition: all 250ms
   &:hover
-    background: #e0e0e0
+    @include themify($themes)
+      background-color: themed("secondary-background-color-hover")
+
 .track__rank__play
   flex: 0 0 2em
   box-sizing: border-box
@@ -263,7 +267,8 @@ export default class OfficialTopList extends Vue {
 .track__name, .track__artist
   transition: all 250ms
   &:hover
-    color: #000
+    @include themify($themes)
+      color: themed("text-color")
 
 .others
   margin-top: 40px
