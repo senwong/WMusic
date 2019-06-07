@@ -1,5 +1,5 @@
 <template>
-  <ul class="tracks">
+  <ul class="song-list">
     <SongListItem
       v-for="track in tracks"
       :key="track.id"
@@ -9,8 +9,8 @@
   </ul>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
 import { Track } from "@/types";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { Mutation, namespace, State, Getter } from "vuex-class";
 import SongListItem from "@/components/globals/SongListItem.vue";
 
@@ -58,8 +58,6 @@ export default class SongList extends Vue {
 }
 </script>
 <style lang="sass" scoped>
-@import '../config.sass'
-@import '../../style/colors.sass'
-.tracks
+.song-list
   padding: 20px 0 0
 </style>

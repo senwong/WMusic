@@ -64,9 +64,9 @@ export default class RippleButton extends Vue {
   background-color: transparent;
   font-size: 14px;
   padding: 9px 15px;
-  border: 1px solid $primary;
+  border: 1px solid $primary-color;
   border-radius: 2px;
-  color: $primary;
+  color: $primary-color;
   position: relative;
   overflow: hidden;
   &:focus, &:hover

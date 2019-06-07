@@ -1,26 +1,18 @@
-@import './colors.sass';
+html, body
+  height: 100%
 
-.main-wrapper
-  padding: 1em 2em;
-  box-sizing: border-box;
+body
+  font-family: 'Avenir', Helvetica, Arial, sans-serif
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
 
 .scrollbar-invisible
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: none
+  -ms-overflow-style: none
   &::-webkit-scrollbar
-    display: none;
-
-.button_icon
-  border: none;
-  font-size: inherit;
-  padding: 0;
-  cursor: pointer;
-  background-color: transparent;
-  display: flex;
-  color: inherit;
-  &:focus, &:hover
-    outline: none;
-  &.large
-    width: 2em;
-    height: 2em;
+    display: none
+.ellipsis
+	white-space: nowrap
+	overflow: hidden
+	text-overflow: ellipsis
 

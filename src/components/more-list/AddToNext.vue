@@ -24,5 +24,3 @@ export default class AddToNext extends Vue {
   }
 }
 </script>
-
-<style></style>

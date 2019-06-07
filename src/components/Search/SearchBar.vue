@@ -7,7 +7,7 @@
       type="text"
       class="input"
       @focus="$emit('focus', $event)"
-      @input="$emit('input', $event.target.value)"
+      @input="handleInput"
       v-model="value"
       v-on:keyup.enter="$emit('enter')"
       :placeholder="placeholder"
@@ -21,58 +21,55 @@
     </div>
   </div>
 </template>
-<script>
-import SearchIcon from "@/components/SVGIcons/SearchIcon";
-import ClearIcon from "@/components/SVGIcons/ClearIcon";
+<script lang="ts">
+import SearchIcon from "@/components/SVGIcons/SearchIcon.vue";
+import ClearIcon from "@/components/SVGIcons/ClearIcon.vue";
+import { Vue, Component, Prop, Model } from "vue-property-decorator";
 
-export default {
-  data() {
-    return {
-      value: null
-    };
-  },
-  model: {
-    prop: "value",
-    event: "input"
-  },
-  components: {
-    SearchIcon,
-    ClearIcon
-  },
-  props: ["placeholder", "isSpread"],
-  methods: {
-    handleClear() {
-      this.value = null;
-      this.$emit("input", null);
-    }
+@Component({
+  components: { SearchIcon, ClearIcon }
+})
+export default class SearchBar extends Vue {
+  @Model("input", { type: String }) readonly value!: string;
+  @Prop(String) readonly placeholder!: string;
+  @Prop(Boolean) readonly isSpread!: boolean;
+  handleClear() {
+    this.$emit("input", "");
   }
-};
+  handleInput(e: Event) {
+    const target = e.target as HTMLInputElement;
+    this.$emit("input", target.value);
+  }
+}
 </script>
 <style lang="sass" scoped>
-@import "../config.sass"
-@import "@/style/theme.sass"
+@import "searchbar.scss"
+@import "@/style/themify.sass"
 
 .search-container
-  padding: 0 1em;
-  border-radius: 17.5px;
-  display: flex;
-  flex-directon: row;
-  width: 100%;
-  align-items: center;
-  box-sizing: border-box;
-  border: 1px solid;
-  border-color: transparent;
-  border-bottom: none;
-  transition-property: background border;
-  transition-duration: 250ms;
-  @include themify($themes)
-    color: themed('text-color')
-    background-color: themed('secondary-background-color')
+  padding: 0 1em
+  border-radius: 17.5px
+  display: flex
+  flex-direction: row
+  width: 100%
+  align-items: center
+  box-sizing: border-box
+  border: 1px solid
+  border-color: transparent
+  border-bottom: none
+  transition-property: background, border
+  transition-duration: 250ms
+  color: inherit
   &.spread
     border-bottom-left-radius: 0
     border-bottom-right-radius: 0
-    @include themify($themes)
-      border-color: themed('secondary-border-color')
+  @include themify($themes)
+    background-color: themed("background-color")
+    border-color: themed('border-color')
+    &.spread
+      background-color: themed("background-color-focus")
+      border-color: themed('border-color-focus')
+
 .search-icon, .clear-icon
   height: 1.2em;
   width: 1.2em;

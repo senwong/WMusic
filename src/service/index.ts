@@ -1,6 +1,7 @@
 import Api from "./Api";
 import { CommentType } from "@/types";
 import { isUndef } from "@/utilitys";
+import { AxiosRequestConfig } from "axios";
 /**
  * 获取轮播图图片
  */
@@ -94,7 +95,7 @@ export function getTopList(idx: number) {
  * 获取最新MV
  */
 export function getNewMV() {
-  return Api().get("/mv/first?limit=6");
+  return Api().get("/mv/first");
 }
 /**
  * 获取推荐MV
@@ -121,7 +122,8 @@ export function getSimilarMV(id: number) {
  * @param {Number} limit 偏移数量
  */
 export function getMVrank(limit: number = 10) {
-  return Api().get(`top/mv?limit=${limit}`);
+  const params = { limit };
+  return Api().get("top/mv", { params });
 }
 /**
  * 获取歌词

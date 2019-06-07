@@ -9,12 +9,12 @@
     +-----------------+----------------------+------------------+
   -->
   <div class="user-media-card__container" v-if="user">
-    <router-link class="user-media-card__avatar" :to="`/user/${user.userId}`">
-      <Avatar
-        :name="user.nickname"
-        :imgSrc="user.avatarUrl | clipImage(70, 70)"
-      />
-    </router-link>
+    <Avatar
+      :name="user.nickname"
+      user
+      :id="user.userId"
+      :imgSrc="user.avatarUrl | clipImage(70, 70)"
+    />
     <!-- user info -->
     <div class="user-media-card__user-info">
       <!-- username -->
@@ -36,7 +36,7 @@
       </div>
     </div>
     <!-- message button -->
-    <Button class="user-media-card__message-button">私信</Button>
+    <Button secondary class="user-media-card__message-button">私信</Button>
   </div>
 </template>
 
@@ -56,8 +56,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-@import "../../style/theme.sass"
-
+@import "@/style/themify.sass"
+@import "userMediaCard.scss"
 .user-media-card__container
   width: 100%
   box-sizing: border-box
@@ -71,7 +71,7 @@ export default {
   @include themify($themes)
     border-color: themed('border-color')
     background: themed('background-color')
-.user-media-card__avatar
+
 .user-media-card__user-info
   margin-left: 1em
   flex: 1 1 auto

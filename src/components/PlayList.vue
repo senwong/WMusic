@@ -1,13 +1,13 @@
 <template>
-  <div class="list-wrapper right-menu" ref="menu">
+  <div class="list-wrapper" ref="menu">
     <!-- 顶部标题 -->
     <div class="list__title">
       <span class="title__txt">播放列表</span>
       <BtnWithPopupMenu>
         <template slot="btn">
-          <SvgBtnWrapper large>
+          <SvgBtn large>
             <MoreIcon />
-          </SvgBtnWrapper>
+          </SvgBtn>
         </template>
         <template slot="menu">
           <more-list>
@@ -45,7 +45,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { Mutation, namespace, State } from "vuex-class";
 import { Track } from "@/types";
 import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
-import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
 import { withIn } from "@/utilitys";
 
 const playlist = namespace("playlist");
@@ -60,7 +60,7 @@ const notification = namespace("notification");
     MoreIcon,
     DownloadIcon,
     BtnWithPopupMenu,
-    SvgBtnWrapper
+    SvgBtn
   }
 })
 export default class Playlist extends Vue {
@@ -97,23 +97,14 @@ export default class Playlist extends Vue {
 </script>
 <style lang="sass" scoped>
 @import "config.sass"
-@import '../style/colors.sass'
+@import "@/style/theme.sass"
 
-.right-menu
-  position: fixed
-  top: 0
-  height: calc(100% - 6em)
-  overflow: hidden
-  width: 300px
-  right: 0
-  z-index: 3
-  box-shadow: 0 0 42px 3px rgba(0, 0, 0, .2)
 .list-wrapper
   background-color: white
   display: flex
   flex-direction: column
   &.active
-    color: $primary
+    color: $primary-color
 .play-list
   overflow-y: scroll
   overflow-x: hidden
@@ -131,14 +122,13 @@ export default class Playlist extends Vue {
   margin-top: 1em
   .title__txt
     font-size: 16px
-    color: $orange
-  .title__more
-    color: $gray
+    color: $primary-color
 // 歌曲总数样式
 .list__count
   padding: 0 10px
   font-size: 12px
-  color: $gray
+  @include themify($themes)
+    color: themed("secondary-text-color")
   // 单个歌曲样式
 .song-item
   display: flex
@@ -146,13 +136,14 @@ export default class Playlist extends Vue {
   align-items: center
   padding: 0 10px
   &.active
-    color: $orange
+    color: $primary-color
   &.not-play
-    color: $gray
+    @include themify($themes)
+      color: themed("secondary-text-color")
 .song-item:nth-of-type(2n+1)
-  background-color: $whitegray
-.song-item:not(.not-play):hover
-  background-color: $whitegray3
+  @include themify($themes)
+    background-color: themed("secondary-background-color")
+
 // 专辑封面
 .album-img
   flex: 0 0 40px
@@ -176,28 +167,28 @@ export default class Playlist extends Vue {
     white-space: nowrap
   .songer
     font-size: 12px
-    color: $gray
     overflow: hidden
     text-overflow: ellipsis
     white-space: nowrap
-.song-item:not(.not-play)
-  .songer:hover,
-    color: $orange
+    &:hover
+      color: $primary-color
+
+@include themify($themes)
+  .length,.songer,.fav-more
+    color: themed("secondary-text-color")
 .length
-  color: $gray
   font-size: 12px
   flex: 0 0 50px
 // hover时显示更多和收藏
 .fav-more
   display: none
-  color: $gray
   flex: 0 0 50px
   .fav
     margin-right: 10px
   .is-fav
-    color: $orange
+    color: $primary-color
   &.is-fav svg
-    fill: $orange
+    fill: $primary-color
 .song-item:not(.not-play):hover
   .length
     display: none

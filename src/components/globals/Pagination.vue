@@ -1,11 +1,14 @@
 <template>
-  <ul class="pagination__list">
+  <ul class="pagination">
     <li
       class="pagination__item"
       v-for="p in pagination"
       :key="p.pageIdx"
       @click="handleClick(p)"
-      :class="{ active: p.pageIdx == currentPageIdx }"
+      :class="{
+        'pagination__item--active': p.pageIdx == currentPageIdx,
+        'pagination__item--disabled': disabled
+      }"
     >
       {{ p.symbol }}
     </li>
@@ -22,7 +25,8 @@ export default {
   },
   props: {
     // how many pages
-    total: Number
+    total: Number,
+    disabled: Boolean
   },
   computed: {
     pagination() {
@@ -54,6 +58,9 @@ export default {
       );
     },
     handleClick({ pageIdx }) {
+      if (this.disabled) {
+        return;
+      }
       this.currentPageIdx = pageIdx;
       this.$emit("change", this.currentPageIdx);
     }
@@ -62,16 +69,30 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-@import '@/style/colors.sass';
+@import '@/style/colors.sass'
+@import "@/style/themify.sass"
+@import "Pagination.scss"
 
-.pagination__list
-  padding: 0;
-  text-align: center;
-.pagination__item
-  display: inline-block;
-  margin: 1em;
-  padding: 0.5em;
-  cursor: pointer;
-  &.active
-    color: $primary;
+.pagination
+  padding: 0
+  text-align: center
+  &__item
+    display: inline-block
+    margin: 1em
+    width: 2em
+    height: 2em
+    padding: 0.5em
+    cursor: pointer
+    border-radius: 0.4em
+    transition: all .5s
+    user-select: none
+    -webkit-user-select: none
+    @include themify($themes)
+      background-color: themed("bg")
+      &:not(&--disabled):hover
+        background-color: themed("bg-hover")
+    &--active
+      color: $primary-color
+    &--disabled
+      cursor: not-allowed
 </style>

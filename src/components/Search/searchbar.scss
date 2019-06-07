@@ -1,0 +1,16 @@
+@import "@/style/theme-base-colors.sass";
+
+$themes: (
+  light: (
+    background-color: adjust-color($light-background-color, $lightness: -20%),
+    background-color-focus: adjust-color($light-background-color, $lightness: -5%),
+    border-color: adjust-color($light-background-color, $lightness: -10%),
+    border-color-focus: adjust-color($light-background-color, $lightness: -20%),
+  ),
+  dark: (
+    background-color: adjust-color($dark-background-color, $lightness: +20%),
+    background-color-focus: adjust-color($dark-background-color, $lightness: +5%),
+    border-color: adjust-color($dark-background-color, $lightness: +10%),
+    border-color-focus: adjust-color($dark-background-color, $lightness: +20%),
+  )
+);

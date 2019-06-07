@@ -1,12 +1,16 @@
 <template>
-  <div class="main-wrapper">
+  <div class="artist-detail">
     <div>
-      <div class="media">
-        <div class="media__left">
-          <img :src="img | convert2Https" :alt="name" />
+      <div class="artist-detail__media">
+        <div class="artist-detail__media__left">
+          <ImageWithPlaceholder
+            :src="img | convert2Https"
+            :alt="name"
+            ratio="1:1"
+          />
         </div>
-        <div class="media__right">
-          <div class="media__heading">{{ name }}</div>
+        <div class="artist-detail__media__right">
+          <div class="artist-detail__media__heading">{{ name }}</div>
           <div>
             <Button
               rounded
@@ -21,17 +25,12 @@
           </div>
         </div>
       </div>
-      <p class="brief-desc">{{ briefDesc }}</p>
+      <p class="artist-detail__brief-desc">{{ briefDesc }}</p>
       <TabMenu align-left :list="tabs" />
-      <song-list
-        :tracks="tracks"
-        class="tab__content tab__1"
-        v-if="showSongs"
-      />
-      <SongCards
+      <song-list :tracks="tracks" v-if="showSongs" />
+      <MediaCardsGrid
         class="artist-detail__albums"
-        :cardLists="hotAlbums"
-        cardType="album"
+        :data="albumMediaCardData"
         v-if="showAlbums"
       />
     </div>
@@ -41,26 +40,34 @@
 import { getArtistInfo, getArtistAlbums } from "@/service";
 import { formatDate } from "@/utilitys";
 import SongList from "@/components/globals/SongList.vue";
-import SongCards from "@/components/globals/SongCards.vue";
+import MediaCardsGrid from "@/components/globals/MediaCardsGrid.vue";
 import { mapMutations } from "vuex";
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { Playlist, Track, convertTrack } from "@/types";
+import { Playlist, Track, convertTrack, MediaCardItem } from "@/types";
 import { Mutation, namespace } from "vuex-class";
 import TabMenu from "@/components/globals/TabMenu.vue";
 import Button from "@/components/globals/Button.vue";
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
 
 const playlist = namespace("playlist");
 enum ContentType {
   Songs,
   Albums
 }
+interface HotAlbumType {
+  artist: { id: number; name: string };
+  id: number;
+  name: string;
+  picUrl: string;
+}
 
 @Component({
   components: {
     SongList,
-    SongCards,
+    MediaCardsGrid,
     TabMenu,
-    Button
+    Button,
+    ImageWithPlaceholder
   }
 })
 export default class ArtistDetail extends Vue {
@@ -72,7 +79,7 @@ export default class ArtistDetail extends Vue {
 
   tracks: Track[] = [];
 
-  hotAlbums: Playlist[] = [];
+  albumMediaCardData: MediaCardItem[] = [];
 
   currentContent: ContentType = ContentType.Songs;
 
@@ -117,7 +124,15 @@ export default class ArtistDetail extends Vue {
       this.tracks = res.data.hotSongs.map(convertTrack);
     });
     getArtistAlbums(artistId).then(res => {
-      this.hotAlbums = res.data.hotAlbums;
+      const hotAlbums = res.data.hotAlbums;
+      this.albumMediaCardData = hotAlbums.map((ha: HotAlbumType) => ({
+        type: "album",
+        picUrl: ha.picUrl,
+        title: ha.name,
+        id: ha.id,
+        subTitle: ha.artist && ha.artist.name,
+        subLink: ha.artist && ha.artist.id && `/artist/${ha.artist.id}`
+      }));
     });
   }
 
@@ -133,36 +148,34 @@ export default class ArtistDetail extends Vue {
 }
 </script>
 <style lang="sass" scoped>
-@import '../config.sass'
 
-.media
-  display: flex
-  height: 200px
-.media__left
-  flex: 0 0 200px
-  font-size: 0
-  margin-right: 20px
-  img
-    width: 100%
-    height: 100%
-    border-radius: 15px
-.media__right
-  flex: 1 1 auto
-  display: flex
-  flex-direction: column
-  justify-content: space-between
-.media__heading
-  font-size: 2em
-.brief-desc
-  text-overflow: ellipsis
-  overflow: hidden
-
-.artist-detail__albums
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr))
-  grid-gap: 2em
-  flex-wrap: wrap
-  justify-content: space-between
-  padding: 1em 0
+.artist-detail
+  padding: 1em
+  &__media
+    display: flex
+    height: 200px
+    &__left
+      flex: 0 0 200px
+      font-size: 0
+      margin-right: 20px
+      border-radius: 15px
+      overflow: hidden
+    &__right
+      flex: 1 1 auto
+      display: flex
+      flex-direction: column
+      justify-content: space-between
+      &__heading
+        font-size: 2em
+  &__brief-desc
+    text-overflow: ellipsis
+    overflow: hidden
+  &__albums
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr))
+    grid-gap: 2em
+    flex-wrap: wrap
+    justify-content: space-between
+    padding: 1em 0
 
 .button-controll
   margin-right: 1em

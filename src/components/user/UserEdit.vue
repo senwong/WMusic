@@ -284,7 +284,6 @@ export default {
 <style lang="sass" scoped>
 .user-edit__container
   padding: 2em
-  max-width: 50vh
 .user-edit__row
   display: flex
   flex-direction: row

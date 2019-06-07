@@ -1,6 +1,6 @@
 <template>
   <more-item spread="left">
-    <DownloadIcon slot="icon" />
+    <LibraryAddIcon slot="icon" />
     <span slot="txt" class="txt">添加到歌单</span>
     <!-- hover时右侧扩展内容 -->
     <more-list slot="spread-list">
@@ -9,7 +9,7 @@
         :key="p.id"
         @click.native="handleClick"
       >
-        <DownloadIcon slot="icon" />
+        <LibraryMusicIcon slot="icon" />
         <span slot="txt" class="txt">{{ p.name }}</span>
       </more-item>
     </more-list>
@@ -25,11 +25,19 @@ import MoreList from "@/components/more-list/MoreList.vue";
 import { getUserPlaylist, addToPlaylist } from "@/service";
 import { State, namespace } from "vuex-class";
 import { isUndef } from "@/utilitys";
+import LibraryAddIcon from "@/components/SVGIcons/LibraryAdd.vue";
+import LibraryMusicIcon from "@/components/SVGIcons/LibraryMusic.vue";
 
 const currentUser = namespace("currentUser");
 const notification = namespace("notification");
 @Component({
-  components: { MoreItem, DownloadIcon, MoreList }
+  components: {
+    MoreItem,
+    DownloadIcon,
+    MoreList,
+    LibraryAddIcon,
+    LibraryMusicIcon
+  }
 })
 export default class AddToUserPlaylist extends Vue {
   @Prop() track!: Track;
@@ -64,5 +72,3 @@ export default class AddToUserPlaylist extends Vue {
   }
 }
 </script>
-
-<style></style>

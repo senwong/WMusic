@@ -90,9 +90,9 @@ export interface Comment {
   beReplied: RepliedComment[];
 }
 interface RepliedComment {
-  beRepliedCommentId: number
-  content: string
-  user: User
+  beRepliedCommentId: number;
+  content: string;
+  user: User;
 }
 
 // 0 : mv comment 1: song comment
@@ -126,9 +126,11 @@ export interface Rank {
   cover: string;
   name: string;
   artistName: string;
+  artistId: number;
   briefDesc: string;
   rank: number;
   lastRank: number;
+  playCount: number;
 }
 
 export interface MvCard {
@@ -137,6 +139,16 @@ export interface MvCard {
   name: string;
   artists: { id: number; name: string }[];
 }
+
+export interface MvType {
+  cover: string;
+  name: string;
+  id: number;
+  artistName: string;
+  artistId: string;
+  playCount: number;
+}
+
 export interface Record {
   playCount: number;
   score: number;
@@ -171,10 +183,41 @@ export interface Mv {
   brs: Br[];
 }
 export interface Option {
-  id: number;
+  key: number;
   title: string;
   value: any;
 }
 export enum Theme {
-  Light, Dark
+  Light,
+  Dark
+}
+export enum MediaCardType {
+  Playlist = "playlist",
+  Mv = "mvplay",
+  Album = "album",
+  djRadio = "djradio"
+}
+export interface MediaCardItem {
+  type: MediaCardType;
+  picUrl: string;
+  title: string;
+  id: number;
+  subTitle?: string;
+  subLink?: string;
+  playCount?: number;
+  ratio?: string;
+}
+export function mapPlaylistToCardItem(
+  pl: Playlist,
+  type: MediaCardType
+): MediaCardItem {
+  return {
+    type: type,
+    picUrl: pl.picUrl,
+    title: pl.name,
+    id: pl.id,
+    subTitle: pl.creator && pl.creator.nickname,
+    subLink: pl.creator && `/user/${pl.creator.userId}`,
+    playCount: pl.playCount
+  };
 }

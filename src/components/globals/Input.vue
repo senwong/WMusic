@@ -1,17 +1,17 @@
 <template>
-  <div class="input__container">
+  <div class="input">
     <input
       class="input__ele"
       :type="type"
-      :class="{ 'input-large': large }"
+      :class="{ 'input__ele--large': large }"
       :placeholder="placeholder"
       :value="value"
       @keydown.enter="$emit('enter')"
       @input="$emit('input', $event.target.value)"
     />
     <div class="input__hint" v-if="verify !== undefined">
-      <div class="input__done" v-if="verified"><DoneIcon /></div>
-      <div class="input__error" v-else>*</div>
+      <div class="input__hint__done" v-if="verified"><DoneIcon /></div>
+      <div class="input__hint__error" v-else>*</div>
     </div>
   </div>
 </template>
@@ -36,32 +36,37 @@ export default class Input extends Vue {
 </script>
 
 <style lang="sass" scoped>
-.input__container
+@import "@/style/themify.sass"
+@import "Input.scss"
+
+.input
   display: flex
   flex-direction: row
   justify-content: flex-start
   align-items: center
-.input__ele
-  flex: 1 1 auto
-  font-size: 14px
-  display: inline-block
-  padding: 0.4em 0.8em
-  border: 1px solid #eee
-  box-sizing: border-box
-  transition: all 250ms
-  border-radius: 0.2em
-  &:focus
-    outline: none
-    border-color: #777
-  &.input-large
-    font-size: 16px
-.input__hint
-  flex: 0 0 auto
-  width: 1em
-  height: 1em
-.input__error
-  color: red
-  text-align: center
-.input__done
-  color: green
+  &__ele
+    flex: 1 1 auto
+    font-size: 14px
+    display: inline-block
+    padding: 0.4em 0.8em
+    border: 1px solid
+    box-sizing: border-box
+    transition: all 250ms
+    border-radius: 0.2em
+    @include themify($themes)
+      border-color: themed('border-color')
+      &:focus
+        outline: none
+        border-color: themed('border-color-focus')
+    &--large
+      font-size: 16px
+  &__hint
+    flex: 0 0 auto
+    width: 1em
+    height: 1em
+    &__error
+      color: red
+      text-align: center
+    &__done
+      color: green
 </style>

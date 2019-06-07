@@ -1,6 +1,6 @@
 <template>
   <more-item @click.native="handleComment">
-    <DownloadIcon slot="icon" />
+    <CommentIcon slot="icon" />
     <span slot="txt" class="txt">评论</span>
   </more-item>
 </template>
@@ -8,11 +8,11 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Track } from "@/types";
-import DownloadIcon from "@/components/SVGIcons/DownloadIcon.vue";
 import MoreItem from "@/components/more-list/MoreItem.vue";
+import CommentIcon from "@/components/SVGIcons/Comment.vue";
 
 @Component({
-  components: { DownloadIcon, MoreItem }
+  components: { MoreItem, CommentIcon }
 })
 export default class CommentTrack extends Vue {
   @Prop() track!: Track;
@@ -21,5 +21,3 @@ export default class CommentTrack extends Vue {
   }
 }
 </script>
-
-<style></style>

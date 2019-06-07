@@ -1,8 +1,8 @@
 <template>
-  <div class="page__container">
-    <div class="login-type__container">
+  <div class="login">
+    <div class="login__type">
       <Button
-        class="login-type__email"
+        class="login__type__email"
         block
         rounded
         large
@@ -11,7 +11,7 @@
         >邮箱登录</Button
       >
       <Button
-        class="login-type__phone"
+        class="login__type__phone"
         block
         rounded
         large
@@ -23,7 +23,7 @@
     <!-- 使用邮箱登录 -->
     <Input
       v-if="isEmail"
-      class="input-email"
+      class="login__email"
       type="text"
       large
       placeholder="邮箱地址"
@@ -34,15 +34,15 @@
       @enter="handleLogin"
     />
     <!-- 使用手机登录 -->
-    <div class="phone-input" v-if="isPhone">
-      <SelectInput
-        class="phone-input__country-code"
+    <div class="login__phone" v-if="isPhone">
+      <Select
         :options="phoneOptions"
         v-model="phoneCountryCode"
-        :optionToTitle="optionToTitle"
+        :optionValueToTitle="val => `+${val}`"
+        class="login__phone__country-code"
       />
       <Input
-        class="phone-input__phone-number"
+        class="login__phone__number"
         type="text"
         large
         placeholder="手机号码"
@@ -53,7 +53,7 @@
     </div>
     <!-- 密码 -->
     <Input
-      class="input-password"
+      class="login__password"
       type="password"
       large
       placeholder="密码"
@@ -61,15 +61,23 @@
       @enter="handleLogin"
       @focus.native="handlePasswordFocus"
     />
-    <div class="login-failed" :class="{ 'login-failed_show': isLoginFailed }">
+    <div
+      class="login__failed"
+      :class="{ 'login__failed--show': isLoginFailed }"
+    >
       登录错误，请重试。
     </div>
-    <Button class="login-btn" block primary large @click.native="handleLogin"
+    <Button
+      class="login__submit"
+      block
+      primary
+      large
+      @click.native="handleLogin"
       >登录</Button
     >
 
-    <div class="signup__container">
-      <div class="signup__title">没有账号</div>
+    <div class="login__signup">
+      <div class="login__signup__title">没有账号</div>
       <Button block large>注册</Button>
     </div>
   </div>
@@ -81,7 +89,7 @@ import { Mutation, namespace } from "vuex-class";
 import Button from "@/components/globals/Button.vue";
 import Input from "@/components/globals/Input.vue";
 import { loginEmail, loginPhone } from "@/service";
-import SelectInput from "@/components/globals/SelectInput.vue";
+import Select from "@/components/globals/Select.vue";
 import CountryPhoneCodes from "./CountryPhoneCodes.json";
 import { Option } from "@/types";
 
@@ -98,19 +106,19 @@ const emailRE = /^\w+[\w-.]*\w+@\w+\.\w+$/;
 const currentUser = namespace("currentUser");
 
 @Component({
-  components: { Button, Input, SelectInput }
+  components: { Button, Input, Select }
 })
 export default class Login extends Vue {
   email: string = "";
   password: string = "";
   isLoginFailed: boolean = false;
   type: LoginType = LoginType.Email;
-  phoneCountryCode: Option | null = null;
+  phoneCountryCode: number = 86;
   phoneNumber: number | null = null;
 
   get phoneOptions(): Option[] {
     return CountryPhoneCodes.map((pc, idx) => ({
-      id: idx,
+      key: idx,
       title: `+${pc.phoneCode}(${pc.countryName})`,
       value: pc.phoneCode
     }));
@@ -122,34 +130,33 @@ export default class Login extends Vue {
     return this.type === LoginType.Email;
   }
   @currentUser.Mutation setCurrentUserId!: (id: number) => void;
-  handleLogin() {
-    if (this.isPhone) {
-      if (
-        !this.verifyPhoneLogin(
-          this.phoneNumber,
-          this.password,
-          this.phoneCountryCode && this.phoneCountryCode.value
-        )
-      ) {
-        return;
-      }
-    }
-    if (this.isEmail) {
-      if (!this.verifyEmailLogin(this.email, this.password)) {
-        return;
-      }
-    }
+  handlePhoneLogin() {
     if (this.phoneNumber === null || this.phoneCountryCode === null) {
       return;
     }
-    const responsePromise = this.isEmail
-      ? loginEmail(this.email, this.password)
-      : loginPhone(
-          this.phoneNumber,
-          this.password,
-          this.phoneCountryCode.value
-        );
-    this.handleLoginResponsePromsie(responsePromise);
+    if (
+      this.verifyPhoneLogin(
+        this.phoneNumber,
+        this.password,
+        this.phoneCountryCode
+      )
+    ) {
+      this.handleLoginResponsePromsie(
+        loginPhone(this.phoneNumber, this.password, this.phoneCountryCode)
+      );
+    }
+  }
+  handleEmailLogin() {
+    if (this.verifyEmailLogin(this.email, this.password)) {
+      this.handleLoginResponsePromsie(loginEmail(this.email, this.password));
+    }
+  }
+  handleLogin() {
+    if (this.isPhone) {
+      this.handlePhoneLogin();
+    } else {
+      this.handleEmailLogin();
+    }
   }
   verifyPhoneLogin(
     phoneNumber: number | null,
@@ -211,50 +218,48 @@ export default class Login extends Vue {
 </script>
 
 <style lang="sass" scoped>
-.page__container
+.login
   width: 500px
   margin: 20vh auto
-.login-type__container
-  display: flex
-  flex-direction: row
-  justify-content: stretch
-.login-type__email
-  flex: 1 1 auto
-  margin-right: 60px
-.login-type__phone
-  flex: 1 1 auto
+  &__type
+    display: flex
+    flex-direction: row
+    justify-content: stretch
+    &__email
+      flex: 1 1 auto
+      margin-right: 60px
+    &__phone
+      flex: 1 1 auto
+  &__email, &__password
+    margin-top: 1em
+  &__phone
+    margin-top: 1em
+    display: flex
+    flex-direction: row
+    justify-content: flex-start
+    align-items: center
+    &__country-code
+      flex: 0 0 auto
+    &__number
+      flex: 1 1 auto
+      margin-left: 1em
+  &__failed
+    font-size: 14px
+    color: red
+    text-align: center
+    margin-top: 30px
+    opacity: 0
+    transition: all 250ms
+    &--show
+      opacity: 1
+  &__submit
+    margin-top: 10px
 
-.input-email, .input-password
-  margin-top: 1em
-
-.login-failed
-  font-size: 14px
-  color: red
-  text-align: center
-  margin-top: 30px
-  opacity: 0
-  transition: all 250ms
-  &.login-failed_show
-    opacity: 1
-.login-btn
-  margin-top: 10px
-.phone-input
-  margin-top: 1em
-  display: flex
-  flex-direction: row
-  justify-content: flex-start
-  align-items: center
-.phone-input__country-code
-  flex: 0 0 auto
-.phone-input__phone-number
-  flex: 1 1 auto
-  margin-left: 1em
-
-.signup__container
-  margin-top: 100px
-  text-align: center
-.signup__title
-  margin-bottom: 6px
-  font-size: 14px
-  color: #777
+  &__signup
+    margin-top: 100px
+    text-align: center
+    &__title
+      margin-bottom: 6px
+      font-size: 14px
+      color: #777
 </style>

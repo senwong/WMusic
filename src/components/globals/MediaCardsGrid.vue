@@ -1,14 +1,9 @@
 <template>
   <div>
-    <div class="lists" v-if="cardLists.length > 0" key="cards">
-      <CardItem
-        v-for="card in cardLists"
-        :key="card.id"
-        :card="card"
-        :cardType="cardType"
-      />
+    <div class="song-cards" v-if="data.length > 0" key="cards">
+      <CardItem v-for="card in data" :key="card.id" :card="card" />
     </div>
-    <div class="lists" v-else key="placeholder">
+    <div class="song-cards" v-else key="placeholder">
       <div
         class="placeholder__wrapper"
         v-for="(_, idx) in new Array(15).fill(true)"
@@ -24,32 +19,35 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import CardItem from "./CardItem.vue";
-import { Playlist, PlaylistType } from "@/types";
+import { Playlist, PlaylistType, MediaCardItem } from "@/types";
 import Placeholder from "@/components/globals/Placeholder.vue";
+import PlayWithoutCircleIcon from "@/components/SVGIcons/PlayWithoutCircleIcon.vue";
 
 @Component({
-  components: { CardItem, Placeholder }
+  components: { CardItem, Placeholder, PlayWithoutCircleIcon }
 })
-export default class SongCards extends Vue {
-  @Prop() readonly cardType!: PlaylistType;
-
-  @Prop() readonly cardLists!: Playlist[];
+export default class MediaCardsGrid extends Vue {
+  @Prop() readonly data!: MediaCardItem[];
 }
 </script>
 <style lang="sass" scoped>
-.lists
+@import "@/style/theme.sass"
+.song-cards
   display: grid
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr))
   grid-gap: 2em
   flex-wrap: wrap
   justify-content: space-between
+  &__item
+    position: relative
 
-.placeholder__img
-  width: 100%
-  padding-bottom: 100%
-.placeholder__title
-  height: 2em
-  margin: 0.5em 0
-.placeholder__subtitle
-  height: 1em
+.placeholder
+  &__img
+    width: 100%
+    padding-bottom: 100%
+  &__title
+    height: 2em
+    margin: 0.5em 0
+  &__subtitle
+    height: 1em
 </style>

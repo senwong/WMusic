@@ -28,34 +28,34 @@
       <!-- 中间区域 开始-->
       <div class="playbar__item_middle pause-panel">
         <!-- 上一曲按钮 -->
-        <SvgBtnWrapper
+        <SvgBtn
           xlarge
           class="prev-song"
           @click.native="prevSong"
           :disabled="disabled"
         >
-          <PrevSongIcon />
-        </SvgBtnWrapper>
+          <SkipPreviousIcon />
+        </SvgBtn>
         <!-- 播放/暂停按钮 -->
-        <SvgBtnWrapper
+        <SvgBtn
           xlarge
           primary
           class="pause-song"
           @click.native="togglePlay"
           :disabled="disabled"
         >
-          <PausedIcon v-if="paused" />
-          <PlayingIcon v-else />
-        </SvgBtnWrapper>
+          <PlayArrowIcon v-if="paused" />
+          <PauseIcon v-else />
+        </SvgBtn>
         <!-- 下一曲按钮 -->
-        <SvgBtnWrapper
+        <SvgBtn
           xlarge
           class="next-song"
           @click.native="nextSong"
           :disabled="disabled"
         >
-          <NextSongIcon />
-        </SvgBtnWrapper>
+          <SkipNextIcon />
+        </SvgBtn>
       </div>
       <!-- 中间区域 结束 -->
       <!-- 右边区域 开始-->
@@ -98,12 +98,14 @@ import ProgressBar from "./ProgressBar.vue";
 import { mapState } from "vuex";
 import PrevSongIcon from "@/components/SVGIcons/PrevSongIcon.vue";
 import NextSongIcon from "@/components/SVGIcons/NextSongIcon.vue";
-import PausedIcon from "@/components/SVGIcons/PausedIcon.vue";
-import PlayingIcon from "@/components/SVGIcons/PlayingIcon.vue";
 import { PlayMode, Album, Artist } from "@/types";
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, Getter, namespace } from "vuex-class";
-import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
+import SkipPreviousIcon from "@/components/SVGIcons/SkipPrevious.vue";
+import SkipNextIcon from "@/components/SVGIcons/SkipNext.vue";
+import PlayArrowIcon from "@/components/SVGIcons/PlayArrow.vue";
+import PauseIcon from "@/components/SVGIcons/Pause.vue";
 
 const playlist = namespace("playlist");
 const playbar = namespace("playbar");
@@ -117,9 +119,11 @@ const notification = namespace("notification");
     ProgressBar,
     PrevSongIcon,
     NextSongIcon,
-    PausedIcon,
-    PlayingIcon,
-    SvgBtnWrapper
+    SvgBtn,
+    SkipPreviousIcon,
+    SkipNextIcon,
+    PlayArrowIcon,
+    PauseIcon
   }
 })
 export default class Playbar extends Vue {

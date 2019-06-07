@@ -1,56 +1,76 @@
 <template>
-  <div class="page-container" :class="themeClass">
-    <navbar-component class="container__aside scrollbar-invisible" />
-    <main class="container__main">
-      <router-view :key="$route.path" />
-    </main>
-    <playbar-component class="container__footer" />
-    <!-- 右边弹出菜单 -->
-    <transition name="slide-fade">
-      <play-list-component v-show="isVisible" class="right-menu" />
-    </transition>
-
-    <!-- 滚动页面返回顶部按钮 -->
-    <transition name="fade">
-      <button
-        v-if="isScrolled"
-        @click="scrollToTop"
-        class="button_icon large back-top"
+  <div class="app" :class="themeClass">
+    <Navbar class="app__nav-bar scrollbar-invisible" />
+    <main class="app__main">
+      <!-- router-view need in a 100% height div, to prevent scrolltoTopBtn scrolling -->
+      <div
+        class="app__main__pages"
+        ref="scrollingEle"
+        @scroll="handleAppMainScroll"
       >
-        <ScrollToTopIcon />
-      </button>
-    </transition>
+        <router-view :key="$route.path" appear />
+      </div>
+      <transition name="slide-right">
+        <Playlist v-show="isVisible" class="app__main__right-menu" />
+      </transition>
+      <!-- 滚动页面返回顶部按钮 -->
+      <transition name="fade">
+        <SvgBtn
+          v-if="isScrolled"
+          xlarge
+          @click.native="scrollToTop"
+          class="app__main__scroll-top-btn"
+        >
+          <ScrollToTopIcon />
+        </SvgBtn>
+      </transition>
+    </main>
+    <Playbar class="app__footer" />
     <!-- 通知 -->
     <GlobalNotification />
   </div>
 </template>
 
 <script lang="ts">
-import NavbarComponent from "@/components/Navbar.vue";
-import PlaybarComponent from "@/components/playbar/Playbar.vue";
-import PlayListComponent from "@/components/Playlist.vue";
+import Navbar from "@/components/NavBar/Navbar.vue";
+import Playbar from "@/components/playbar/Playbar.vue";
+import Playlist from "@/components/Playlist.vue";
 import ScrollToTopIcon from "@/components/SVGIcons/ScrollToTopIcon.vue";
 import GlobalNotification from "@/components/globals/GlobalNotification.vue";
-import { Vue, Component, Provide, Watch } from "vue-property-decorator";
-import { namespace, State } from "vuex-class";
+import { Vue, Component } from "vue-property-decorator";
+import { namespace, State, Mutation } from "vuex-class";
 import { Theme } from "@/types";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
+import { getLoginStatus } from "@/service/index";
 
 const playlist = namespace("playlist");
 const theme = namespace("theme");
+const mainScroll = namespace("mainScroll");
+const currentUser = namespace("currentUser");
+
 @Component({
   components: {
-    NavbarComponent,
-    PlaybarComponent,
-    PlayListComponent,
+    Navbar,
+    Playbar,
+    Playlist,
     ScrollToTopIcon,
-    GlobalNotification
+    GlobalNotification,
+    SvgBtn
   }
 })
 export default class App extends Vue {
   @playlist.State isVisible!: boolean;
 
   @theme.State("value") theme!: Theme;
+  @mainScroll.State("isBottom") mainIsScrollBottom!: boolean;
+  @mainScroll.State maxScrollTop!: number;
+  @mainScroll.Mutation setIsBottom!: (b: boolean) => void;
+  @mainScroll.Mutation setMaxScrollTop!: (st: number) => void;
+  @currentUser.Mutation setCurrentUserId!: (id: number) => void;
 
+  $refs!: {
+    scrollingEle: HTMLElement;
+  };
   get themeClass(): string {
     switch (this.theme) {
       case Theme.Light:
@@ -63,106 +83,126 @@ export default class App extends Vue {
   }
 
   isScrolled: boolean = false;
+  handleAppMainScroll(e: Event) {
+    const target = e.target as HTMLElement;
+    if (!target) {
+      return;
+    }
+    const { scrollTop, clientHeight, scrollHeight } = target;
 
+    if (scrollTop > this.maxScrollTop) {
+      this.setMaxScrollTop(scrollTop);
+    }
+
+    this.isScrolled = scrollTop > 0;
+    const isBottom = scrollTop + clientHeight === scrollHeight;
+    if (isBottom !== this.mainIsScrollBottom) {
+      this.setIsBottom(isBottom);
+    }
+  }
   scrollToTop() {
-    if (!this.$el) return;
-    const el = document.scrollingElement;
+    const el = this.$refs.scrollingEle;
     if (!el) return;
-    const duration = 0.6;
+    let speed = 10; // every 1/60s, move 10px
+    const g = 2; // // every 1/60s, speed += g
     const distance = el.scrollTop;
-    const step = Math.floor(distance / (60 * duration));
-    function s() {
+    function step() {
       if (!el) return;
-      el.scrollTop -= step;
+      el.scrollTop -= speed;
       if (el.scrollTop > 0) {
-        window.requestAnimationFrame(s);
+        window.requestAnimationFrame(step);
+      }
+      if (el.scrollTop >= distance / 2) {
+        speed += g;
+      } else {
+        speed = Math.max(speed - g, 0.1);
       }
     }
-    window.requestAnimationFrame(s);
+    window.requestAnimationFrame(step);
+  }
+  updateLoginStatus() {
+    getLoginStatus().then(
+      res => {
+        const { profile } = res.data;
+        this.setCurrentUserId(profile.userId);
+      },
+      error => {}
+    );
+  }
+  created() {
+    this.updateLoginStatus();
   }
 }
 </script>
 
 <style lang="sass">
-@import "@/style/reset.sass"
 @import "@/style/global.sass"
-@import "@/style/colors.sass"
+@import "@/style/reset.sass"
 </style>
 
 <style lang="sass" scoped>
-@import "components/config.sass"
 @import "style/theme.sass"
 
-#app
-  font-family: 'Avenir', Helvetica, Arial, sans-serif
-  -webkit-font-smoothing: antialiased
-  -moz-osx-font-smoothing: grayscale
-
-.page-container
-  margin: auto
-  width: 100%
+.app
   height: 100%
   position: relative
   overflow: hidden
-
-.container__aside,
-.container__main,
-.container__footer,
-.right-menu
+  display: grid
+  grid-template-areas: "nav-bar main" "footer footer"
+  grid-template-columns: 250px 1fr
+  grid-template-rows: 1fr 6em
   @include themify($themes)
     color: themed('text-color')
     background-color: themed('background-color')
-// 侧边栏样式
-.container__aside
-  background-color: $whitegray2
-  position: fixed
-  width: 250px
-  height: calc(100% - #{$footerHeight})
-  z-index: 1
-  box-sizing: border-box
-  overflow-y: scroll
-  overscroll-behavior: contain
-  box-sizing: border-box
+  &__main
+    grid-area: main
+    position: relative
+    overflow: scroll
+    transform: translateZ(0)
+    &__pages
+      height: 100%
+      overflow: scroll
+    &__scroll-top-btn
+      position: fixed
+      bottom: 1em
+      right: 1em
+      background-color: inherit
+      border-radius: 9999px
+    &__right-menu
+      position: absolute
+      right: 0
+      top: 0
+      height: 100%
+      width: 300px
+      overflow-y: scroll
+      z-index: 3
+      box-shadow: 0 0 42px 3px rgba(0, 0, 0, .2)
+  &__nav-bar
+    grid-area: nav-bar
+    z-index: 1
+    box-sizing: border-box
+    overflow-y: scroll
+    overscroll-behavior: contain
+    box-sizing: border-box
+  &__footer
+    grid-area: footer
 
-.container__main
-  overflow: scroll
-  height: calc(100% - #{$footerHeight})
-  box-sizing: border-box
-  z-index: 2
-  margin-left: 250px
-.container__footer
-  position: fixed
-  height: $footerHeight
-  bottom: 0
-  left: 0
-  right: 0
-  background-color: $whitegray2
-  z-index: 9
-  font-size: 16px
+.app
+  @include themify($themes)
+    &__main, &__footer
+      color: themed('text-color')
+      background-color: themed('background-color')
+    &__nav-bar
+      color: themed('secondary-text-color')
+      background-color: themed('secondary-background-color')
 
-.slide-fade-enter-active
-  transition: all 250ms ease
-
-.slide-fade-leave-active
-  transition: all 250ms ease
-
-.slide-fade-enter, .slide-fade-leave-to
-  transform: translateX(300px)
-  box-shadow: 0 0 0px 0px rgba(0, 0, 0, 0)
-.slide-fade-enter-to, .slide-fade-leave
-  transform: translateX(0px)
-  box-shadow: 0 0 42px 3px rgba(0, 0, 0, .2)
-
-.back-top
-  position: fixed
-  bottom: calc(1em + #{$footerHeight})
-  right: 1em
-  cursor: pointer
-  color: $whitegray3
-  transition: color 1s ease
-  z-index: 4
-  &:hover
-    color: $gray
+// right menu transition
+.slide-right
+  &-enter-active, &-leave-active
+    transition: all .5s
+  &-enter, &-leave-to
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0)
+    transform: translateX(300px)
 // backtotop按钮动画
 .fade-enter-active, .fade-leave-active
   transition: opacity .5s
@@ -186,9 +226,4 @@ export default class App extends Vue {
   to
     opacity: 0
     transform: translateY(50px)
-@media screen and (max-width: 480px)
-  .container__aside
-    display: none
-  .container__footer
-    font-size: 1.75vw
 </style>

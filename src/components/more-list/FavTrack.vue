@@ -18,5 +18,3 @@ export default class FavTrack extends Vue {
   @Prop() track!: Track;
 }
 </script>
-
-<style></style>

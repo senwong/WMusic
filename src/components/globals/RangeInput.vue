@@ -1,15 +1,13 @@
 <template>
-  <div>
-    <div class="wrapper">
-      <div class="fill-lower-wrapper">
-        <div
-          class="fill-lower"
-          ref="fillLower"
-          :style="{ transform: `translateX(${percent})` }"
-        />
-      </div>
-      <input type="range" :min="min" :max="max" step="0.1" v-model="value" />
+  <div class="range-input">
+    <div class="range-input__fill-lower">
+      <div
+        class="range-input__fill-lower__bg"
+        ref="fillLower"
+        :style="{ transform: `translateX(${percent})` }"
+      />
     </div>
+    <input type="range" :min="min" :max="max" step="0.1" v-model="value" />
   </div>
 </template>
 
@@ -48,12 +46,27 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.wrapper
+.range-input
   position: relative
   height: 14px
   display: flex
   align-items: center
-
+  &__fill-lower
+    width: 100%
+    height: 50%
+    position: absolute
+    top: 50%
+    transform: translateY(-50%)
+    left: 0
+    border-radius: 9999px
+    overflow: hidden
+    z-index: 0
+    background-color: #ddd
+    &__bg
+      width: calc(100% - 7px)
+      height: 100%
+      background: tomato
+      transform-origin: left center
 
 input[type="range"]
   -webkit-appearance: none
@@ -65,7 +78,6 @@ input[type="range"]
   margin: 0
   position: relative
 
-
 input[type="range"]:focus
   outline: none
 
@@ -73,7 +85,6 @@ input[type="range"]:focus
 // https://stackoverflow.com/questions/18794026/remove-dotted-outline-from-range-input-element-in-firefox
 input[type=range]::-moz-focus-outer
   border: 0
-
 
 input[type="range"]::-webkit-slider-thumb
   -webkit-appearance: none
@@ -101,22 +112,4 @@ input[type="range"]::-ms-thumb
   cursor: pointer
   z-index: 1
   position: relative
-
-.fill-lower-wrapper
-  width: 100%
-  height: 50%
-  position: absolute
-  top: 50%
-  transform: translateY(-50%)
-  left: 0
-  border-radius: 9999px
-  overflow: hidden
-  z-index: 0
-  background-color: #ddd
-
-.fill-lower
-  width: calc(100% - 7px)
-  height: 100%
-  background: tomato
-  transform-origin: left center
 </style>

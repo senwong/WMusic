@@ -9,13 +9,11 @@
       :isSpread="showRecommendations"
       class="search-bar"
     />
-    <transition name="slide-up">
-      <SearchRecommendations
-        v-show="showRecommendations"
-        class="srh-recmd"
-        :keywords="value"
-      />
-    </transition>
+    <SearchRecommendations
+      :show="showRecommendations"
+      class="srh-recmd"
+      :keywords="value"
+    />
   </div>
 </template>
 
@@ -74,25 +72,20 @@ export default {
 
 <style lang="sass" scoped>
 .srh-bar-recmd
-  position: relative;
-  max-width: 450px;
-  z-index: 1;
+  position: relative
+  max-width: 450px
+  z-index: 1
 .search-bar
-  height: 35px;
-  z-index: 1;
-  position: relative;
+  height: 35px
+  z-index: 1
+  position: relative
+  z-index: 1
+  transform: translateZ(0)
 .srh-recmd
-  position: absolute;
-  top: 35px;
-  left: 0;
-  width: 100%;
-
-.slide-up-enter-active, .slide-up-leave-active
-  transition: all 0.25s ease;
-
-.slide-up-enter, .slide-up-leave-to
-  transform: translateY(-100px);
-  opacity: 0;
-  box-shadow: 0 0px 0px 0px rgba(0, 0, 0, 0)
-  border-color: rgba(0, 0, 0, 0)
+  position: absolute
+  top: 35px
+  left: 0
+  width: 100%
+  z-index: 0
+  transform: translateZ(0)
 </style>

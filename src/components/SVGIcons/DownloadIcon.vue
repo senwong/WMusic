@@ -2,6 +2,8 @@
   <svg
     viewBox="0 0 32 32"
     fill="none"
+    width="100%"
+    height="100%"
     stroke="currentcolor"
     stroke-linecap="round"
     stroke-linejoin="round"

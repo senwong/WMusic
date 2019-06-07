@@ -6,16 +6,16 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 
+@Component
 export default class FadeTransition extends Vue {
-  @Prop({ type: Boolean, default: false, required: false })
-  appear: boolean = false;
+  @Prop(Boolean) appear!: boolean;
 }
 </script>
 
 <style lang="sass" scoped>
-.fade-enter-active, .fade-leave-active
+.fade
+  &-enter-active, &-leave-active
   transition: opacity .5s
-
-.fade-enter, .fade-leave-to
-  opacity: 0
+  &-enter, &-leave-to
+    opacity: 0
 </style>

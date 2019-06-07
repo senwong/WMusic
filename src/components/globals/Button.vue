@@ -4,8 +4,8 @@
     :to="href"
     class="btn"
     :class="{
-      'btn-primary': primary,
-      'btn-secondary': secondary,
+      primary: primary,
+      secondary: secondary,
       'btn-rounded': rounded,
       'btn-block': block,
       'btn-large': large,
@@ -71,17 +71,26 @@ export default class Button extends Vue {
   &:focus, &:active
     outline: none
   @include themify($themes)
-    color: themed("text-color")
+    color: themed("button-text-color")
     border-color: themed('button-border-color')
+    background-color: themed('button-background-color')
     &:hover
+      color: themed("button-text-color-hover")
       background-color: themed('button-background-color-hover')
-    &.btn-primary
+    &.primary
+      color: themed("primary-button-text-color")
       border-color: themed('primary-button-border-color')
-    &.btn-primary:hover
+      background-color: themed('primary-button-background-color')
+    &.primary:hover
       color: themed('primary-button-text-color-hover')
       background: themed('primary-button-background-color-hover')
-    &.btn-secondary
-      border-color: themed('secondary-button-broder-color')
+    &.secondary
+      color: themed("secondary-button-text-color")
+      border-color: themed('secondary-button-border-color')
+      background-color: themed('secondary-button-background-color')
+    &.secondary:hover
+      color: themed('secondary-button-text-color-hover')
+      background: themed('secondary-button-background-color-hover')
   &.btn-rounded
     border-radius: 9999px
   &.btn-block

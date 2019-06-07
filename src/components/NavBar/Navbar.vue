@@ -6,10 +6,12 @@
         class="current-user"
         :to="`/user/${currentUserProfile && currentUserProfile.userId}`"
       >
-        <img
+        <Avatar
           class="current-user__avatar"
-          :src="currentUserProfile && currentUserProfile.avatarUrl"
-          :alt="currentUserProfile && currentUserProfile.nickname"
+          user
+          :id="currentUserProfile.userId"
+          :name="currentUserProfile.nickname"
+          :imgSrc="currentUserProfile.avatarUrl"
         />
         <span class="current-user__nickname">{{
           currentUserProfile && currentUserProfile.nickname
@@ -20,101 +22,114 @@
       <Button as="a" href="/login" primary class="login-signup__login"
         >登录</Button
       >
-      <Button as="a" href="/signup">注册</Button>
+      <Button as="a" href="/signup" secondary>注册</Button>
     </p>
     <!-- 音乐库 -->
     <section class="nav__card">
       <p class="nav__card__title">音乐库</p>
-      <router-link to="/" class="nav__link" active-class="primary" exact>
-        <div class="icon icon_m">
-          <MusicIcon />
-        </div>
-        <div class="nav__link_txt">发现音乐</div>
-      </router-link>
-
-      <router-link to="/playlist" class="nav__link" active-class="primary">
-        <div class="icon icon_m">
-          <MusicIcon />
-        </div>
-        <div class="nav__link_txt">歌单</div>
-      </router-link>
-
-      <router-link to="/toplist" class="nav__link" active-class="primary">
-        <div class="icon icon_m">
-          <MusicIcon />
-        </div>
-        <div class="nav__link_txt">排行榜</div>
-      </router-link>
-
-      <router-link to="/mv" class="nav__link" active-class="primary">
-        <div class="icon icon_m">
-          <MusicIcon />
-        </div>
-        <div class="nav__link_txt">MV</div>
-      </router-link>
-
-      <router-link to="/search" class="nav__link" active-class="primary">
-        <div class="icon icon_m">
-          <MusicIcon />
-        </div>
-        <div class="nav__link_txt">搜索</div>
-      </router-link>
+      <NavItem to="/" exact>
+        <template #icon>
+          <AudioTrackIcon />
+        </template>
+        <template>
+          发现音乐
+        </template>
+      </NavItem>
+      <NavItem to="/playlist" exact>
+        <template #icon>
+          <LibraryMusicIcon />
+        </template>
+        <template>
+          歌单
+        </template>
+      </NavItem>
+      <NavItem to="/toplist" exact>
+        <template #icon>
+          <WhatsHotIcon />
+        </template>
+        <template>
+          排行榜
+        </template>
+      </NavItem>
+      <NavItem to="/mv" exact>
+        <template #icon>
+          <MvIcon />
+        </template>
+        <template>
+          MV
+        </template>
+      </NavItem>
+      <NavItem to="/search" exact>
+        <template #icon>
+          <SearchIcon />
+        </template>
+        <template>
+          搜索
+        </template>
+      </NavItem>
     </section>
     <!-- 需要登录 -->
     <section v-if="isLoggedin">
       <!-- 我的音乐 -->
       <section class="nav__card">
         <p class="nav__card__title">我的音乐</p>
-        <router-link
+        <NavItem
           :to="`/record/${currentUserProfile && currentUserProfile.userId}`"
-          class="nav__link"
-          active-class="primary"
+          exact
         >
-          <div class="icon icon_m">
+          <template #icon>
             <MusicIcon />
-          </div>
-          <div class="nav__link_txt">最近播放</div>
-        </router-link>
-        <router-link to="/sublist" class="nav__link">
-          <div class="icon icon_m">
+          </template>
+          <template>
+            最近播放
+          </template>
+        </NavItem>
+        <NavItem to="/sublist" exact>
+          <template #icon>
             <MusicIcon />
-          </div>
-          <div class="nav__link_txt">我的收藏</div>
-        </router-link>
-        <a href="#" class="nav__link">
-          <div class="icon icon_m">
+          </template>
+          <template>
+            我的收藏
+          </template>
+        </NavItem>
+        <NavItem to="/sublist" exact>
+          <template #icon>
             <MusicIcon />
-          </div>
-          <div class="nav__link_txt">已购音乐</div>
-        </a>
+          </template>
+          <template>
+            我的收藏
+          </template>
+        </NavItem>
       </section>
       <!-- 我的歌单 -->
       <section class="nav__card">
         <!-- 标题栏 -->
         <p class="nav__card__title">
           <span class="title__item_left">我的歌单</span>
-          <span
-            class="title__item_right icon icon_s"
+          <SvgBtn
+            class="title__item_right"
             :class="{ arrow_up: isShowMyList }"
-            @click="toggleMyList"
+            @click.native="toggleMyList"
           >
             <RightArrowIcon />
-          </span>
+          </SvgBtn>
         </p>
         <!-- 内容list -->
         <div v-if="isShowMyList">
-          <router-link
+          <NavItem
             :to="{
               path: 'likedsongs',
               params: { id: currentUserProfile && currentUserProfile.userId }
             }"
-            class="nav__link"
+            exact
           >
-            <div class="icon icon_m">
+            <template #icon>
               <MusicIcon />
-            </div>
-            <div class="nav__link_txt">喜欢的音乐</div>
-          </router-link>
+            </template>
+            <template>
+              喜欢的音乐
+            </template>
+          </NavItem>
         </div>
       </section>
       <!-- 收藏的歌单 -->
@@ -122,43 +137,54 @@
         <!-- 标题栏 -->
         <p class="nav__card__title">
           <span class="title__item_left">收藏的歌单</span>
-          <span
-            class="title__item_right icon icon_s"
+          <SvgBtn
+            class="title__item_right"
             :class="{ arrow_up: isShowMyFavr }"
-            @click="toggleMyFavr"
+            @click.native="toggleMyFavr"
           >
             <RightArrowIcon />
-          </span>
+          </SvgBtn>
         </p>
         <!-- 内容list -->
         <div v-if="isShowMyFavr">
-          <a href="#" class="nav__link">
-            <div class="icon icon_m">
+          <NavItem to="#" exact>
+            <template #icon>
               <MusicIcon />
-            </div>
-            <div class="nav__link_txt">最近播放</div>
-          </a>
-          <a href="#" class="nav__link">
-            <div class="icon icon_m">
+            </template>
+            <template>
+              最近播放
+            </template>
+          </NavItem>
+          <NavItem to="#" exact>
+            <template #icon>
               <MusicIcon />
-            </div>
-            <div class="nav__link_txt">我的收藏</div>
-          </a>
-          <a href="#" class="nav__link">
-            <div class="icon icon_m">
+            </template>
+            <template>
+              我的收藏
+            </template>
+          </NavItem>
+          <NavItem to="#" exact>
+            <template #icon>
               <MusicIcon />
-            </div>
-            <div class="nav__link_txt">已购音乐</div>
-          </a>
+            </template>
+            <template>
+              已购音乐
+            </template>
+          </NavItem>
         </div>
       </section>
     </section>
 
     <!-- change theme -->
     <section>
-      <button class="nav__link" @click="handleChangeTheme">
-        切换主题
-      </button>
+      <NavItem as="div" :to="undefined" @click.native="handleChangeTheme">
+        <template #icon>
+          <InvertColorIcon />
+        </template>
+        <template>
+          切换主题
+        </template>
+      </NavItem>
     </section>
   </div>
 </template>
@@ -172,12 +198,34 @@ import { Vue, Component, Watch, Inject } from "vue-property-decorator";
 import { Mutation, namespace } from "vuex-class";
 import { User, Theme } from "@/types";
 import { getUserDetail } from "@/service";
+import InvertColorIcon from "@/components/SVGIcons/InvertColor.vue";
+import SearchIcon from "@/components/SVGIcons/SearchIcon.vue";
+import MvIcon from "@/components/SVGIcons/MvIcon.vue";
+import WhatsHotIcon from "@/components/SVGIcons/WhatsHot.vue";
+import LibraryMusicIcon from "@/components/SVGIcons/LibraryMusic.vue";
+import AudioTrackIcon from "@/components/SVGIcons/AudioTrack.vue";
+import NavItem from "@/components/NavBar/NavItem.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
+import Avatar from "@/components/globals/Avatar.vue";
 
 const currentUser = namespace("currentUser");
 const notification = namespace("notification");
 const theme = namespace("theme");
 @Component({
-  components: { MusicIcon, RightArrowIcon, Button }
+  components: {
+    MusicIcon,
+    RightArrowIcon,
+    Button,
+    InvertColorIcon,
+    SearchIcon,
+    MvIcon,
+    WhatsHotIcon,
+    LibraryMusicIcon,
+    AudioTrackIcon,
+    NavItem,
+    SvgBtn,
+    Avatar
+  }
 })
 export default class Navbar extends Vue {
   isShowMyList: boolean = true;
@@ -231,16 +279,11 @@ export default class Navbar extends Vue {
   handleChangeTheme() {
     this.toggleTheme();
   }
-
-  // created() {
-  //   console.log('call created hook!');
-  //   this.updateLoginStatus();
-  // }
 }
 </script>
 <style lang="sass">
-@import "config.sass"
-@import "../style/theme.sass"
+@import "@/components/config.sass"
+@import "@/style/theme.sass"
 
 .nav__bar
   padding: 20px 10px
@@ -249,52 +292,14 @@ export default class Navbar extends Vue {
 .nav__card__title
   font-size: 12px
   color: $gray
-.nav__link
-  display: flex
-  align-items: center
-  text-decoration: none
-  padding: 5px
-  border-radius: 2px
-  margin-bottom: 5px
-  transition: all 250ms
-  @include themify($themes)
-    &:hover
-      background-color: themed('background-color-hover')
-    &.primary
-      color: themed('primary-text-color')
-      background-color: themed("primary-background-color")
-    &.primary:hover
-      background-color: themed("primary-background-color-hover")
 
 
-.nav__link.active
-  background-color: $orange
-  color: white
-.nav__link__icon
-  width: 30px
-  height: 30px
-  display: inline-block
-  vertical-align: middle
-  margin-right: 5px
 
-.nav__link_txt
-  margin-left: 5px
-  font-size: 13px
-.icon
-  display: inline-block
-  img
-    width: 100%
-    height: 100%
-.icon_s
-  width: 12px
-  height: 12px
-.icon_m
-  width: 25px
-  height: 25px
 .title__item_right
   float: right
-.arrow_up
-  transform: rotate(90deg)
+  transition: all 0.25s
+  &.arrow_up
+    transform: rotate(90deg)
 
 .login-signup__wrapper
   display: flex
@@ -317,9 +322,6 @@ export default class Navbar extends Vue {
   &:hover
     background: rgba(0, 0, 0, 0.2)
 .current-user__avatar
-  width: 2em
-  height: 2em
-  border-radius: 9999px
   margin-right: 0.6em
 .current-user__nickname
   font-weight: bolder

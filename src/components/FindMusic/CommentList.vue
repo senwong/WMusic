@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="comment-list">
     <!-- loading animation when first time loading -->
-    <div class="loading-wrapper" v-if="isLoadingFirst">
+    <div class="comment-list__loading" v-if="isLoadingFirst">
       <LoadingIcon />
     </div>
-    <div class="comments" v-else>
+    <div class="comment-list__comments" v-else>
       <CommentReplyEditor
         isMain
         :id="id"
@@ -36,14 +36,12 @@
         />
       </div>
       <!-- loading animation when loading more comments -->
-      <div class="loading-wrapper" v-if="isLoadingMore">
+      <div class="comment-list__loading" v-if="isLoadingMore">
         <LoadingIcon />
       </div>
       <!-- loaded all comments Sign board -->
-      <div class="loaded-all-comments-sign-bard" v-if="isAllCommentsLoaded">
-        <span class="loaded-all-comments-sign-bard__title"
-          >已加载完所有评论</span
-        >
+      <div class="comment-list__loaded-all" v-if="isAllCommentsLoaded">
+        <span class="comment-list__loaded-all__title">已加载完所有评论</span>
       </div>
     </div>
   </div>
@@ -63,9 +61,10 @@ import {
 import LoadingIcon from "@/components/globals/Loading.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Comment, CommentType } from "@/types";
-import { Mutation, namespace } from "vuex-class";
+import { Mutation, namespace, State } from "vuex-class";
 
 const notification = namespace("notification");
+const mainScroll = namespace("mainScroll");
 @Component({
   components: { CommentItem, CommentReplyEditor, LoadingIcon }
 })
@@ -89,14 +88,11 @@ export default class CommentList extends Vue {
 
   @Prop(Number) id!: number;
   @notification.Mutation setMsg!: (msg: string) => void;
+  @mainScroll.State isBottom!: boolean;
 
   created() {
     this.isLoadingFirst = true;
     this.updateData(() => (this.isLoadingFirst = false));
-  }
-
-  get isScrollBottom() {
-    return this.$store.state.isScrollBottom;
   }
 
   get serviceApi() {
@@ -121,7 +117,7 @@ export default class CommentList extends Vue {
   }
 
   get isAllCommentsLoaded() {
-    return this.comments.length >= this.total;
+    return !this.more;
   }
   handleSentComment(comment: Comment) {
     this.comments.unshift(comment);
@@ -131,7 +127,7 @@ export default class CommentList extends Vue {
       (c: Comment): boolean => c.commentId !== comment.commentId
     );
   }
-  @Watch("isScrollBottom")
+  @Watch("isBottom")
   onisScrollBottomChange(val: boolean) {
     if (val === true) {
       this.loadingMoreComments();
@@ -194,20 +190,25 @@ export default class CommentList extends Vue {
 }
 </script>
 <style lang="sass" scoped>
-.comments
-  margin-top: 1.5em
-.loading-wrapper
-  height: 2em
-  width: 2em
-  margin: 3em auto 0
-.loaded-all-comments-sign-bard
-  margin: 3em auto
-  text-align: center
-  .loaded-all-comments-sign-bard__title
-    display: inline-block
-    border: 1px solid #777
-    color: #777
-    padding: 0.2em 1em
-    border-radius: 9999px
-    font-size: 12px
+@import "@/style/theme.sass"
+
+.comment-list
+  &__loading
+    height: 2em
+    width: 2em
+    margin: 3em auto 0
+  &__comments
+    margin-top: 1.5em
+  &__loaded-all
+    margin: 3em auto
+    text-align: center
+    &__title
+      display: inline-block
+      border: 1px solid
+      padding: 0.2em 1em
+      border-radius: 9999px
+      font-size: 12px
+      @include themify($themes)
+        color: themed('secondary-text-color')
+        border-color: themed('secondary-border-color')
 </style>

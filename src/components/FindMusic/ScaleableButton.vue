@@ -9,12 +9,12 @@
       @touchstart="zoomIn"
       @touchend="zoomOut"
     >
-      <Button noborder svglarge v-if="position == 'left'">
+      <SvgBtn xlarge v-if="position == 'left'">
         <LeftArrowIcon />
-      </Button>
-      <Button noborder svglarge v-if="position == 'right'">
+      </SvgBtn>
+      <SvgBtn xlarge v-if="position == 'right'">
         <RightArrowIcon />
-      </Button>
+      </SvgBtn>
     </div>
   </Motion>
 </template>
@@ -22,7 +22,7 @@
 import { Motion } from "vue-motion";
 import LeftArrowIcon from "@/components/SVGIcons/LeftArrowIcon";
 import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon";
-import Button from "@/components/globals/Button";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
 
 export default {
   data() {
@@ -37,7 +37,7 @@ export default {
     Motion,
     LeftArrowIcon,
     RightArrowIcon,
-    Button
+    SvgBtn
   },
   methods: {
     zoomIn() {
@@ -51,17 +51,16 @@ export default {
 </script>
 <style lang="sass" scoped>
 .wrapper
-  display: flex;
-  align-items: center;
-  height: 100%;
-
-  color: white;
-  background-color: transparent;
-  cursor: pointer;
+  display: flex
+  align-items: center
+  height: 100%
+  color: white
+  background-color: transparent
+  cursor: pointer
 .svg-wrapper
-  display: flex;
-  padding: 0 10px;
-  align-items: center;
-  height: 100%;
-  transform-origin: center;
+  display: flex
+  padding: 0 10px
+  align-items: center
+  height: 100%
+  transform-origin: center
 </style>

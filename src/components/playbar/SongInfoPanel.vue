@@ -11,7 +11,7 @@
       />
       <div v-else class="img-placeholder"></div>
       <div class="img-mask">
-        <SvgBtnWrapper
+        <SvgBtn
           xlarge
           class="button_center-center"
           :class="{ invert: !isShowSongPlayer }"
@@ -19,7 +19,7 @@
           :disabled="disabled"
         >
           <SlideUpIcon />
-        </SvgBtnWrapper>
+        </SvgBtn>
       </div>
     </div>
     <div class="name-songer">
@@ -35,20 +35,9 @@
       </div>
     </div>
     <!-- 选择音质 -->
-    <btn-with-popup-menu class="quality-btn__wrapper" :disabled="disabled">
-      <template slot="btn">
-        <button class="quality button" :disabled="disabled">
-          {{ currentQuality }}
-        </button>
-      </template>
-      <!-- 点击音质，弹出选择菜单 -->
-      <template slot="menu">
-        <select-list :data="qualitys" @selected-change="selectedChange" />
-      </template>
-    </btn-with-popup-menu>
-
+    <Select class="quality" :options="qualitys" v-model="currentQuality" top />
     <!-- 收藏 -->
-    <SvgBtnWrapper
+    <SvgBtn
       xlarge
       class="faver"
       @click.native="toggleFaver"
@@ -56,13 +45,13 @@
       :disabled="disabled"
     >
       <FavIcon />
-    </SvgBtnWrapper>
+    </SvgBtn>
     <!-- 三点 更多选项 -->
     <btn-with-popup-menu class="more" :disabled="disabled">
       <template slot="btn">
-        <SvgBtnWrapper xlarge :disabled="disabled">
+        <SvgBtn xlarge :disabled="disabled">
           <MoreIcon />
-        </SvgBtnWrapper>
+        </SvgBtn>
       </template>
       <template slot="menu">
         <more-list>
@@ -70,27 +59,12 @@
             <DownloadIcon slot="icon" />
             <span slot="txt" class="txt">漫游相似歌曲</span>
           </more-item>
-          <more-item>
-            <DownloadIcon slot="icon" />
-            <span slot="txt" class="txt">下载</span>
-          </more-item>
+          <!-- 下载 -->
+          <DownloadTrack />
           <!-- 添加到歌单 hover时右侧扩展 -->
-          <more-item spread="'right'">
-            <DownloadIcon slot="icon" />
-            <span slot="txt" class="txt">添加到歌单</span>
-            <!-- hover时右侧扩展内容 -->
-            <more-list slot="spread-list">
-              <more-item>
-                <DownloadIcon slot="icon" />
-                <span slot="txt" class="txt">喜欢的音乐</span>
-              </more-item>
-            </more-list>
-          </more-item>
+          <AddToUserPlaylist />
           <!-- 评论分享 -->
-          <more-item>
-            <DownloadIcon slot="icon" />
-            <span slot="txt" class="txt">评论分享</span>
-          </more-item>
+          <CommentTrack />
         </more-list>
       </template>
     </btn-with-popup-menu>
@@ -101,18 +75,21 @@
 import PopupMenu from "@/components/PopupMenu.vue";
 import MoreItem from "@/components/more-list/MoreItem.vue";
 import MoreList from "@/components/more-list/MoreList.vue";
-import SelectList from "@/components/more-list/SelectList.vue";
 import MoreIcon from "@/components/SVGIcons/MoreIcon.vue";
 import FavIcon from "@/components/SVGIcons/FavIcon.vue";
 import SlideUpIcon from "@/components/SVGIcons/SlideUpIcon.vue";
 import DownloadIcon from "@/components/SVGIcons/DownloadIcon.vue";
-import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
 import Spinner from "@/components/globals/Spinner.vue";
 import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
 import { getUserPlaylist } from "@/service";
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { Artist } from "@/types";
+import { Artist, Option } from "@/types";
+import CommentTrack from "@/components/more-list/CommentTrack.vue";
+import AddToUserPlaylist from "@/components/more-list/AddToUserPlaylist.vue";
+import DownloadTrack from "@/components/more-list/DownloadTrack.vue";
+import Select from "@/components/globals/Select.vue";
 
 interface Quality {
   id: number;
@@ -125,15 +102,18 @@ interface Quality {
     PopupMenu,
     MoreItem,
     MoreList,
-    SelectList,
     MoreIcon,
     FavIcon,
     SlideUpIcon,
     DownloadIcon,
-    SvgBtnWrapper,
+    SvgBtn,
     Spinner,
     ArtistsWithComma,
-    BtnWithPopupMenu
+    BtnWithPopupMenu,
+    CommentTrack,
+    AddToUserPlaylist,
+    DownloadTrack,
+    Select
   }
 })
 export default class SongInfoPanel extends Vue {
@@ -145,20 +125,13 @@ export default class SongInfoPanel extends Vue {
   @Prop() disabled!: boolean;
   isFaver: boolean = false;
   currentQuality: string = "标准品质";
-  qualitys: Quality[] = [
-    { id: 1, title: "标准品质", isSelected: false },
-    { id: 2, title: "高品质", isSelected: false },
-    { id: 3, title: "无损品质", isSelected: false }
+  qualitys: Option[] = [
+    { key: 1, value: "标准品质", title: "标准品质" },
+    { key: 2, value: "高品质", title: "高品质" },
+    { key: 3, value: "无损品质", title: "无损品质" }
   ];
   toggleFaver() {
     this.isFaver = !this.isFaver;
-  }
-  selectedChange(id: number) {
-    console.log("selected change: ", id);
-    const q = this.qualitys.find(q => q.id === id);
-    if (q) {
-      this.currentQuality = q.title;
-    }
   }
 }
 </script>
@@ -224,24 +197,8 @@ export default class SongInfoPanel extends Vue {
     overflow: hidden
     white-space: nowrap
     text-overflow: ellipsis
-.quality-btn__wrapper
-  margin-left: 1em
 .quality
-  font-size: 0.8em
-  color: $gray
-  border: 1px solid $gray
-  padding: 0px 2em 0px 3px
-  background-image: url("../../assets/chevron-down-gray.svg")
-  background-position: right 3px center
-  background-repeat: no-repeat
-  background-size: 1em 1em
-  border-radius: 2px
-  white-space: nowrap
-  cursor: pointer
-  color: inherit
-  background-color: inherit
-  &:active, &:focus
-    outline: none
+  margin-left: 1em
 
 .faver, .more
   flex-shrink: 0

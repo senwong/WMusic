@@ -1,6 +1,6 @@
 <template>
   <FadeTransition>
-    <div class="error-label__wrapper" v-if="show">
+    <div class="error-label" v-if="show">
       <div class="error-label__title">
         <slot></slot>
       </div>
@@ -23,14 +23,17 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.error-label__wrapper
+@import "@/style/theme.sass"
+
+.error-label
   font-size: 14px
   text-align: center
   margin-top: 3em
-.error-label__title
-  background-color: #333
-  color: #F2F2F2
-  border-radius: 9999px
-  padding: 0.5em 2em
-  display: inline-block
+  &__title
+    border-radius: 9999px
+    padding: 0.5em 2em
+    display: inline-block
+    @include themify($themes)
+      color: themed('secondary-text-color')
+      background-color: themed('secondary-background-color')
 </style>

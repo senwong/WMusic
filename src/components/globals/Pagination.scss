@@ -1,0 +1,11 @@
+@import "@/style/theme-base-colors.sass";
+$themes: (
+  light: (
+    bg: adjust-color($light-background-color, $lightness: -10%),
+    bg-hover: adjust-color($light-background-color, $lightness: -30%),
+  ),
+  dark: (
+    bg: adjust-color($dark-background-color, $lightness: +10%),
+    bg-hover: adjust-color($dark-background-color, $lightness: +30%),
+  )
+);

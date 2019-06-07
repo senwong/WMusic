@@ -6,46 +6,56 @@
     |        | cancel btn | reply btn |
     +--------+------------+-----------+
   -->
-  <div class="comment-reply__container">
+  <div class="comment-reply-editor">
     <!-- first row -->
-    <div class="comment-reply__avatar-input">
+    <div class="comment-reply-editor__top">
       <!-- avatar -->
-      <img
-        :src="avatarUrl"
-        :alt="nickname"
-        class="comment-reply__avatar"
-        :class="{ large: isMain }"
+      <Avatar
+        class="comment-reply-editor__top__left"
+        user
+        :id="Number(0)"
+        :imgSrc="avatarUrl"
+        :name="nickname"
+        :large="isMain"
       />
-      <div class="comment-reply__input__wrapper">
-        <textarea
-          type="text"
-          class="comment-reply__input"
-          placeholder="添加回复"
-          v-model.trim="content"
-          @focus="handleFocus"
-          @blur="isFocused = false"
-          :autofocus="!isMain"
-          @keydown="autoAdjustHeight"
-        />
-        <div
-          class="comment-reply__input__fake-bot-border"
-          :class="{ show: isFocused }"
-        />
-      </div>
+      <TextareaInput
+        class="comment-reply-editor__top__right"
+        placeholder="添加回复"
+        v-model.trim="content"
+        @focus="handleFocus"
+        :autofocus="!isMain"
+        @keydown="autoAdjustHeight"
+      />
     </div>
     <!-- second row -->
-    <div class="comment-reply__actions" v-if="isShowActions">
+    <div class="comment-reply-editor__bottom" v-if="isShowActions">
       <Button @click.native="$emit('hide')">
         取消
       </Button>
       <Button
         primary
-        class="comment-reply__actions__reply"
+        class="comment-reply-editor__bottom__reply"
         :disabled="replyDisabled"
         @click.native="handleReply"
       >
         回复
       </Button>
+    </div>
+    <div class="comment-reply-editor__mask" v-if="!isLoggedin">
+      <Button
+        as="a"
+        href="/login"
+        primary
+        class="comment-reply-editor__mask__login"
+        >登录</Button
+      >
+      <Button
+        as="a"
+        href="/signup"
+        secondary
+        class="comment-reply-editor__mask__signup"
+        >注册</Button
+      >
     </div>
   </div>
 </template>
@@ -57,11 +67,13 @@ import { getUserDetail, sentComment } from "@/service";
 import { CommentType } from "@/types";
 import { isUndef } from "@/utilitys";
 import Button from "@/components/globals/Button.vue";
+import Avatar from "@/components/globals/Avatar.vue";
+import TextareaInput from "@/components/globals/TextareaInput.vue";
 
 const currentUser = namespace("currentUser");
 const notification = namespace("notification");
 @Component({
-  components: { Button }
+  components: { Button, Avatar, TextareaInput }
 })
 export default class CommentReplyEditor extends Vue {
   @Prop({ default: false, type: Boolean }) isMain!: boolean;
@@ -70,16 +82,19 @@ export default class CommentReplyEditor extends Vue {
   // 资源类型
   @Prop() type!: CommentType;
 
-  isFocused: boolean = false;
   isShowActions: boolean = true;
   avatarUrl: string = "";
   nickname: string = "";
   content: string = "";
+
   @currentUser.State("userId") currentUserId!: number;
   @notification.Mutation setMsg!: (msg: string) => void;
 
   get replyDisabled(): boolean {
     return isUndef(this.id) || isUndef(this.type) || this.content.length < 1;
+  }
+  get isLoggedin(): boolean {
+    return !isUndef(this.currentUserId);
   }
   created() {
     this.updateUserData();
@@ -117,7 +132,6 @@ export default class CommentReplyEditor extends Vue {
     );
   }
   handleFocus() {
-    this.isFocused = true;
     if (!this.isShowActions) {
       this.isShowActions = true;
     }
@@ -132,64 +146,40 @@ export default class CommentReplyEditor extends Vue {
 </script>
 
 <style lang="sass" scoped>
-@import "../../style/theme.sass"
+@import "@/style/themify.sass"
+@import "CommentReplyEditor"
 
-.comment-reply__container
+.comment-reply-editor
   padding-top: 0.5em
-.comment-reply__avatar-input
-  display: flex
-  flex-direction: row
-  justify-content: flex-start
-  align-items: flex-start
-.comment-reply__avatar
-  flex: 0 0 1.5em
-  height: 1.5em
-  border-radius: 9999px
-  margin-right: 0.5em
-  display: inline-block
-  background: #eee
-  &.large
-    flex: 0 0 2.5em
-    height: 2.5em
-
-.comment-reply__input__wrapper
-  flex: 1 1 auto
-  display: inline-block
   position: relative
-  border-bottom: 1px solid #eee
-  box-sizing: border-box
-.comment-reply__input
-  padding: 0
-  display: block
-  height: 100%
-  width: 100%
-  border: none
-  font-size: 14px
-  resize: none
-  &:focus
-    outline: none
-  @include themify($themes)
-    color: themed('text-color')
-    background-color: themed("background-color")
-.comment-reply__input__fake-bot-border
-  height: 2px
-  transition: all 250ms
-  @include themify($themes)
-    background-color: themed('text-color')
-  tranform-origin: center
-  transform: scaleX(0)
-  position: absolute
-  bottom: -1px
-  left: 0
-  width: 100%
-  &.show
-    transform: scaleX(1)
-
-.comment-reply__actions
-  display: flex
-  flex-direction: row
-  justify-content: flex-end
-  padding-top: 0.5em
-.comment-reply__actions__reply
-  margin-left: 0.6em
+  &__top
+    display: flex
+    flex-direction: row
+    justify-content: flex-start
+    align-items: flex-start
+    &__left
+      flex: 0 0 auto
+      margin-right: 0.5em
+    &__right
+      flex: 1 1 auto
+  &__bottom
+    display: flex
+    flex-direction: row
+    justify-content: flex-end
+    padding-top: 0.5em
+    &__reply
+      margin-left: 0.6em
+  &__mask
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    @include themify($themes)
+      background-color: themed("mask-bg")
+    display: flex
+    justify-content: center
+    align-items: center
+    &__login
+      margin-right: 1em
 </style>

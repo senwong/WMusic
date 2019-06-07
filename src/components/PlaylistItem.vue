@@ -27,15 +27,15 @@
     <!-- hover时才显示收藏和更多 -->
     <div class="fav-more">
       <!-- 收藏  TODO  -->
-      <SvgBtnWrapper middle class="fav" :class="{ 'is-fav': false }">
+      <SvgBtn middle class="fav" :class="{ 'is-fav': false }">
         <FavIcon />
-      </SvgBtnWrapper>
+      </SvgBtn>
       <!-- more button -->
       <BtnWithPopupMenu :canPopup="canPopupMenu">
         <template slot="btn">
-          <SvgBtnWrapper middle>
+          <SvgBtn middle>
             <MoreIcon />
-          </SvgBtnWrapper>
+          </SvgBtn>
         </template>
         <template slot="menu">
           <more-list class="more-popup-menu">
@@ -72,7 +72,7 @@ import FavIcon from "@/components/SVGIcons/FavIcon.vue";
 import MoreIcon from "@/components/SVGIcons/MoreIcon.vue";
 import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
-import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
 import MoreItem from "./more-list/MoreItem.vue";
 import MoreList from "./more-list/MoreList.vue";
 import DownloadIcon from "./SVGIcons/DownloadIcon.vue";
@@ -93,7 +93,7 @@ const currentUser = namespace("currentUser");
     MoreIcon,
     ArtistsWithComma,
     BtnWithPopupMenu,
-    SvgBtnWrapper,
+    SvgBtn,
     MoreItem,
     MoreList,
     DownloadIcon,
@@ -138,7 +138,7 @@ export default class PlaylistItem extends Vue {
   align-items: center
   padding: 0 1.5em 0 1em
   &.active
-    color: $orange
+    color: $primary-color
 .container:nth-of-type(2n+1)
   @include themify($themes)
     background-color: themed('secondary-background-color')
@@ -187,7 +187,7 @@ export default class PlaylistItem extends Vue {
     white-space: nowrap
 .container
   .songer:hover,
-    color: $orange
+    color: $primary-color
 .duration
   flex: 0 0 auto
   font-size: 12px
@@ -200,13 +200,12 @@ export default class PlaylistItem extends Vue {
   .fav
     margin-right: 10px
   .is-fav
-    color: $orange
+    color: $primary-color
   &.is-fav svg
-    fill: $orange
+    fill: $primary-color
 .container:hover
   .duration
     display: none
   .fav-more
     display: flex
-
 </style>

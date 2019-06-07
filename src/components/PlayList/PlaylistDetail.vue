@@ -1,28 +1,30 @@
 <template>
-  <div class="main-wrapper">
+  <div class="playlist-detail main-wrapper">
     <!-- playlist creator information -->
-    <div class="info" v-if="!isError">
-      <div class="cover-img">
+    <div class="playlist-detail__info" v-if="!isError">
+      <div class="playlist-detail__info__cover">
         <ImageWithPlaceholder
           :src="coverImgUrl | convert2Https | clipImage(400, 400)"
           :alt="name"
           ratio="1:1"
         />
       </div>
-      <div class="desc">
-        <div class="creator" v-if="creator">
-          <router-link class="creator-avatar" :to="'/user/' + creator.userId">
-            <img
-              :src="creator.avatarUrl | convert2Https"
-              :alt="creator.nickname"
-            />
-          </router-link>
-          <router-link class="creator-name" :to="'/user/' + creator.userId">
+      <div class="playlist-detail__info__desc">
+        <div class="user-bar" v-if="creator">
+          <Avatar
+            class="user-bar__avatar"
+            user
+            large
+            :name="name"
+            :imgSrc="creator.avatarUrl | convert2Https | clipImage(400, 400)"
+            :id="creator.userId"
+          />
+          <router-link class="user-bar__title" :to="'/user/' + creator.userId">
             {{ creator.nickname }}
           </router-link>
-          <span class="update-time">{{ updateTimeFormated }}创建</span>
+          <span class="user-bar__subtitle">{{ updateTimeFormated }}创建</span>
         </div>
-        <h3 class="name">{{ name }}</h3>
+        <h3>{{ name }}</h3>
         <div>
           <Button
             class="btn-control"
@@ -58,34 +60,27 @@
             :class="{ spread: descSpread }"
             ref="descContent"
           ></span>
-          <SvgBtnWrapper
+          <SvgBtn
             middle
             class="desc__btn"
             @click.native="handleDescSpread"
             :class="{ down: descSpread }"
           >
             <ChevronBottomIcon />
-          </SvgBtnWrapper>
+          </SvgBtn>
         </div>
       </div>
     </div>
     <TabMenu align-left :list="tabList" />
     <!-- playlist tracks -->
     <SongList
-      v-if="contentType == ContentType.Tracks && !isLoading"
+      v-if="showSongs && !isLoading"
       :tracks="tracks"
       :id="playlistId"
     />
-    <SongListPlaceholder
-      :count="20"
-      v-if="contentType == ContentType.Tracks && isLoading"
-    />
-    <CommentList
-      v-if="contentType == ContentType.Comments"
-      :type="CommentType.PlaylistComment"
-      :id="id"
-    />
-    <Subscribers v-if="contentType == ContentType.Subers" :id="id" />
+    <SongListPlaceholder :count="20" v-if="showSongs && isLoading" />
+    <CommentList v-if="showComments" :type="commentType" :id="id" />
+    <Subscribers v-if="showSubs" :id="id" />
     <!-- error label -->
     <ErrorLabel :show="isError">{{ errorMsg }}</ErrorLabel>
   </div>
@@ -110,12 +105,13 @@ import {
 } from "@/types";
 import ErrorLabel from "@/components/globals/ErrorLabel.vue";
 import ChevronBottomIcon from "@/components/SVGIcons/ChevronBottomIcon.vue";
-import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
 import TabMenu from "@/components/globals/TabMenu.vue";
 import CommentList from "@/components/FindMusic/CommentList.vue";
 import Subscribers from "./Subscribers.vue";
 import { formatCount } from "@/utilitys";
 import SongListPlaceholder from "@/components/globals/SongListPlaceholder.vue";
+import Avatar from "@/components/globals/Avatar.vue";
 
 enum ContentType {
   Tracks,
@@ -130,16 +126,16 @@ const playlist = namespace("playlist");
     Button,
     ErrorLabel,
     ChevronBottomIcon,
-    SvgBtnWrapper,
+    SvgBtn,
     TabMenu,
     CommentList,
     Subscribers,
-    SongListPlaceholder
+    SongListPlaceholder,
+    Avatar
   }
 })
 export default class PlaylistDetail extends Vue {
-  ContentType = ContentType;
-  CommentType = CommentType;
+  commentType: CommentType = CommentType.PlaylistComment;
   formatCount = formatCount;
   isUndef = isUndef;
   id: number | null = null;
@@ -207,6 +203,15 @@ export default class PlaylistDetail extends Vue {
     if (!this.updateTime) return "";
     const date = new Date(this.updateTime);
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+  }
+  get showSongs(): boolean {
+    return this.contentType === ContentType.Tracks;
+  }
+  get showComments(): boolean {
+    return this.contentType === ContentType.Comments;
+  }
+  get showSubs(): boolean {
+    return this.contentType === ContentType.Subers;
   }
   // handle description spread
   descSpread: boolean = false;
@@ -300,46 +305,48 @@ export default class PlaylistDetail extends Vue {
 }
 </script>
 <style lang="sass" scoped>
-@import '../config.sass'
+@import "@/style/theme.sass"
 
-.info
-  display: flex
-.cover-img
-  flex: 0 0 200px
-  border-radius: 15px
-  margin-right: 20px
+.playlist-detail
+  padding: 1em
+  &__info
+    display: flex
+    flex-direction: row
+    align-items: flex-start
+    &__cover
+      flex: 0 0 12.5em
+      margin-right: 1em
+      border-radius: 1em
+      overflow: hidden
+    &__desc
+      min-width: 0
+      flex: 1 1 auto
+      display: flex
+      flex-direction: column
+      justify-content: flex-start
+      align-items: flex-start
 .conver-img__skeleton
   width: 100%
   padding-bottom: 100%
 
-.desc
-  min-width: 0
-  flex: 1 1 auto
-  display: flex
-  flex-direction: column
-  justify-content: space-between
-  align-items: flex-start
-.update-time
-  font-weight: 400
-  color: $gray
-.creator
+
+
+.user-bar
   font-size: 0.875em
   display: flex
   flex-direction: row
   justify-content: flex-start
   align-items: center
-  .creator-avatar
-    width: 2.5em
-    height: 2.5em
-    border-radius: 9999px
-    overflow: hidden
+  &__avatar
     margin-right: 0.6em
-    img
-      width: 100%
-  .creator-name
+  &__title
     margin-right: 0.6em
+  &__subtitle
+    font-weight: 400
+    @include themify($themes)
+      color: themed("secondary-text-color")
 
-.btn-control
+.btn-control:not(:last-child)
   margin-right: 0.5em
 
 .tags__wrapper, .count__wrapper, .desc__wrapper

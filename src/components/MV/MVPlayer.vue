@@ -1,47 +1,47 @@
 <template>
-  <div class="main-wrapper">
-    <div class="mvplay-container" :class="{ 'theater-mode': isTheaterMode }">
-      <div class="video-contaner">
-        <video-player
-          :brs="brs"
-          @toggle-theater-mode="isTheaterMode = !isTheaterMode"
-        ></video-player>
-        <p class="name">
-          <span>
-            <ArtistsWithComma :artists="artists" />
-          </span>
-          <span>- {{ name }}</span>
-        </p>
-        <p class="space-between">
-          <span>{{ formatCount(playCount) }}次播放</span>
-          <span
-            >{{ formatCount(likeCount) }}喜欢
-            {{ formatCount(shareCount) }}分享</span
-          >
-        </p>
-      </div>
-      <!-- comments -->
-      <comment-list class="comments-wrapper" type="0" :id="this.id" />
-      <!-- similar mvs -->
-      <div class="similar-mv">
-        <h3>相似MV</h3>
-        <router-link
-          :to="'/mvplay/' + simiMV.id"
-          class="similar-mv__item"
-          v-for="simiMV in similarMVs"
-          :key="simiMV.id"
+  <div class="mv-player" :class="{ 'mv-player--theater': isTheaterMode }">
+    <div class="mv-player__video">
+      <video-player
+        :brs="brs"
+        @toggle-theater-mode="isTheaterMode = !isTheaterMode"
+      ></video-player>
+      <p class="mv-player__name">
+        <span>
+          <ArtistsWithComma :artists="artists" />
+        </span>
+        <span>- {{ name }}</span>
+      </p>
+      <p class="mv-player__count">
+        <span>{{ formatCount(playCount) }}次播放</span>
+        <span
+          >{{ formatCount(likeCount) }}喜欢
+          {{ formatCount(shareCount) }}分享</span
         >
-          <img
-            class="left__item"
-            :src="simiMV.cover | convert2Https | clipImage(336, 188)"
-            :alt="simiMV.name"
-          />
-          <div class="right__item">
-            <div class="txt_main">{{ simiMV.name }}</div>
-            <div class="txt_sub">{{ simiMV.artistName }}</div>
+      </p>
+    </div>
+    <!-- comments -->
+    <comment-list class="mv-player__commennts" type="0" :id="this.id" />
+    <!-- similar mvs -->
+    <div class="mv-player__similars">
+      <h3>相似MV</h3>
+      <router-link
+        :to="'/mvplay/' + simiMV.id"
+        class="mv-player__similars__item"
+        v-for="simiMV in similarMVs"
+        :key="simiMV.id"
+      >
+        <img
+          class="mv-player__similars__item__left"
+          :src="simiMV.cover | convert2Https | clipImage(336, 188)"
+          :alt="simiMV.name"
+        />
+        <div class="mv-player__similars__item__right">
+          <div class="mv-player__similars__item__title">{{ simiMV.name }}</div>
+          <div class="mv-player__similars__item__sub-title">
+            {{ simiMV.artistName }}
           </div>
-        </router-link>
-      </div>
+        </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -53,7 +53,7 @@ import { formatCount, arrayJoin } from "@/utilitys";
 import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Mutation, namespace } from "vuex-class";
-import { Artist, Mv } from "@/types";
+import { Artist, Mv, MvType } from "@/types";
 
 const notification = namespace("notification");
 
@@ -69,7 +69,7 @@ export default class MVPlayer extends Vue {
   likeCount: number = 0;
   shareCount: number = 0;
   brs: { [index: number]: string }[] = [];
-  similarMVs: Mv[] = [];
+  similarMVs: MvType[] = [];
   isTheaterMode: boolean = false;
 
   @notification.Mutation setMsg!: (msg: string) => void;
@@ -99,7 +99,6 @@ export default class MVPlayer extends Vue {
       }
     );
     getSimilarMV(this.id).then(res => {
-      res = JSON.parse(JSON.stringify(res).replace(/http:\/\//g, "https://"));
       this.similarMVs = res.data.mvs;
     });
   }
@@ -112,49 +111,47 @@ export default class MVPlayer extends Vue {
 <style lang="sass" scoped>
 @import "@/components/config.sass"
 
-.mvplay-container
-  display: grid;
-  grid-template-areas: "video   simiMVs" "comments simiMVs";
-  grid-template-columns: 1fr 300px;
-  grid-gap: 20px;
-  &.theater-mode
-    grid-template-areas: "video   video" "comments simiMVs";
+.mv-player
+  display: grid
+  grid-template-areas: "video   simiMVs" "comments simiMVs"
+  grid-template-columns: 1fr 300px
+  grid-gap: 1em
+  padding: 1em
+  &--theater
+    grid-template-areas: "video   video" "comments simiMVs"
   @media screen and (max-width: 1200px)
-    grid-template-areas: "video video"  "comments simiMVs";
-
-.comments-wrapper
-  grid-area: comments;
-
-.video-contaner
-  grid-area: video;
-  min-width: 0;
-.name
-  font-weight: bolder;
-.space-between
-  display: flex;
-  justify-content: space-between;
-  color: $gray3
-.similar-mv
-  grid-area: simiMVs;
-.similar-mv__item
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  margin-bottom: 20px;
-  .left__item
-    height: 94px;
-    // width: 168px;
-    flex-basis: 168px;
-    margin-right: 8px;
-  .right__item
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-.txt_main
-  font-size: 14px;
-  font-weight: bolder;
-.txt_sub
-  font-size: 14px;
-  color: $gray3;
+    grid-template-areas: "video video"  "comments simiMVs"
+  &__video
+    grid-area: video
+    min-width: 0
+  &__name
+    font-weight: bolder
+  &__count
+    display: flex
+    justify-content: space-between
+    color: $gray3
+  &__comments
+    grid-area: comments
+  &__similars
+    grid-area: simiMVs
+    &__item
+      text-decoration: none
+      color: inherit
+      display: flex
+      margin-bottom: 20px
+      &__left
+        height: 94px
+        flex-basis: 168px
+        margin-right: 8px
+      &__right
+        flex: 1 1 auto
+        display: flex
+        flex-direction: column
+        justify-content: space-around
+      &__title
+        font-size: 14px
+        font-weight: bolder
+      &__sub-title
+        font-size: 14px
+        color: $gray3
 </style>

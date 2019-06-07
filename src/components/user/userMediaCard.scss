@@ -1,0 +1,13 @@
+@import "@/style/theme-base-colors.sass";
+$bg-adjust: 3%;
+$border-adjust: 10%;
+$themes: (
+  light: (
+    background-color: adjust-color($light-background-color, $lightness: -$bg-adjust),
+    border-color: adjust-color($light-background-color, $lightness: -$border-adjust),
+  ), 
+  dark: (
+    background-color: adjust-color($dark-background-color, $lightness: +$bg-adjust),
+    border-color: adjust-color($dark-background-color, $lightness: +$border-adjust),
+  )
+);

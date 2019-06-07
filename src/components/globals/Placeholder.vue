@@ -14,7 +14,7 @@ export default class Placeholder extends Vue {
 </script>
 
 <style lang="sass" scoped>
-@import "../../style/theme.sass"
+@import "@/style/theme.sass"
 
 .angled-gradient
   @include themify($themes)

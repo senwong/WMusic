@@ -1,21 +1,21 @@
 <template>
-  <div class="more-item__wrapper">
-    <div class="more-item">
-      <div class="item-wrapper">
+  <div class="more-item">
+    <div class="more-item__content">
+      <div class="more-item__content__wrapper">
         <!-- 靠左显示 -->
-        <div class="item__left">
-          <div class="icon">
+        <div class="more-item__left">
+          <div class="more-item__left__icon">
             <slot name="icon"></slot>
           </div>
           <slot name="txt"></slot>
         </div>
         <!-- 靠右显示 -->
-        <div class="item__right">
+        <div class="more-item__right">
           <RightArrowIcon v-show="!!spread" />
         </div>
       </div>
     </div>
-    <div class="spread-list" :style="styleObj">
+    <div class="more-item__spread-list" :style="styleObj">
       <slot name="spread-list"></slot>
     </div>
   </div>
@@ -42,58 +42,48 @@ export default {
 };
 </script>
 <style lang="sass" scoped>
-@import "../config.sass";
-.more-item__wrapper
-  position: relative;
-  border-radius: inherit;
+@import "@/style/theme.sass"
+
 .more-item
-  position: relative;
-  // padding: 6px;
-  overflow: visible;
-  border-radius: inherit;
-  cursor: pointer;
-  &:hover
-    .item-wrapper
-      background-color: $orange;
-      color: white;
-    .icon
-      color: inherit;
-  &:hover ~ .spread-list
-      display: block;
-  .item-wrapper
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 6px;
-    border-radius: 2px;
-  .item__left
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    .icon
-      margin-right: 6px;
-  .item__right
-    width: 16px;
-    height: 16px;
-  .icon
-    display: flex;
-    width: 16px;
-    height: 16px;
-    color: $gray;
-    *
-      width: 100%;
-      height: 100%;
-  .txt
-    white-space: nowrap
-    margin-left: 10px
-.spread-list
-  display: none;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%)
-  max-height: 20em
-  overflow: scroll
-  &:hover
-    display: block
+  position: relative
+  border-radius: inherit
+  &__content
+    position: relative
+    overflow: visible
+    border-radius: inherit
+    cursor: pointer
+    &:hover
+      .more-item__content__wrapper
+        background-color: $primary-color
+        color: $dark-text-color
+      .more-item__left__icon
+        color: inherit
+    &:hover ~ .spread-list
+        display: block
+    &__wrapper
+      display: flex
+      flex-direction: row
+      justify-content: space-between
+      align-items: center
+      padding: 8px 6px
+      border-radius: 2px
+  &__left
+    display: flex
+    flex-direction: row
+    align-items: center
+    &__icon
+      width: 1em
+      height: 1em
+      @include themify($themes)
+        color: themed('secondary-text-color')
+  &__right
+    width: 1em
+    height: 1em
+  &__spread-list
+    display: none
+    position: absolute
+    top: 50%
+    transform: translateY(-50%)
+    max-height: 20em
+    overflow: scroll
 </style>

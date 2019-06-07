@@ -56,5 +56,3 @@ export default class Download extends Vue {
   }
 }
 </script>
-
-<style></style>

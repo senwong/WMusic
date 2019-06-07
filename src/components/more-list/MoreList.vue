@@ -9,7 +9,6 @@ export default {
 };
 </script>
 <style lang="sass" scoped>
-@import "../config.sass"
 @import "@/style/theme.sass"
 
 .more-list

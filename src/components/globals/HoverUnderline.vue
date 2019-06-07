@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <div class="hover-underline">
     <slot></slot>
-    <div class="underline"></div>
+    <div class="hover-underline__underline"></div>
   </div>
 </template>
 
@@ -10,14 +10,15 @@ export default {};
 </script>
 
 <style lang="sass" scoped>
-.container:hover .underline
-  transform: scaleX(1)
-
-.underline
-  height: 2px
-  width: 100%
-  transform-origin: left
-  background: #000
-  transition: all 250ms
-  transform: scaleX(0)
+.hover-underline
+  &:hover
+    &__underline
+    transform: scaleX(1)
+  &__underline
+    height: 2px
+    width: 100%
+    transform-origin: left
+    background: #000
+    transition: all 250ms
+    transform: scaleX(0)
 </style>

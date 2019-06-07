@@ -1,8 +1,8 @@
 <template>
   <svg
     viewBox="0 0 100 100"
-    width="50"
-    height="50"
+    width="100%"
+    height="100%"
     fill="none"
     stroke="currentColor"
     stroke-width="5"

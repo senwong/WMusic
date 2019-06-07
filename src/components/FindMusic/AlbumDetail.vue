@@ -1,45 +1,49 @@
 <template>
-  <div class="main-wrapper">
-    <div>
-      <div class="media" v-if="album">
-        <div class="media__left" v-if="album">
-          <img :src="album.picUrl | convert2Https" :alt="album.name" />
+  <div class="album-detail">
+    <div class="album-detail__media" v-if="album">
+      <div class="album-detail__media__left" v-if="album">
+        <ImageWithPlaceholder
+          :src="album.picUrl | convert2Https"
+          :alt="album.name"
+          ratio="1:1"
+        />
+      </div>
+      <div class="album-detail__media__right">
+        <div class="album-detail__media__right__heading">{{ album.name }}</div>
+        <div class="album-detail__media__right__actions">
+          <Button
+            rounded
+            primary
+            @click.native="playAll"
+            class="album-detail__media__right__actions__btn"
+            >播放</Button
+          >
+          <Button rounded class="album-detail__media__right__actions__btn"
+            >收藏</Button
+          >
+          <Button rounded class="album-detail__media__right__actions__btn"
+            >歌词</Button
+          >
+          <Button rounded class="album-detail__media__right__actions__btn"
+            >more</Button
+          >
         </div>
-        <div class="media__right">
-          <div class="media__heading">{{ album.name }}</div>
-          <div class="album__actions">
-            <Button
-              rounded
-              primary
-              @click.native="playAll"
-              class="button-controll"
-              >播放</Button
-            >
-            <Button rounded class="button-controll">收藏</Button>
-            <Button rounded class="button-controll">歌词</Button>
-            <Button rounded class="button-controll">more</Button>
-          </div>
-          <div class="album__artists">
-            歌手：
-            <ArtistsWithComma :artists="artists" aTagClass="album_artist" />
-          </div>
-          <div class="album__date">
-            时间：
-            <span>{{ formatDate(publishTime) }}</span>
-          </div>
+        <div class="album-detail__media__right__artists">
+          歌手：
+          <ArtistsWithComma :artists="artists" aTagClass="album_artist" />
+        </div>
+        <div class="album-detail__media__right__date">
+          时间：
+          <span>{{ publishTime }}</span>
         </div>
       </div>
-      <TabMenu :list="tabList" align-left />
-      <SongList v-if="contentType == ContentType.Songs" :tracks="songs" />
-      <CommentList
-        v-if="contentType == ContentType.Comments"
-        :type="CommentType.AlbumComment"
-        :id="album.id"
-      />
-      <div class="desc__wrapper" v-if="contentType == ContentType.Desc">
-        <h4>专辑介绍</h4>
-        <div class="desc__content" v-text="description"></div>
-      </div>
+    </div>
+    <TabMenu :list="tabList" align-left />
+    <SongList v-if="showSongs" :tracks="songs" />
+    <CommentList v-if="showComments" :type="commentType" :id="album.id" />
+    <div v-if="showDesc">
+      <h4>专辑介绍</h4>
+      <div class="album-detail__desc__content" v-text="description"></div>
     </div>
   </div>
 </template>
@@ -62,6 +66,7 @@ import TabMenu from "@/components/globals/TabMenu.vue";
 import CommentList from "@/components/FindMusic/CommentList.vue";
 import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import { formatDate, formatCount } from "@/utilitys";
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
 
 enum ContentType {
   Songs,
@@ -71,24 +76,39 @@ enum ContentType {
 const playlist = namespace("playlist");
 const notification = namespace("notification");
 @Component({
-  components: { SongList, Button, TabMenu, CommentList, ArtistsWithComma }
+  components: {
+    SongList,
+    Button,
+    TabMenu,
+    CommentList,
+    ArtistsWithComma,
+    ImageWithPlaceholder
+  }
 })
 export default class AlbumDetail extends Vue {
-  formatDate = formatDate;
   album: Album | null = null;
   artists: Artist[] = [];
-  publishTime: number = 0;
+  publishTime: string | null = null;
   commentCount: number = 0;
   description: string = "";
   songs: Track[] = [];
-  CommentType = CommentType;
-  ContentType = ContentType;
+  commentType: CommentType = CommentType.AlbumComment;
   contentType: ContentType = ContentType.Songs;
 
-  @playlist.Mutation setTracks!: (tracks: Track[]) => void;
+  get showSongs(): boolean {
+    return this.contentType === ContentType.Songs;
+  }
+  get showComments(): boolean {
+    return this.contentType === ContentType.Comments;
+  }
+  get showDesc(): boolean {
+    return this.contentType === ContentType.Desc;
+  }
 
+  @playlist.Mutation setTracks!: (tracks: Track[]) => void;
   @playlist.Mutation setCurrentSongId!: (id: number) => void;
   @notification.Mutation setMsg!: (msg: string) => void;
+
   get tabList(): TabMenuItem[] {
     return [
       {
@@ -130,7 +150,7 @@ export default class AlbumDetail extends Vue {
         this.songs = tracks;
         this.commentCount = res.data.album.info.commentCount;
         this.artists = res.data.album.artists;
-        this.publishTime = res.data.album.publishTime;
+        this.publishTime = formatDate(res.data.album.publishTime);
         this.description = res.data.album.description;
       },
       error => {
@@ -141,41 +161,36 @@ export default class AlbumDetail extends Vue {
 }
 </script>
 <style lang="sass" scoped>
-@import '../config.sass'
 
-.media
-  display: flex
-  height: 200px
-.media__left
-  flex: 0 0 200px
-  font-size: 0
-  margin-right: 20px
-  img
-    width: 100%
-    height: 100%
-    border-radius: 15px
-.media__right
-  flex: 1 1 auto
-  display: flex
-  flex-direction: column
-  justify-content: flex-start
-.media__heading
-  font-size: 1.5em
-.button-controll
-  margin-right: 0.5em
-.album__actions
-  margin-top: 1em
-.album__artists, .album__date
-  font-size: 0.875em
-
-.album__artists
-  margin-top: 1em
-.album_artist
-
-.album__date
-  margin-top: 0.6em
-.desc__content
-  font-size: 0.875em
-  color: #777
-  white-space: pre-line
+.album-detail
+  padding: 1em
+  &__media
+    display: flex
+    height: 12.5em
+    &__left
+      flex: 0 0 12.5em
+      margin-right: 1em
+      border-radius: 1em
+      overflow: hidden
+    &__right
+      flex: 1 1 auto
+      display: flex
+      flex-direction: column
+      justify-content: flex-start
+      &__heading
+        font-size: 1.5em
+      &__actions
+        margin-top: 1em
+        &__btn
+          margin-right: 0.5em
+      &__artists, &__date
+        font-size: 0.875em
+      &__artists
+        margin-top: 1em
+      &__date
+        margin-top: 0.6em
+  &__desc__content
+    font-size: 0.875em
+    color: #777
+    white-space: pre-line
 </style>

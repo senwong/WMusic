@@ -27,18 +27,18 @@
   </div>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import UserMediaCard from "./UserMediaCard.vue";
 import Button from "@/components/globals/Button.vue";
 import Placeholder from "@/components/globals/Placeholder.vue";
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import { User } from '@/types';
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { User } from "@/types";
 
 @Component({
-  components: { UserMediaCard, Button, Placeholder}
+  components: { UserMediaCard, Button, Placeholder }
 })
 export default class UserMediaCardGrid extends Vue {
-  @Prop() users!: User[]; 
+  @Prop() users!: User[];
   @Prop(Boolean) more!: boolean;
   @Prop(Number) offset!: number;
   @Prop(Number) limit!: number;

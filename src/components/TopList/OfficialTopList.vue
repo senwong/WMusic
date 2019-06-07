@@ -37,9 +37,9 @@
           >
             <div class="track__rank__play">
               <span class="track__rank">0{{ i + 1 }}</span>
-              <span class="track__play" @click="play(track.id)">
-                <PlayIcon />
-              </span>
+              <SvgBtn class="track__play" @click="play(track.id)">
+                <PlayArrow />
+              </SvgBtn>
             </div>
             <router-link class="track__name ellipsis" :to="'/song/' + track.id">
               {{ track.name }}
@@ -64,7 +64,8 @@ import TabMenu from "@/components/globals/TabMenu.vue";
 import { DomesticTopList } from "./MediaItem.vue";
 import Button from "@/components/globals/Button.vue";
 import { Mutation, namespace } from "vuex-class";
-import PlayIcon from "@/components/SVGIcons/PlayIcon.vue";
+import PlayArrow from "@/components/SVGIcons/PlayArrow.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
 
 import {
   PlaylistType,
@@ -110,7 +111,8 @@ interface OfficialConntent {
     ArtistsWithComma,
     TabMenu,
     Button,
-    PlayIcon
+    PlayArrow,
+    SvgBtn
   }
 })
 export default class OfficialTopList extends Vue {
@@ -210,7 +212,7 @@ export default class OfficialTopList extends Vue {
 .track-head, .track__item
   display: flex
   flex-direction: row
-  jusitfy-content: flex-start
+  justify-content: flex-start
   align-items: center
   padding: 0.5em 1em
   border-radius: 9999px
@@ -240,21 +242,14 @@ export default class OfficialTopList extends Vue {
   box-sizing: border-box
   overflow: hidden
   margin: -0.25em
+  overflow: visible
   .track__play
     display: none
-    width: 1em
-    padding: 0.25em
-    cursor: pointer
-    color: $primary
-    transition: all 250ms
-    border-radius: 9999px
-    &:hover
-      background: $primary
-      color: #fff
+    vertical-align: middle
 
 .track__item:hover
   .track__play
-    display: flex
+    display: inline-block
   .track__rank
     display: none
 

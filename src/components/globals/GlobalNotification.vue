@@ -1,9 +1,7 @@
 <template>
-  <div class="global-notification">
-    <FadeTransition>
-      <div class="global-notification__wrapper" v-if="isVisible">{{ msg }}</div>
-    </FadeTransition>
-  </div>
+  <FadeTransition>
+    <div class="global-notification" v-if="isVisible">{{ msg }}</div>
+  </FadeTransition>
 </template>
 
 <script lang="ts">
@@ -32,20 +30,23 @@ export default class GlobalNotification extends Vue {
 </script>
 
 <style lang="sass" scoped>
-.global-notification__wrapper
+@import "@/style/theme.sass"
+
+.global-notification
   min-width: 250px
   min-height: 150px
-  background: #333
   opacity: 0.8
-  color: #eee
   position: fixed
   left: 50%
   top: 10em
   font-size: 1.125em
   transform: translateX(-50%)
   border-radius: 10px
-  box-shadow: 0 0 6px 4px rgba(0, 0, 0, 0.4)
   display: flex
   align-items: center
   justify-content: center
+  @include themify($themes)
+    color: themed('secondary-text-color')
+    background: themed('secondary-background-color')
+    box-shadow: 0 0 6px 4px themed('box-shadow-color')
 </style>

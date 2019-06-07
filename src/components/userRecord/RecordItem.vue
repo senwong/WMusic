@@ -3,7 +3,7 @@
     <!-- music icon and play icon -->
     <span class="record-item__icon" @click="handlePlay">
       <MusicIcon class="record-item__music-icon" />
-      <PausedIcon class="record-item__paused-icon" />
+      <PlayArrow class="record-item__paused-icon" />
     </span>
     <!-- track name, artists and album -->
     <div class="record-item__track-info" v-if="song">
@@ -38,7 +38,7 @@
 
 <script lang="ts">
 import MusicIcon from "@/components/SVGIcons/MusicIcon.vue";
-import PausedIcon from "@/components/SVGIcons/PausedIcon.vue";
+import PlayArrow from "@/components/SVGIcons/PlayArrow.vue";
 import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import { mapMutations } from "vuex";
 import { Vue, Component, Prop } from "vue-property-decorator";
@@ -47,7 +47,7 @@ import { Mutation, namespace } from "vuex-class";
 
 const playlist = namespace("playlist");
 @Component({
-  components: { MusicIcon, PausedIcon, ArtistsWithComma }
+  components: { MusicIcon, PlayArrow, ArtistsWithComma }
 })
 export default class RecordItem extends Vue {
   @Prop() record!: Record;
@@ -66,8 +66,8 @@ export default class RecordItem extends Vue {
 </script>
 
 <style lang="sass" scoped>
-@import '../../style/colors.sass'
-$primary-color: #080808
+@import '@/style/colors.sass'
+
 $secondary-color: #777
 
 .record-item__container
@@ -123,7 +123,7 @@ $secondary-color: #777
   margin-left: 1em
 .play-core__score
   height: 100%
-  background-color: $primary
+  background-color: $primary-color
 .play-count__count
   margin-left: 1.5em
   color: $secondary-color

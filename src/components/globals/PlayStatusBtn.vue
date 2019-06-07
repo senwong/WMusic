@@ -1,31 +1,31 @@
 <template>
   <div class="play-status-btn">
-    <SvgBtnWrapper
+    <SvgBtn
       :large="large"
       :xlarge="xlarge"
       :middle="middle"
       :small="small"
       :primary="isCurrentTrack"
     >
-      <PlayingIcon v-if="isCurrentTrack && !paused" />
-      <PausedIcon v-else />
-    </SvgBtnWrapper>
+      <Pause v-if="isCurrentTrack && !paused" />
+      <PlayArrow v-else />
+    </SvgBtn>
   </div>
 </template>
 
 <script lang="ts">
-import SvgBtnWrapper from "./SvgBtnWrapper.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Mutation, State, namespace } from "vuex-class";
-import PlayingIcon from "@/components/SVGIcons/PlayingIcon.vue";
-import PausedIcon from "@/components/SVGIcons/PausedIcon.vue";
+import PlayArrow from "@/components/SVGIcons/PlayArrow.vue";
+import Pause from "@/components/SVGIcons/Pause.vue";
 
 const playlist = namespace("playlist");
 const playbar = namespace("playbar");
 // if current audio is paused, show paused icon, else show playing icon,
 // click then toggle paly status
 @Component({
-  components: { SvgBtnWrapper, PlayingIcon, PausedIcon }
+  components: { SvgBtn, PlayArrow, Pause }
 })
 export default class PlayStatusBtn extends Vue {
   @Prop(Boolean) small!: boolean;

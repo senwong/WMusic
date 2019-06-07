@@ -1,34 +1,34 @@
 <template>
-  <div class="list-item">
+  <div class="card-item" :class="{ 'card-item--row': row }">
     <CardImage
-      :fav="{ onClick: () => addFav(cardType, card.id) }"
+      :fav="{ onClick: () => addFav(card.type, card.id) }"
       :play="{ onClick: () => handlePlay() }"
       :more="{ onClick: () => {} }"
-      :href="`/${cardType}/${card.id}`"
+      :href="titleLink"
       :src="card.picUrl | convert2Https | clipImage(400, 400)"
-      :alt="card.name"
-      ratio="1:1"
+      :alt="card.title"
+      :ratio="card.ratio ? card.ratio : '1:1'"
       radius
-    >
-      <div v-if="card.playCount" class="play-count" slot="rightTop">
-        <span class="play-count__icon">
-          <PlayWithoutCircleIcon />
-        </span>
-        <span>{{ formatPlayCount(card.playCount) }}</span>
-      </div>
-    </CardImage>
-    <router-link :to="`/${cardType}/${card.id}`" class="list__name">{{
-      card.name
-    }}</router-link>
-    <!-- creator -->
-    <router-link
-      v-if="card.creator"
-      class="creator-name"
-      :to="`/user/${card.creator.userId}`"
-    >
-      {{ card.creator.nickname }}
-    </router-link>
-    <!-- 点击更多，弹出菜单 -->
+      :row="row"
+    />
+    <div class="card-item__info">
+      <router-link :to="titleLink" class="card-item__title">{{
+        card.title
+      }}</router-link>
+      <router-link
+        v-if="card.subTitle && card.subLink"
+        class="card-item__subtitle"
+        :to="card.subLink"
+      >
+        {{ card.subTitle }}
+      </router-link>
+    </div>
+    <div v-if="card.playCount" class="card-item__play-count">
+      <span class="card-item__play-count__icon">
+        <PlayWithoutCircleIcon />
+      </span>
+      <span>{{ formatCount(card.playCount) }}</span>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -41,7 +41,14 @@ import PlayWithoutCircleIcon from "@/components/SVGIcons/PlayWithoutCircleIcon.v
 import CardImage from "./CardImage.vue";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Mutation, namespace } from "vuex-class";
-import { Track, convertTrack, Playlist, PlaylistType } from "@/types";
+import {
+  Track,
+  convertTrack,
+  Playlist,
+  PlaylistType,
+  MediaCardItem
+} from "@/types";
+import { formatCount } from "@/utilitys";
 
 const playlist = namespace("playlist");
 const notification = namespace("notification");
@@ -55,14 +62,22 @@ const notification = namespace("notification");
   }
 })
 export default class CardItem extends Vue {
-  @Prop() readonly card!: Playlist;
+  @Prop() readonly card!: MediaCardItem;
 
-  @Prop() readonly cardType!: PlaylistType;
+  @Prop({ type: Boolean, default: false }) readonly row!: boolean;
 
   @playlist.Mutation setTracks!: (tracks: Track[]) => void;
 
   @playlist.Mutation setCurrentSongId!: (id: number) => void;
   @notification.Mutation setMsg!: (msg: string) => void;
+
+  get titleLink(): string {
+    return this.card.id && this.card.type
+      ? `/${this.card.type}/${this.card.id}`
+      : "#";
+  }
+
+  formatCount = formatCount;
 
   addFav(type: PlaylistType, id: number): void {
     // TODO
@@ -76,11 +91,6 @@ export default class CardItem extends Vue {
         }
       );
     }
-  }
-
-  formatPlayCount(playCount: number): string {
-    if (playCount < 10000) return playCount.toString();
-    return `${(playCount / 10000).toFixed(1)}万`;
   }
 
   updatePlaylist() {
@@ -110,7 +120,7 @@ export default class CardItem extends Vue {
   handlePlay(): void {
     if (!this.card.id) return;
     let tracksPromise;
-    switch (this.cardType) {
+    switch (this.card.type) {
       case "playlist": {
         tracksPromise = this.updatePlaylist();
         break;
@@ -143,39 +153,58 @@ export default class CardItem extends Vue {
 }
 </script>
 <style lang="sass" scoped>
-@import '../config.sass'
-.list-item
+@import "@/style/theme.sass"
+
+.card-item
   display: flex
   flex-direction: column
   position: relative
   user-select: none
-
-.list__name
-  margin: 8px 0
-  text-decoration: none
-  color: inherit
-  font-weight: bolder
-  font-size: 14px
-  &:hover
-    text-decoration: underline
-.play-count
-  display: flex
-  align-items: center
-  margin: 0.5em
-  padding: 0 0.2em
-  color: white
-  background-color: rgba(0, 0, 0, 0.5)
-  border-radius: 0.2em
-  font-size: 12px
-.play-count__icon
-  width: 1em
-  height: 1em
-
-.creator-name
-  color: $gray
-  font-size: 12px
-  transition-property: color
-  transition-duration: 250ms
-  &:hover
-    color: black
+  &--row
+    flex-direction: row
+    height: 100%
+    wdith: auto
+  &__info
+    margin-top: 0.5em
+  &__title
+    display: block
+    text-decoration: none
+    color: inherit
+    font-weight: bolder
+    font-size: 14px
+    &:hover
+      text-decoration: underline
+  &__subtitle
+    display: block
+    margin-top: 0.5em
+    font-size: 0.75em
+    transition-property: color
+    transition-duration: 250ms
+    @include themify($themes)
+      color: themed('secondary-text-color')
+      &:hover
+        color: themed('secondary-text-color-color')
+  &__play-count
+    position: absolute
+    top: 0
+    right: 0
+    display: flex
+    align-items: center
+    margin: 0.5em
+    padding: 0 0.2em
+    border-radius: 0.2em
+    font-size: 0.75em
+    @include themify($themes)
+      color: themed('secondary-text-color')
+      background-color: themed("secondary-background-color")
+    &__icon
+      width: 1em
+      height: 1em
+.card-item--row
+  .card-item__info
+    margin-top: 0
+    margin-left: 0.5em
+  .card-item__play-count
+    left: 0
+    right: auto
 </style>

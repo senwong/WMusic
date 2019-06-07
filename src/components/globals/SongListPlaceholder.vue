@@ -1,20 +1,20 @@
 <template>
   <div>
     <div
-      class="placeholder__wrapper"
+      class="song-list-placeholder"
       v-for="(_, idx) in new Array(count)"
       :key="idx"
     >
-      <Placeholder class="placeholder__icon" />
-      <div class="placeholder__info">
-        <Placeholder class="placeholder__title" />
-        <div class="placeholder__artist__album">
-          <Placeholder class="placeholder__artist" />
-          <span class="placeholder__dot">•</span>
-          <Placeholder class="placeholder__album" />
+      <Placeholder class="song-list-placeholder__icon" />
+      <div class="song-list-placeholder__info">
+        <Placeholder class="song-list-placeholder__info__top" />
+        <div class="song-list-placeholder__info__bot">
+          <Placeholder class="song-list-placeholder__info__artist" />
+          <span class="song-list-placeholder__info__dot">•</span>
+          <Placeholder class="song-list-placeholder__info__album" />
         </div>
       </div>
-      <Placeholder class="placeholder__duration" />
+      <Placeholder class="song-list-placeholder__duration" />
     </div>
   </div>
 </template>
@@ -32,30 +32,30 @@ export default class SongListPlaceholder extends Vue {
 </script>
 
 <style lang="sass" scoped>
-.placeholder__wrapper
+.song-list-placeholder
   display: flex
   flex-direction: row
   justify-content: flex-start
   align-items: flex-start
   padding: 0.7em
-.placeholder__icon
-  height: 2em
-  flex: 0 0 2em
-  margin-right: 1em
-.placeholder__info
-  flex: 1 1 auto
-  .placeholder__title
-    width: 5em
-    height: 1.125em
-  .placeholder__artist, .placeholder__album
-    margin-top: 0.5em
-    width: 3em
-    height: 1.125em
-    display: inline-block
-.placeholder__dot
-  opacity: 0.6
-  padding: 0 0.5em
-.placeholder__duration
-  flex: 0 0 2em
-  height: 2em
+  &__icon
+    height: 2em
+    flex: 0 0 2em
+    margin-right: 1em
+  &__info
+    flex: 1 1 auto
+    &__top
+      width: 5em
+      height: 1.125em
+    &__artist, &__album
+      margin-top: 0.5em
+      width: 3em
+      height: 1.125em
+      display: inline-block
+    &__dot
+      opacity: 0.6
+      padding: 0 0.5em
+  &__duration
+    flex: 0 0 2em
+    height: 2em
 </style>

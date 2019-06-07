@@ -77,14 +77,7 @@
       <!-- 搜索MV -->
       <div v-else-if="currentSearchType == SearchType.Mv">
         <h3 class="fallback" v-if="searchMvs.length == 0">没有与此相关的MV</h3>
-        <div class="mv-result__wrapper">
-          <card-item
-            v-for="mv in searchMvs"
-            :key="mv.id"
-            :card="mv"
-            cardType="mvplay"
-          ></card-item>
-        </div>
+        <MediaCardsGrid :data="searchMvs" />
       </div>
       <!-- 搜索歌单 -->
       <div v-else-if="currentSearchType == SearchType.Playlist">
@@ -162,16 +155,7 @@
         <h3 class="fallback" v-if="searchDjRadios.length == 0">
           没有与此相关的电台
         </h3>
-        <RadioCardItem
-          v-for="djRadio in searchDjRadios"
-          :key="djRadio.id"
-          :link="'/djradio/' + djRadio.id"
-          :picUrl="djRadio.picUrl | clipImage(320, 320)"
-          :title="djRadio.name"
-          :subTitles="getDjSubTitles(djRadio)"
-          :subLinks="getDjSubLinks(djRadio)"
-          shape="square"
-        ></RadioCardItem>
+        <MediaCardsGrid :data="searchDjRadios" />
       </div>
       <!-- 搜索用户 -->
       <div v-else-if="currentSearchType === SearchType.User">
@@ -210,14 +194,34 @@ import { formatTime } from "@/utilitys";
 import SongList from "@/components/globals/SongList.vue";
 import SearchBarWithRecommendations from "./SearchBarWithRecommendations.vue";
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { Track, Artist, Album, MvCard, TabMenuItem } from "@/types";
+import {
+  Track,
+  Artist,
+  Album,
+  MvCard,
+  MvType,
+  TabMenuItem,
+  MediaCardItem,
+  MediaCardType
+} from "@/types";
 import { Mutation, namespace } from "vuex-class";
-import CardItem from "@/components/MV/CardItem.vue";
-import RadioCardItem from "./CardItem.vue";
 import TabMenu from "@/components/globals/TabMenu.vue";
+import CardItem from "@/components/globals/CardItem.vue";
+import MediaCardsGrid from "@/components/globals/MediaCardsGrid.vue";
 
 const notification = namespace("notification");
 const SEARCH_OFFSET = 30;
+interface DjType {
+  nickname: string;
+  id: number;
+}
+interface DjRadioType {
+  picUrl: string;
+  name: string;
+  id: number;
+  dj: DjType;
+  subCount: number;
+}
 
 enum SearchType {
   Song = 1,
@@ -244,8 +248,8 @@ const searchTypes: { [index: string]: SearchType } = {
     CardItem,
     SongList,
     SearchBarWithRecommendations,
-    RadioCardItem,
-    TabMenu
+    TabMenu,
+    MediaCardsGrid
   }
 })
 export default class Search extends Vue {
@@ -272,13 +276,13 @@ export default class Search extends Vue {
 
   searchAlbums: Album[] = [];
 
-  searchMvs: MvCard[] = [];
+  searchMvs: MediaCardItem[] = [];
 
   searchPlaylists: object[] = [];
 
   searchLyrics: object[] = [];
 
-  searchDjRadios: object[] = [];
+  searchDjRadios: MediaCardItem[] = [];
 
   searchUsers: object[] = [];
 
@@ -327,11 +331,14 @@ export default class Search extends Vue {
           this.searchAlbums = result.albums;
           this.count = result.albumCount;
         } else if (searchType == SearchType.Mv) {
-          this.searchMvs = result.mvs.map((mv: any) => ({
+          this.searchMvs = result.mvs.map((mv: MvType) => ({
+            type: MediaCardType.Mv,
+            picUrl: mv.cover,
+            title: mv.name,
             id: mv.id,
-            name: mv.name,
-            cover: mv.cover,
-            artists: mv.artists
+            subTitle: mv.artistName,
+            subLink: mv.artistId && `/artist/${mv.artistId}`,
+            playCount: mv.playCount
           }));
           this.count = result.mvCount;
         } else if (searchType == SearchType.Playlist) {
@@ -343,6 +350,15 @@ export default class Search extends Vue {
         } else if (searchType == SearchType.Radio) {
           this.searchDjRadios = result.djRadios;
           this.count = result.djRadiosCount;
+          this.searchDjRadios = result.djRadios.map((djRadio: DjRadioType) => ({
+            type: MediaCardType.djRadio,
+            picUrl: djRadio.picUrl,
+            title: djRadio.name,
+            id: djRadio.id,
+            subTitle: djRadio.dj && djRadio.dj.nickname,
+            subLink: djRadio.dj && djRadio.dj.id && `/user/${djRadio.dj.id}`,
+            playCount: djRadio.subCount
+          }));
         } else if (searchType == SearchType.User) {
           this.searchUsers = result.userprofiles;
           this.count = result.userprofileCount;

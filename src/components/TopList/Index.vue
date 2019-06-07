@@ -33,7 +33,6 @@ import TabMenu from "@/components/globals/TabMenu.vue";
 
 import Button from "@/components/globals/Button.vue";
 import { Mutation, namespace } from "vuex-class";
-import PlayIcon from "@/components/SVGIcons/PlayIcon.vue";
 import OfficialTopList from "./OfficialTopList.vue";
 
 const playlist = namespace("playlist");
@@ -97,7 +96,6 @@ interface OfficialConntent {
     ImageWithPlaceholder,
     TabMenu,
     Button,
-    PlayIcon,
     OfficialTopList
   }
 })

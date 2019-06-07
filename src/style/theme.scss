@@ -1,58 +1,40 @@
-// $light-common: (backgroundColor: white, backgroundColorHover: #eee, textColor: #222, primaryBackgroundColor: #ff4021, primaryBackgroundColorHover: #bb4000, primaryTextColor: #fff,)
-// $buttonBackgroundColorHover: 
-// $light-btn: ( borderColor: #777, backgroundColor: white, textColor: #222, primayBackgroundColor: #ff4021, )
-$primary-color: #ff4021;
+@import "theme-button.scss";
+
+$primary-color: #EF6461;
 $dark-text-color: #ddd;
 
 // theme-(primary | secondary | warning)-(backgournd-text)-color-action(hover)
-$light-text-color: #222;
-$light-border-color: #999;
+$light-text-color: #313638;
+$light-text-color-hover: #313638;
 $light-background-color: white;
-$light-background-color-hover: #eee;
+$light-background-color-hover: adjust-color($light-background-color, $lightness: -20%);
 
 $light-primary-text-color: white;
+$light-primary-text-color-hover: white;
 $light-primary-background-color: $primary-color;
-$light-primary-background-color-hover: $primary-color;
+$light-primary-background-color-hover: adjust-color($primary-color, $lightness: +10%);
 
-// light button;
-$light-button-text-color: #222;
-$light-button-background-color: white;
-$light-button-background-color-hover: #eee;
-// light primary button;
-$light-primary-button-text-color: white;
-$light-primary-button-border-color: $primary-color;
-$light-primary-button-background-color: $primary-color;
-$light-primary-button-background-color-hover: $primary-color;
-// light secondary button;
-$light-secondary-button-broder-color: #777;
+$light-secondary-text-color: adjust-color($light-text-color, $lightness: +20%);
+$light-secondary-text-color-hover: adjust-color($light-text-color, $lightness: +0%);
+$light-secondary-background-color: adjust-color($light-background-color, $lightness: -5%);
+$light-secondary-background-color-hover: adjust-color($light-background-color, $lightness: -10%);
+$light-secondary-border-color: adjust-color($light-background-color, $lightness: -10%);
 
 // dark;
-$dark-text-color: #ddd;
-$dark-border-color: #777;
-$dark-background-color: #121212;
+$dark-text-color: $light-background-color;
+$dark-background-color: $light-text-color;
 $dark-background-color-hover: rgba(255, 255, 255, 0.1);
 
 $dark-primary-text-color: white;
 $dark-primary-background-color: $primary-color;
 $dark-primary-background-color-hover: $primary-color;
 
-// dark button;
-$dark-button-text-color: #222;
-$dark-button-background-color: white;
-$dark-button-background-color-hover: #eee;
-// dark primary button;
-$dark-primary-button-text-color: white;
-$dark-primary-button-border-color: $primary-color;
-$dark-primary-button-background-color: $primary-color;
-$dark-primary-button-background-color-hover: $primary-color;
-
-// dark secondary button
-$dark-secondary-button-broder-color: #777;
+$dark-secondary-text-color: adjust-color($dark-text-color, $lightness: -30%);
+$dark-secondary-background-color: adjust-color($dark-background-color, $lightness: +5%);
 
 $light-theme: (
   // common
   text-color: $light-text-color,
-  border-color: $light-border-color,
   box-shadow-color: adjust-color($light-background-color, $alpha: -0.8),
   background-color: $light-background-color,
   background-color-hover: $light-background-color-hover,
@@ -61,28 +43,19 @@ $light-theme: (
   primary-background-color-hover: $primary-color,
   primary-text-color: #fff,
   // button
-  button-border-color: $light-border-color,
-  button-text-color-hover: white,
-  button-background-color-hover: $light-background-color-hover,
-  // button primary
-  primary-button-border-color: $light-primary-button-border-color,
-  primary-button-text-color-hover: $light-primary-button-text-color,
-  primary-button-background-color-hover: $light-primary-button-background-color-hover,
-  // button secondary
-  secondary-button-broder-color: $light-secondary-button-broder-color,
-  secondary-text-color: adjust-color($light-text-color, $lightness: +30%),
-  secondary-text-color-hover: adjust-color($light-text-color, $lightness: +0%),
-  secondary-background-color: adjust-color($light-background-color, $lightness: -5%),
-  secondary-background-color-hover: adjust-color($light-background-color, $lightness: -10%),
-  secondary-border-color: adjust-color($light-background-color, $lightness: -10%),
+  secondary-text-color: $light-secondary-text-color,
+  secondary-text-color-hover: $light-secondary-text-color-hover,
+  secondary-background-color: $light-secondary-background-color,
+  secondary-background-color-hover: $light-secondary-background-color-hover,
+  secondary-border-color: $light-secondary-border-color,
   // placeholder
   placeholder-background-color: #eee,
   placeholder-background-color-gradient: #ddd,
 );
+$light-theme: map-merge($light-theme, $light-button);
 $dark-theme: (
   // common
   text-color: $dark-text-color,
-  border-color: $dark-border-color,
   box-shadow-color: adjust-color($dark-background-color, $alpha: -0.5),
   background-color: $dark-background-color,
   background-color-hover: $dark-background-color-hover,
@@ -90,19 +63,9 @@ $dark-theme: (
   primary-background-color: $primary-color,
   primary-background-color-hover: $primary-color,
   primary-text-color: #fff,
-  // button
-  button-border-color: $dark-border-color,
-  button-text-color-hover: $dark-text-color,
-  button-background-color-hover: $dark-background-color-hover,
-  // button primary
-  primary-button-border-color: $dark-primary-button-border-color,
-  primary-button-background-color-hover: $dark-primary-button-background-color-hover,
-  primary-button-text-color-hover: $dark-primary-text-color,
-  // button secondary
-  secondary-button-broder-color: $dark-secondary-button-broder-color,
   // secondary 
   secondary-text-color: adjust-color($dark-text-color, $lightness: -30%),
-  secondary-text-color-hover: adjust-color($dark-text-color, $lightness: -0%),
+  secondary-text-color-hover: $light-secondary-text-color-hover,
   secondary-background-color: adjust-color($dark-background-color, $lightness: +5%),
   secondary-background-color-hover: adjust-color($dark-background-color, $lightness: +10%),
   secondary-border-color: adjust-color($dark-background-color, $lightness: +10%),
@@ -110,6 +73,7 @@ $dark-theme: (
   placeholder-background-color: #181818,
   placeholder-background-color-gradient: #282828,
 );
+$dark-theme: map-merge($dark-theme, $dark-button);
 $themes: (
   light: $light-theme,
   dark: $dark-theme,

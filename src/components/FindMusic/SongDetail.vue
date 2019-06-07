@@ -1,72 +1,71 @@
 <template>
-  <div class="main-wrapper">
+  <div class="song-detail">
     <!-- 歌曲信息 -->
-    <div class="song-info">
-      <div class="album-img" v-if="album">
-        <img
-          :src="album.picUrl | convert2Https | clipImage(400, 400)"
-          :alt="name"
-        />
-      </div>
-      <div class="song-desc">
-        <div class="song-name">{{ name }}</div>
+    <div class="song-detail__info">
+      <ImageWithPlaceholder
+        class="song-detail__info__cover"
+        v-if="album"
+        :src="album.picUrl | convert2Https | clipImage(400, 400)"
+        :alt="name"
+        ratio="1:1"
+      />
+      <div class="song-detail__info__desc">
+        <h3>{{ name }}</h3>
         <div>
           艺人：
-          <router-link
-            v-for="artist in artists.filter(ar => ar.id !== 0)"
-            :key="artist.id"
-            :to="'/artist/' + artist.id"
-            >{{ artist.name }}</router-link
-          >
+          <ArtistsWithComma :artists="artists.filter(ar => ar.id !== 0)" />
         </div>
         <div v-if="album">
           专辑：
           <router-link :to="'/album/' + album.id">{{ album.name }}</router-link>
         </div>
-        <div class="controls">
+        <div class="song-detail__info__controls">
           <RippleButton @click.native="play">播放</RippleButton>
-          <RippleButton class="button-secondary">收藏</RippleButton>
-          <RippleButton class="button-secondary">歌词</RippleButton>
-          <RippleButton class="button-secondary">more</RippleButton>
+          <RippleButton>收藏</RippleButton>
+          <RippleButton>歌词</RippleButton>
+          <RippleButton>more</RippleButton>
         </div>
       </div>
     </div>
     <!-- 歌曲评论和标签-->
-    <div class="comment__tag">
+    <div class="song-detail__content">
       <!-- 歌曲评论 -->
       <CommentList
-        class="comments"
+        class="song-detail__content__main"
         :type="currentCommentType"
         :id="Number(songId)"
       />
       <!-- 标签 -->
-      <div class="tags">
-        <h1>相似歌曲</h1>
+      <div class="song-detail__content__aside">
+        <h3>相似歌曲</h3>
         <ul>
-          <li v-for="song in simiSongs" :key="song.id" class="simi-item">
-            <div class="img-container">
-              <img
-                :src="song.album.picUrl | convert2Https | clipImage(100, 100)"
-                :alt="song.album.name"
-              />
-              <div class="mask-container">
-                <div class="mask"></div>
-                <div class="play" @click="play(song.id)">
-                  <play-svg></play-svg>
-                </div>
-              </div>
-            </div>
-            <div class="info-container">
-              <router-link class="name" :to="'/song/' + song.id">{{
-                song.name
-              }}</router-link>
+          <li
+            v-for="song in simiSongs"
+            :key="song.id"
+            class="song-detail__simi-item"
+          >
+            <CardImage
+              class="song-detail__simi-item__cover"
+              :play="{ onClick: () => play }"
+              :href="'#'"
+              :src="song.album.picUrl | convert2Https | clipImage(100, 100)"
+              :alt="song.album.name"
+              ratio="1:1"
+              radius
+            />
+            <div class="song-detail__simi-item__info">
               <router-link
-                class="artists"
-                :to="'/artist/' + song.id"
-                v-for="ar in song.artists"
-                :key="ar.id"
-                >{{ ar.name }}</router-link
+                class="song-detail__simi-item__info__name ellipsis"
+                :to="'/song/' + song.id"
+                >{{ song.name }}</router-link
               >
+              <div>
+                <ArtistsWithComma
+                  v-if="song.artists"
+                  :artists="song.artists"
+                  aTagClass="song-detail__simi-item__info__artist"
+                />
+              </div>
             </div>
           </li>
         </ul>
@@ -78,7 +77,6 @@
 import { getSongDetail, getSimiSongs } from "@/service";
 import CommentList from "./CommentList.vue";
 import RippleButton from "@/components/globals/RippleButton.vue";
-import PlaySvg from "@/components/globals/PlaySvg.vue";
 import { Vue, Component } from "vue-property-decorator";
 import {
   Artist,
@@ -89,12 +87,21 @@ import {
   convertTrack
 } from "@/types";
 import { Mutation, namespace } from "vuex-class";
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma";
+import CardImage from "@/components/globals/CardImage.vue";
 
 const playlist = namespace("playlist");
 const notification = namespace("notification");
 const OFEESETCOUNT = 20;
 @Component({
-  components: { CommentList, RippleButton, PlaySvg }
+  components: {
+    CommentList,
+    RippleButton,
+    ImageWithPlaceholder,
+    ArtistsWithComma,
+    CardImage
+  }
 })
 export default class SongDetail extends Vue {
   currentCommentType: CommentType = CommentType.SongComment;
@@ -171,44 +178,75 @@ export default class SongDetail extends Vue {
 }
 </script>
 <style lang="sass" scoped>
-@import "@/components/config.sass"
 @import "@/style/colors.sass"
+@import "@/style/theme.sass"
+$break-middle: 1000px
 
-.song-info
-  display: flex
-.album-img
-  height: 200px
-  flex: 0 0 200px
-  font-size: 0
-  margin-right: 20px
-  background: $secondary
-  border-radius: 15px
-  overflow: hidden
-  img
-    width: 100%
-    height: 100%
+.song-detail
+  padding: 1em
+  &__info
+    display: flex
+    &__cover
+      flex: 0 0 12.5em
+      margin-right: 1em
+      border-radius: 1em
+      overflow: hidden
+    &__desc
+      flex: 1 1 auto
+      display: flex
+      flex-direction: column
+      justify-content: space-between
+    &__controls > *:not(:last-child)
+      margin-right: 2em
 
-.song-desc
-  flex: 1 1 auto
-  display: flex
-  flex-direction: column
-  justify-content: space-between
-.song-name
-  font-size: 2em
-  margin: 1em 0
+  &__content
+    display: flex
+    flex-direction: row
+    justify-content: flex-start
+    align-items: flex-start
+    margin-top: 1em
+    @media screen and (max-width: $break-middle)
+      flex-direction: column-reverse
+      align-items: stretch
+    &__main
+      flex: 1 1 auto
+      margin-right: 1em
+      @media screen and (max-width: $break-middle)
+        margin-right: 0
+    &__aside
+      flex: 0 0 300px
+      @media screen and (max-width: $break-middle)
+        flex: 0 0 auto
 
-.button-secondary
-  color: $secondary
-  border-color: $secondary
+  &__simi-item
+    box-sizing: border-box
+    padding: 0.5em
+    display: flex
+    flex-direction: row
+    align-items: flex-start
+    justify-content: flex-start
+    border-radius: 0.4em
+    min-width: 0
+    transition: all .25s
+    &:hover
+      @include themify($themes)
+        background-color: themed("background-color-hover")
+      & .mask-container
+        display: block
+    &__cover
+      flex: 0 0 3em
+      margin-right: 1em
+    &__info
+      min-width: 0
+      &__name
+        width: 100%
+        display: block
+        font-weight: bolder
+      &__artist
+        font-size: 0.875em
+        @include themify($themes)
+          color: themed("secondary-text-color")
 
-.comment__tag
-  display: flex
-.comments
-  flex: 1 1 auto
-  margin: 20px 20px 0 0
-.tags
-  flex: 0 0 234px
-  min-width: 0
 // 加载提示样式
 .loading-tips
   text-align: center
@@ -217,76 +255,9 @@ export default class SongDetail extends Vue {
   padding: 0 1em
   border-radius: 1em
   text-align: center
-  border: 1px solid $orange
-  color: $orange
+  border: 1px solid $primary-color
+  color: $primary-color
   font-size: 14px
   font-weight: bolder
   margin: 1em auto
-
-.controls > *:not(:last-child)
-  margin-right: 2em
-// 相似歌曲
-.simi-item
-  box-sizing: border-box
-  padding: 0.5em
-  display: flex
-  border-radius: 2px
-  min-width: 0
-  &:hover
-    background-color: $Alabaster
-    & .mask-container
-      display: block
-  .img-container
-    font-size: 0
-    flex: 0 0 40px
-    height: 40px
-    background-color: $secondary
-    position: relative
-    margin-right: 8px
-    border-radius: 2px
-    overflow: hidden
-    img
-      width: 100%
-      height: 100%
-
-  .mask-container
-    display: none
-    position: absolute
-    top: 0
-    left: 0
-    width: 100%
-    height: 100%
-  .mask
-    width: 100%
-    height: 100%
-    background-color: $black
-    opacity: $mask-opacity
-  .play
-    position: absolute
-    top: 0
-    left: 0
-    width: 55%
-    height: 55%
-    padding: 7px
-    box-sizing: border-box
-    background-color: $primary
-    border-radius: 50%
-    opacity: 1
-    margin: 22.5% 0 0 22.5%
-
-  .info-container
-    display: flex
-    flex-direction: column
-    justify-content: space-between
-    &, & .name, & .artists
-      min-width: 0
-      overflow: hidden
-      text-overflow: ellipsis
-      white-space: nowrap
-    .name
-      font-size: 100%
-      font-weight: bolder
-    .artists
-      font-size: 80%
-      color: $secondary
 </style>

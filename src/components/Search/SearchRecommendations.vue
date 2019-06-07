@@ -1,18 +1,19 @@
 <template>
   <!-- search recommendations -->
-  <section class="search__recommendations">
-    <section v-for="(value, idx) in order" :key="idx">
-      <component
-        v-bind:is="upperCaseFirst(value)"
-        v-bind:[value]="$data[value]"
-      />
+  <transition name="slide-up">
+    <section class="search__recommendations" v-show="show">
+      <section v-for="(value, idx) in order" :key="idx" class="rec__wrapper">
+        <component
+          v-bind:is="upperCaseFirst(value)"
+          v-bind:[value]="$data[value]"
+        />
+      </section>
     </section>
-  </section>
+  </transition>
 </template>
 <script lang="ts">
 import { searchSuggest } from "@/service";
 import { formatTime, clipImage } from "@/utilitys";
-import CardItem from "./CardItem.vue";
 import SongList from "@/components/globals/SongList.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Track, Artist, Album, MvCard, Playlist } from "@/types";
@@ -46,9 +47,10 @@ export default class SearchRecommendations extends Vue {
   playlists: Playlist[] | null = null;
 
   order: string[] = [];
-  
+
   formatTime = formatTime;
   @Prop(String) keywords!: string;
+  @Prop(Boolean) show!: boolean;
 
   @notification.Mutation setMsg!: (msg: string) => void;
 
@@ -121,20 +123,28 @@ export default class SearchRecommendations extends Vue {
 </script>
 
 <style lang="sass" scoped>
-@import "@/style/theme.sass"
+@import "@/style/themify.sass"
+@import "searchbar.scss"
 
 .search__recommendations
-  min-height: 300px
-  max-height: 600px
+  height: 450px
   overflow: scroll
-  padding: 1em 0
   border-bottom-left-radius: 8px
   border-bottom-right-radius: 8px
   box-sizing: border-box
   border: 1px solid
   border-top: none
   @include themify($themes)
-    background-color: themed('background-color')
-    border-color: themed('border-color')
-    box-shadow: 0 8px 6px 3px themed('box-shadow-color')
+    background-color: themed('background-color-focus')
+    border-color: themed('border-color-focus')
+    box-shadow: 0 8px 6px 3px adjust-color(themed('background-color-focus'), $alpha: -0.8)
+.rec__wrapper
+  margin: 1em 0
+.slide-up-enter-active, .slide-up-leave-active
+  transition: all 0.25s
+
+.slide-up-enter, .slide-up-leave-to
+  height: 0px
+  box-shadow: 0 0px 0px 0px rgba(0, 0, 0, 0)
+  border-color: rgba(0, 0, 0, 0)
 </style>

@@ -1,35 +1,38 @@
 <template>
-  <div class="card-item-container">
-    <WithHoverMask class="item-cover" :class="{ radius: radius }">
-      <router-link :to="href" slot="controlls" class="item-controlls">
+  <div class="card-image" :class="{ 'card-image--row': row }">
+    <WithHoverMask
+      class="card-image__image"
+      :class="{ 'card-image__image--rounded': radius }"
+    >
+      <router-link :to="href" slot="controlls" class="card-image__controlls">
         <!-- 收藏 -->
-        <SvgBtnWrapper
+        <SvgBtn
           large
           v-if="fav"
-          class="control__item"
+          class="card-image__control-item"
           @click.native.stop.prevent="fav.onClick"
         >
           <FavIcon />
-        </SvgBtnWrapper>
+        </SvgBtn>
         <!-- 播放 -->
-        <SvgBtnWrapper
+        <SvgBtn
           large
           primary
           v-if="play"
-          class="control__item"
+          class="card-image__control-item"
           @click.native.stop.prevent="play.onClick"
         >
-          <PausedIcon />
-        </SvgBtnWrapper>
+          <PlayArrow />
+        </SvgBtn>
         <!-- 更多 -->
-        <BtnWithPopupMenu class="control__item" v-if="more">
+        <BtnWithPopupMenu class="card-image__control-item" v-if="more">
           <template slot="btn">
-            <SvgBtnWrapper large @click.native.prevent="more.onClick">
+            <SvgBtn large @click.native.prevent="more.onClick">
               <MoreIcon />
-            </SvgBtnWrapper>
+            </SvgBtn>
           </template>
           <template slot="menu">
-            <MoreList class="more__popup-menu">
+            <MoreList class="card-image__more-menu">
               <MoreItem>
                 <DownloadIcon slot="icon" />
                 <span slot="txt" class="txt">加入歌单</span>
@@ -38,24 +41,24 @@
           </template>
         </BtnWithPopupMenu>
       </router-link>
-      <ImageWithPlaceholder :src="src" :alt="alt" :ratio="ratio" />
+      <ImageWithPlaceholder :src="src" :alt="alt" :ratio="ratio" :row="row" />
     </WithHoverMask>
-    <div class="left-top" v-if="$slots.leftTop">
+    <div class="card-image__left-top" v-if="$slots.leftTop">
       <slot name="leftTop"></slot>
     </div>
-    <div class="right-top" v-if="$slots.rightTop">
+    <div class="card-image__right-top" v-if="$slots.rightTop">
       <slot name="rightTop"></slot>
     </div>
   </div>
 </template>
 <script lang="ts">
 import FavIcon from "@/components/SVGIcons/FavIcon.vue";
-import PausedIcon from "@/components/SVGIcons/PausedIcon.vue";
+import PlayArrow from "@/components/SVGIcons/PlayArrow.vue";
 import MoreIcon from "@/components/SVGIcons/MoreIcon.vue";
 import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
 import WithHoverMask from "@/components/globals/WithHoverMask.vue";
 import { Vue, Component, Prop } from "vue-property-decorator";
-import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
 import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
 import { ControlBtn } from "@/types";
 import MoreList from "@/components/more-list/MoreList.vue";
@@ -65,11 +68,11 @@ import DownloadIcon from "@/components/SVGIcons/DownloadIcon.vue";
 @Component({
   components: {
     FavIcon,
-    PausedIcon,
+    PlayArrow,
     MoreIcon,
     ImageWithPlaceholder,
     WithHoverMask,
-    SvgBtnWrapper,
+    SvgBtn,
     BtnWithPopupMenu,
     MoreList,
     MoreItem,
@@ -96,49 +99,38 @@ export default class CardImage extends Vue {
 
   // width:height
   @Prop(Boolean) radius!: boolean;
+  @Prop({ type: Boolean, default: false }) row!: boolean;
 }
 </script>
 <style lang="sass" scoped>
-@import '../../style/colors.sass'
-.card-item-container
+.card-image
   width: 100%
   position: relative
-.list-item
-  display: flex
-  flex-direction: column
-  position: relative
-  user-select: none
-.item-cover
-  &.radius
-    overflow: hidden
-    border-radius: 15px
-    transform: translate3d(0, 0, 0);
-
-.item-controlls
-  width: 100%
-  height: 100%
-  display: flex
-  flex-direction: row
-  justify-content: center
-  align-items: center
-
-.img-wrapper
-  display: block
-  // height: 100%
-  width: 100%
-  box-sizing: border-box
-
-.control__item
-  color: white
-  margin: 5px
-
-.left-top, .right-top
-  position: absolute
-  top: 0
-.left-top
-  left: 0
-.right-top
-  right: 0
-.more__popup-menu
-  color: #333
+  &--row
+    height: 100%
+    width: auto
+  &__image
+    &--rounded
+      overflow: hidden
+      border-radius: 15px
+      transform: translateZ(0)
+  &__controlls
+    width: 100%
+    height: 100%
+    display: flex
+    flex-direction: row
+    justify-content: center
+    align-items: center
+  &__control-item
+    color: white
+    margin: 5px
+  &__more-menu
+    color: #333
+  &__left-top, &__right-top
+    position: absolute
+    top: 0
+  &__left-top
+    left: 0
+  &__right-top
+    right: 0
 </style>

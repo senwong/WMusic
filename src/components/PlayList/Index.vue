@@ -1,19 +1,51 @@
 <template>
-  <div class="main-wrapper">
-    <div class="container">
-      <div class="category__selected">
+  <div class="playlist">
+    <div class="playlist__top category__selected">
+      <Button noborder rounded secondary @click.native="showMenu = !showMenu">
         <span class="category__title">{{ selected }}</span>
-        <span class="category__toggle__btn" @click="showMenu = !showMenu">
-          <ChevronTopIcon class="category__title__icon" v-show="!showMenu" />
-          <ChevronBottomIcon class="category__title__icon" v-show="showMenu" />
+        <span class="category__toggle__btn">
+          <ChevronTopIcon
+            class="category__title__icon"
+            :class="{ 'category__title__icon--rotate': showMenu }"
+          />
         </span>
-      </div>
-      <transition
-        name="move"
-        @after-enter="afterEnter"
-        @before-leave="beforeLeave"
-      >
-        <div class="category__list-wrapper" v-show="showMenu">
+      </Button>
+    </div>
+    <div class="playlist__bottom">
+      <transition name="slide-in-out">
+        <div v-if="!showMenu" class="playlist__bottom__wrapper" key="0">
+          <TabMenu align-left :list="tabList" />
+          <div class="song-cards__wrapper">
+            <transition
+              :name="orderType === 'hot' ? 'slide-left' : 'slide-right'"
+            >
+              <div v-if="orderType === 'new'" key="0" class="song-cards">
+                <MediaCardsGrid
+                  :data="newPlaylistsMediaCardsData"
+                  cardType="playlist"
+                />
+                <Pagination
+                  :total="pageTotal"
+                  :disabled="isLoading"
+                  @change="handlePageChange"
+                />
+              </div>
+              <div key="1" v-else class="song-cards">
+                <MediaCardsGrid :data="hotPlaylistsMediaCardsData" />
+                <Pagination
+                  :total="pageTotal"
+                  :disabled="isLoading"
+                  @change="handlePageChange"
+                />
+              </div>
+            </transition>
+          </div>
+        </div>
+        <div
+          v-else
+          class="category__list-wrapper playlist__bottom__wrapper"
+          key="1"
+        >
           <div class="category__list-container">
             <div class="category__list">
               <span
@@ -46,44 +78,20 @@
           </div>
         </div>
       </transition>
-      <div v-show="showCards">
-        <TabMenu
-          align-left
-          :list="[
-            {
-              key: 1,
-              title: '最热',
-              onClick: () => (orderType = 'hot'),
-              isActive: orderType == 'hot'
-            },
-            {
-              key: 2,
-              title: '最新',
-              onClick: () => (orderType = 'new'),
-              isActive: orderType == 'new'
-            }
-          ]"
-        />
-        <SongCards
-          :cardLists="playlists"
-          cardType="playlist"
-          class="song-cards"
-        />
-        <Pagination :total="pageTotal" @change="handlePageChange" />
-      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { getPlayListCatlist, getPlayList } from "@/service";
-import SongCards from "@/components/globals/SongCards.vue";
+import MediaCardsGrid from "@/components/globals/MediaCardsGrid.vue";
 import ChevronTopIcon from "@/components/SVGIcons/ChevronTopIcon.vue";
 import ChevronBottomIcon from "@/components/SVGIcons/ChevronBottomIcon.vue";
 import Pagination from "@/components/globals/Pagination.vue";
 import TabMenu from "@/components/globals/TabMenu.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { Playlist, PlaylistCreator } from "@/types";
+import { Playlist, PlaylistCreator, TabMenuItem, MediaCardItem } from "@/types";
 import { Mutation, namespace } from "vuex-class";
+import Button from "@/components/globals/Button.vue";
 
 const notification = namespace("notification");
 
@@ -94,11 +102,12 @@ interface SubCategory {
 
 @Component({
   components: {
-    SongCards,
+    MediaCardsGrid,
     ChevronTopIcon,
     ChevronBottomIcon,
     Pagination,
-    TabMenu
+    TabMenu,
+    Button
   }
 })
 export default class PlaylistComponent extends Vue {
@@ -112,7 +121,8 @@ export default class PlaylistComponent extends Vue {
 
   orderType: "hot" | "new" = "hot";
 
-  playlists: Playlist[] = [];
+  newPlaylistsMediaCardsData: MediaCardItem[] = [];
+  hotPlaylistsMediaCardsData: MediaCardItem[] = [];
 
   total: number = 0;
 
@@ -122,7 +132,29 @@ export default class PlaylistComponent extends Vue {
 
   limit = 20;
 
+  updateTimeoutId: number | null = null;
+
+  isLoading: boolean = false;
+
   @notification.Mutation setMsg!: (msg: string) => void;
+
+  get tabList(): TabMenuItem[] {
+    return [
+      {
+        key: 1,
+        title: "最热",
+        onClick: () => (this.orderType = "hot"),
+        isActive: this.orderType == "hot"
+      },
+      {
+        key: 2,
+        title: "最新",
+        onClick: () => (this.orderType = "new"),
+        isActive: this.orderType == "new"
+      }
+    ];
+  }
+
   created() {
     getPlayListCatlist().then(
       res => {
@@ -151,10 +183,11 @@ export default class PlaylistComponent extends Vue {
   }
 
   updatePlayList() {
+    this.isLoading = true;
     getPlayList(this.selected, this.orderType, this.offset).then(res => {
       if (res.data.code == 200) {
         this.total = res.data.total;
-        this.playlists = res.data.playlists.map(
+        const playlists = res.data.playlists.map(
           (list: {
             id: number;
             coverImgUrl: string;
@@ -163,17 +196,24 @@ export default class PlaylistComponent extends Vue {
             playCount: number;
             creator: PlaylistCreator;
           }) => ({
-            id: list.id,
+            type: "playlist",
             picUrl: list.coverImgUrl,
-            name: list.name,
-            publishTime: list.updateTime,
-            playCount: list.playCount,
-            creator: list.creator
+            id: list.id,
+            title: list.name,
+            subTitle: list.creator && list.creator.nickname,
+            subLink: list.creator && `/user/${list.creator.userId}`,
+            playCount: list.playCount
           })
         );
+        if (this.orderType === "new") {
+          this.newPlaylistsMediaCardsData = playlists;
+        } else {
+          this.hotPlaylistsMediaCardsData = playlists;
+        }
       } else {
         alert(`获取歌单失败： ${res.data}`);
       }
+      this.isLoading = false;
     });
   }
 
@@ -200,22 +240,38 @@ export default class PlaylistComponent extends Vue {
   @Watch("orderType")
   onOrderTypeChange() {
     this.offset = 0;
-    this.updatePlayList();
+    if (this.updateTimeoutId) {
+      clearTimeout(this.updateTimeoutId);
+    }
+    this.updateTimeoutId = setTimeout(() => {
+      this.updatePlayList();
+    }, 1000);
   }
 }
 </script>
 <style lang="sass" scoped>
-@import "@/components/config.sass"
 @import "@/style/theme.sass"
 
+.playlist
+  padding: 0 1em 1em
+  &__top
+    z-index: 1
+    @include themify($themes)
+      background-color: themed('background-color')
+  &__bottom
+    position: relative
+    z-index: 0
+    &__wrapper
+      @include themify($themes)
+        background-color: themed('background-color')
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
 .category__selected
   position: relative
-  z-index: 2
   font-size: 20px
-  padding: 2em 0 1em
-  margin-top: -1em
-  @include themify($themes)
-    background-color: themed('background-color')
+  padding: 1em 0 1em
 .category__title
   margin-right: 0.5em
 .category__toggle__btn
@@ -225,8 +281,11 @@ export default class PlaylistComponent extends Vue {
 .category__title__icon
   width: 0.5em
   height: 0.5em
-.category__list-wrapper
-  position: relative
+  transition: all 0.25s
+  transform: rotate(90deg)
+  &--rotate
+    transform: rotate(180deg)
+
 .category__list-container
   z-index: 1
 .category__sub
@@ -264,11 +323,63 @@ export default class PlaylistComponent extends Vue {
 .move-leave-active
   animation: move-up 0.5s ease forwards
 
-
+.song-cards__wrapper
+  position: relative
 .song-cards
   margin-top: 2em
+  position: absolute
+  top: 0
+  left: 0
+  width: 100%
 .loading-spinner
   width: 2em
   height: 2em
   margin: 2em auto
+
+
+.slide-in-out
+  &-enter-active, &-leave-active
+    transition: all .7s
+  &-enter
+    transform: translateY(-300px)
+    opacity: 0
+    visibility: hidden
+  &-enter-to
+    transform: translateY(0px)
+  &-leave
+    transform: translateY(0px)
+  &-leave-to
+    transform: translateY(300px)
+    opacity: 0
+    visibility: visible
+.slide-left
+  &-enter-active, &-leave-active
+    transition: all .7s
+  &-enter
+    transform: translateX(100%)
+    opacity: 0
+    visibility: hidden
+  &-enter-to
+    transform: translateX(0px)
+  &-leave
+    transform: translateX(0px)
+  &-leave-to
+    transform: translateX(-100%)
+    opacity: 0
+    visibility: visible
+.slide-right
+  &-enter-active, &-leave-active
+    transition: all .7s
+  &-enter
+    transform: translateX(-100%)
+    opacity: 0
+    visibility: hidden
+  &-enter-to
+    transform: translateX(0px)
+  &-leave
+    transform: translateX(0px)
+  &-leave-to
+    transform: translateX(100%)
+    opacity: 0
+    visibility: visible
 </style>

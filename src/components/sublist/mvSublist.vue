@@ -1,7 +1,7 @@
 <template>
   <div class="mv-sublist">
     <div class="mv-sublist__container" v-if="!isLoading">
-      <CardItem v-for="mv in mvs" :key="mv.id" :card="mv" cardType="mvplay" />
+      <CardItem v-for="mv in mvs" :key="mv.id" :card="mv" />
     </div>
     <div class="mv-sublist__container" v-else>
       <div
@@ -25,12 +25,12 @@
 </template>
 
 <script lang="ts">
-import CardItem from "@/components/MV/CardItem.vue";
+import CardItem from "@/components/globals/CardItem.vue";
 import { getMvSublist } from "@/service";
 import ErrorLabel from "@/components/globals/ErrorLabel.vue";
 import PrevNextPagination from "@/components/globals/PrevNextPagination.vue";
 import { Vue, Component } from "vue-property-decorator";
-import { MvCard } from "@/types";
+import { MvCard, MvType, MediaCardItem, MediaCardType } from "@/types";
 import Placeholder from "@/components/globals/Placeholder.vue";
 
 interface MvFromServer {
@@ -49,7 +49,7 @@ interface MvFromServer {
   }
 })
 export default class MvSubList extends Vue {
-  mvs: MvCard[] = [];
+  mvs: MediaCardItem[] = [];
 
   errorMsg: string = "获取mv收藏列表错误";
 
@@ -70,14 +70,14 @@ export default class MvSubList extends Vue {
     getMvSublist(this.offset, this.limit).then(
       res => {
         this.mvs = res.data.data.map(
-          (mv: MvFromServer): MvCard => ({
-            id: mv.vid,
-            cover: mv.coverUrl,
-            name: mv.title,
-            artists: mv.creator.map(c => ({
-              id: c.userId,
-              name: c.userName
-            }))
+          (mv: MvType): MediaCardItem => ({
+            type: MediaCardType.Mv,
+            picUrl: mv.cover,
+            title: mv.name,
+            id: mv.id,
+            subTitle: mv.artistName,
+            subLink: mv.artistId && `/artist/${mv.artistId}`,
+            playCount: mv.playCount
           })
         );
         this.hasMore = res.data.hasMore;

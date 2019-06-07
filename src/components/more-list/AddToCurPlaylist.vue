@@ -26,5 +26,3 @@ export default class AddToCurPlaylist extends Vue {
   }
 }
 </script>
-
-<style></style>

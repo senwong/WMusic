@@ -1,24 +1,13 @@
 <template>
   <div>
-    <div v-if="playlist">
+    <div v-if="playlistMediaCardsData.length > 0">
       <div class="title">歌单（{{ count }}）</div>
-      <ul class="list-container">
-        <li v-for="list in playlist" :key="list.id">
-          <router-link :to="'/playlist/' + list.id" class="list-item">
-            <div class="playlist-cover">
-              <ImageWithPlaceholder
-                :src="list.coverImgUrl | convert2Https | clipImage(300, 300)"
-                :alt="list.name"
-                ratio="1:1"
-              />
-            </div>
-            <HoverUnderline>
-              <div class="name">{{ list.name }}</div>
-            </HoverUnderline>
-          </router-link>
-        </li>
-      </ul>
-      <Pagination :total="pageTotal" @change="handlePageChange" />
+      <MediaCardsGrid :data="playlistMediaCardsData" />
+      <Pagination
+        :total="pageTotal"
+        :disabled="isLoading"
+        @change="handlePageChange"
+      />
     </div>
     <div class="loading-spinenr" v-else>
       <Spinner />
@@ -29,22 +18,21 @@
 
 <script>
 import { getUserPlaylist } from "@/service";
-import SongCards from "@/components/globals/SongCards";
+import MediaCardsGrid from "@/components/globals/MediaCardsGrid";
 import Pagination from "@/components/globals/Pagination";
-import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder";
 import Spinner from "@/components/globals/Spinner.vue";
 import ErrorLabel from "@/components/globals/ErrorLabel";
-import HoverUnderline from "@/components/globals/HoverUnderline.vue";
+// import { MediaCardItem } from "@/types"
 
 export default {
   data() {
     return {
-      playlist: null,
       limit: 30,
       offset: 0,
-      isLoading: true,
+      isLoading: false,
       isShowError: false,
-      errorMsg: "获取用户歌单错误"
+      errorMsg: "获取用户歌单错误",
+      playlistMediaCardsData: []
     };
   },
   props: {
@@ -53,10 +41,9 @@ export default {
   },
   components: {
     Pagination,
-    ImageWithPlaceholder,
     Spinner,
     ErrorLabel,
-    HoverUnderline
+    MediaCardsGrid
   },
   watch: {
     userId() {
@@ -75,9 +62,17 @@ export default {
   methods: {
     updatePlaylist() {
       if (!this.userId) return;
+      this.isLoading = true;
       getUserPlaylist(this.userId, this.offset).then(
         res => {
-          this.playlist = res.data.playlist;
+          const playlist = res.data.playlist;
+          this.playlistMediaCardsData = playlist.map(pl => ({
+            type: "playlist",
+            picUrl: pl.coverImgUrl,
+            title: pl.name,
+            id: pl.id,
+            playCount: pl.playCount
+          }));
           this.isLoading = false;
         },
         error => {

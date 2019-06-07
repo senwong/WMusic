@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="btn-with-popup-menu">
     <div ref="btn">
       <slot name="btn" />
     </div>
     <div
-      class="popup-menu"
+      class="btn-with-popup-menu__popup-menu"
       v-show="canPopup && showPopup"
       :style="styleObj"
       ref="popupMenu"
@@ -27,14 +27,14 @@ import MoreItem from "@/components/more-list/MoreItem.vue";
 import MoreList from "@/components/more-list/MoreList.vue";
 import DownloadIcon from "@/components/SVGIcons/DownloadIcon.vue";
 import MoreIcon from "@/components/SVGIcons/MoreIcon.vue";
-import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
 import { withIn } from "@/utilitys";
 
 @Component({
   components: {
     MoreItem,
     MoreList,
-    SvgBtnWrapper,
+    SvgBtn,
     MoreIcon,
     DownloadIcon
   }
@@ -143,10 +143,10 @@ export default class BtnWithPopupMenu extends Vue {
 
 <style lang="sass" scoped>
 @import "@/style/theme.sass"
-
-.popup-menu
-  @include themify($themes)
-    background-color: themed('background-color')
-  position: fixed
-  z-index: 99
+.btn-with-popup-menu
+  &__popup-menu
+    @include themify($themes)
+      background-color: themed('background-color')
+    position: fixed
+    z-index: 99
 </style>

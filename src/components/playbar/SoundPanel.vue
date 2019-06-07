@@ -1,38 +1,44 @@
 <template>
   <div class="sound-panel">
     <!-- 打开/关闭音量 -->
-    <SvgBtnWrapper
+    <SvgBtn
       xlarge
       class="mute-volume"
       @click.native="toggleVolume"
       :disabled="disabled"
     >
-      <VolumeIcon v-if="isVolume" />
-      <VolumeMuteIcon v-if="!isVolume" />
-    </SvgBtnWrapper>
+      <VolumeUpIcon v-if="volume >= 50" />
+      <VolumeDownIcon v-else-if="volume >= 1" />
+      <VolumeMuteIcon v-else />
+    </SvgBtn>
     <!-- 调节音量大小 -->
-    <RangeInput v-model="volume" :min="MINVOLUME" :max="MAXVOLUME" />
+    <RangeInput
+      class="volume-range"
+      v-model="volume"
+      :min="MINVOLUME"
+      :max="MAXVOLUME"
+    />
     <!-- <input class="volume__setter" v-model="volume" type="range" :min="MINVOLUME" :max="MAXVOLUME"> -->
     <!-- 播放循环模式 -->
-    <SvgBtnWrapper
+    <SvgBtn
       xlarge
       class="play-mode"
       @click.native="$emit('changeMode')"
       :disabled="disabled"
     >
-      <LoopIcon v-if="currentMode === PlayMode.Loop" />
-      <OneLoopIcon v-if="currentMode === PlayMode.OneLoop" />
-      <ShuffleIcon v-if="currentMode === PlayMode.Shuffle" />
-    </SvgBtnWrapper>
+      <SoundRepeatIcon v-if="currentMode === PlayMode.Loop" />
+      <SoundRepeatOneIcon v-if="currentMode === PlayMode.OneLoop" />
+      <SoundShuffleIcon v-if="currentMode === PlayMode.Shuffle" />
+    </SvgBtn>
     <!-- 音效调节 -->
-    <SvgBtnWrapper
+    <SvgBtn
       xlarge
       class="sound-effect"
       :class="{ 'sound-effect-active': isEffect }"
       :disabled="disabled"
     >
-      <OptionsIcon />
-    </SvgBtnWrapper>
+      <SettingsInputCompositeIcon />
+    </SvgBtn>
 
     <!-- <popup-menu :target="soundEffectButton">
       <select-list :data="soundEffects" @selected-change="effectChange">
@@ -46,44 +52,40 @@
       </select-list>
     </popup-menu>-->
     <!-- 播放列表 -->
-    <SvgBtnWrapper xlarge class="play-list" @click.native="toggleRightPlaylist">
-      <MenuIcon />
-    </SvgBtnWrapper>
+    <SvgBtn xlarge class="play-list" @click.native="toggleRightPlaylist">
+      <QueueMusicIcon />
+    </SvgBtn>
   </div>
 </template>
 <script lang="ts">
-import PopupMenu from "../PopupMenu.vue";
-import SelectList from "../more-list/SelectList.vue";
-import AwesomeButton from "../AwesomeButton.vue";
-import LoopIcon from "@/components/SVGIcons/LoopIcon.vue";
-import OneLoopIcon from "@/components/SVGIcons/OneLoopIcon.vue";
-import ShuffleIcon from "@/components/SVGIcons/ShuffleIcon.vue";
-import OptionsIcon from "@/components/SVGIcons/OptionsIcon.vue";
-import VolumeIcon from "@/components/SVGIcons/VolumeIcon.vue";
-import VolumeMuteIcon from "@/components/SVGIcons/VolumeMuteIcon.vue";
-import MenuIcon from "@/components/SVGIcons/MenuIcon.vue";
 import { PlayMode, Album, Artist } from "@/types";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { State, Getter, namespace } from "vuex-class";
-import SvgBtnWrapper from "@/components/globals/SvgBtnWrapper.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
 import RangeInput from "@/components/globals/RangeInput.vue";
+import QueueMusicIcon from "@/components/SVGIcons/QueueMusic.vue";
+import SoundRepeatIcon from "@/components/SVGIcons/SoundRepeat.vue";
+import SoundRepeatOneIcon from "@/components/SVGIcons/SoundRepeatOne.vue";
+import SoundShuffleIcon from "@/components/SVGIcons/SoundShuffle.vue";
+import VolumeUpIcon from "@/components/SVGIcons/VolumeUp.vue";
+import VolumeDownIcon from "@/components/SVGIcons/VolumeDown.vue";
+import VolumeMuteIcon from "@/components/SVGIcons/VolumeMute.vue";
+import SettingsInputCompositeIcon from "@/components/SVGIcons/SettingsInputComposite.vue";
 
 const playlist = namespace("playlist");
 
 @Component({
   components: {
-    PopupMenu,
-    SelectList,
-    AwesomeButton,
-    LoopIcon,
-    OneLoopIcon,
-    ShuffleIcon,
-    OptionsIcon,
-    VolumeIcon,
+    SvgBtn,
+    RangeInput,
+    QueueMusicIcon,
+    SoundRepeatIcon,
+    SoundRepeatOneIcon,
+    SoundShuffleIcon,
+    VolumeUpIcon,
+    VolumeDownIcon,
     VolumeMuteIcon,
-    MenuIcon,
-    SvgBtnWrapper,
-    RangeInput
+    SettingsInputCompositeIcon
   }
 })
 export default class SoundPanel extends Vue {
@@ -174,7 +176,7 @@ export default class SoundPanel extends Vue {
   width: 6em
   margin: 0
   font-size: inherit
-.mute-volume, .volume__setter, .play-mode, .sound-effect, .play-list
+.mute-volume, .volume__setter, .volume-range, .play-mode, .sound-effect, .play-list
   margin-right: 1em
 // 音效设置弹出菜单
 .sound-effect-set

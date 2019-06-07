@@ -15,54 +15,53 @@
   +--------+--------------------------+
 
   -->
-  <div class="comment__container">
+  <div class="comment-item">
     <!-- left avatar -->
-    <router-link
-      class="comment__avatar avatar"
-      :to="'/user/' + comment.user.userId"
-    >
-      <img
-        :src="comment.user.avatarUrl | convert2Https | clipImage(100, 100)"
-        :alt="comment.user.nickname"
-      />
-    </router-link>
+    <Avatar
+      class="comment-item__left"
+      user
+      large
+      :imgSrc="comment.user.avatarUrl | convert2Https | clipImage(100, 100)"
+      :alt="comment.user.nickname"
+      :id="comment.user.userId"
+    />
     <!-- right info -->
-    <div class="comment__info">
+    <div class="comment-item__info">
       <!-- usename and datetime -->
       <div>
         <router-link
-          class="comment__username username"
+          class="comment-item__username"
           :to="'/user/' + comment.user.userId"
         >
           {{ comment.user.nickname }}
         </router-link>
-        <span class="comment__datetime datetime" v-if="comment.time">
+        <span class="comment-item__date" v-if="comment.time">
           {{ formatDateToBefore(comment.time) }}
         </span>
       </div>
       <!-- comment content -->
-      <div class="comment__content content">{{ comment.content }}</div>
+      <div class="comment-item__content">{{ comment.content }}</div>
       <!-- actions: like and reply button -->
-      <div class="comment__actions">
-        <div class="liked__count">
-          <span class="icon">
+      <div class="comment-item__actions">
+        <div class="comment-item__liked">
+          <span class="comment-item__liked__icon">
             <LikeIcon />
           </span>
-          <span class="count" v-if="comment.likedCount > 0">{{
-            formatCount(comment.likedCount)
-          }}</span>
-          <Button
-            small
-            noborder
-            class="comment__actions__reply"
+          <span
+            class="comment-item__liked__count"
+            v-if="comment.likedCount > 0"
+            >{{ formatCount(comment.likedCount) }}</span
+          >
+          <SvgBtn
+            class="comment-item__actions__reply"
             @click.native="isShowReplyEditor = !isShowReplyEditor"
           >
-            回复
-          </Button>
+            <CommentIcon />
+          </SvgBtn>
           <Button
             small
             noborder
-            class="comment__actions__delete"
+            class="comment-item__actions__delete"
             @click.native="deleteComment"
             v-if="deleteable"
           >
@@ -80,7 +79,7 @@
       />
       <!-- view replys toggle button -->
       <div
-        class="comment__view-replys"
+        class="comment-item__replys"
         v-if="comment.beReplied && comment.beReplied.length"
       >
         <Button @click.native="handleViewReplys" small noborder>
@@ -88,13 +87,16 @@
             >查看{{ formatCount(comment.beReplied.length) }}条回复</span
           >
           <span v-else>隐藏回复</span>
-          <span class="view-replys__icon" :class="{ rotate: !replysFolded }">
+          <span
+            class="comment-item__replys__icon"
+            :class="{ rotate: !replysFolded }"
+          >
             <RightArrowIcon />
           </span>
         </Button>
       </div>
       <!-- replys -->
-      <div class="view-replys__comment-list" v-if="!replysFolded">
+      <div v-if="!replysFolded">
         <CommentItem
           v-for="c in comment.beReplied"
           :key="c.beRepliedCommentId"
@@ -119,11 +121,24 @@ import { Comment, CommentType } from "@/types";
 import { namespace, State } from "vuex-class";
 import { sentComment, deleteComment } from "@/service";
 import Button from "@/components/globals/Button.vue";
+import CommentIcon from "@/components/SVGIcons/Comment.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
+import Avatar from "@/components/globals/Avatar.vue";
 
 const currentUser = namespace("currentUser");
 const notification = namespace("notification");
 @Component({
-  components: { LikeIcon, RightArrowIcon, CommentReplyEditor, Button }
+  components: {
+    LikeIcon,
+    RightArrowIcon,
+    CommentReplyEditor,
+    Button,
+    CommentIcon,
+    SvgBtn,
+    ImageWithPlaceholder,
+    Avatar
+  }
 })
 export default class CommentItem extends Vue {
   @Prop() comment!: Comment;
@@ -168,8 +183,7 @@ export default class CommentItem extends Vue {
 }
 </script>
 <style lang="sass" scoped>
-@import "@/components/config.sass"
-@import "@/style/colors.sass"
+@import "@/style/theme.sass"
 
 // 歌曲评论样式
 a
@@ -177,77 +191,62 @@ a
   color: inherit
   &:hover
     text-decoration: underline
-.comment__container
+.comment-item
   display: flex
   flex-direction: row
   justify-content: flex-start
   align-items: flex-start
   margin-top: 20px
-.comment__avatar
-  flex: 0 0 50px
-  display: block
-  margin-right: 1rem
-.comment__info
-  flex: 1 1 auto
-.comment__username
-  display: inline-block
-  margin-right: 8px
-.comment__datetime
-  display: inline-block
-.comment__content
-  margin-top: 8px
-.comment__actions
-  margin-top: 8px
-.comment__actions__reply
-  margin-left: 0.5em
-.comment__actions__delete
-  margin-left: 0.5em
-
-.avatar
-  display: block
-  font-size: 0
-  border-radius: 9999px
-  overflow: hidden
-  img
-    width: 100%
-    height: auto
-.username
-  font-weight: bolder
-  font-size: 14px
-.datetime
-  color: rgba(0, 0, 0, 0.4)
-  font-size: 14px
-.content
-  font-size: 14px
-
-.liked__count
-  display: flex
-  flex-direction: row
-  justify-content: flex-start
-  align-items: center
-  font-size: 0.875em
-  color: $gray
-  .icon
-    margin-right: 0.5em
-    height: 16px
-    width: 16px
-    fill: currentColor
-    cursor: pointer
-    &:hover
-      color: #333
-  .count
-    white-space: nowrap
-.comment__view-replys
-  margin-top: 0.5em
-
-.view-replys__icon
-  width: 1em
-  height: 1em
-  display: inline-block
-  transform: rotate(-90deg)
-  vertical-align: bottom
-  &.rotate
-    transform: rotate(90deg)
-  svg
-    stroke-width: 4px
+  &__left
+    margin-right: 1em
+  &__info
+    flex: 1 1 auto
+  &__username
+    display: inline-block
+    margin-right: 8px
+    font-weight: bolder
+    font-size: 0.875em
+  &__date
+    display: inline-block
+    font-size: 0.875em
+    @include themify($themes)
+      color: themed("secondary-text-color")
+  &__content
+    margin-top: 8px
+    font-size: 0.875em
+  &__actions
+    margin-top: 8px
+    &__reply
+      margin-left: 0.5em
+    &__delete
+      margin-left: 0.5em
+  &__liked
+    display: flex
+    flex-direction: row
+    justify-content: flex-start
+    align-items: center
+    font-size: 0.875em
+    color: #777
+    &__icon
+      margin-right: 0.5em
+      height: 16px
+      width: 16px
+      fill: currentColor
+      cursor: pointer
+      &:hover
+        color: #333
+    &__count
+      white-space: nowrap
+  &__replys
+    margin-top: 0.5em
+    &__icon
+      width: 1em
+      height: 1em
+      display: inline-block
+      transform: rotate(-90deg)
+      vertical-align: bottom
+      &.rotate
+        transform: rotate(90deg)
+      svg
+        stroke-width: 4px
 </style>

@@ -1,11 +1,12 @@
 <template>
-  <div class="pagination-btns" v-if="!(offset <= 0 && hasMore == false)">
-    <Button class="prev__btn" :disabled="offset == 0" @click.native="handlePrev"
+  <div class="prev-next-pagination" v-if="!(offset <= 0 && hasMore == false)">
+    <Button
+      class="prev-next-pagination__prev-btn"
+      :disabled="offset == 0"
+      @click.native="handlePrev"
       >上一页</Button
     >
-    <Button class="next_-btn" :disabled="!hasMore" @click.native="handleNext"
-      >下一页</Button
-    >
+    <Button :disabled="!hasMore" @click.native="handleNext">下一页</Button>
   </div>
 </template>
 
@@ -42,9 +43,9 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.pagination-btns
+.prev-next-pagination
   text-align: center
   margin-top: 2em
-  .prev__btn
+  &__prev-btn
     margin-right: 1em
 </style>

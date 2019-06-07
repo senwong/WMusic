@@ -192,3 +192,53 @@ export function withIn(item: Element, container: Element) {
 export function isUndef(val: any) {
   return typeof val === "undefined" || val === null;
 }
+/**
+ * Check wheter the element is in viewport, user can see it.
+ * @param el The el to check.
+ *
+ */
+export function isElementInViewPort(el: Element): boolean {
+  if (isUndef(el)) {
+    return false;
+  }
+  const { left, top } = el.getBoundingClientRect();
+  return (
+    left >= 0 &&
+    top >= 0 &&
+    left <= (window.innerWidth || document.documentElement.clientWidth) &&
+    top <= (window.innerHeight || document.documentElement.clientHeight)
+  );
+}
+
+export interface QFSElement extends Element {
+  msRequestFullscreen?: () => void;
+  mozRequestFullScreen?: () => void;
+  webkitRequestFullscreen?: () => void;
+}
+/**
+ * Toggle the element to fullscreen or exit fullscreen
+ * @param el The element to toogleFullScreen
+ */
+export function toggleFullScreen(el: QFSElement) {
+  const exitFullscreen =
+    document.exitFullscreen ||
+    document.msExitFullscreen ||
+    document.mozExitFullscreen ||
+    document.webkitExitFullscreen;
+  const requestFullScreen =
+    el.requestFullscreen ||
+    el.msRequestFullscreen ||
+    el.mozRequestFullScreen ||
+    el.webkitRequestFullscreen;
+  const isFullScreen =
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement;
+
+  if (isFullScreen) {
+    exitFullscreen.call(document);
+  } else {
+    requestFullScreen.call(el);
+  }
+}
