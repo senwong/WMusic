@@ -1,5 +1,5 @@
 <template>
-  <div class="main-wrapper">
+  <div class="top-list">
     <div class="container">
       <OfficialTopList />
       <div class="domestic-top-list">
@@ -127,8 +127,8 @@ export default class TopList extends Vue {
 @import "@/components/config.sass"
 @import '@/style/colors.sass'
 
-.main-wrapper
-  padding-top: 0
+.top-list
+  padding: 0 1em
 .ellipsis
 	white-space: nowrap
 	overflow: hidden

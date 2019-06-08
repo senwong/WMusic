@@ -89,7 +89,6 @@ export default class App extends Vue {
       return;
     }
     const { scrollTop, clientHeight, scrollHeight } = target;
-
     if (scrollTop > this.maxScrollTop) {
       this.setMaxScrollTop(scrollTop);
     }
@@ -157,11 +156,12 @@ export default class App extends Vue {
   &__main
     grid-area: main
     position: relative
-    overflow: scroll
+    overflow: hidden
     transform: translateZ(0)
     &__pages
       height: 100%
-      overflow: scroll
+      overflow-y: scroll
+      overflow-x: hidden
     &__scroll-top-btn
       position: fixed
       bottom: 1em

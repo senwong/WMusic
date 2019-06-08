@@ -120,6 +120,7 @@ export default class SongPlayer extends Vue {
 @import "@/components/config.sass"
 
 .contaienr
+  z-index: 1
   position: fixed
   top: 0
   left: 0

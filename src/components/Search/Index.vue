@@ -1,5 +1,5 @@
 <template>
-  <div class="container main-wrapper" @scroll="handleScroll">
+  <div class="container search main-wrapper" @scroll="handleScroll">
     <SearchBarWithRecommendations
       v-model="keyWords"
       @enter="handleInputEnter"
@@ -406,17 +406,8 @@ export default class Search extends Vue {
 <style lang="sass" scoped>
 @import "@/components/config.sass"
 @import "@/style/theme.sass"
-
-ul
-  padding: 0;
-  list-style: none;
-a
-  text-decoration: none;
-  color: inherit;
-.container
-  position: relative;
-  padding-bottom: 2em;
-  min-height: 100%;
+.search
+  padding: 1em
 
 .search-type,
 .search-result-item

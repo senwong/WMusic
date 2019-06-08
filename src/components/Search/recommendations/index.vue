@@ -18,11 +18,11 @@ import SongList from "@/components/globals/SongList.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Track, Artist, Album, MvCard, Playlist } from "@/types";
 import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
-import Songs from "./SongsRecommendations.vue";
-import Artists from "./ArtistsRecommendations.vue";
-import Albums from "./AlbumsRecommendations.vue";
-import Mvs from "./MvsRecommendations.vue";
-import Playlists from "./PlaylistsRecommendations.vue";
+import Songs from "./Tracks.vue";
+import Artists from "./Artists.vue";
+import Albums from "./Albums.vue";
+import Mvs from "./Mvs.vue";
+import Playlists from "./Playlists.vue";
 import { Mutation, namespace } from "vuex-class";
 
 const notification = namespace("notification");
@@ -44,6 +44,7 @@ export default class SearchRecommendations extends Vue {
   albums: Album[] | null = null;
 
   mvs: MvCard[] | null = null;
+
   playlists: Playlist[] | null = null;
 
   order: string[] = [];
@@ -123,21 +124,16 @@ export default class SearchRecommendations extends Vue {
 </script>
 
 <style lang="sass" scoped>
-@import "@/style/themify.sass"
-@import "searchbar.scss"
-
 .search__recommendations
   height: 450px
-  overflow: scroll
+  overflow-y: scroll
+  overflow-x: hidden
   border-bottom-left-radius: 8px
   border-bottom-right-radius: 8px
   box-sizing: border-box
   border: 1px solid
   border-top: none
-  @include themify($themes)
-    background-color: themed('background-color-focus')
-    border-color: themed('border-color-focus')
-    box-shadow: 0 8px 6px 3px adjust-color(themed('background-color-focus'), $alpha: -0.8)
+
 .rec__wrapper
   margin: 1em 0
 .slide-up-enter-active, .slide-up-leave-active

@@ -1,15 +1,12 @@
 <template>
   <div class="song-info-panel">
-    <div v-if="isLoading" class="loading-spinner">
-      <Spinner />
-    </div>
     <div class="album-img">
-      <img
-        v-if="albumImg"
+      <ImageWithPlaceholder
         :src="albumImg | convert2Https | clipImage(192, 192)"
         :alt="name"
+        ratio="1:1"
+        row
       />
-      <div v-else class="img-placeholder"></div>
       <div class="img-mask">
         <SvgBtn
           xlarge
@@ -20,6 +17,9 @@
         >
           <SlideUpIcon />
         </SvgBtn>
+      </div>
+      <div v-if="isLoading" class="loading-spinner">
+        <Spinner />
       </div>
     </div>
     <div class="name-songer">
@@ -90,6 +90,8 @@ import CommentTrack from "@/components/more-list/CommentTrack.vue";
 import AddToUserPlaylist from "@/components/more-list/AddToUserPlaylist.vue";
 import DownloadTrack from "@/components/more-list/DownloadTrack.vue";
 import Select from "@/components/globals/Select.vue";
+import ImgPlaceHolder from "@/src/assets/Transparency1-1.png";
+import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
 
 interface Quality {
   id: number;
@@ -113,7 +115,8 @@ interface Quality {
     CommentTrack,
     AddToUserPlaylist,
     DownloadTrack,
-    Select
+    Select,
+    ImageWithPlaceholder
   }
 })
 export default class SongInfoPanel extends Vue {
@@ -143,17 +146,18 @@ export default class SongInfoPanel extends Vue {
   align-items: center
   justify-content: flex-start
   position: relative
+  height: 100%
 .loading-spinner
   position: absolute
   left: 0
   top: 0
-  width: 6em
+  width: 100%
   height: 100%
   padding: 1.5em
   box-sizing: border-box
   z-index: 1
 .album-img
-  flex: 0 0 6em
+  flex: 0 0 auto
   height: 100%
   position: relative
   img

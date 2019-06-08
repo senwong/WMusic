@@ -1,5 +1,14 @@
 <template>
   <div>
+    <transition name="slide-up">
+      <song-player
+        v-show="isShowSongPlayer"
+        :currentTime="currentTime"
+        :name="name"
+        :album="album"
+        :artists="artists"
+      />
+    </transition>
     <div class="playbar">
       <audio
         :src="songUrl | convert2Https"
@@ -14,53 +23,57 @@
         @timeupdate="handleTimeupdate"
       />
       <!-- 左边区域 开始-->
-      <song-info-panel
-        class="playbar__item_left"
-        :name="name"
-        :artists="artists"
-        :albumImg="album && album.picUrl"
-        :isShowSongPlayer="isShowSongPlayer"
-        @toggle-song-player="toggleSongPlayer"
-        :isLoading="isLoading"
-        :disabled="disabled"
-      ></song-info-panel>
+      <div class="playbar__left">
+        <song-info-panel
+          class="playbar__song-info"
+          :name="name"
+          :artists="artists"
+          :albumImg="album && album.picUrl"
+          :isShowSongPlayer="isShowSongPlayer"
+          @toggle-song-player="toggleSongPlayer"
+          :isLoading="isLoading"
+          :disabled="disabled"
+        ></song-info-panel>
+      </div>
       <!-- 左边区域 结束-->
       <!-- 中间区域 开始-->
-      <div class="playbar__item_middle pause-panel">
-        <!-- 上一曲按钮 -->
-        <SvgBtn
-          xlarge
-          class="prev-song"
-          @click.native="prevSong"
-          :disabled="disabled"
-        >
-          <SkipPreviousIcon />
-        </SvgBtn>
-        <!-- 播放/暂停按钮 -->
-        <SvgBtn
-          xlarge
-          primary
-          class="pause-song"
-          @click.native="togglePlay"
-          :disabled="disabled"
-        >
-          <PlayArrowIcon v-if="paused" />
-          <PauseIcon v-else />
-        </SvgBtn>
-        <!-- 下一曲按钮 -->
-        <SvgBtn
-          xlarge
-          class="next-song"
-          @click.native="nextSong"
-          :disabled="disabled"
-        >
-          <SkipNextIcon />
-        </SvgBtn>
+      <div class="playbar__middle">
+        <div class="pause-panel">
+          <!-- 上一曲按钮 -->
+          <SvgBtn
+            xlarge
+            class="prev-song"
+            @click.native="prevSong"
+            :disabled="disabled"
+          >
+            <SkipPreviousIcon />
+          </SvgBtn>
+          <!-- 播放/暂停按钮 -->
+          <SvgBtn
+            xlarge
+            primary
+            class="pause-song"
+            @click.native="togglePlay"
+            :disabled="disabled"
+          >
+            <PlayArrowIcon v-if="paused" />
+            <PauseIcon v-else />
+          </SvgBtn>
+          <!-- 下一曲按钮 -->
+          <SvgBtn
+            xlarge
+            class="next-song"
+            @click.native="nextSong"
+            :disabled="disabled"
+          >
+            <SkipNextIcon />
+          </SvgBtn>
+        </div>
       </div>
       <!-- 中间区域 结束 -->
       <!-- 右边区域 开始-->
       <sound-panel
-        class="playbar__item_right"
+        class="playbar__right"
         :currentMode="currentMode"
         @changeVolume="changeVolume"
         @changeMode="changeMode"
@@ -68,7 +81,7 @@
         :disabled="disabled"
       ></sound-panel>
       <!-- 右边区域 结束-->
-      <div class="progress-bar">
+      <div class="playbar__progress">
         <!-- TODO -->
         <ProgressBar
           :totalTime="duration"
@@ -77,25 +90,15 @@
         />
       </div>
     </div>
-    <transition name="slide-up">
-      <song-player
-        v-show="isShowSongPlayer"
-        :currentTime="currentTime"
-        :name="name"
-        :album="album"
-        :artists="artists"
-      />
-    </transition>
   </div>
 </template>
 <script lang="ts">
 import SongInfoPanel from "./SongInfoPanel.vue";
 import SoundPanel from "./SoundPanel.vue";
-import { getSongDetail, getSongURL, getPlaylistDetail } from "@/service";
+import { getSongDetail, getSongURL } from "@/service";
 import { formatTime } from "@/utilitys";
 import SongPlayer from "./SongPlayer.vue";
 import ProgressBar from "./ProgressBar.vue";
-import { mapState } from "vuex";
 import PrevSongIcon from "@/components/SVGIcons/PrevSongIcon.vue";
 import NextSongIcon from "@/components/SVGIcons/NextSongIcon.vue";
 import { PlayMode, Album, Artist } from "@/types";
@@ -369,29 +372,31 @@ export default class Playbar extends Vue {
 }
 </script>
 <style lang="sass" scoped>
-@import "../config.sass"
 
 .playbar
-  display: flex
-  flex-direction: row
-  justify-content: space-between
-  align-items: stretch
   position: relative
+  text-align: center
+  min-width: 1000px
   height: 100%
   z-index: 1
-  min-width: 1000px
-.playbar__item_left
-  max-width: calc(50% - 100px)
-.playbar__item_right
-  max-width: calc(50% - 100px)
+  &__left
+    float: left
+    height: 100%
+  &__right
+    float: right
+    height: 100%
+  &__middle
+    height: 100%
+    display: inline-block
+  &__progress
+    position: absolute
+    top: -6px
+    left: 0
+    width: 100%
 
 // 中间播放控制样式
-.playbar__item_middle
-  position: absolute
-  left: calc(50% - 100px)
-  top: 0
-  height: 100%
 .pause-panel
+  height: 100%
   display: flex
   align-items: center
   justify-content: center
@@ -403,40 +408,11 @@ export default class Playbar extends Vue {
 .prev-song, .pause-song, .next-song
   margin: 0 1em
   flex: 0 0 auto
-
-// 进度条位置
-.progress-bar
-  position: absolute
-  top: -6px
-  left: 0
-  width: 100%
-
-
-.progress__past
-  height: 100%
-  width: 0%
-  background-color: $orange
-.progress__state
-  position: absolute
-  visibility: visible
-  height: 1em
-  line-height: 1em
-  font-size: 1em
-  position: absolute
-  top: -0.5em
-  background: $mask
-  border-radius: 1em
   display: inline-block
-  padding: 0.2em 0.5em
-  min-width: 5.5em
-
-.slide-up-enter-active
-  animation: slide-up 0.5s
-.slide-up-leave-active
-  animation: slide-up .5s reverse
-@keyframes slide-up
-  from
-    top: calc(100% - #{$footerHeight})
-  to
-    top: 0
+.slide-up
+  &-enter-active, &-leave-active
+    transition: all 0.25s
+  &-enter, &-leave-to
+    opacity: 0
+    transform: translateY(100px)
 </style>

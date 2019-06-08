@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'angled-gradient': abled }">
+  <div :class="{ 'angled-gradient': abled, 'placeholder--bg': !abled }">
     <slot></slot>
   </div>
 </template>
@@ -26,4 +26,7 @@ export default class Placeholder extends Vue {
         background-position: 0% 50%
       100%
         background-position: 100% 50%
+.placeholder--bg
+  @include themify($themes)
+    background-color: themed('placeholder-background-color-gradient')
 </style>

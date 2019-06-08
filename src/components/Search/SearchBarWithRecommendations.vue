@@ -1,8 +1,7 @@
 <template>
-  <div class="srh-bar-recmd" ref="container">
+  <div class="srh-bar-recmd">
     <SearchBar
       @focus="handleFocus"
-      @input="handleInput"
       v-model="value"
       @enter="handleEnter"
       :placeholder="placeholder"
@@ -17,60 +16,52 @@
   </div>
 </template>
 
-<script>
-import SearchBar from "./SearchBar";
-import SearchRecommendations from "./SearchRecommendations";
+<script lang="ts">
+import { Vue, Component, Prop, Model, Watch } from "vue-property-decorator";
+import SearchBar from "./SearchBar.vue";
+import SearchRecommendations from "./recommendations/index.vue";
 
-export default {
-  data() {
-    return {
-      showRecommendations: false,
-      value: null
-    };
-  },
-  model: {
-    prop: "value",
-    event: "input"
-  },
-  props: ["placeholder"],
+@Component({
   components: {
     SearchBar,
     SearchRecommendations
-  },
-  methods: {
-    handleFocus() {
-      this.showRecommendations = true;
-      this.$emit("focus");
-    },
-    handleEnter() {
-      this.showRecommendations = false;
-      this.$emit("enter");
-    },
-    handleInput(val) {
-      this.$emit("input", val);
-    },
-    handleClick({ target }) {
-      if (!this.$refs.container) return;
-      if (
-        !(
-          target == this.$refs.container ||
-          this.$refs.container.contains(target)
-        )
-      ) {
-        this.showRecommendations = false;
-      }
-    }
-  },
-  mounted() {
-    window.addEventListener("click", this.handleClick);
-  },
-  beforeDestroy() {
-    window.removeEventListener("click", this.handleClick);
   }
-};
+})
+export default class SearchBarWithRecommendations extends Vue {
+  showRecommendations: boolean = false;
+  @Model("input", { type: String }) readonly value!: string;
+  @Prop(String) readonly placeholder!: string;
+  @Watch("value")
+  onValueChange(val: string) {
+    this.$emit("input", val);
+  }
+  handleFocus() {
+    this.showRecommendations = true;
+    this.$emit("focus");
+  }
+  handleEnter() {
+    this.showRecommendations = false;
+    this.$emit("enter");
+  }
+  handleWindowClick({ target }: MouseEvent) {
+    const selfEle = this.$el as HTMLElement;
+    if (!selfEle || !target) return;
+    if (!(target == selfEle || selfEle.contains(target as Node))) {
+      this.showRecommendations = false;
+    }
+  }
+  mounted() {
+    window.addEventListener("click", this.handleWindowClick);
+  }
+  beforeDestroy() {
+    window.removeEventListener("click", this.handleWindowClick);
+  }
+}
 </script>
 
 <style lang="sass" scoped>
+@import "@/style/themify.sass"
+@import "searchbar.scss"
 .srh-bar-recmd
   position: relative
   max-width: 450px
@@ -88,4 +79,8 @@ export default {
   width: 100%
   z-index: 0
   transform: translateZ(0)
+  @include themify($themes)
+    background-color: themed('background-color')
+    border-color: themed('border-color-focus')
+    box-shadow: 0 8px 6px 3px adjust-color(themed('background-color-focus'), $alpha: -0.8)
 </style>

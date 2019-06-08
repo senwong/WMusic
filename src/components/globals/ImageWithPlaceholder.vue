@@ -21,6 +21,7 @@
             v-show="!isLoading"
             :src="localSrc"
             @load="handleLoad"
+            @error="handleError"
             :alt="alt"
           />
         </div>
@@ -29,13 +30,13 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch, Inject } from "vue-property-decorator";
 import FadeTransition from "@/components/globals/FadeTransition.vue";
 import Placeholder from "@/components/globals/Placeholder.vue";
 import { namespace, State } from "vuex-class";
 import rowPhImg1_1 from "@/assets/Transparency1-1.png";
 import rowPhImg16_9 from "@/assets/Transparency16-9.png";
-import { isElementInViewPort } from "@/utilitys";
+import { isElementInViewPort, isUndef } from "@/utilitys";
 
 const mainScroll = namespace("mainScroll");
 @Component({
@@ -50,6 +51,7 @@ export default class ImageWithPlaceholder extends Vue {
   @Prop({ type: Boolean, default: true }) loadableFromParent!: boolean;
   @Prop({ type: Boolean, default: false }) row!: boolean;
   loadableFromScroll: boolean = false;
+  @Inject({ default: 0 }) readonly animationEnded!: number;
   get rowPhImg() {
     if (this.ratio == "16:9") {
       return rowPhImg16_9;
@@ -91,6 +93,10 @@ export default class ImageWithPlaceholder extends Vue {
       this.updateLoadableFromScroll();
     }
   }
+  @Watch("animationEnded.value")
+  onAnimationEndedChange(val: number) {
+    this.updateLoadableFromScroll();
+  }
   created() {
     window.addEventListener("resize", this.handleWindowResize);
   }
@@ -101,7 +107,9 @@ export default class ImageWithPlaceholder extends Vue {
     this.updateLoadableFromScroll();
   }
   mounted() {
-    this.updateLoadableFromScroll();
+    this.$nextTick(() => {
+      this.updateLoadableFromScroll();
+    });
   }
   updateLoadableFromScroll() {
     if (!this.loadableFromScroll) {
@@ -111,7 +119,13 @@ export default class ImageWithPlaceholder extends Vue {
   handleLoad() {
     this.isLoading = false;
   }
+  handleError() {
+    this.isLoading = false;
+  }
   downloadImage() {
+    if (isUndef(this.src) || this.src.length < 0) {
+      return;
+    }
     if (this.loadable && this.localSrc !== this.src) {
       this.isLoading = true;
       this.localSrc = this.src;
@@ -150,4 +164,5 @@ export default class ImageWithPlaceholder extends Vue {
       position: relative
       width: auto
       height: 100%
+      opacity: 0
 </style>

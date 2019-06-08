@@ -203,18 +203,18 @@ export default {
 </script>
 <style lang="sass" scoped>
 .button
-  padding: 0;
-  width: 46px;
-  height: 100%;
-  border: 0;
-  background-color: transparent;
-  outline: none;
+  padding: 0
+  width: 46px
+  height: 100%
+  border: 0
+  background-color: transparent
+  outline: none
 .ytp-svg-shadow
-  stroke: #000;
-  stroke-opacity: .15;
-  stroke-width: 2px;
-  fill: none;
+  stroke: #000
+  stroke-opacity: .15
+  stroke-width: 2px
+  fill: none
 
 .ytp-svg-fill
-  fill: #fff;
+  fill: #fff
 </style>

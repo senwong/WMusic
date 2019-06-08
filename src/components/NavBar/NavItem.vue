@@ -7,7 +7,7 @@
     active-class="primary"
     :exact="exact"
   >
-    <div class="nav-item__icon icon_m">
+    <div class="nav-item__icon">
       <slot name="icon" />
     </div>
     <div class="nav-item__title">
@@ -15,7 +15,7 @@
     </div>
   </router-link>
   <component v-else :is="as" class="nav-item">
-    <div class="nav-item__icon icon_m">
+    <div class="nav-item__icon">
       <slot name="icon" />
     </div>
     <div class="nav-item__title">
@@ -56,13 +56,8 @@ export default class NavItem extends Vue {
       background-color: themed("primary-background-color-hover")
 .nav-item__icon
   display: inline-block
-.icon_s
-  width: 12px
-  height: 12px
-.icon_m
-  width: 25px
-  height: 25px
-
+  width: 1em
+  height: 1em
 .nav-item__title
   margin-left: 1em
 </style>

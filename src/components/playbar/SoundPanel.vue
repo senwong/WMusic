@@ -3,7 +3,7 @@
     <!-- 打开/关闭音量 -->
     <SvgBtn
       xlarge
-      class="mute-volume"
+      class="sound-panel__mute"
       @click.native="toggleVolume"
       :disabled="disabled"
     >
@@ -13,7 +13,7 @@
     </SvgBtn>
     <!-- 调节音量大小 -->
     <RangeInput
-      class="volume-range"
+      class="sound-panel__volume-range"
       v-model="volume"
       :min="MINVOLUME"
       :max="MAXVOLUME"
@@ -22,7 +22,7 @@
     <!-- 播放循环模式 -->
     <SvgBtn
       xlarge
-      class="play-mode"
+      class="sound-panel__repeat-mode"
       @click.native="$emit('changeMode')"
       :disabled="disabled"
     >
@@ -33,8 +33,8 @@
     <!-- 音效调节 -->
     <SvgBtn
       xlarge
-      class="sound-effect"
-      :class="{ 'sound-effect-active': isEffect }"
+      class="sound-panel__sound-effect"
+      :class="{ 'sound-panel__sound-effect--active': isEffect }"
       :disabled="disabled"
     >
       <SettingsInputCompositeIcon />
@@ -52,7 +52,11 @@
       </select-list>
     </popup-menu>-->
     <!-- 播放列表 -->
-    <SvgBtn xlarge class="play-list" @click.native="toggleRightPlaylist">
+    <SvgBtn
+      xlarge
+      class="sound-panel__playlist"
+      @click.native="toggleRightPlaylist"
+    >
       <QueueMusicIcon />
     </SvgBtn>
   </div>
@@ -172,12 +176,18 @@ export default class SoundPanel extends Vue {
   display: flex
   align-items: center
   justify-content: flex-end
-.volume__setter
-  width: 6em
-  margin: 0
-  font-size: inherit
-.mute-volume, .volume__setter, .volume-range, .play-mode, .sound-effect, .play-list
-  margin-right: 1em
+  &__mute
+    margin-right: 1em
+  &__volume-range
+    margin-right: 1em
+  &__repeat-mode
+    margin-right: 1em
+  &__sound-effect
+    margin-right: 1em
+  &__playlist
+    margin-right: 1em
+
+
 // 音效设置弹出菜单
 .sound-effect-set
   display: flex

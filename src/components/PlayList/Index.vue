@@ -18,6 +18,7 @@
           <div class="song-cards__wrapper">
             <transition
               :name="orderType === 'hot' ? 'slide-left' : 'slide-right'"
+              @after-enter="handleAfterEnter"
             >
               <div v-if="orderType === 'new'" key="0" class="song-cards">
                 <MediaCardsGrid
@@ -88,7 +89,7 @@ import ChevronTopIcon from "@/components/SVGIcons/ChevronTopIcon.vue";
 import ChevronBottomIcon from "@/components/SVGIcons/ChevronBottomIcon.vue";
 import Pagination from "@/components/globals/Pagination.vue";
 import TabMenu from "@/components/globals/TabMenu.vue";
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch, Provide } from "vue-property-decorator";
 import { Playlist, PlaylistCreator, TabMenuItem, MediaCardItem } from "@/types";
 import { Mutation, namespace } from "vuex-class";
 import Button from "@/components/globals/Button.vue";
@@ -135,7 +136,7 @@ export default class PlaylistComponent extends Vue {
   updateTimeoutId: number | null = null;
 
   isLoading: boolean = false;
-
+  @Provide() animationEnded = { value: 0 };
   @notification.Mutation setMsg!: (msg: string) => void;
 
   get tabList(): TabMenuItem[] {
@@ -226,7 +227,9 @@ export default class PlaylistComponent extends Vue {
     this.offset = this.limit * currentPageidx;
     this.updatePlayList();
   }
-
+  handleAfterEnter() {
+    this.animationEnded.value = performance.now();
+  }
   get pageTotal() {
     return Math.ceil(this.total / this.limit);
   }
