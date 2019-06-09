@@ -26,6 +26,4 @@ export default class Albums extends Vue {
 }
 </script>
 
-<style lang="sass" scoped>
-
-</style>
+<style lang="sass" scoped></style>

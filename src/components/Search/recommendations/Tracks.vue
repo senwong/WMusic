@@ -30,6 +30,4 @@ export default class Songs extends Vue {
 }
 </script>
 
-<style lang="sass" scoped>
-
-</style>
+<style lang="sass" scoped></style>

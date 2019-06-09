@@ -2,18 +2,36 @@
   <!-- search recommendations -->
   <transition name="slide-up">
     <section class="search__recommendations" v-show="show">
+      <transition name="scale">
+        <h5 class="search__recommendations__no-rec" v-if="isLoading">
+          请稍等！
+        </h5>
+      </transition>
       <section v-for="(value, idx) in order" :key="idx" class="rec__wrapper">
         <component
           v-bind:is="upperCaseFirst(value)"
           v-bind:[value]="$data[value]"
         />
       </section>
+      <h5 class="search__recommendations__no-rec" v-if="isNoRecommendations">
+        没有匹配的搜索结果！
+      </h5>
+      <h5
+        class="search__recommendations__no-rec"
+        v-if="!isLoading && (keywords == undefined || keywords.length < 1)"
+      >
+        请输入查询关键字！
+      </h5>
     </section>
   </transition>
 </template>
 <script lang="ts">
-import { searchSuggest } from "@/service";
-import { formatTime, clipImage } from "@/utilitys";
+import {
+  searchSuggest,
+  makeAxisoCancelable,
+  CancelablePromise
+} from "@/service";
+import { formatTime, debounceTime } from "@/utilitys";
 import SongList from "@/components/globals/SongList.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Track, Artist, Album, MvCard, Playlist } from "@/types";
@@ -49,6 +67,19 @@ export default class SearchRecommendations extends Vue {
 
   order: string[] = [];
 
+  isNoSearchResult: boolean = false;
+
+  isLoading: boolean = false;
+
+  get isNoRecommendations(): boolean {
+    return (
+      !this.isLoading &&
+      this.keywords !== undefined &&
+      this.keywords.length > 0 &&
+      this.isNoSearchResult
+    );
+  }
+
   formatTime = formatTime;
   @Prop(String) keywords!: string;
   @Prop(Boolean) show!: boolean;
@@ -57,8 +88,10 @@ export default class SearchRecommendations extends Vue {
 
   @Watch("keywords")
   onKeywordsChange(val: string) {
-    this.searchSuggest(val);
+    // this.searchSuggest(val);
+    this.debounceTimeSearchSuggest(val);
   }
+  debounceTimeSearchSuggest = debounceTime(this.searchSuggest, 500);
 
   getMvSubTitles(mv: MvCard) {
     return mv.artists.map(ar => ({
@@ -74,18 +107,30 @@ export default class SearchRecommendations extends Vue {
     });
     return obj;
   }
-
+  oldRequest: CancelablePromise | null = null;
+  isEmptyArray(arr: any[]): boolean {
+    return arr === null || arr === undefined || arr.length === 0;
+  }
+  emptyAllRecs() {
+    this.songs = [];
+    this.artists = [];
+    this.albums = [];
+    this.mvs = [];
+    this.playlists = [];
+    this.order = [];
+  }
   searchSuggest(keywords: string) {
-    if (!keywords || keywords.length < 1) {
-      this.songs = [];
-      this.artists = [];
-      this.albums = [];
-      this.mvs = [];
-      this.playlists = [];
-      this.order = [];
+    if (keywords == undefined || keywords.length < 1) {
+      this.emptyAllRecs();
       return;
     }
-    searchSuggest(keywords).then(
+    this.isLoading = true;
+    const cancelablePromise = makeAxisoCancelable(searchSuggest(keywords));
+    if (this.oldRequest) {
+      this.oldRequest.cancel();
+    }
+    this.oldRequest = cancelablePromise;
+    cancelablePromise.promise.then(
       res => {
         const {
           songs,
@@ -95,6 +140,12 @@ export default class SearchRecommendations extends Vue {
           playlists,
           order
         } = res.data.result;
+
+        this.isLoading = false;
+        this.isNoSearchResult = [songs, artists, albums, mvs, playlists].every(
+          this.isEmptyArray
+        );
+
         this.songs = songs;
         this.artists = artists;
         this.albums = albums;
@@ -110,9 +161,12 @@ export default class SearchRecommendations extends Vue {
         this.order = order;
       },
       error => {
-        this.setMsg(
-          `获取搜索建议结果错误${error && error.msg ? error.msg : ""}！`
-        );
+        this.isLoading = false;
+        error &&
+          error !== "canceled" &&
+          this.setMsg(
+            `获取搜索建议结果错误${error && error.msg ? error.msg : ""}！`
+          );
       }
     );
   }
@@ -133,7 +187,10 @@ export default class SearchRecommendations extends Vue {
   box-sizing: border-box
   border: 1px solid
   border-top: none
-
+  &__no-rec
+    text-align: center
+    padding: 1em 0
+    margin: 0
 .rec__wrapper
   margin: 1em 0
 .slide-up-enter-active, .slide-up-leave-active
@@ -143,4 +200,18 @@ export default class SearchRecommendations extends Vue {
   height: 0px
   box-shadow: 0 0px 0px 0px rgba(0, 0, 0, 0)
   border-color: rgba(0, 0, 0, 0)
+
+.scale
+  &-enter
+    animation: scale-height 0.8s ease-in
+  &-leave
+    animation: scale-height 0.8s ease-out reverse
+
+@keyframes scale-height
+  from
+    height: auto
+    opacity: 1
+  to
+    height: 0
+    opacity: 0
 </style>

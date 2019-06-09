@@ -6,8 +6,9 @@
     <input
       type="text"
       class="search-bar__input"
+      @input="handleInput"
       @focus="$emit('focus', $event)"
-      v-model="value"
+      :value="value"
       v-on:keyup.enter="$emit('enter')"
       :placeholder="placeholder"
       spellcheck="false"
@@ -33,9 +34,9 @@ export default class SearchBar extends Vue {
   handleClear() {
     this.$emit("input", "");
   }
-  @Watch("value")
-  onValueChange(val: string) {
-    this.$emit("input", val);
+  handleInput(e: UIEvent) {
+    const target = e.target as HTMLInputElement;
+    this.$emit("input", target && target.value);
   }
 }
 </script>

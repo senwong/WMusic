@@ -1,7 +1,31 @@
 import Api from "./Api";
 import { CommentType } from "@/types";
 import { isUndef } from "@/utilitys";
-import { AxiosRequestConfig } from "axios";
+
+export interface CancelablePromise {
+  promise: Promise<any>;
+  cancel: () => void;
+}
+
+export function makeAxisoCancelable(
+  requestPromise: Promise<any>
+): CancelablePromise {
+  let isCanceled = false;
+  const p = new Promise((resolve, reject) => {
+    requestPromise.then(
+      (res: any) => (isCanceled ? reject("canceled") : resolve(res)),
+      (error: any) => (isCanceled ? reject("canceled") : reject(error))
+    );
+  });
+  function cancel() {
+    isCanceled = true;
+  }
+  return {
+    promise: p,
+    cancel: cancel
+  };
+}
+
 /**
  * 获取轮播图图片
  */

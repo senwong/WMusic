@@ -242,3 +242,36 @@ export function toggleFullScreen(el: QFSElement) {
     requestFullScreen.call(el);
   }
 }
+// ele.addEventListener('click', throttleFn(handleClick, 20));
+export function throttleFn(
+  fn: (args?: any) => any,
+  time: number
+): (arg?: any) => any {
+  let start: number;
+  return function(args?: any) {
+    const now = performance.now();
+    if (start === undefined || now >= start + time) {
+      start = now;
+      return fn(args);
+    } else {
+      return () => {};
+    }
+  };
+}
+export function debounceTime(
+  fn: (args?: any) => any,
+  time: number
+): (arg?: any) => any {
+  let last: number;
+  let timerId: number;
+  return function(args?: any) {
+    const now = performance.now();
+    if (last && timerId && now - last < time) {
+      clearTimeout(timerId);
+    }
+    timerId = setTimeout(() => {
+      fn(args);
+    }, time);
+    last = now;
+  };
+}

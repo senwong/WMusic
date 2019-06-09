@@ -23,7 +23,7 @@
   </section>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon.vue";
 import SvgBtn from "@/components/globals/SvgBtn.vue";

@@ -2,7 +2,8 @@
   <div class="srh-bar-recmd">
     <SearchBar
       @focus="handleFocus"
-      v-model="value"
+      :value="value"
+      @input="handleInput"
       @enter="handleEnter"
       :placeholder="placeholder"
       :isSpread="showRecommendations"
@@ -42,6 +43,9 @@ export default class SearchBarWithRecommendations extends Vue {
   handleEnter() {
     this.showRecommendations = false;
     this.$emit("enter");
+  }
+  handleInput(val: string) {
+    this.$emit("input", val);
   }
   handleWindowClick({ target }: MouseEvent) {
     const selfEle = this.$el as HTMLElement;

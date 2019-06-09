@@ -31,7 +31,7 @@
             <router-link :to="'/artist/' + artist.id" class="artist-pic-search">
               <img
                 :src="
-                  (artist.picUrl || artist.picUrl)
+                  (artist.picUrl || artist.img1v1Url)
                     | convert2Https
                     | clipImage(100, 100)
                 "
