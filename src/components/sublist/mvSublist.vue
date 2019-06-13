@@ -51,7 +51,6 @@ export default class MvSubList extends Vue {
 
   readonly limit: number = 25;
 
-
   created() {
     this.updateData();
   }

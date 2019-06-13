@@ -147,5 +147,4 @@ export default class AlbumDetail extends Vue {
         margin-top: 0.6em
         font-size: 0.875em
         color: #777
-
 </style>
