@@ -1,4 +1,4 @@
-<script lang='ts'>
+<script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { arrayJoin } from "@/utilitys";
 import { VNode, CreateElement } from "vue";
