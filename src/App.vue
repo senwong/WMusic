@@ -42,6 +42,7 @@ import { namespace, State, Mutation } from "vuex-class";
 import { Theme } from "@/types";
 import SvgBtn from "@/components/globals/SvgBtn.vue";
 import { getLoginStatus } from "@/service/index";
+import { debounceTime } from "@/utilitys";
 
 const playlist = namespace("playlist");
 const theme = namespace("theme");
@@ -63,9 +64,8 @@ export default class App extends Vue {
 
   @theme.State("value") theme!: Theme;
   @mainScroll.State("isBottom") mainIsScrollBottom!: boolean;
-  @mainScroll.State maxScrollTop!: number;
   @mainScroll.Mutation setIsBottom!: (b: boolean) => void;
-  @mainScroll.Mutation setMaxScrollTop!: (st: number) => void;
+  @mainScroll.Mutation setScrollTop!: (st: number) => void;
   @currentUser.Mutation setCurrentUserId!: (id: number) => void;
 
   $refs!: {
@@ -81,6 +81,7 @@ export default class App extends Vue {
         return "";
     }
   }
+  debouncedSetScrollTop = debounceTime(this.setScrollTop.bind(this), 150);
 
   isScrolled: boolean = false;
   handleAppMainScroll(e: Event) {
@@ -89,9 +90,8 @@ export default class App extends Vue {
       return;
     }
     const { scrollTop, clientHeight, scrollHeight } = target;
-    if (scrollTop > this.maxScrollTop) {
-      this.setMaxScrollTop(scrollTop);
-    }
+
+    this.debouncedSetScrollTop(scrollTop);
 
     this.isScrolled = scrollTop > 0;
     const isBottom = scrollTop + clientHeight === scrollHeight;

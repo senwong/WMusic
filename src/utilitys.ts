@@ -201,12 +201,18 @@ export function isElementInViewPort(el: Element): boolean {
   if (isUndef(el)) {
     return false;
   }
-  const { left, top } = el.getBoundingClientRect();
+  const { left, top, width, height } = el.getBoundingClientRect();
   return (
-    left >= 0 &&
-    top >= 0 &&
-    left <= (window.innerWidth || document.documentElement.clientWidth) &&
-    top <= (window.innerHeight || document.documentElement.clientHeight)
+    (left >= 0 &&
+      top >= 0 &&
+      left <= (window.innerWidth || document.documentElement.clientWidth) &&
+      top <= (window.innerHeight || document.documentElement.clientHeight)) ||
+    (left + width >= 0 &&
+      top + height >= 0 &&
+      left + width <=
+        (window.innerWidth || document.documentElement.clientWidth) &&
+      top + height <=
+        (window.innerHeight || document.documentElement.clientHeight))
   );
 }
 

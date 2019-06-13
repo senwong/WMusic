@@ -1,27 +1,4 @@
-<template>
-  <div class="tab-menu">
-    <ul
-      class="tab-menu__list"
-      ref="tabMenu"
-      :class="{
-        'tab-menu__list--space-between': spaceBetween,
-        'tab-menu__list--flex-start': alignLeft
-      }"
-    >
-      <li
-        class="tab-menu__item"
-        v-for="item in list"
-        :key="item.key"
-        :class="{
-          'tab-menu__item--active': item.isActive
-        }"
-        @click="item.onClick"
-      >
-        {{ item.title }}
-      </li>
-    </ul>
-  </div>
-</template>
+
 <script lang="ts">
 /*
   list: [
@@ -53,11 +30,53 @@ export default class TabMenu extends Vue {
   @Prop(Boolean) alignMiddle!: boolean;
 
   @Prop(Boolean) alignRight!: boolean;
+  @Prop({ type: Boolean, default: false }) isLink!: boolean;
+
+  renderItem(item: TabMenuItem, h: any) {
+    return h(
+      this.isLink ? "router-link" : "li",
+      {
+        key: item.key,
+        staticClass: "tab-menu__item",
+        attrs: this.isLink && {
+          to: item.href,
+          "exact-active-class": "tab-menu__item--active"
+        },
+        class: !this.isLink && {
+          "tab-menu__item--active": item.isActive
+        },
+        on: !this.isLink && { click: item.onClick }
+      },
+      [item.title]
+    );
+  }
+  renderList(h: any) {
+    return h(
+      "ul",
+      {
+        staticClass: "tab-menu__list",
+        class: {
+          "tab-menu__list--space-between": this.spaceBetween,
+          "tab-menu__list--flex-start": this.alignLeft
+        }
+      },
+      (this.list as TabMenuItem[]).map(item => this.renderItem(item, h))
+    );
+  }
+  render(h: any) {
+    return h(
+      "div",
+      {
+        staticClass: "tab-menu"
+      },
+      [this.renderList(h)]
+    );
+  }
 }
 </script>
 
 <style lang="sass" scoped>
-@import '../../style/theme.sass'
+@import '@/style/theme.sass'
 
 .tab-menu
   border-top: 1px solid #666

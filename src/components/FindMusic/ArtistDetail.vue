@@ -49,6 +49,8 @@ import TabMenu from "@/components/globals/TabMenu.vue";
 import Button from "@/components/globals/Button.vue";
 import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
 
+console.log({ TabMenu });
+
 const playlist = namespace("playlist");
 enum ContentType {
   Songs,
@@ -117,7 +119,6 @@ export default class ArtistDetail extends Vue {
   initData(artistId: number) {
     getArtistInfo(artistId).then(res => {
       const { name, img1v1Url, briefDesc } = res.data.artist;
-      console.log(res.data);
       this.name = name;
       this.img = img1v1Url;
       this.briefDesc = briefDesc;

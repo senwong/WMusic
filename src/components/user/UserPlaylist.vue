@@ -1,8 +1,11 @@
 <template>
-  <div>
+  <div class="user-playlist">
     <div v-if="playlistMediaCardsData.length > 0">
       <div class="title">歌单（{{ count }}）</div>
-      <MediaCardsGrid :data="playlistMediaCardsData" />
+      <MediaCardsGrid
+        class="user-playlist__tracks"
+        :data="playlistMediaCardsData"
+      />
       <Pagination
         :total="pageTotal"
         :disabled="isLoading"
@@ -93,6 +96,9 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.user-playlist
+  &__tracks
+    margin: 1em 0
 .title
   border-top: 1px solid rgba(0, 0, 0, 0.1)
   border-bottom: 1px solid rgba(0, 0, 0, 0.1)

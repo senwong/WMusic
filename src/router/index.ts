@@ -20,6 +20,9 @@ import UserEdit from "@/components/user/UserEdit.vue";
 import Sublist from "@/components/sublist/index.vue";
 import auth from "@/auth";
 import NotFound from "@/components/NotFound.vue";
+import AlbumSublist from "@/components/sublist/albumSublist.vue";
+import ArtistSublist from "@/components/sublist/artistSublist.vue";
+import MvSublist from "@/components/sublist/mvSublist.vue";
 
 const router = new VueRouter({
   mode: "history",
@@ -50,10 +53,18 @@ const router = new VueRouter({
     {
       path: "/sublist",
       component: Sublist,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
+      children: [
+        { path: "/", component: AlbumSublist },
+        { path: "artist", component: ArtistSublist },
+        { path: "mv", component: MvSublist }
+      ]
     }
     // { path: "*", component: NotFound }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    return { x: 0, y: 0 };
+  }
 });
 
 router.beforeEach((to, _, next) => {

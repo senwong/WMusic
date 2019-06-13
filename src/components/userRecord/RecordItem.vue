@@ -1,5 +1,5 @@
 <template>
-  <li class="record-item__container">
+  <li class="record-item">
     <!-- music icon and play icon -->
     <span class="record-item__icon" @click="handlePlay">
       <MusicIcon class="record-item__music-icon" />
@@ -67,19 +67,30 @@ export default class RecordItem extends Vue {
 
 <style lang="sass" scoped>
 @import '@/style/colors.sass'
+@import "@/style/theme.sass"
 
 $secondary-color: #777
 
-.record-item__container
+.record-item
   font-size: 16px
   display: flex
-  flex-directon: row
+  flex-direction: row
   align-items: center
   justify-content: flex-start
   transition: all 250ms
   padding: 0.5em
+  border-radius: 1em
+  &__icon
+    flex: 0 0 1.5em
+    display: block
+    height: 1.5em
+    margin-right: 0.8em
+    align-self: flex-start
+    color: $secondary-color
+    cursor: pointer
   &:hover
-    background-color: #eee
+    @include themify($themes)
+      background-color: themed("background-color-hover")
     .record-item__icon
       color: $primary-color
     .record-item__music-icon
@@ -89,14 +100,7 @@ $secondary-color: #777
     .play-count__count
       color: $primary-color
 
-.record-item__icon
-  display: block
-  width: 1.5em
-  height: 1.5em
-  margin-right: 0.8em
-  align-self: flex-start
-  color: $secondary-color;
-  cursor: pointer;
+
 .record-item__paused-icon
   display: none
 .record-item__track-info

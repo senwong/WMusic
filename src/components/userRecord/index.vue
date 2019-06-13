@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="user-record">
     <TabMenu align-left :list="navTabList" />
     <ul class="record-list__container">
       <RecordItem
@@ -116,7 +116,9 @@ export default class UserRecord extends Vue {
 </script>
 
 <style lang="sass" scoped>
+.user-record
+  padding: 1em
 .record-list__container
-  padding: 2em;
-  margin: 0 auto;
+  padding: 2em 0
+  margin: 0 auto
 </style>

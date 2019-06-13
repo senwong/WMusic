@@ -60,7 +60,7 @@ export default class ImageWithPlaceholder extends Vue {
     }
   }
 
-  @mainScroll.State maxScrollTop!: number;
+  @mainScroll.State scrollTop!: number;
   // 1:1
   // padding-bottom: 100%
   // 16:9
@@ -87,7 +87,7 @@ export default class ImageWithPlaceholder extends Vue {
   onLoadableChange(val: boolean) {
     this.downloadImage();
   }
-  @Watch("maxScrollTop")
+  @Watch("scrollTop")
   onScrollTopChange(val: number) {
     if (!this.loadableFromScroll) {
       this.updateLoadableFromScroll();

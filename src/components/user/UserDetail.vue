@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div v-if="profile">
+  <div class="user-detail">
+    <div v-if="profile" class="user-detail__content">
       <!--
     +---------------+----------------------------------+---------+---------+
     |               |  nickname                        | message | follow  |
@@ -12,7 +12,7 @@
     |               | province city | age                                  |
     +---------------+------------------------------------------------------+
       -->
-      <div class="profile-panel">
+      <div class="user-detail__content__panel">
         <div class="avatar">
           <ImageWithPlaceholder
             :src="profile.avatarUrl | convert2Https | clipImage(300, 300)"
@@ -81,7 +81,11 @@
           <div class="social-network light-txt">社交网络未绑定</div>
         </div>
       </div>
-      <UserPlaylist :userId="userId" :count="profile.playlistCount" />
+      <UserPlaylist
+        class="user-detail__content__tracks"
+        :userId="userId"
+        :count="profile.playlistCount"
+      />
     </div>
     <ErrorLabel class="get-user-detail-faild" :show="isGetUserDetailFailed"
       >获取用户信息错误。</ErrorLabel
@@ -198,67 +202,71 @@ export default class UserDetail extends Vue {
 }
 </script>
 <style lang="sass" scoped>
+.user-detail
+  padding: 1em
+  &__content
+    &__panel
+      display: flex
+      flex-direction: row
+      justify-content: flex-start
+    &__tracks
+      margin-top: 1.25em
 // common style
 .bold-txt
-  font-weight: bold;
-  font-size: 14px;
+  font-weight: bold
+  font-size: 14px
 .light-txt
-  font-size: 14px;
-  opacity: 0.6;
+  font-size: 14px
+  opacity: 0.6
 
-.profile-panel
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  padding: 2em;
 .avatar
-  flex: 0 0 10em;
-  margin-right: 2em;
+  flex: 0 0 10em
+  margin-right: 2em
 
 // user infomation row
 .detail-row
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
+  display: flex
+  flex-direction: row
+  justify-content: flex-start
+  align-items: center
 // first row includes nickname, message button and follow button
 .nickname-action
-  justify-content: space-between;
+  justify-content: space-between
 .nickname
-  font-size: 24px;
-  margin-right: 10px;
+  font-size: 24px
+  margin-right: 10px
 
 .action-button
-  margin-right: 1em;
+  margin-right: 1em
 
 // second row includes eventCount, follows and followeds
 .interactive
-  margin-top: 1em;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  padding-top: 0.5em;
+  margin-top: 1em
+  border-top: 1px solid rgba(0, 0, 0, 0.1)
+  padding-top: 0.5em
 .count-num
-  font-size: 24px;
+  font-size: 24px
 .count-title
-  font-size: 13px;
-  opacity: 0.6;
+  font-size: 13px
+  opacity: 0.6
 .event-count, .follows
-  padding-right: 2em;
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
-  margin-right: 1em;
+  padding-right: 2em
+  border-right: 1px solid rgba(0, 0, 0, 0.1)
+  margin-right: 1em
 
 // third row include userself signature
 .signature
-  margin-top: 1em;
+  margin-top: 1em
 
 // fourth row include province city and age
 .district-age
-  margin-top: 0.6em;
+  margin-top: 0.6em
 .district
-  margin-right: 1em;
+  margin-right: 1em
 
 // fifth row include user binded other social account
 .social-network
-  margin-top: 0.6em;
+  margin-top: 0.6em
 
 .get-user-detail-faild
   margin: 6em auto

@@ -12,7 +12,7 @@
       :row="row"
     />
     <div class="card-item__info">
-      <router-link :to="titleLink" class="card-item__title">{{
+      <router-link :to="titleLink" class="card-item__title ellipsis">{{
         card.title
       }}</router-link>
       <router-link

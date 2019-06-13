@@ -8,8 +8,9 @@
     |                 | 歌单：x  |  粉丝：x    |                  |
     +-----------------+----------------------+------------------+
   -->
-  <div class="user-media-card__container" v-if="user">
+  <div class="user-media-card" v-if="user">
     <Avatar
+      class="user-media-card__avatar"
       :name="user.nickname"
       user
       :id="user.userId"
@@ -22,7 +23,10 @@
         {{ user.nickname }}
       </router-link>
       <!-- signature -->
-      <div class="user-info__signature" v-if="user.signature.length > 0">
+      <div
+        class="user-info__signature"
+        v-if="user && user.signature && user.signature.length > 0"
+      >
         {{ user.signature }}
       </div>
       <!-- playlist count and followeds -->
@@ -58,7 +62,7 @@ export default {
 <style lang="sass" scoped>
 @import "@/style/themify.sass"
 @import "userMediaCard.scss"
-.user-media-card__container
+.user-media-card
   width: 100%
   box-sizing: border-box
   display: flex
@@ -71,6 +75,8 @@ export default {
   @include themify($themes)
     border-color: themed('border-color')
     background: themed('background-color')
+  &__avatar
+    flex: 0 0 auto
 
 .user-media-card__user-info
   margin-left: 1em

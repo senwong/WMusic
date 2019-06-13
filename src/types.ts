@@ -156,9 +156,11 @@ export interface Record {
 }
 export interface TabMenuItem {
   key: number;
-  isActive: boolean;
-  onClick: () => any;
   title: string;
+  isActive?: boolean; // if isLink is true, this no need
+  onClick?: () => any; // if isLink is true, this no need
+  isLink?: boolean;
+  href?: string; // if isLink is true, this need
 }
 
 export enum PlayMode {

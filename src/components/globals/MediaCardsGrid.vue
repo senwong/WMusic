@@ -42,6 +42,8 @@ export default class MediaCardsGrid extends Vue {
     position: relative
 
 .placeholder
+  &__wrapper
+    border-radius: 2em
   &__img
     width: 100%
     padding-bottom: 100%

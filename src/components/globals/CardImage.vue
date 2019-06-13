@@ -112,7 +112,7 @@ export default class CardImage extends Vue {
   &__image
     &--rounded
       overflow: hidden
-      border-radius: 15px
+      border-radius: 1em
       transform: translateZ(0)
   &__controlls
     width: 100%

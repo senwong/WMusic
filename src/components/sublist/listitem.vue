@@ -38,6 +38,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import "@/style/theme.sass"
+
 .list-item__container
   font-size: 16px
   align-items: center
@@ -45,10 +47,11 @@ export default {
   display: grid
   grid-template-columns: auto 2fr 1fr auto
   transition: all 250ms
-  &:nth-of-type(2n)
-    background: #f8f8f8
-  &:hover
-    background: #f0f0f0
+  @include themify($themes)
+    &:nth-of-type(2n)
+      background: themed("secondary-background-color")
+    &:hover
+      background: themed("secondary-background-color-hover")
   .list-item__cover
     margin-right: 1em
     border-radius: 0.2em

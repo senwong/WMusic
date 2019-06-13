@@ -36,15 +36,17 @@
           时间：
           <span>{{ publishTime }}</span>
         </div>
+        <div class="album-detail__media__right__desc">
+          介绍：
+          <span>{{ description }}</span>
+        </div>
       </div>
     </div>
-    <TabMenu :list="tabList" align-left />
-    <SongList v-if="showSongs" :tracks="songs" />
-    <CommentList v-if="showComments" :type="commentType" :id="album.id" />
-    <div v-if="showDesc">
-      <h4>专辑介绍</h4>
-      <div class="album-detail__desc__content" v-text="description"></div>
+    <div>
+      <h4>歌曲</h4>
+      <SongList :tracks="songs" />
     </div>
+    <CommentList :type="commentType" :id="album.id" />
   </div>
 </template>
 <script lang="ts">
@@ -52,34 +54,20 @@ import { getAlbumDetail } from "@/service";
 import SongList from "@/components/globals/SongList.vue";
 import { mapMutations } from "vuex";
 import { Vue, Component } from "vue-property-decorator";
-import {
-  Track,
-  Album,
-  convertTrack,
-  TabMenuItem,
-  CommentType,
-  Artist
-} from "@/types";
+import { Track, Album, convertTrack, CommentType, Artist } from "@/types";
 import { Mutation, namespace } from "vuex-class";
 import Button from "@/components/globals/Button.vue";
-import TabMenu from "@/components/globals/TabMenu.vue";
 import CommentList from "@/components/FindMusic/CommentList.vue";
 import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import { formatDate, formatCount } from "@/utilitys";
 import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
 
-enum ContentType {
-  Songs,
-  Comments,
-  Desc
-}
 const playlist = namespace("playlist");
 const notification = namespace("notification");
 @Component({
   components: {
     SongList,
     Button,
-    TabMenu,
     CommentList,
     ArtistsWithComma,
     ImageWithPlaceholder
@@ -93,44 +81,10 @@ export default class AlbumDetail extends Vue {
   description: string = "";
   songs: Track[] = [];
   commentType: CommentType = CommentType.AlbumComment;
-  contentType: ContentType = ContentType.Songs;
-
-  get showSongs(): boolean {
-    return this.contentType === ContentType.Songs;
-  }
-  get showComments(): boolean {
-    return this.contentType === ContentType.Comments;
-  }
-  get showDesc(): boolean {
-    return this.contentType === ContentType.Desc;
-  }
 
   @playlist.Mutation setTracks!: (tracks: Track[]) => void;
   @playlist.Mutation setCurrentSongId!: (id: number) => void;
   @notification.Mutation setMsg!: (msg: string) => void;
-
-  get tabList(): TabMenuItem[] {
-    return [
-      {
-        key: 0,
-        isActive: this.contentType == ContentType.Songs,
-        onClick: () => (this.contentType = ContentType.Songs),
-        title: "歌曲列表"
-      },
-      {
-        key: 1,
-        isActive: this.contentType == ContentType.Comments,
-        onClick: () => (this.contentType = ContentType.Comments),
-        title: `评论(${formatCount(this.commentCount)})`
-      },
-      {
-        key: 2,
-        isActive: this.contentType == ContentType.Desc,
-        onClick: () => (this.contentType = ContentType.Desc),
-        title: `专辑详情`
-      }
-    ];
-  }
 
   playAll() {
     if (!this.songs) return;
@@ -189,8 +143,9 @@ export default class AlbumDetail extends Vue {
         margin-top: 1em
       &__date
         margin-top: 0.6em
-  &__desc__content
-    font-size: 0.875em
-    color: #777
-    white-space: pre-line
+      &__desc
+        margin-top: 0.6em
+        font-size: 0.875em
+        color: #777
+
 </style>

@@ -100,14 +100,6 @@
               我的收藏
             </template>
           </NavItem>
-          <NavItem to="/sublist" exact>
-            <template #icon>
-              <MusicIcon />
-            </template>
-            <template>
-              我的收藏
-            </template>
-          </NavItem>
         </template>
       </NavbarSection>
 
@@ -285,7 +277,7 @@ export default class Navbar extends Vue {
     cursor: pointer
     transition: all 250ms
     padding: 0.2em 0.8em 0.2em 0.2em
-    width: fit-content
+    width: 100%
     &:hover
       background: rgba(0, 0, 0, 0.2)
     &__avatar

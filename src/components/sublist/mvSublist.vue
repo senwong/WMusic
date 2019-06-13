@@ -1,19 +1,6 @@
 <template>
   <div class="mv-sublist">
-    <div class="mv-sublist__container" v-if="!isLoading">
-      <CardItem v-for="mv in mvs" :key="mv.id" :card="mv" />
-    </div>
-    <div class="mv-sublist__container" v-else>
-      <div
-        v-for="(_, idx) in new Array(20)"
-        :key="idx"
-        class="placeholder__wrapper"
-      >
-        <Placeholder class="placeholder__cover" />
-        <Placeholder class="placeholder__title" />
-        <Placeholder class="placeholder__subtitle" />
-      </div>
-    </div>
+    <MediaCardsGrid :data="mvs" />
     <ErrorLabel :show="isError">{{ errorMsg }}</ErrorLabel>
     <PrevNextPagination
       :offset="offset"
@@ -32,12 +19,14 @@ import PrevNextPagination from "@/components/globals/PrevNextPagination.vue";
 import { Vue, Component } from "vue-property-decorator";
 import { MvCard, MvType, MediaCardItem, MediaCardType } from "@/types";
 import Placeholder from "@/components/globals/Placeholder.vue";
+import MediaCardsGrid from "@/components/globals/MediaCardsGrid.vue";
 
 interface MvFromServer {
   vid: number;
   coverUrl: string;
   title: string;
   creator: { userId: number; userName: string }[];
+  playTime: number;
 }
 
 @Component({
@@ -45,7 +34,8 @@ interface MvFromServer {
     CardItem,
     ErrorLabel,
     PrevNextPagination,
-    Placeholder
+    Placeholder,
+    MediaCardsGrid
   }
 })
 export default class MvSubList extends Vue {
@@ -60,35 +50,36 @@ export default class MvSubList extends Vue {
   offset: number = 0;
 
   readonly limit: number = 25;
-  isLoading: boolean = false;
+
+
   created() {
     this.updateData();
   }
 
   updateData() {
-    this.isLoading = true;
     getMvSublist(this.offset, this.limit).then(
       res => {
         this.mvs = res.data.data.map(
-          (mv: MvType): MediaCardItem => ({
+          (mv: MvFromServer): MediaCardItem => ({
             type: MediaCardType.Mv,
-            picUrl: mv.cover,
-            title: mv.name,
-            id: mv.id,
-            subTitle: mv.artistName,
-            subLink: mv.artistId && `/artist/${mv.artistId}`,
-            playCount: mv.playCount
+            picUrl: mv.coverUrl,
+            title: mv.title,
+            id: mv.vid,
+            subTitle: mv.creator && mv.creator[0] && mv.creator[0].userName,
+            subLink:
+              mv.creator && mv.creator[0] && mv.creator[0].userId !== undefined
+                ? `/artist/${mv.creator[0].userId}`
+                : undefined,
+            playCount: mv.playTime
           })
         );
         this.hasMore = res.data.hasMore;
-        this.isLoading = false;
       },
       error => {
         this.isError = true;
         if (error.msg) {
           this.errorMsg = error.msg;
         }
-        this.isLoading = false;
       }
     );
   }
@@ -101,13 +92,6 @@ export default class MvSubList extends Vue {
 </script>
 
 <style lang="sass" scoped>
-.mv-sublist
-  padding-bottom: 2em
-.mv-sublist__container
-  display: grid
-  grid-gap: 2em
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))
-  padding: 0 2em
 .placeholder__cover
   padding-bottom: 56.25%
   border-radius: 15px

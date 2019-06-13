@@ -1,7 +1,7 @@
 <template>
-  <div class="sublist__page-container">
-    <TabMenu class="sublist__tab-menu" align-left :list="navList" />
-    <component class="sublist__list" :is="currentComponent" />
+  <div class="sublist">
+    <TabMenu class="sublist__nav" align-left is-link :list="navList" />
+    <router-view class="sublist__content" />
   </div>
 </template>
 
@@ -37,15 +37,23 @@ const typeComponents: SubListComponentName[] = [
 })
 export default class SubList extends Vue {
   currentType: ContentType = ContentType.Album;
-
-  get navList(): TabMenuItem[] {
-    return contentTypes.map((title, idx) => ({
-      key: idx,
-      isActive: this.currentType == idx,
-      onClick: () => (this.currentType = idx),
-      title
-    }));
-  }
+  navList: TabMenuItem[] = [
+    {
+      key: 0,
+      title: "专辑",
+      href: `/sublist/`
+    },
+    {
+      key: 1,
+      title: "歌手",
+      href: `/sublist/artist`
+    },
+    {
+      key: 2,
+      title: "MV",
+      href: `/sublist/mv`
+    }
+  ];
 
   get currentComponent(): SubListComponentName {
     return typeComponents[this.currentType];
@@ -54,10 +62,9 @@ export default class SubList extends Vue {
 </script>
 
 <style lang="sass" scoped>
-.sublist__page-container
+.sublist
   font-size: 16px
-.sublist__tab-menu
-  margin-left: 2em
-.sublist__list
+  padding: 1em
+.sublist__content
   margin-top: 2em
 </style>

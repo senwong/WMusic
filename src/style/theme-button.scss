@@ -5,20 +5,35 @@
 $light-button-text-color: $light-text-color;
 $light-button-text-color-hover: $light-text-color;
 $light-button-background-color: $light-background-color;
-$light-button-border-color: adjust-color($light-button-background-color, $lightness: -10%);
-$light-button-background-color-hover: adjust-color($light-button-background-color, $lightness: -10%);
+$light-button-border-color: darken($light-button-background-color, 10%);
+$light-button-background-color-hover: darken(
+  $light-button-background-color,
+  10%
+);
 // light primary button;
 $light-primary-button-text-color: white;
 $light-primary-button-text-color-hover: white;
 $light-primary-button-border-color: $primary-color;
 $light-primary-button-background-color: $primary-color;
-$light-primary-button-background-color-hover: adjust-color($light-primary-button-background-color, $lightness: -10%);
+$light-primary-button-background-color-hover: adjust-color(
+  $light-primary-button-background-color,
+  $lightness: -10%
+);
 // light secondary button;
 $light-secondary-button-background-color: $light-secondary-background-color;
-$light-secondary-button-border-color: adjust-color($light-secondary-button-background-color, $lightness: -10%);
+$light-secondary-button-border-color: adjust-color(
+  $light-secondary-button-background-color,
+  $lightness: -10%
+);
 $light-secondary-button-text-color: $light-text-color;
-$light-secondary-button-text-color-hover: adjust-color($light-secondary-button-text-color, $lightness: -10%);
-$light-secondary-button-background-color-hover: adjust-color($light-secondary-button-background-color, $lightness: -10%);
+$light-secondary-button-text-color-hover: adjust-color(
+  $light-secondary-button-text-color,
+  $lightness: -10%
+);
+$light-secondary-button-background-color-hover: adjust-color(
+  $light-secondary-button-background-color,
+  $lightness: -10%
+);
 
 $light-button: (
   button-border-color: $light-button-border-color,
@@ -27,26 +42,30 @@ $light-button: (
   button-background-color: $light-button-background-color,
   button-background-color-hover: $light-button-background-color-hover,
   // button primary
-  primary-button-border-color: $light-primary-button-border-color,
+    primary-button-border-color: $light-primary-button-border-color,
   primary-button-text-color: $light-primary-button-text-color,
   primary-button-text-color-hover: $light-primary-button-text-color-hover,
   primary-button-background-color: $light-primary-button-background-color,
-  primary-button-background-color-hover: $light-primary-button-background-color-hover,
+  primary-button-background-color-hover:
+    $light-primary-button-background-color-hover,
   // button secondary
-  secondary-button-border-color: $light-secondary-button-border-color,
+    secondary-button-border-color: $light-secondary-button-border-color,
   secondary-button-text-color: $light-secondary-button-text-color,
   secondary-button-text-color-hover: $light-secondary-button-text-color-hover,
   secondary-button-background-color: $light-secondary-button-background-color,
-  secondary-button-background-color-hover: $light-secondary-button-background-color-hover,
+  secondary-button-background-color-hover:
+    $light-secondary-button-background-color-hover
 );
-
 
 // dark button;
 $dark-button-background-color: $dark-background-color;
-$dark-button-border-color: adjust-color($dark-button-background-color, $lightness: +20%);
+$dark-button-border-color: lighten($dark-button-background-color, 20%);
 $dark-button-text-color: white;
 $dark-button-text-color-hover: white;
-$dark-button-background-color-hover: adjust-color($dark-button-background-color, $lightness: +20%);
+$dark-button-background-color-hover: lighten(
+  $dark-button-background-color,
+  20%
+);
 
 // dark primary button;
 $dark-primary-button-border-color: $primary-color;
@@ -60,25 +79,30 @@ $dark-secondary-button-broder-color: #777;
 $dark-secondary-button-text-color: $dark-text-color;
 $dark-secondary-button-text-color-hover: $dark-text-color;
 $dark-secondary-button-background-color: $dark-secondary-background-color;
-$dark-secondary-button-background-color-hover: $dark-secondary-background-color;
+$dark-secondary-button-background-color-hover: lighten(
+  $dark-secondary-background-color,
+  10%
+);
 
 $dark-button: (
   // button
-  button-border-color:           $dark-button-border-color,
-  button-text-color:             $dark-button-text-color,
-  button-text-color-hover:       $dark-button-text-color-hover,
-  button-background-color:       $dark-button-background-color,
+    button-border-color: $dark-button-border-color,
+  button-text-color: $dark-button-text-color,
+  button-text-color-hover: $dark-button-text-color-hover,
+  button-background-color: $dark-button-background-color,
   button-background-color-hover: $dark-button-background-color-hover,
   // button primary
-  primary-button-border-color:           $dark-primary-button-border-color,
-  primary-button-text-color:             $dark-primary-button-text-color,
-  primary-button-text-color-hover:       $dark-primary-button-text-color-hover,
+    primary-button-border-color: $dark-primary-button-border-color,
+  primary-button-text-color: $dark-primary-button-text-color,
+  primary-button-text-color-hover: $dark-primary-button-text-color-hover,
   primary-button-background-color: $dark-primary-button-background-color,
-  primary-button-background-color-hover: $dark-primary-button-background-color-hover,
+  primary-button-background-color-hover:
+    $dark-primary-button-background-color-hover,
   // button secondary
-  secondary-button-broder-color: $dark-secondary-button-broder-color,
+    secondary-button-broder-color: $dark-secondary-button-broder-color,
   secondary-button-text-color: $dark-secondary-button-text-color,
   secondary-button-text-color-hover: $dark-secondary-button-text-color-hover,
   secondary-button-background-color: $dark-secondary-button-background-color,
-  secondary-button-background-color-hover: $dark-secondary-button-background-color-hover,
+  secondary-button-background-color-hover:
+    $dark-secondary-button-background-color-hover
 );
