@@ -39,7 +39,6 @@
 import { getArtistSublist } from "@/service";
 import ErrorLabel from "@/components/globals/ErrorLabel.vue";
 import ListItem from "./listitem.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import PrevNextPagination from "@/components/globals/PrevNextPagination.vue";
 import { Artist } from "@/types";
 import { Vue, Component } from "vue-property-decorator";
@@ -49,7 +48,6 @@ import ListItemPlaceholder from "./listitemPlaceholder.vue";
   components: {
     ErrorLabel,
     ListItem,
-    ArtistsWithComma,
     PrevNextPagination,
     ListItemPlaceholder
   }

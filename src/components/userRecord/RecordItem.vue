@@ -11,11 +11,7 @@
         {{ song.name }}
       </router-link>
       <div class="track-info__artist-album">
-        <ArtistsWithComma
-          :artists="song.artists"
-          commaClass="artist-album__comma"
-          aTagClass="artist-album__artist"
-        />
+        <ArtistsWithComma :artists="song.artists" />
         <span class="artist-album__dot">.</span>
         <router-link
           class="artist-album__album"
@@ -39,7 +35,7 @@
 <script lang="ts">
 import MusicIcon from "@/components/SVGIcons/MusicIcon.vue";
 import PlayArrow from "@/components/SVGIcons/PlayArrow.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import { mapMutations } from "vuex";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Record } from "@/types";
@@ -106,11 +102,10 @@ $secondary-color: #777
 .record-item__track-info
   flex: 1 1 auto
 
-.artist-album__comma, .artist-album__dot
+.artist-album__dot
   color: $secondary-color
 
 .track-info__track-name,
-.artist-album__artist,
 .artist-album__album
   display: inline-block
   color: $secondary-color

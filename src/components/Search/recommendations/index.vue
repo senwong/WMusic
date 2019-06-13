@@ -35,7 +35,6 @@ import { formatTime, debounceTime } from "@/utilitys";
 import SongList from "@/components/globals/SongList.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Track, Artist, Album, MvCard, Playlist } from "@/types";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
 import Songs from "./Tracks.vue";
 import Artists from "./Artists.vue";
 import Albums from "./Albums.vue";

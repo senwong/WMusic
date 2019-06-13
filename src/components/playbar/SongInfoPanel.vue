@@ -25,14 +25,7 @@
     <div class="name-songer">
       <div v-if="name" class="name">{{ name }}</div>
       <div v-else class="name">听见不同</div>
-      <div>
-        <ArtistsWithComma
-          v-if="artists.length > 0"
-          :artists="artists"
-          aTagClass="songer"
-          commaClass="comma"
-        />
-      </div>
+      <ArtistsWithComma v-if="artists.length > 0" :artists="artists" />
     </div>
     <!-- 选择音质 -->
     <Select class="quality" :options="qualitys" v-model="currentQuality" top />
@@ -81,7 +74,7 @@ import SlideUpIcon from "@/components/SVGIcons/SlideUpIcon.vue";
 import DownloadIcon from "@/components/SVGIcons/DownloadIcon.vue";
 import SvgBtn from "@/components/globals/SvgBtn.vue";
 import Spinner from "@/components/globals/Spinner.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
 import { getUserPlaylist } from "@/service";
 import { Vue, Component, Prop } from "vue-property-decorator";
@@ -185,17 +178,7 @@ export default class SongInfoPanel extends Vue {
   flex-direction: column
   justify-content: center
   margin-left: 1em
-  .songer
-    font-size: 0.8em
-    color: $gray
-    overflow: hidden
-    white-space: nowrap
-    text-overflow: ellipsis
-  .songer:hover, .name:hover
-    color: $orange
-  .comma
-    font-size: 0.8em
-    color: $gray
+  align-items: flex-start
   .name
     cursor: pointer
     overflow: hidden

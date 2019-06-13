@@ -36,7 +36,7 @@
 import { getAlbumSublist } from "@/service";
 import ErrorLabel from "@/components/globals/ErrorLabel.vue";
 import ListItem from "./listitem.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import PrevNextPagination from "@/components/globals/PrevNextPagination.vue";
 import { Album } from "@/types";
 import { Vue, Component } from "vue-property-decorator";

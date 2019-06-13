@@ -44,12 +44,7 @@
             <router-link class="track__name ellipsis" :to="'/song/' + track.id">
               {{ track.name }}
             </router-link>
-            <span class="track__artists">
-              <ArtistsWithComma
-                :artists="track.artists"
-                aTagClass="track__artist"
-              />
-            </span>
+            <ArtistsWithComma class="track__artists" :artists="track.artists" />
           </li>
         </ul>
       </div>
@@ -59,7 +54,7 @@
 <script lang="ts">
 import { getTopList } from "@/service";
 import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import TabMenu from "@/components/globals/TabMenu.vue";
 import { DomesticTopList } from "./MediaItem.vue";
 import Button from "@/components/globals/Button.vue";
@@ -259,7 +254,7 @@ export default class OfficialTopList extends Vue {
 .track__artists
   flex: 1 1 0
 
-.track__name, .track__artist
+.track__name
   transition: all 250ms
   &:hover
     @include themify($themes)

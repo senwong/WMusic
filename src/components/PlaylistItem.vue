@@ -19,7 +19,7 @@
     <div class="name-songer">
       <div class="name">{{ track.name }}</div>
       <div class="songer">
-        <ArtistsWithComma :artists="track.artists" aTagClass commaClass />
+        <ArtistsWithComma :artists="track.artists" />
       </div>
     </div>
     <!-- 靠右显示 -->
@@ -70,7 +70,7 @@ import { getSongURL } from "@/service";
 import { formatTime } from "@/utilitys";
 import FavIcon from "@/components/SVGIcons/FavIcon.vue";
 import MoreIcon from "@/components/SVGIcons/MoreIcon.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
 import SvgBtn from "@/components/globals/SvgBtn.vue";
 import MoreItem from "./more-list/MoreItem.vue";

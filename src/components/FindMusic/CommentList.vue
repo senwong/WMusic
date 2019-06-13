@@ -47,7 +47,7 @@
   </div>
 </template>
 <script lang="ts">
-import { formatDay } from "@/utilitys";
+import { formatDay, isUndef } from "@/utilitys";
 import LikeIcon from "@/components/SVGIcons/LikeIcon.vue";
 import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon.vue";
 import CommentItem from "./CommentItem.vue";
@@ -134,6 +134,9 @@ export default class CommentList extends Vue {
     }
   }
   updateData(cb?: () => {}) {
+    if (isUndef(this.type) || isUndef(this.id)) {
+      return;
+    }
     if (!this.serviceApi) {
       cb && cb();
       return;

@@ -88,7 +88,7 @@ import {
 } from "@/types";
 import { Mutation, namespace } from "vuex-class";
 import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import CardImage from "@/components/globals/CardImage.vue";
 
 const playlist = namespace("playlist");

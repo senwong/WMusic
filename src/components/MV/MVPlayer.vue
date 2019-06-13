@@ -50,7 +50,7 @@ import { getMvData, getSimilarMV } from "@/service";
 import CommentList from "@/components/FindMusic/CommentList.vue";
 import VideoPlayer from "@/components/MV/VideoPlayer.vue";
 import { formatCount, arrayJoin } from "@/utilitys";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Mutation, namespace } from "vuex-class";
 import { Artist, Mv, MvType } from "@/types";

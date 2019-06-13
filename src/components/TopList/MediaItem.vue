@@ -15,9 +15,7 @@
         <!-- TODO -->
         <span class="track-order">{{ i + 1 }}</span>
         <span class="track-name">{{ track.name }}</span>
-        <div class="track-artists">
-          <ArtistsWithComma aTagClass="track-artist" :artists="track.artists" />
-        </div>
+        <ArtistsWithComma class="track-artists" :artists="track.artists" />
       </div>
     </router-link>
   </div>
@@ -26,7 +24,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import CardImage from "@/components/globals/CardImage.vue";
 import { PlaylistType, Track, Artist } from "@/types";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import { getTopList } from "@/service";
 
 export interface DomesticTopList {

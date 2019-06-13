@@ -46,7 +46,7 @@
       <h4>歌曲</h4>
       <SongList :tracks="songs" />
     </div>
-    <CommentList :type="commentType" :id="album.id" />
+    <CommentList :type="commentType" :id="album && album.id" />
   </div>
 </template>
 <script lang="ts">
@@ -58,7 +58,7 @@ import { Track, Album, convertTrack, CommentType, Artist } from "@/types";
 import { Mutation, namespace } from "vuex-class";
 import Button from "@/components/globals/Button.vue";
 import CommentList from "@/components/FindMusic/CommentList.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import { formatDate, formatCount } from "@/utilitys";
 import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
 

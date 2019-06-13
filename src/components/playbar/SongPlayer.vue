@@ -41,7 +41,7 @@ import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { namespace, State } from "vuex-class";
 import { getLyrics } from "@/service";
 import { Album, Artist } from "@/types";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
 
 const lineRE = /\[(\d+):(\d+)\.(\d+)\](.+)/;

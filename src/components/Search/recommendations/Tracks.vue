@@ -18,7 +18,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Track } from "@/types";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import SearchRecList from "./RecList.vue";
 import SearchRecItem from "./RecItem.vue";
 

@@ -34,11 +34,7 @@
         </router-link>
       </div>
       <div class="song-list-item__info__bot">
-        <ArtistsWithComma
-          :artists="track.artists"
-          aTagClass="song-list-item__info__artist"
-          commaClass="song-list-item__info__comma"
-        />
+        <ArtistsWithComma :artists="track.artists" />
         <span class="song-list-item__info__dot">•</span>
         <router-link
           :to="'/album/' + track.album.id"
@@ -91,7 +87,7 @@ import MoreIcon from "@/components/SVGIcons/MoreIcon.vue";
 import DownloadIcon from "@/components/SVGIcons/DownloadIcon.vue";
 import MusicIcon from "@/components/SVGIcons/MusicIcon.vue";
 import MvIcon from "@/components/SVGIcons/MvIcon.vue";
-import ArtistsWithComma from "@/components/globals/ArtistsWithComma.tsx";
+import ArtistsWithComma from "@/components/globals/ArtistsWithComma.vue";
 import PlayStatusBtn from "@/components/globals/PlayStatusBtn.vue";
 import SvgBtn from "@/components/globals/SvgBtn.vue";
 import BtnWithPopupMenu from "@/components/globals/BtnWithPopupMenu.vue";
@@ -161,7 +157,6 @@ export default class SongListItem extends Vue {
 }
 </script>
 <style lang="sass" scoped>
-@import '../config.sass'
 @import '@/style/colors.sass'
 @import "@/style/theme.sass"
 
@@ -215,20 +210,6 @@ export default class SongListItem extends Vue {
         color: $primary-color
     &__bot
       margin-top: 0.5em
-    &__artist
-      opacity: 0.6
-      transition-property: opacity border
-      transition-duration: 250ms
-      line-height: 20px
-      border-bottom: 1px solid rgba(0,0,0,0)
-      user-select: none
-      &:hover
-        opacity: 1
-        @include themify($themes)
-          border-color: themed("text-color")
-    &__comma
-      opacity: 0.6
-      padding: 0 0.25em
     &__dot
       opacity: 0.6
       padding: 0 0.5em
@@ -251,17 +232,10 @@ export default class SongListItem extends Vue {
   &__duration
     flex: 0 0 0
     width: 4em
-// if currentSongId == track.id, artist and album border-bottom color $primary-color
-.song-list-item--active
-  .song-list-item__info__artist:hover
-    border-color: $primary-color
-  .song-list-item__info__album:hover
-    border-color: $primary-color
-
 .fixed-hr
   margin-left: 0
   margin-right: 0
-  border: 1px solid $gray
+  border: 1px solid #777
   opacity: 0.7
 .track__more__menu
   color: #333
