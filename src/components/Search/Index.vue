@@ -417,24 +417,6 @@ export default class Search extends Vue {
   padding: 0.5em 0;
   transition: background 0.2s;
 
-  &:hover
-    background-color: $whitegray3-5;
-    & .list-item-icon.play
-      background-image: url('../../assets/caret-right.svg');
-    & .list-item-icon.more
-      background-image: url('../../assets/more.svg');
-
-.list-item-icon
-  width: 2em;
-  background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  background-position: center;
-  &.play
-    background-image: url('../../assets/music.svg');
-  &.more
-    background-position: center top;
-    margin-right: 2em;
-
 .list-item-left
   flex: 1 1 auto;
 .duration
@@ -481,22 +463,6 @@ export default class Search extends Vue {
     visibility: hidden;
     background-color: transparent;
     transition: all 0.2s;
-    .artist-pic-play
-      width: 3.5em;
-      height: 3.5em;
-      border-radius: 50%;
-      border: 1px solid #fff;
-      transform-origin: center center;
-      transition: transform 0.3s;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin-top: -1.75em;
-      margin-left: -1.75em;
-      display: inline-block;
-      background: url('../../assets/triangle-right-fill.svg') no-repeat  center / 60%;
-      &:hover
-        transform: scale(1.1, 1.1);
 
 .artist-info
   text-align: center;

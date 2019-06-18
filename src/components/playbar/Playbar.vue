@@ -23,19 +23,19 @@
         @timeupdate="handleTimeupdate"
       />
       <!-- 左边区域 开始-->
-      <div class="playbar__left">
-        <song-info-panel
-          class="playbar__song-info"
-          :name="name"
-          :artists="artists"
-          :albumImg="album && album.picUrl"
-          :isShowSongPlayer="isShowSongPlayer"
-          @toggle-song-player="toggleSongPlayer"
-          :isLoading="isLoading"
-          :disabled="disabled"
-        ></song-info-panel>
-      </div>
+
+      <song-info-panel
+        class="playbar__left playbar__song-info"
+        :name="name"
+        :artists="artists"
+        :albumImg="album && album.picUrl"
+        :isShowSongPlayer="isShowSongPlayer"
+        @toggle-song-player="toggleSongPlayer"
+        :isLoading="isLoading"
+        :disabled="disabled"
+      />
       <!-- 左边区域 结束-->
+
       <!-- 中间区域 开始-->
       <div class="playbar__middle">
         <div class="pause-panel">

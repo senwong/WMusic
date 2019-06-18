@@ -281,3 +281,20 @@ export function debounceTime(
     last = now;
   };
 }
+
+export function createImage(
+  width: number,
+  height: number,
+  color: string = "rgba(0, 0, 0, 0)"
+): string {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (ctx) {
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, width, height);
+  }
+  const src = canvas.toDataURL();
+  return src;
+}

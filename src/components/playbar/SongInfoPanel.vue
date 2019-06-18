@@ -150,16 +150,9 @@ export default class SongInfoPanel extends Vue {
   box-sizing: border-box
   z-index: 1
 .album-img
-  flex: 0 0 auto
+  flex: 0 0 6em
   height: 100%
   position: relative
-  img
-    width: 100%
-    height: 100%
-  .img-placeholder
-    height: 100%
-    width: 100%
-    background-color: $gray
   .img-mask
     display: none
     position: absolute
@@ -172,7 +165,6 @@ export default class SongInfoPanel extends Vue {
     display: block
 
 .name-songer
-  min-width: 0
   flex: 0 1 auto
   display: flex
   flex-direction: column

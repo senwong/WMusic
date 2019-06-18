@@ -1,42 +1,34 @@
 <template>
-  <div
-    class="img-with-placeholder"
-    :class="{ 'img-with-placeholder--row': row }"
-  >
+  <FadeTransition>
     <Placeholder
-      class="img-with-placeholder__ph"
+      class="img-with-placeholder"
+      :class="{ 'img-with-placeholder--row': row }"
       :abled="isLoading"
       :style="{ paddingBottom }"
     >
-      <FadeTransition>
-        <div class="img-with-placeholder__images">
-          <img
-            v-if="row"
-            class="img-with-placeholder__row-ph-img"
-            :src="rowPhImg"
-            alt="row placehoder image"
-          />
-          <img
-            class="img-with-placeholder__img"
-            v-show="!isLoading"
-            :src="localSrc"
-            @load="handleLoad"
-            @error="handleError"
-            :alt="alt"
-          />
-        </div>
-      </FadeTransition>
+      <img
+        v-if="row"
+        class="img-with-placeholder__row-ph-img"
+        :src="rowPhImg"
+        alt="row placehoder image"
+      />
+      <img
+        class="img-with-placeholder__img"
+        v-show="!isLoading"
+        :src="localSrc"
+        @load="handleLoad"
+        @error="handleError"
+        :alt="alt"
+      />
     </Placeholder>
-  </div>
+  </FadeTransition>
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Watch, Inject } from "vue-property-decorator";
 import FadeTransition from "@/components/globals/FadeTransition.vue";
 import Placeholder from "@/components/globals/Placeholder.vue";
 import { namespace, State } from "vuex-class";
-import rowPhImg1_1 from "@/assets/Transparency1-1.png";
-import rowPhImg16_9 from "@/assets/Transparency16-9.png";
-import { isElementInViewPort, isUndef } from "@/utilitys";
+import { isElementInViewPort, isUndef, createImage } from "@/utilitys";
 
 const mainScroll = namespace("mainScroll");
 @Component({
@@ -52,11 +44,15 @@ export default class ImageWithPlaceholder extends Vue {
   @Prop({ type: Boolean, default: false }) row!: boolean;
   loadableFromScroll: boolean = false;
   @Inject({ default: 0 }) readonly animationEnded!: number;
+
+  rowPhImg16_9 = createImage(16, 9);
+  rowPhImg1_1 = createImage(1, 1);
+
   get rowPhImg() {
     if (this.ratio == "16:9") {
-      return rowPhImg16_9;
+      return this.rowPhImg16_9;
     } else {
-      return rowPhImg1_1;
+      return this.rowPhImg1_1;
     }
   }
 
@@ -141,9 +137,6 @@ export default class ImageWithPlaceholder extends Vue {
   &--row
     height: 100%
     width: auto
-  &__ph
-    position: relative
-    font-size: 0
   &__img
     position: absolute
     left: 0
@@ -151,18 +144,11 @@ export default class ImageWithPlaceholder extends Vue {
     width: 100%
     height: auto
 .img-with-placeholder--row
-  .img-with-placeholder__ph
+  .img-with-placeholder__img
+    height: 100%
+    width: auto
+  .img-with-placeholder__row-ph-img
     width: auto
     height: 100%
-    .img-with-placeholder__images
-      width: auto
-      height: 100%
-    .img-with-placeholder__img
-      height: 100%
-      width: auto
-    .img-with-placeholder__row-ph-img
-      position: relative
-      width: auto
-      height: 100%
-      opacity: 0
+    opacity: 0
 </style>

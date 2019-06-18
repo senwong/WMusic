@@ -128,6 +128,7 @@ export default {
     cursor: pointer
     user-select: none
     -moz-user-select: none
+    white-space: nowrap
     &--focused
       border-color: #3f72af
     &__title

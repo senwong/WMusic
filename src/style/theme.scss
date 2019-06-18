@@ -46,7 +46,7 @@ $light-theme: (
   secondary-background-color: $light-secondary-background-color,
   secondary-background-color-hover: $light-secondary-background-color-hover,
   secondary-border-color: $light-secondary-border-color,
-  // placeholder placeholder-background-color: #eee,
+  placeholder-background-color: #eee,
   placeholder-background-color-gradient: #ddd
 );
 $light-theme: map-merge($light-theme, $light-button);
@@ -65,7 +65,7 @@ $dark-theme: (
   secondary-background-color: lighten($dark-background-color, 5%),
   secondary-background-color-hover: lighten($dark-background-color, 10%),
   secondary-border-color: lighten($dark-background-color, 10%),
-  // placehoder placeholder-background-color: #181818,
+  placeholder-background-color: #181818,
   placeholder-background-color-gradient: #282828
 );
 $dark-theme: map-merge($dark-theme, $dark-button);
