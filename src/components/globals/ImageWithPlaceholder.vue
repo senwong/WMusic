@@ -49,11 +49,8 @@ export default class ImageWithPlaceholder extends Vue {
   rowPhImg1_1 = createImage(1, 1);
 
   get rowPhImg() {
-    if (this.ratio == "16:9") {
-      return this.rowPhImg16_9;
-    } else {
-      return this.rowPhImg1_1;
-    }
+    const [width, height] = this.ratio.split(":").map(Number);
+    return createImage(width, height);
   }
 
   @mainScroll.State scrollTop!: number;

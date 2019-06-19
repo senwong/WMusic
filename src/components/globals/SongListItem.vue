@@ -215,7 +215,7 @@ export default class SongListItem extends Vue {
       padding: 0 0.5em
     &__album
       opacity: 0.6
-      transition-property: opacity border
+      transition-property: opacity, border
       transition-duration: 250ms
       line-height: 20px
       border-bottom: 1px solid rgba(0,0,0,0)

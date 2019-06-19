@@ -33,6 +33,7 @@
         @toggle-song-player="toggleSongPlayer"
         :isLoading="isLoading"
         :disabled="disabled"
+        :paused="paused"
       />
       <!-- 左边区域 结束-->
 
@@ -270,6 +271,9 @@ export default class Playbar extends Vue {
   //   })
   // }
   toggleSongPlayer() {
+    if (this.disabled) {
+      return;
+    }
     this.isShowSongPlayer = !this.isShowSongPlayer;
   }
 
@@ -372,18 +376,18 @@ export default class Playbar extends Vue {
 }
 </script>
 <style lang="sass" scoped>
+@import "@/style/media-query.sass"
 
 .playbar
   position: relative
   text-align: center
-  min-width: 1000px
   height: 100%
   z-index: 1
+  display: grid
+  grid-template-columns: repeat(3, 1fr)
   &__left
-    float: left
     height: 100%
   &__right
-    float: right
     height: 100%
   &__middle
     height: 100%
@@ -415,4 +419,9 @@ export default class Playbar extends Vue {
   &-enter, &-leave-to
     opacity: 0
     transform: translateY(100px)
+@media (max-width: $small-width)
+  .playbar
+    grid-template-columns: 1fr auto auto
+  .prev-song, .next-song
+    display: none
 </style>

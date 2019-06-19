@@ -172,6 +172,8 @@ export default class SoundPanel extends Vue {
 </script>
 <style lang="sass" scoped>
 @import "../config.sass"
+@import "@/style/media-query.sass"
+
 .sound-panel
   display: flex
   align-items: center
@@ -223,4 +225,8 @@ export default class SoundPanel extends Vue {
     cursor: pointer
     border-radius: 0.5em
     background-color: white
+
+@media (max-width: $middle-width)
+  .sound-panel__mute, .sound-panel__volume-range, .sound-panel__repeat-mode, .sound-panel__sound-effect
+    display: none
 </style>

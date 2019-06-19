@@ -314,10 +314,12 @@ export default class PlaylistDetail extends Vue {
     flex-direction: row
     align-items: flex-start
     &__cover
-      flex: 0 0 12.5em
+      flex: 0 0 auto
       margin-right: 1em
       border-radius: 1em
       overflow: hidden
+      width: 30vw
+      max-width: 12.5em
     &__desc
       min-width: 0
       flex: 1 1 auto
@@ -339,6 +341,7 @@ export default class PlaylistDetail extends Vue {
   align-items: center
   &__avatar
     margin-right: 0.6em
+    flex: 0 0 auto
   &__title
     margin-right: 0.6em
   &__subtitle
@@ -348,6 +351,8 @@ export default class PlaylistDetail extends Vue {
 
 .btn-control:not(:last-child)
   margin-right: 0.5em
+.btn-control
+  margin-top: 0.5em
 
 .tags__wrapper, .count__wrapper, .desc__wrapper
   font-size: 0.875em

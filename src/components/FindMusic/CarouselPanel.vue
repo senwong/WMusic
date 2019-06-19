@@ -1,11 +1,6 @@
 <template>
   <div class="carousle-panel">
-    <Motion
-      v-if="images.length > 0"
-      :values="styleProps"
-      tag="div"
-      ref="container"
-    >
+    <Motion v-if="images.length > 0" :values="styleProps" tag="div">
       <template slot-scope="_styleProps">
         <a
           class="carousle-panel__item"
@@ -25,6 +20,7 @@
           <ImageWithPlaceholder
             :src="images[idx].src | convert2Https"
             ratio="27:10"
+            row
             :loadableFromParent="isImgLoadable(Number(idx))"
           />
         </a>
@@ -44,6 +40,11 @@
         :class="{ spot_active: idx === midIdx }"
       ></div>
     </div>
+    <img
+      class="carousle-panel__ph-img"
+      :src="placeholderImgSrc"
+      alt="placeholder image"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -54,6 +55,7 @@ import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue"
 import LeftArrowIcon from "@/components/SVGIcons/LeftArrowIcon.vue";
 import RightArrowIcon from "@/components/SVGIcons/RightArrowIcon.vue";
 import SvgBtn from "@/components/globals/SvgBtn.vue";
+import { createImage, debounceTime } from "@/utilitys";
 
 interface Banner {
   imageUrl: string;
@@ -125,6 +127,8 @@ export default class CarouselPanel extends Vue {
 
   styleProps: StyleProp[] = [];
 
+  placeholderImgSrc: string = createImage(540, 200);
+
   $refs!: {
     items: HTMLInputElement[];
   };
@@ -161,9 +165,12 @@ export default class CarouselPanel extends Vue {
   getNext(index: number) {
     return (this.images.length + 1 + index) % this.images.length;
   }
-
+  debouncedUpdateStyleProps = debounceTime(
+    this.updateStyleProps.bind(this),
+    150
+  );
   handleWindowResize() {
-    this.updateStyleProps();
+    this.debouncedUpdateStyleProps();
   }
 
   formatUrl(banner: Banner) {
@@ -183,6 +190,10 @@ export default class CarouselPanel extends Vue {
   }
 
   updateStyleProps(): void {
+    console.log("updateStyleProps", this.$el.clientHeight);
+    if (this.$el === undefined) {
+      return;
+    }
     const { middle, left, right } = getTransformValues(this.$el.clientWidth);
     this.styleProps = this.images.map((_, idx: number) => {
       const { getTranslateX, scale } =
@@ -192,7 +203,13 @@ export default class CarouselPanel extends Vue {
           ? left
           : right;
       const { items } = this.$refs;
-      const itemWidth = items && items[idx] ? items[idx].clientWidth : 540;
+
+      // const itemWidth =
+      //   items && items[idx]
+      //     ? items[idx].clientWidth
+      //     : items[this.midIdx].clientWidth;
+
+      const itemWidth = this.$el.clientHeight * 2.7;
       return {
         translateX: getTranslateX(itemWidth),
         scale
@@ -324,17 +341,13 @@ export default class CarouselPanel extends Vue {
 </script>
 <style lang="sass" scoped>
 .carousle-panel
-  height: 200px
   position: relative
+  overflow: hidden
   &__item
     height: 100%
-    width: 540px
     font-size: 0
     position: absolute
     display: block
-    img
-      height: 100%
-      width: auto
   &__left, &__right
     position: absolute
     top: 50%
@@ -344,6 +357,8 @@ export default class CarouselPanel extends Vue {
     left: 0.5em
   &__right
     right: 0.5em
+  &__ph-img
+    max-width: 100%
 
 .spot-wrapper
   position: absolute

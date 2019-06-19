@@ -124,6 +124,4 @@ export default class TabMenu extends Vue {
       transition: transform 400ms cubic-bezier(0.165, 0.84, 0.44, 1) 0s
       transform-origin: left center
       transform: scaleX(0)
-    &:not(:last-child)
-      margin-right: 2em
 </style>

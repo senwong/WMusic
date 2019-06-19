@@ -1,7 +1,9 @@
 <template>
   <div class="song-info-panel">
-    <div class="album-img">
+    <div class="album-img" @click="$emit('toggle-song-player')">
       <ImageWithPlaceholder
+        class="album-img__cover"
+        :class="{ 'album-img__cover--rotate': !paused }"
         :src="albumImg | convert2Https | clipImage(192, 192)"
         :alt="name"
         ratio="1:1"
@@ -12,8 +14,6 @@
           xlarge
           class="button_center-center"
           :class="{ invert: !isShowSongPlayer }"
-          @click.native="$emit('toggle-song-player')"
-          :disabled="disabled"
         >
           <SlideUpIcon />
         </SvgBtn>
@@ -119,6 +119,7 @@ export default class SongInfoPanel extends Vue {
   @Prop() isShowSongPlayer!: boolean;
   @Prop() isLoading!: boolean;
   @Prop() disabled!: boolean;
+  @Prop(Boolean) paused!: boolean;
   isFaver: boolean = false;
   currentQuality: string = "标准品质";
   qualitys: Option[] = [
@@ -133,6 +134,7 @@ export default class SongInfoPanel extends Vue {
 </script>
 <style lang="sass" scoped>
 @import "../config.sass"
+@import "@/style/media-query.sass"
 
 .song-info-panel
   display: flex
@@ -150,20 +152,32 @@ export default class SongInfoPanel extends Vue {
   box-sizing: border-box
   z-index: 1
 .album-img
-  flex: 0 0 6em
-  height: 100%
+  flex: 0 0 4em
+  height: 4em
+  margin-left: 1em
   position: relative
+  border-radius: 9999px
+  overflow: hidden
+  &__cover
+    animation: rotate 10s linear infinite
+    animation-play-state: paused
+    &--rotate
+      animation-play-state: running
   .img-mask
     display: none
+    align-items: center
+    justify-content: center
     position: absolute
     top: 0
     left: 0
     width: 100%
     height: 100%
     background-color: $whitegray-2
-  &:hover .img-mask
-    display: block
-
+  // &:hover .img-mask
+  //   display: flex
+@media (hover: hover)
+  .album-img:hover .img-mask
+    display: flex
 .name-songer
   flex: 0 1 auto
   display: flex
@@ -190,11 +204,17 @@ export default class SongInfoPanel extends Vue {
     fill: $orange
 
 .button_center-center
-  position: absolute
-  top: 50%
-  left: 50%
-  transform: translate(-50%, -50%)
+  transform-origin: center
   &.invert
-    transform: translate(-50%, -50%) rotate(180deg)
-    transform-origin: center
+    transform: rotate(180deg)
+
+@media (max-width: $middle-width)
+  .quality, .faver, .more
+    display: none
+
+@keyframes rotate
+  from
+    transform: rotateZ(0deg)
+  to
+    transform: rotateZ(360deg)
 </style>

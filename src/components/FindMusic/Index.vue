@@ -53,13 +53,11 @@ export default {
   &__recommend
     display: flex
     justify-content: space-around
-    padding: 1.5em 1em
     &__item
       display: flex
       flex-direction: column
       justify-content: center
-      max-width: 6em
+      width: 12.5%
       svg
         color: $primary-color
-        margin-bottom: 1em
 </style>

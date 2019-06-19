@@ -49,8 +49,6 @@ import TabMenu from "@/components/globals/TabMenu.vue";
 import Button from "@/components/globals/Button.vue";
 import ImageWithPlaceholder from "@/components/globals/ImageWithPlaceholder.vue";
 
-console.log({ TabMenu });
-
 const playlist = namespace("playlist");
 enum ContentType {
   Songs,
