@@ -131,17 +131,15 @@ export default class SongPlayer extends Vue {
   justify-content: center
   align-items: center
 .img-wrapper
-  width: 30em
-  height: 30em
+  width: 35vw
+  height: 35vw
   margin-right: 2em
-  img
-    width: 100%
-    height: 100%
+
 .info
   display: flex
   flex-direction: column
-  height: 30em
-  flex: 0 0 30em
+  height: 35vw
+  flex: 0 0 35vw
   overflow: hidden
 .name
   font-size: 200%

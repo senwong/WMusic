@@ -1,175 +1,191 @@
 <template>
   <div class="nav-bar">
-    <!-- Log in and Sign in -->
-    <div v-if="isLoggedin">
-      <router-link
-        class="nav-bar__user"
-        :to="`/user/${currentUserProfile && currentUserProfile.userId}`"
-      >
-        <Avatar
-          class="nav-bar__user__avatar"
-          user
-          :id="currentUserProfile.userId"
-          :name="currentUserProfile.nickname"
-          :imgSrc="currentUserProfile.avatarUrl"
-        />
-        <span class="nav-bar__user__nickname">{{
-          currentUserProfile && currentUserProfile.nickname
-        }}</span>
-      </router-link>
+    <div class="nav-bar__content">
+      <!-- Log in and Sign in -->
+      <div v-if="isLoggedin">
+        <router-link
+          v-if="currentUserProfile"
+          class="nav-bar__user"
+          :to="`/user/${currentUserProfile && currentUserProfile.userId}`"
+        >
+          <Avatar
+            class="nav-bar__user__avatar"
+            user
+            :id="currentUserProfile.userId"
+            :name="currentUserProfile.nickname"
+            :imgSrc="currentUserProfile.avatarUrl"
+          />
+          <span class="nav-bar__user__nickname">{{
+            currentUserProfile && currentUserProfile.nickname
+          }}</span>
+        </router-link>
+      </div>
+      <p class="nav-bar__login-signup" v-else>
+        <Button
+          as="a"
+          href="/login"
+          primary
+          class="nav-bar__login-signup__login"
+          >登录</Button
+        >
+        <Button as="a" href="/signup" secondary>注册</Button>
+      </p>
+      <!-- 音乐库 -->
+      <NavbarSection toggle>
+        <template #title>
+          音乐库
+        </template>
+        <template>
+          <NavItem to="/" exact>
+            <template #icon>
+              <AudioTrackIcon />
+            </template>
+            <template>
+              发现音乐
+            </template>
+          </NavItem>
+          <NavItem to="/playlist" exact>
+            <template #icon>
+              <LibraryMusicIcon />
+            </template>
+            <template>
+              歌单
+            </template>
+          </NavItem>
+          <NavItem to="/toplist" exact>
+            <template #icon>
+              <WhatsHotIcon />
+            </template>
+            <template>
+              排行榜
+            </template>
+          </NavItem>
+          <NavItem to="/mv" exact>
+            <template #icon>
+              <MvIcon />
+            </template>
+            <template>
+              MV
+            </template>
+          </NavItem>
+          <NavItem to="/search" exact>
+            <template #icon>
+              <SearchIcon />
+            </template>
+            <template>
+              搜索
+            </template>
+          </NavItem>
+        </template>
+      </NavbarSection>
+
+      <!-- 需要登录 -->
+      <section v-if="isLoggedin">
+        <!-- 我的音乐 -->
+        <NavbarSection toggle>
+          <template #title>
+            我的音乐
+          </template>
+          <template>
+            <NavItem
+              :to="`/record/${currentUserProfile && currentUserProfile.userId}`"
+              exact
+            >
+              <template #icon>
+                <MusicIcon />
+              </template>
+              <template>
+                最近播放
+              </template>
+            </NavItem>
+            <NavItem to="/sublist" exact>
+              <template #icon>
+                <MusicIcon />
+              </template>
+              <template>
+                我的收藏
+              </template>
+            </NavItem>
+          </template>
+        </NavbarSection>
+
+        <!-- 我的歌单 -->
+        <NavbarSection toggle init-hide>
+          <template #title>
+            我的歌单
+          </template>
+          <template>
+            <NavItem
+              :to="{
+                path: 'likedsongs',
+                params: { id: currentUserProfile && currentUserProfile.userId }
+              }"
+              exact
+            >
+              <template #icon>
+                <MusicIcon />
+              </template>
+              <template>
+                喜欢的音乐
+              </template>
+            </NavItem>
+          </template>
+        </NavbarSection>
+        <!-- 收藏的歌单 -->
+        <NavbarSection toggle>
+          <template #title>
+            收藏的歌单
+          </template>
+          <template>
+            <NavItem to="#" exact>
+              <template #icon>
+                <MusicIcon />
+              </template>
+              <template>
+                最近播放
+              </template>
+            </NavItem>
+            <NavItem to="#" exact>
+              <template #icon>
+                <MusicIcon />
+              </template>
+              <template>
+                我的收藏
+              </template>
+            </NavItem>
+            <NavItem to="#" exact>
+              <template #icon>
+                <MusicIcon />
+              </template>
+              <template>
+                已购音乐
+              </template>
+            </NavItem>
+          </template>
+        </NavbarSection>
+      </section>
+
+      <!-- change theme -->
+      <section>
+        <NavItem as="div" :to="undefined" @click.native="handleChangeTheme">
+          <template #icon>
+            <InvertColorIcon />
+          </template>
+          <template>
+            切换主题
+          </template>
+        </NavItem>
+      </section>
+      <!-- menu button -->
     </div>
-    <p class="nav-bar__login-signup" v-else>
-      <Button as="a" href="/login" primary class="nav-bar__login-signup__login"
-        >登录</Button
-      >
-      <Button as="a" href="/signup" secondary>注册</Button>
-    </p>
-    <!-- 音乐库 -->
-    <NavbarSection toggle>
-      <template #title>
-        音乐库
-      </template>
-      <template>
-        <NavItem to="/" exact>
-          <template #icon>
-            <AudioTrackIcon />
-          </template>
-          <template>
-            发现音乐
-          </template>
-        </NavItem>
-        <NavItem to="/playlist" exact>
-          <template #icon>
-            <LibraryMusicIcon />
-          </template>
-          <template>
-            歌单
-          </template>
-        </NavItem>
-        <NavItem to="/toplist" exact>
-          <template #icon>
-            <WhatsHotIcon />
-          </template>
-          <template>
-            排行榜
-          </template>
-        </NavItem>
-        <NavItem to="/mv" exact>
-          <template #icon>
-            <MvIcon />
-          </template>
-          <template>
-            MV
-          </template>
-        </NavItem>
-        <NavItem to="/search" exact>
-          <template #icon>
-            <SearchIcon />
-          </template>
-          <template>
-            搜索
-          </template>
-        </NavItem>
-      </template>
-    </NavbarSection>
-
-    <!-- 需要登录 -->
-    <section v-if="isLoggedin">
-      <!-- 我的音乐 -->
-      <NavbarSection toggle>
-        <template #title>
-          我的音乐
-        </template>
-        <template>
-          <NavItem
-            :to="`/record/${currentUserProfile && currentUserProfile.userId}`"
-            exact
-          >
-            <template #icon>
-              <MusicIcon />
-            </template>
-            <template>
-              最近播放
-            </template>
-          </NavItem>
-          <NavItem to="/sublist" exact>
-            <template #icon>
-              <MusicIcon />
-            </template>
-            <template>
-              我的收藏
-            </template>
-          </NavItem>
-        </template>
-      </NavbarSection>
-
-      <!-- 我的歌单 -->
-      <NavbarSection toggle init-hide>
-        <template #title>
-          我的歌单
-        </template>
-        <template>
-          <NavItem
-            :to="{
-              path: 'likedsongs',
-              params: { id: currentUserProfile && currentUserProfile.userId }
-            }"
-            exact
-          >
-            <template #icon>
-              <MusicIcon />
-            </template>
-            <template>
-              喜欢的音乐
-            </template>
-          </NavItem>
-        </template>
-      </NavbarSection>
-      <!-- 收藏的歌单 -->
-      <NavbarSection toggle>
-        <template #title>
-          收藏的歌单
-        </template>
-        <template>
-          <NavItem to="#" exact>
-            <template #icon>
-              <MusicIcon />
-            </template>
-            <template>
-              最近播放
-            </template>
-          </NavItem>
-          <NavItem to="#" exact>
-            <template #icon>
-              <MusicIcon />
-            </template>
-            <template>
-              我的收藏
-            </template>
-          </NavItem>
-          <NavItem to="#" exact>
-            <template #icon>
-              <MusicIcon />
-            </template>
-            <template>
-              已购音乐
-            </template>
-          </NavItem>
-        </template>
-      </NavbarSection>
-    </section>
-
-    <!-- change theme -->
-    <section>
-      <NavItem as="div" :to="undefined" @click.native="handleChangeTheme">
-        <template #icon>
-          <InvertColorIcon />
-        </template>
-        <template>
-          切换主题
-        </template>
-      </NavItem>
-    </section>
+    <SvgBtn
+      v-if="!isWideScreen"
+      class="nav-bar__menu-btn"
+      xlarge
+      @click.native="handleShowNavbar"
+    >
+      <MenuIcon />
+    </SvgBtn>
   </div>
 </template>
 <script lang="ts">
@@ -188,10 +204,14 @@ import AudioTrackIcon from "@/components/SVGIcons/AudioTrack.vue";
 import NavItem from "@/components/NavBar/NavItem.vue";
 import Avatar from "@/components/globals/Avatar.vue";
 import NavbarSection from "./NavbarSection.vue";
+import SvgBtn from "@/components/globals/SvgBtn.vue";
+import MenuIcon from "@/components/SVGIcons/MenuIcon.vue";
 
 const currentUser = namespace("currentUser");
 const notification = namespace("notification");
 const theme = namespace("theme");
+const navbar = namespace("navbar");
+const mediaQuery = namespace("mediaQuery");
 @Component({
   components: {
     MusicIcon,
@@ -204,7 +224,9 @@ const theme = namespace("theme");
     AudioTrackIcon,
     NavItem,
     Avatar,
-    NavbarSection
+    NavbarSection,
+    SvgBtn,
+    MenuIcon
   }
 })
 export default class Navbar extends Vue {
@@ -222,6 +244,11 @@ export default class Navbar extends Vue {
 
   @theme.State("value") theme!: Theme;
   @theme.Mutation("toggle") toggleTheme!: () => void;
+
+  @navbar.State visible!: boolean;
+  @navbar.Mutation setVisibility!: (payload: boolean) => void;
+
+  @mediaQuery.Getter("isWide") isWideScreen!: boolean;
 
   toggleMyList() {
     this.isShowMyList = !this.isShowMyList;
@@ -255,18 +282,33 @@ export default class Navbar extends Vue {
       }
     );
   }
-
+  @Watch("isWideScreen")
+  onisWideScreenChange(val: boolean) {
+    this.setVisibility(val);
+  }
   handleChangeTheme() {
     this.toggleTheme();
   }
+  handleShowNavbar() {
+    this.setVisibility(!this.visible);
+  }
 }
 </script>
-<style lang="sass">
+<style lang="sass" scoped>
 @import "@/components/config.sass"
 @import "@/style/theme.sass"
 
 .nav-bar
-  padding: 20px 10px
+  position: relative
+  overflow: visible
+  height: 100%
+  &__content
+    padding: 20px 10px
+    box-sizing: border-box
+    overflow-y: scroll
+    overflow-x: visible
+    overscroll-behavior: contain
+    height: 100%
   &__user
     font-size: 16px
     display: flex
@@ -288,4 +330,8 @@ export default class Navbar extends Vue {
   &__login-signup
     &__login
       margin-right: 1em
+  &__menu-btn
+    position: absolute
+    right: -3em
+    top: 0
 </style>

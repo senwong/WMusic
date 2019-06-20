@@ -8,16 +8,30 @@
       'svg-btn--small': small,
       'svg-btn--primary': primary
     }"
+    @mouseenter="handleMouseOver"
+    @mouseleave="handleMouseOut"
   >
-    <div class="svg-btn__bg"></div>
+    <Motion :values="bgStyle" tag="div" spring="noWobble">
+      <div
+        class="svg-btn__bg"
+        slot-scope="bgStyle"
+        :style="{
+          transform: `scale(${bgStyle.scale})`,
+          opacity: bgStyle.opacity
+        }"
+      />
+    </Motion>
     <slot></slot>
   </button>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { Motion } from "vue-motion";
 
-@Component
+@Component({
+  components: { Motion }
+})
 export default class SvgBtn extends Vue {
   @Prop(Boolean) small!: boolean;
 
@@ -28,6 +42,25 @@ export default class SvgBtn extends Vue {
   @Prop(Boolean) xlarge!: boolean;
 
   @Prop(Boolean) primary!: boolean;
+
+  bgStyle = {
+    scale: 0,
+    opacity: 0
+  };
+  handleMouseOver() {
+    // console.log("mouse over");
+    this.bgStyle = {
+      scale: 1,
+      opacity: 1
+    };
+  }
+  handleMouseOut() {
+    // console.log("mouse out");
+    this.bgStyle = {
+      scale: 0,
+      opacity: 0
+    };
+  }
 }
 </script>
 
@@ -52,9 +85,6 @@ export default class SvgBtn extends Vue {
     outline: none
   &:hover
     color: $primary-color
-    .svg-btn__bg
-      transform: scale(1)
-      opacity: 0.5
   &--primary
     color: $primary-color
 
@@ -62,7 +92,6 @@ export default class SvgBtn extends Vue {
     color: #fff
     .svg-btn__bg
       background: $primary-color
-      opacity: 1
   &[disabled]
     color: #777
   &--large

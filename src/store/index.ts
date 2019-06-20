@@ -14,6 +14,8 @@ import playbar from "./modules/playbar";
 import notification from "./modules/notification";
 import theme from "./modules/theme";
 import mainScroll from "./modules/mainScroll";
+import navbar from "./modules/navbar";
+import mediaQuery from "./modules/mediaQuery";
 
 Vue.use(Vuex);
 export default new Vuex.Store({
@@ -23,7 +25,9 @@ export default new Vuex.Store({
     playbar,
     notification,
     theme,
-    mainScroll
+    mainScroll,
+    navbar,
+    mediaQuery
   },
   state: {
     isScrollBottom: false

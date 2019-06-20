@@ -178,17 +178,9 @@ export default class SoundPanel extends Vue {
   display: flex
   align-items: center
   justify-content: flex-end
-  &__mute
+  &__mute, &__volume-range, &__repeat-mode, &__sound-effect, &__playlist
     margin-right: 1em
-  &__volume-range
-    margin-right: 1em
-  &__repeat-mode
-    margin-right: 1em
-  &__sound-effect
-    margin-right: 1em
-  &__playlist
-    margin-right: 1em
-
+    flex: 0 0 auto
 
 // 音效设置弹出菜单
 .sound-effect-set

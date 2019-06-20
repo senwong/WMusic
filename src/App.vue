@@ -1,12 +1,20 @@
 <template>
   <div class="app" :class="themeClass">
-    <Navbar
-      class="app__nav-bar scrollbar-invisible"
-      :class="{
-        'app__nav-bar--show': showNavBar,
-        'app__nav-bar--middle': isMiddleWidth
-      }"
-    />
+    <Motion :values="navbarLeft" tag="div">
+      <template v-slot="navbarLeft">
+        <Navbar
+          class="app__nav-bar scrollbar-invisible"
+          :class="{ 'app__nav-bar--middle': isMiddleWidth }"
+          :style="
+            isMiddleWidth && {
+              transform: `translateX(${navbarLeft.x}px)`,
+              boxShadow: `0 0 42px 3px rgba(0, 0, 0, ${navbarLeft.boxShadow})`
+            }
+          "
+        />
+      </template>
+    </Motion>
+
     <main class="app__main">
       <!-- router-view need in a 100% height div, to prevent scrolltoTopBtn scrolling -->
       <div
@@ -15,18 +23,21 @@
         @scroll="handleAppMainScroll"
       >
         <router-view :key="$route.path" appear />
-        <SvgBtn
-          class="app__main__pages__nav-btn"
-          :class="{ 'app__main__pages__nav-btn--right': showNavBar }"
-          xlarge
-          @click.native="handleShowNavbar"
-        >
-          <MenuIcon />
-        </SvgBtn>
       </div>
-      <transition name="slide-right">
-        <Playlist v-show="isVisible" class="app__main__right-menu" />
-      </transition>
+      <Motion :values="playlistRight" tag="div">
+        <template v-slot="playlistRight">
+          <Playlist
+            :style="{
+              transform: `translateX(${playlistRight.x}px)`,
+              boxShadow: `0 0 42px 3px rgba(0, 0, 0, ${
+                playlistRight.boxShadow
+              })`
+            }"
+            class="app__main__right-menu"
+          />
+        </template>
+      </Motion>
+
       <!-- 滚动页面返回顶部按钮 -->
       <transition name="fade">
         <SvgBtn
@@ -51,18 +62,23 @@ import Playbar from "@/components/playbar/Playbar.vue";
 import Playlist from "@/components/Playlist.vue";
 import ScrollToTopIcon from "@/components/SVGIcons/ScrollToTopIcon.vue";
 import GlobalNotification from "@/components/globals/GlobalNotification.vue";
-import { Vue, Component } from "vue-property-decorator";
-import { namespace, State, Mutation } from "vuex-class";
+import { Vue, Component, Mixins } from "vue-property-decorator";
+import { namespace, State, Getter, Mutation } from "vuex-class";
 import { Theme } from "@/types";
 import SvgBtn from "@/components/globals/SvgBtn.vue";
+import MenuIcon from "@/components/SVGIcons/MenuIcon.vue";
 import { getLoginStatus } from "@/service/index";
 import { debounceTime } from "@/utilitys";
-import MenuIcon from "@/components/SVGIcons/MenuIcon.vue";
+import { Motion } from "vue-motion";
+import { ScreenSize } from "@/store/modules/mediaQuery";
+import MediaQueryMixIn from "@/mixins/MediaQuery";
 
 const playlist = namespace("playlist");
 const theme = namespace("theme");
 const mainScroll = namespace("mainScroll");
 const currentUser = namespace("currentUser");
+const mediaQuery = namespace("mediaQuery");
+const navbar = namespace("navbar");
 
 @Component({
   components: {
@@ -72,17 +88,25 @@ const currentUser = namespace("currentUser");
     ScrollToTopIcon,
     GlobalNotification,
     SvgBtn,
-    MenuIcon
+    MenuIcon,
+    Motion
   }
 })
-export default class App extends Vue {
+export default class App extends Mixins(MediaQueryMixIn) {
   @playlist.State isVisible!: boolean;
+  get playlistRight() {
+    return this.isVisible ? { x: 0, boxShadow: 0.2 } : { x: 300, boxShadow: 0 };
+  }
 
   @theme.State("value") theme!: Theme;
   @mainScroll.State("isBottom") mainIsScrollBottom!: boolean;
   @mainScroll.Mutation setIsBottom!: (b: boolean) => void;
   @mainScroll.Mutation setScrollTop!: (st: number) => void;
   @currentUser.Mutation setCurrentUserId!: (id: number) => void;
+
+  @mediaQuery.Getter("isMiddle") isMiddleWidth!: boolean;
+  @mediaQuery.Mutation setSize!: (payload: ScreenSize) => boolean;
+  @navbar.State("visible") isNavbarVisible!: boolean;
 
   $refs!: {
     scrollingEle: HTMLElement;
@@ -147,11 +171,18 @@ export default class App extends Vue {
   created() {
     this.updateLoginStatus();
   }
-
-  isMiddleWidth: boolean = window.matchMedia("(max-width: 1000px)").matches;
-  showNavBar: boolean = !this.isMiddleWidth;
-  handleShowNavbar() {
-    this.showNavBar = !this.showNavBar;
+  get navbarLeft() {
+    if (this.isNavbarVisible) {
+      return {
+        x: 0,
+        boxShadow: 0.2
+      };
+    } else {
+      return {
+        x: -250,
+        boxShadow: 0
+      };
+    }
   }
 }
 </script>
@@ -188,13 +219,6 @@ $playbar-height: 6em
       overflow-y: scroll
       overflow-x: hidden
       position: relative
-      &__nav-btn
-        display: none
-        position: fixed
-        top: 0.5em
-        left: 0.5em
-        &--right
-          left: calc(#{$navbar-width} + 0.5em)
     &__scroll-top-btn
       position: fixed
       bottom: 1em
@@ -209,22 +233,15 @@ $playbar-height: 6em
       width: 300px
       overflow-y: scroll
       z-index: 3
-      box-shadow: 0 0 42px 3px rgba(0, 0, 0, .2)
   &__nav-bar
     grid-area: nav-bar
     z-index: 1
-    box-sizing: border-box
-    overflow-y: scroll
-    overscroll-behavior: contain
-    box-sizing: border-box
     &--middle
-      position: absolute
+      position: fixed
       top: 0
-      left: -250px
+      left: 0
       width: $navbar-width
       height: calc(100% - #{$playbar-height})
-    &--show
-      left: 0px
   &__footer
     grid-area: footer
 @media (max-width: $middle-width)
@@ -244,13 +261,7 @@ $playbar-height: 6em
       color: themed('secondary-text-color')
       background-color: themed('secondary-background-color')
 
-// right menu transition
-.slide-right
-  &-enter-active, &-leave-active
-    transition: all .5s
-  &-enter, &-leave-to
-    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0)
-    transform: translateX(300px)
+
 // backtotop按钮动画
 .fade-enter-active, .fade-leave-active
   transition: opacity .5s

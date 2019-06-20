@@ -220,8 +220,10 @@ export default class UserDetail extends Vue {
   opacity: 0.6
 
 .avatar
-  flex: 0 0 10em
-  margin-right: 2em
+  flex: 0 0 auto
+  margin-right: 1em
+  max-width: 12.5em
+  width: 30vw
 
 // user infomation row
 .detail-row
@@ -229,15 +231,18 @@ export default class UserDetail extends Vue {
   flex-direction: row
   justify-content: flex-start
   align-items: center
+  flex-wrap: wrap
 // first row includes nickname, message button and follow button
 .nickname-action
   justify-content: space-between
+
 .nickname
   font-size: 24px
   margin-right: 10px
 
 .action-button
   margin-right: 1em
+  margin-top: 0.5em
 
 // second row includes eventCount, follows and followeds
 .interactive
@@ -251,7 +256,6 @@ export default class UserDetail extends Vue {
   opacity: 0.6
 .event-count, .follows
   padding-right: 2em
-  border-right: 1px solid rgba(0, 0, 0, 0.1)
   margin-right: 1em
 
 // third row include userself signature
